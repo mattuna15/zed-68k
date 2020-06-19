@@ -1,0 +1,1 @@
+-wto "d28c48149cfc4411a067870c73c281e5" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "cpu68k_tb_behav" "xil_defaultlib.cpu68k_tb" -log "elaborate.log" 

@@ -1,0 +1,19 @@
+0.6
+2019.2
+Nov  6 2019
+21:57:16
+D:/code/zed-68k/zed68k.srcs/sim_1/new/cpu68k_tb.vhd,1592571775,vhdl,,,,cpu68k_tb,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_address_registers.vhd,1592559814,vhdl,,,,wf68k00ip_address_registers,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_alu.vhd,1592559814,vhdl,,,,wf68k00ip_alu,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_bus_interface.vhd,1592559814,vhdl,,,,wf68k00ip_bus_interface,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_control.vhd,1592559814,vhdl,,,,wf68k00ip_control,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_data_registers.vhd,1592559814,vhdl,,,,wf68k00ip_data_registers,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_interrupt_controller.vhd,1592559814,vhdl,,,,wf68k00ip_interrupt_control,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_opcode_decoder.vhd,1592559814,vhdl,,,,wf68k00ip_opcode_decoder,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_pkg.vhd,1592559814,vhdl,D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_top_soc.vhd,,,wf68k00ip_pkg,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_shifter.vhd,1592559814,vhdl,,,,wf68k00ip_shifter,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/68K00/wf68k00ip_top_soc.vhd,1592559814,vhdl,D:/code/zed-68k/zed68k.srcs/sim_1/new/cpu68k_tb.vhd,,,wf68k00ip_top_soc,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/RTL/TG68K_ALU.vhd,1592572920,vhdl2008,,,,tg68k_alu,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/RTL/TG68K_Pack.vhd,1592573021,vhdl2008,D:/code/zed-68k/zed68k.srcs/sources_1/imports/RTL/TG68K_ALU.vhd;D:/code/zed-68k/zed68k.srcs/sources_1/imports/RTL/TG68KdotC_Kernel.vhd,,,tg68k_pack,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/RTL/TG68KdotC_Kernel.vhd,1592561307,vhdl2008,D:/code/zed-68k/zed68k.srcs/sources_1/imports/RTL/TG68_minimal.vhd,,,tg68kdotc_kernel,,,,,,,,
+D:/code/zed-68k/zed68k.srcs/sources_1/imports/RTL/TG68_minimal.vhd,1592561307,vhdl2008,D:/code/zed-68k/zed68k.srcs/sim_1/new/cpu68k_tb.vhd,,,tg68,,,,,,,,
