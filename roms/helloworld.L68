@@ -1,6 +1,6 @@
 00010008 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 29/06/2020 17:02:28
+Created On: 30/06/2020 13:51:38
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Program    :Hello World
@@ -32,43 +32,43 @@ Created On: 29/06/2020 17:02:28
 00010000= 0000FFF0                  28      dc.l    stack       ;system stack
 00010004= 00010008                  29      dc.l    start       ;initial pc
 00010008                            30  
-00010008  13FC 0003 00F00009        31  start:  move.b  #$03,ttyst  ;setup ports (Master Reset)
-00010010  13FC 0015 00F00009        32      move.b  #$15,ttyst  ;8Bits + 1Stop Bits, div 16
-00010018                            33  
-00010018  207C 0000FFF0             34      move.l  #stack,a0   ;Set Stackpointer
-0001001E  4E60                      35      move.l  a0,usp
-00010020                            36  
-00010020  47F9 00010050             37  loop:   lea.l   message.l,a3
-00010026  6100 0004                 38          bsr wstr
-0001002A  60F4                      39          bra loop
-0001002C                            40  
-0001002C                            41  ;
-0001002C                            42  ; a3 Pointed to first byte
-0001002C                            43  ; end with 0
-0001002C  101B                      44  wstr:   move.b (a3)+,d0
-0001002E  B03C 0000                 45          cmp.b  #0,d0
-00010032  6700 0008                 46          beq wstr1
-00010036  6100 0006                 47          bsr writ
-0001003A  60F0                      48          bra wstr
-0001003C  4E75                      49  wstr1:  rts
-0001003E                            50  
-0001003E                            51  ;
-0001003E                            52  ; Generalized write facility writes 1 byte
-0001003E                            53  ; passed in d0 to tty.
-0001003E                            54  ;
-0001003E  0839 0001 00F00009        55  writ:   btst    #$1,ttyst   ;sample control register till done
-00010046  67F6                      56      beq writ
-00010048  13C0 00F0000B             57      move.b  d0,ttyd     ;write the character to port
-0001004E  4E75                      58      rts
-00010050                            59  
-00010050                            60  ;
-00010050                            61  ; Messages data
-00010050                            62  ;
-00010050  =0000000D                 63  cr  equ $0d     ;ASCII code for Carriage Return
-00010050  =0000000A                 64  lf  equ $0a     ;ASCII code for Line Feed
-00010050= 48 41 4C 4C 4F 20 ...     65  message dc.b    'HALLO WORLD',cr,lf,0
-0001005E                            66  
-0001005E                            67      end start
+00010008                            31  start:  ;move.b #$03,ttyst  ;setup ports (Master Reset)
+00010008                            32      ;move.b #$15,ttyst  ;8Bits + 1Stop Bits, div 16
+00010008                            33  
+00010008  207C 0000FFF0             34      move.l  #stack,a0   ;Set Stackpointer
+0001000E  4E60                      35      move.l  a0,usp
+00010010                            36  
+00010010  47F9 00010030             37  loop:   lea.l   message.l,a3
+00010016  6100 0004                 38          bsr wstr
+0001001A  60F4                      39          bra loop
+0001001C                            40  
+0001001C                            41  ;
+0001001C                            42  ; a3 Pointed to first byte
+0001001C                            43  ; end with 0
+0001001C  101B                      44  wstr:   move.b (a3)+,d0
+0001001E  B03C 0000                 45          cmp.b  #0,d0
+00010022  6700 000A                 46          beq wstr1
+00010026  13C0 00F0000B             47          move.b  d0,ttyd     ;write the character to port
+0001002C  60EE                      48          bra wstr
+0001002E  4E75                      49  wstr1:  rts
+00010030                            50  
+00010030                            51  ;
+00010030                            52  ; Generalized write facility writes 1 byte
+00010030                            53  ; passed in d0 to tty.
+00010030                            54  ;
+00010030                            55  ;writ:  btst    #$1,ttyst   ;sample control register till done
+00010030                            56  ;   beq writ
+00010030                            57  ;   move.b  d0,ttyd     ;write the character to port
+00010030                            58  ;   rts
+00010030                            59  
+00010030                            60  ;
+00010030                            61  ; Messages data
+00010030                            62  ;
+00010030  =0000000D                 63  cr  equ $0d     ;ASCII code for Carriage Return
+00010030  =0000000A                 64  lf  equ $0a     ;ASCII code for Line Feed
+00010030= 48 45 4C 4C 4F 20 ...     65  message dc.b    'HELLO WORLD',cr,lf,0
+0001003E                            66  
+0001003E                            67      end start
 
 No errors detected
 No warnings generated
@@ -79,12 +79,11 @@ Symbol-name         Value
 -------------------------
 CR                  D
 LF                  A
-LOOP                10020
-MESSAGE             10050
+LOOP                10010
+MESSAGE             10030
 STACK               FFF0
 START               10008
 TTYD                F0000B
 TTYST               F00009
-WRIT                1003E
-WSTR                1002C
-WSTR1               1003C
+WSTR                1001C
+WSTR1               1002E

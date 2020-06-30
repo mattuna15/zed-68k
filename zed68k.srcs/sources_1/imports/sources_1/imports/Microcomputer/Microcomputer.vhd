@@ -55,7 +55,7 @@ entity Microcomputer is
         cpu_uds : inout std_logic; -- upper data strobe
         cpu_lds : inout std_logic; -- lower data strobe
         cpu_r_w :  inout std_logic; -- read(high)/write(low)
-        cpu_dtack : inout std_logic := '0' -- data transfer acknowledge
+        cpu_dtack : inout std_logic -- data transfer acknowledge
 	);
 end Microcomputer;
 
@@ -112,7 +112,7 @@ begin
 cpu1 : entity work.TG68
    port map
 	(
-		clk => clk, --cpuClock,
+		clk => cpuClock,
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,
@@ -200,23 +200,48 @@ cpu1 : entity work.TG68
    );
 -- ____________________________________________________________________________________
 -- INPUT/OUTPUT DEVICES GO HERE	
-io1 :  entity work.bufferedUART
-port map(
-clk => clk,
-n_wr => n_interface1CS or clk or n_WR,
-n_rd => n_interface1CS or clk or (not n_WR),
-n_int => n_int1,
-regSel => cpuAddress(0),
-dataIn => cpuDataOut(7 downto 0),
-dataOut => interface1DataOut,
-rxClock => serialClock,
-txClock => serialClock,
-rxd => rxd1,
-txd => txd1,
-n_cts => '0',
-n_dcd => '0',
-n_rts => rts1
-);
+--io1 :  entity work.bufferedUART
+--port map(
+--clk => clk,
+--n_wr => n_interface1CS or clk or n_WR,
+--n_rd => n_interface1CS or clk or (not n_WR),
+--n_int => n_int1,
+--regSel => cpuAddress(0),
+--dataIn => cpuDataOut(7 downto 0),
+--dataOut => interface1DataOut,
+--rxClock => serialClock,
+--txClock => serialClock,
+--rxd => rxd1,
+--txd => txd1,
+--n_cts => '0',
+--n_dcd => '0',
+--n_rts => rts1
+--);
+
+io1: entity work.acia6850 
+  port map ( 
+    -- 
+    -- CPU Interface signals 
+    -- 
+    clk  => clk,                    -- System Clock 
+    rst   => not n_reset,                     -- Reset input (active high) 
+    cs  => not n_interface1CS ,                  -- miniUART Chip Select 
+    addr => cpuAddress(0),                     -- Register Select 
+    rw   => cpu_r_w,                    -- Read / Not Write 
+    data_in =>  cpuDataOut(7 downto 0), -- Data Bus In 
+    data_out => interface1DataOut,  -- Data Bus Out 
+    irq    => open,                     -- Interrupt Request out 
+    -- 
+    -- RS232 Interface Signals 
+    -- 
+    RxC   => serialClock,              -- Receive Baud Clock 
+    TxC  => serialClock,              -- Transmit Baud Clock 
+    RxD  => rxd1,             -- Receive Data 
+    TxD  => txd1,              -- Transmit Data 
+    DCD_n => '0',              -- Data Carrier Detect 
+    CTS_n => '0',              -- Clear To Send 
+    RTS_n => rts1               -- Request To send 
+    ); 
 
 sd1 : entity work.sd_controller
 port map(
@@ -255,10 +280,8 @@ n_internalRam2CS <= not n_basRom2CS when cpu_as = '0' and cpu_lds = '0' else '1'
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
 
-
-
-memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length));
-    
+memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
+  
 cpuDataIn(15 downto 8) 
 <= X"00"
 when cpu_as = '0' and cpu_uds = '0' and (n_interface1CS = '0' or n_interface2CS = '0') else
@@ -274,16 +297,12 @@ when cpu_as = '0' and n_interface1CS = '0' and cpu_lds = '0' else
 interface2DataOut
 when cpu_as = '0' and n_interface2CS = '0' and cpu_lds = '0' else 
 basRomData(7 downto 0)
-when cpu_as = '0' and n_basRom1CS = '0' and cpu_lds = '0' else 
+when cpu_as = '0' and n_basRom2CS = '0' and cpu_lds = '0' else 
 internalRam1DataOut(7 downto 0)
-when cpu_as = '0' and n_internalRam1CS = '0'  and cpu_lds = '0' else
+when cpu_as = '0' and n_internalRam2CS = '0'  and cpu_lds = '0' else
 X"00" when cpu_lds = '1';
 
-cpu_dtack <=  '1' when cpu_uds='1' and cpu_lds='1' else '0';
-
-
-
-
+cpu_dtack <= '1' when cpu_lds = '1' and cpu_uds='1' else '0';
 -- Serial clock DDS
 -- 50MHz master input clock:
 -- Baud Increment

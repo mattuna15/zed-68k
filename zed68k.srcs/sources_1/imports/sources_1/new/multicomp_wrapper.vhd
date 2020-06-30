@@ -63,7 +63,7 @@ port(
         cpu_uds : inout std_logic; -- upper data strobe
         cpu_lds : inout std_logic; -- lower data strobe
         cpu_r_w :  inout std_logic; -- read(high)/write(low)
-        cpu_dtack : inout std_logic := '0' -- data transfer acknowledge
+        cpu_dtack : inout std_logic -- data transfer acknowledge
 	    
 
 	);

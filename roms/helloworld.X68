@@ -28,8 +28,8 @@ stack	equ	$00fff0
 	dc.l	stack		;system stack
 	dc.l	start		;initial pc
 
-start:	move.b	#$03,ttyst	;setup ports (Master Reset)
-	move.b	#$15,ttyst	;8Bits + 1Stop Bits, div 16
+start:	;move.b	#$03,ttyst	;setup ports (Master Reset)
+	;move.b	#$15,ttyst	;8Bits + 1Stop Bits, div 16
 
 	move.l	#stack,a0	;Set Stackpointer
 	move.l	a0,usp
@@ -44,7 +44,7 @@ loop:	lea.l	message.l,a3
 wstr:	move.b (a3)+,d0
 		cmp.b  #0,d0
 		beq	wstr1
-		bsr writ
+		move.b	d0,ttyd		;write the character to port
         bra	wstr
 wstr1:	rts
 
@@ -52,10 +52,10 @@ wstr1:	rts
 ; Generalized write facility writes 1 byte
 ; passed in d0 to tty.
 ;
-writ:	btst	#$1,ttyst	;sample control register till done
-	beq	writ
-	move.b	d0,ttyd		;write the character to port
-	rts
+;writ:	btst	#$1,ttyst	;sample control register till done
+;	beq	writ
+;	move.b	d0,ttyd		;write the character to port
+;	rts
 
 ;
 ; Messages data

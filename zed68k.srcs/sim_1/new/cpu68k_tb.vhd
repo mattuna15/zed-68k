@@ -23,7 +23,7 @@ architecture structural of main_tb is
     signal    cpu_uds :  std_logic; -- upper data strobe
     signal    cpu_lds :  std_logic; -- lower data strobe
     signal    cpu_r_w :   std_logic; -- read(high)/write(low)
-     signal   cpu_dtack :  std_logic := '0'; -- data transfer acknowledge;
+     signal   cpu_dtack :  std_logic := '1'; -- data transfer acknowledge;
     
 begin
    
@@ -42,7 +42,7 @@ begin
    begin
    
     if start_up = '0' then
-        reset <= '1', '0' after 10 ns;
+        reset <= '1', '0' after 5 ns;
         start_up <= '1';
     end if;
     wait for 1 ns;
