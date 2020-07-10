@@ -32,36 +32,28 @@ entity Microcomputer is
 		videoR1		: out std_logic;
 		videoG1		: out std_logic;
 		videoB1		: out std_logic;
-		hSync			: out std_logic;
-		vSync			: out std_logic;
+		hSync			: buffer std_logic;
+		vSync			: buffer std_logic;
 
 		ps2Clk		: inout std_logic;
 		ps2Data		: inout std_logic;
+		
 
-		sdCS			: out std_logic;
-		sdMOSI		: out std_logic;
-		sdMISO		: in std_logic;
-		sdSCLK		: out std_logic;
-		driveLED		: out std_logic :='1';
+--		sdCS			: out std_logic;
+--		sdMOSI		: out std_logic;
+--		sdMISO		: in std_logic;
+--		sdSCLK		: out std_logic;
+--		driveLED		: out std_logic :='1';
 		
 		rxd1			: in std_logic;
 		txd1			: out std_logic;
-		rts1			: out std_logic;
-		cpuAddress	    : inout std_logic_vector(31 downto 0);
-		cpuDataOut		: inout std_logic_vector(15 downto 0);
-	    cpuDataIn		: inout std_logic_vector(15 downto 0);
-	    memAddress		: inout std_logic_vector(15 downto 0);
-	    cpu_as : inout std_logic; -- Address strobe
-        cpu_uds : inout std_logic; -- upper data strobe
-        cpu_lds : inout std_logic; -- lower data strobe
-        cpu_r_w :  inout std_logic; -- read(high)/write(low)
-        cpu_dtack : inout std_logic -- data transfer acknowledge
+		rts1			: out std_logic
 	);
 end Microcomputer;
 
 architecture struct of Microcomputer is
 
-   signal reset : std_logic := '0';
+   --signal reset : std_logic := '0';
 
 	signal n_WR							: std_logic;
 	signal n_RD							: std_logic;
@@ -90,6 +82,7 @@ architecture struct of Microcomputer is
 	signal n_internalRam2CS			: std_logic :='1';
 	signal n_basRom1CS					: std_logic :='1';
     signal n_basRom2CS					: std_logic :='1';
+
 	signal n_interface1CS			: std_logic :='1';
 	signal n_interface2CS			: std_logic :='1';
 	signal n_sdCardCS					: std_logic :='1';
@@ -102,7 +95,23 @@ architecture struct of Microcomputer is
 	signal topAddress               : std_logic_vector(7 downto 0);
 	--CPM
     signal n_RomActive : std_logic := '0';
-
+    
+    signal		cpuAddress	    :  std_logic_vector(31 downto 0);
+	signal	cpuDataOut		:  std_logic_vector(15 downto 0);
+	signal    cpuDataIn		:  std_logic_vector(15 downto 0);
+	signal    memAddress		:  std_logic_vector(15 downto 0);
+	signal    cpu_as :  std_logic; -- Address strobe
+    signal    cpu_uds :  std_logic; -- upper data strobe
+    signal    cpu_lds :  std_logic; -- lower data strobe
+    signal    cpu_r_w :   std_logic; -- read(high)/write(low)
+    signal    cpu_dtack :  std_logic; -- data transfer acknowledge
+    
+    signal  regsel: std_logic := '1';
+    
+    type t_Vector is array (0 to 10) of std_logic_vector(7 downto 0);
+    signal r_vec : t_Vector;
+    
+    signal vecAddress: integer := 0;
 	
 begin
 
@@ -112,10 +121,10 @@ begin
 cpu1 : entity work.TG68
    port map
 	(
-		clk => cpuClock,
+		clk => clk,
         reset => n_reset,
         clkena_in => '1',
-        data_in => cpuDataIn,
+        data_in => cpuDataIn,   
 		IPL => "111",	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
@@ -124,8 +133,14 @@ cpu1 : entity work.TG68
 		rw => cpu_r_w,
 		uds => cpu_uds,
 		lds => cpu_lds
-   );
-
+  );
+	
+	-- rom address
+    memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
+   
+    -- vector address storage
+    vecAddress <= conv_integer(cpuAddress(3 downto 0)) / 2 ;
+    r_Vec(vecAddress) <= cpuDataOut(7 downto 0) when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ;
 -- ____________________________________________________________________________________
 -- ROM GOES HERE
     
@@ -153,7 +168,7 @@ cpu1 : entity work.TG68
 -- ____________________________________________________________________________________
 -- RAM GOES HERE
 
-    ram1 : entity work.ram --64k
+    ram1 : entity work.ram16 --64k
     generic map (
       -- Number of bits in the address bus. The size of the memory will
       -- be 2**G_ADDR_BITS bytes.
@@ -163,144 +178,93 @@ cpu1 : entity work.TG68
       clk_i => clk,
 
       -- Current address selected.
-      addr_i => memAddress,
+      addr_i => cpuAddress(15 downto 0),
 
       -- Data contents at the selected address.
       -- Valid in same clock cycle.
-      data_o  => internalRam1DataOut(15 downto 8),
+      data_o  => internalRam1DataOut,
 
       -- New data to (optionally) be written to the selected address.
-      data_i => cpuDataOut(15 downto 8),
+      data_i => cpuDataOut,
 
       -- '1' indicates we wish to perform a write at the selected address.
-      wren_i => not(n_memWR and n_internalRam1CS)
+      wren_i => not(cpu_r_w or n_internalRam1CS)
    );
 
-    ram2 : entity work.ram --64k
-    generic map (
-      -- Number of bits in the address bus. The size of the memory will
-      -- be 2**G_ADDR_BITS bytes.
-      G_ADDR_BITS => 16
-    )
-   port map (
-      clk_i => clk,
-
-      -- Current address selected.
-      addr_i => memAddress,
-
-      -- Data contents at the selected address.
-      -- Valid in same clock cycle.
-      data_o  => internalRam1DataOut(7 downto 0),
-
-      -- New data to (optionally) be written to the selected address.
-      data_i => cpuDataOut(7 downto 0),
-
-      -- '1' indicates we wish to perform a write at the selected address.
-      wren_i => not(n_memWR and n_internalRam2CS)
-   );
 -- ____________________________________________________________________________________
 -- INPUT/OUTPUT DEVICES GO HERE	
---io1 :  entity work.bufferedUART
---port map(
---clk => clk,
---n_wr => n_interface1CS or clk or n_WR,
---n_rd => n_interface1CS or clk or (not n_WR),
---n_int => n_int1,
---regSel => cpuAddress(0),
---dataIn => cpuDataOut(7 downto 0),
---dataOut => interface1DataOut,
---rxClock => serialClock,
---txClock => serialClock,
---rxd => rxd1,
---txd => txd1,
---n_cts => '0',
---n_dcd => '0',
---n_rts => rts1
---);
-
-io1: entity work.acia6850 
-  port map ( 
-    -- 
-    -- CPU Interface signals 
-    -- 
-    clk  => clk,                    -- System Clock 
-    rst   => not n_reset,                     -- Reset input (active high) 
-    cs  => not n_interface1CS ,                  -- miniUART Chip Select 
-    addr => cpuAddress(0),                     -- Register Select 
-    rw   => cpu_r_w,                    -- Read / Not Write 
-    data_in =>  cpuDataOut(7 downto 0), -- Data Bus In 
-    data_out => interface1DataOut,  -- Data Bus Out 
-    irq    => open,                     -- Interrupt Request out 
-    -- 
-    -- RS232 Interface Signals 
-    -- 
-    RxC   => serialClock,              -- Receive Baud Clock 
-    TxC  => serialClock,              -- Transmit Baud Clock 
-    RxD  => rxd1,             -- Receive Data 
-    TxD  => txd1,              -- Transmit Data 
-    DCD_n => '0',              -- Data Carrier Detect 
-    CTS_n => '0',              -- Clear To Send 
-    RTS_n => rts1               -- Request To send 
-    ); 
-
-sd1 : entity work.sd_controller
-port map(
-sdCS => sdCS,
-sdMOSI => sdMOSI,
-sdMISO => sdMISO,
-sdSCLK => sdSCLK,
-n_wr => n_sdCardCS or clk or n_WR,
-n_rd => n_sdCardCS or clk or (not n_WR),
+io1 : entity work.SBCTextDisplayRGB
+port map (
 n_reset => n_reset,
+clk => clk,
+
+-- RGB video signals
+hSync => hSync,
+vSync => vSync,
+videoR0 => videoR0,
+videoR1 => videoR1,
+videoG0 => videoG0,
+videoG1 => videoG1,
+videoB0 => videoB0,
+videoB1 => videoB1,
+
+-- Monochrome video signals (when using TV timings only)
+sync => open,
+video => open,
+
+n_wr => n_interface1CS or cpu_r_w,
+n_rd => n_interface1CS or (not cpu_r_w),
+n_int => n_int1,
+regSel => regsel,
 dataIn => cpuDataOut(7 downto 0),
-dataOut => sdCardDataOut,
-regAddr => cpuAddress(2 downto 0),
-driveLED => driveLED,
-clk => clk -- twice the spi clk
+dataOut => interface1DataOut,
+ps2Clk => ps2Clk,
+ps2Data => ps2Data
 );
+
 	
-	
--- ____________________________________________________________________________________
--- MEMORY READ/WRITE LOGIC GOES HERE
-n_memRD <= not(clk) nand n_WR;
-n_memWR <= not(clk) nand (not n_WR);
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
 
 
---n_basRom1CS <= '0' when cpu_as = '0' and cpu_uds = '0' and cpuAddress(23 downto 21) = "101" else '1'; --A00000-A0FFFF
---n_basRom2CS <= '0' when cpu_as = '0' and cpu_lds = '0' and cpuAddress(23 downto 21) = "101" else '1'; 
-n_basRom1CS <= '0' when cpu_as = '0' and cpu_uds = '0' and cpuAddress(16 downto 16) = "1" else '1'; --10000-1FFFF
-n_basRom2CS <= '0' when cpu_as = '0' and cpu_lds = '0' and cpuAddress(16 downto 16) = "1" else '1'; 
-n_interface1CS <= '0' when cpu_as = '0' and cpuAddress(23 downto 16) = "11110000" else '1'; -- f000000
-n_interface2CS <= '0' when cpu_as = '0' and cpuAddress(23 downto 16) = "11110010" else '1'; -- f200000
+n_basRom1CS <= '0' when cpu_as = '0' and cpu_uds = '0' and cpuAddress(17 downto 16) = "01" else '1'; --10000-1FFFF
+n_basRom2CS <= '0' when cpu_as = '0' and cpu_lds = '0' and cpuAddress(17 downto 16) = "01" else '1'; 
+n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
+regsel <= '0' when cpuAddress = X"f00009" else '1';
+n_interface2CS <= '1'; -- '1' when cpuAddress = X"f200000" else '1'; -- f200000
 n_sdCardCS <= '1'; -- '0' when cpuAddress(15 downto 3) = "1111111111011" else '1'; -- 8 bytes FFD8-FFDF
-n_internalRam1CS <= not n_basRom1CS when cpu_as = '0' and cpu_uds = '0' else '1' ;
-n_internalRam2CS <= not n_basRom2CS when cpu_as = '0' and cpu_lds = '0' else '1' ;
+n_internalRam1CS <= '0'  when cpu_as = '0' and cpuAddress <= X"FFFF" 
+                     else '1' ;
+
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
-
-memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
-  
+ 
 cpuDataIn(15 downto 8) 
 <= X"00"
-when cpu_as = '0' and cpu_uds = '0' and (n_interface1CS = '0' or n_interface2CS = '0') else
+when n_interface1CS = '0' or n_interface2CS = '0' or cpuAddress(31 downto 16) = X"FFFF" else
 basRomData(15 downto 8)
-when cpu_as = '0' and n_basRom1CS = '0' and cpu_uds = '0' else
+when n_basRom1CS = '0' else
 internalRam1DataOut(15 downto 8)
-when cpu_as = '0' and n_internalRam1CS= '0' and cpu_uds = '0' else
+when n_internalRam1CS= '0' else
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
 <= interface1DataOut 
-when cpu_as = '0' and n_interface1CS = '0' and cpu_lds = '0' else
+when n_interface1CS = '0' else
 interface2DataOut
-when cpu_as = '0' and n_interface2CS = '0' and cpu_lds = '0' else 
+when n_interface2CS = '0' else 
 basRomData(7 downto 0)
-when cpu_as = '0' and n_basRom2CS = '0' and cpu_lds = '0' else 
+when n_basRom2CS = '0' else 
 internalRam1DataOut(7 downto 0)
-when cpu_as = '0' and n_internalRam2CS = '0'  and cpu_lds = '0' else
+when n_internalRam1CS = '0' else
+"00000" & cpuAddress(3 downto 1)
+when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
+r_Vec(vecAddress)
+when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' 
+else
 X"00" when cpu_lds = '1';
+
+
 
 cpu_dtack <= '1' when cpu_lds = '1' and cpu_uds='1' else '0';
 -- Serial clock DDS
@@ -313,15 +277,15 @@ cpu_dtack <= '1' when cpu_lds = '1' and cpu_uds='1' else '0';
 -- 4800 101
 -- 2400 50
 -- SUB-CIRCUIT CLOCK SIGNALS
-serialClock <= serialClkCount(15);
+--serialClock <= serialClkCount(15);
 
-clock: process (clk)
-begin
+--clock: process (clk)
+--begin
 
-    if rising_edge(clk) then
-        serialClkCount <= serialClkCount + 201;
-    end if;
+--    if rising_edge(clk) then
+--        serialClkCount <= serialClkCount + 201;
+--    end if;
 
-end process;
+--end process;
     
 end;

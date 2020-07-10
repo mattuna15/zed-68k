@@ -36,8 +36,8 @@ entity SBCTextDisplayRGB is
 		constant VERT_PIXEL_SCANLINES : integer := 2;
 
 		
-		constant H_SYNC_ACTIVE : std_logic := '1';
-		constant V_SYNC_ACTIVE : std_logic := '1';
+		constant H_SYNC_ACTIVE : std_logic := '0';
+		constant V_SYNC_ACTIVE : std_logic := '0';
 
 		constant VERT_CHARS : integer := 25;
 		constant HORIZ_CHARS : integer := 80;
@@ -48,8 +48,8 @@ entity SBCTextDisplayRGB is
 	port (
 		n_reset	: in std_logic;
 		clk    	: in  std_logic;
-		n_wr		: in  std_logic;
-		n_rd		: in  std_logic;
+		n_wr		: in  std_logic := '1';
+		n_rd		: in  std_logic := '1';
 		regSel	: in  std_logic;
 		dataIn	: in  std_logic_vector(7 downto 0);
 		dataOut	: out std_logic_vector(7 downto 0);
@@ -106,17 +106,17 @@ constant CHARS_PER_SCREEN : integer := HORIZ_CHARS*VERT_CHARS;
 	signal	vActive   : std_logic := '0';
 	signal	hActive   : std_logic := '0';
 
-	signal	pixelClockCount: STD_LOGIC_VECTOR(3 DOWNTO 0); 
-	signal	pixelCount: STD_LOGIC_VECTOR(2 DOWNTO 0); 
+	signal	pixelClockCount: STD_LOGIC_VECTOR(3 DOWNTO 0):= (others => '0'); 
+	signal	pixelCount: STD_LOGIC_VECTOR(2 DOWNTO 0) := (others => '0'); 
 	
-	signal	horizCount: STD_LOGIC_VECTOR(11 DOWNTO 0); 
-	signal	vertLineCount: STD_LOGIC_VECTOR(9 DOWNTO 0); 
+	signal	horizCount: STD_LOGIC_VECTOR(11 DOWNTO 0) := (others => '0'); 
+	signal	vertLineCount: STD_LOGIC_VECTOR(9 DOWNTO 0) := (others => '0'); 
 
 	signal	charVert: integer range 0 to VERT_CHAR_MAX; --unsigned(4 DOWNTO 0); 
-	signal	charScanLine: STD_LOGIC_VECTOR(3 DOWNTO 0); 
+	signal	charScanLine: STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0'); 
 
 	signal	charHoriz: integer range 0 to HORIZ_CHAR_MAX; --unsigned(6 DOWNTO 0); 
-	signal	charBit: STD_LOGIC_VECTOR(3 DOWNTO 0); 
+	signal	charBit: STD_LOGIC_VECTOR(3 DOWNTO 0) := (others => '0'); 
 
 	signal	cursorVert: integer range 0 to VERT_CHAR_MAX :=0;
 	signal	cursorHoriz: integer range 0 to HORIZ_CHAR_MAX :=0;
@@ -131,21 +131,21 @@ constant CHARS_PER_SCREEN : integer := HORIZ_CHARS*VERT_CHARS;
 	signal 	cursAddr : integer range 0 to CHARS_PER_SCREEN;
 	  
 	signal 	dispAddr : integer range 0 to CHARS_PER_SCREEN;
-	signal 	charAddr : std_LOGIC_VECTOR(10 downto 0);
+	signal 	charAddr : std_LOGIC_VECTOR(10 downto 0) := (others => '0');
 
-	signal	dispCharData : std_LOGIC_VECTOR(7 downto 0);
-	signal	dispCharWRData : std_LOGIC_VECTOR(7 downto 0);
-	signal	dispCharRDData : std_LOGIC_VECTOR(7 downto 0);
+	signal	dispCharData : std_LOGIC_VECTOR(7 downto 0)  := (others => '0');
+	signal	dispCharWRData : std_LOGIC_VECTOR(7 downto 0)  := (others => '0');
+	signal	dispCharRDData : std_LOGIC_VECTOR(7 downto 0)  := (others => '0');
 	
 	signal	dispAttData : std_LOGIC_VECTOR(7 downto 0);
 	signal	dispAttWRData : std_LOGIC_VECTOR(7 downto 0):=DEFAULT_ATT; -- iBGR(back) iBGR(text)
 	signal	dispAttRDData : std_LOGIC_VECTOR(7 downto 0);
 	
-	signal	charData : std_LOGIC_VECTOR(7 downto 0);
+	signal	charData : std_LOGIC_VECTOR(7 downto 0) := (others => '0');
 
 	signal	cursorOn : std_logic := '1';
 	signal	dispWR : std_logic := '0';
-	signal	cursBlinkCount : unsigned(25 downto 0);
+	signal	cursBlinkCount : unsigned(25 downto 0) := (others => '0');
 	signal	kbWatchdogTimer : integer range 0 to 50000000 :=0;
 	signal	kbWriteTimer : integer range 0 to 50000000 :=0;
 
@@ -162,7 +162,7 @@ constant CHARS_PER_SCREEN : integer := HORIZ_CHARS*VERT_CHARS;
 	signal	dispByteWritten : std_logic := '0';
 	signal	dispByteSent : std_logic := '0';
 
-	signal	dispByteLatch: std_logic_vector(7 DOWNTO 0); 
+	signal	dispByteLatch: std_logic_vector(7 DOWNTO 0) := (others => '0'); 
 	type		dispStateType is ( idle, dispWrite, dispNextLoc, clearLine, clearL2,
 						clearScreen, clearS2, clearChar, clearC2, insertLine, ins2, ins3, deleteLine, del2, del3);
 	signal	dispState : dispStateType :=idle;
