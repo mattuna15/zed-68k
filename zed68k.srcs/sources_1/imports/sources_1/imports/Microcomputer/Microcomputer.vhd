@@ -227,14 +227,13 @@ ps2Data => ps2Data
 -- CHIP SELECTS GO HERE
 
 
-n_basRom1CS <= '0' when cpu_as = '0' and cpu_uds = '0' and cpuAddress(17 downto 16) = "01" else '1'; --10000-1FFFF
-n_basRom2CS <= '0' when cpu_as = '0' and cpu_lds = '0' and cpuAddress(17 downto 16) = "01" else '1'; 
+n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(17 downto 16) = "01" else '1'; --10000-1FFFF
+n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(17 downto 16) = "01" else '1'; 
 n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
 regsel <= '0' when cpuAddress = X"f00009" else '1';
 n_interface2CS <= '1'; -- '1' when cpuAddress = X"f200000" else '1'; -- f200000
 n_sdCardCS <= '1'; -- '0' when cpuAddress(15 downto 3) = "1111111111011" else '1'; -- 8 bytes FFD8-FFDF
-n_internalRam1CS <= '0'  when cpu_as = '0' and cpuAddress <= X"FFFF" 
-                     else '1' ;
+n_internalRam1CS <= '0'  when  cpuAddress <= X"FFFF" else '1' ;
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE

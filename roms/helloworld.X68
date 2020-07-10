@@ -33,10 +33,14 @@ start:	move.b	#$03,ttyst	;setup ports (Master Reset)
 
 	move.l	#stack,a0	;Set Stackpointer
 	move.l	a0,usp
+	
+	lea.l	strmsg.l,a3
+	bsr	wstr
 
 loop:	lea.l	message.l,a3
 		bsr	wstr
-		bra	loop
+;		bra	loop
+        stop #$0000
 
 ;
 ; a3 Pointed to first byte
@@ -63,8 +67,10 @@ writ:	btst	#$1,ttyst	;sample control register till done
 cr	equ	$0d		;ASCII code for Carriage Return
 lf	equ	$0a		;ASCII code for Line Feed
 message	dc.b	'HELLO WORLD',cr,lf,0
+strmsg dc.b 'STARTING',cr,lf,0
 
 	end	start
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
