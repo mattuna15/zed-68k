@@ -1,6 +1,6 @@
 00A00BB4 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 27/06/2020 15:29:00
+Created On: 11/07/2020 16:38:36
 
 00000000                             1  ; FILE NAME zbug_mic68k.x68
 00000000                             2  ; zBug V1.0.1 for MIC68K by @kanpapa
@@ -130,7 +130,7 @@ Created On: 27/06/2020 15:29:00
 000000C4                           126  ;
 000000C4                           127  ; ROM START
 000000C4                           128  ;
-00A00000                           129     ORG $A00000
+00A00000                           129      ORG $A00000
 00A00000                           130     ; Reset start vector
 00A00000= 0000E000                 131     DC.L SUPER_STACK        ; TOP OF SUPERVISOR STACK $130000
 00A00004= 00A00BB4                 132     DC.L MAIN               ; MONITOR START
@@ -1784,7 +1784,7 @@ Created On: 27/06/2020 15:29:00
 00A00D18                          1780  ; INIT ACIA
 00A00D18                          1781  
 00A00D18  13FC 0003 00F00009      1782  INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
-00A00D20  303C 2710               1783             MOVE.W #10000,D0
+00A00D20  303C 0064               1783             MOVE.W #100,D0
 00A00D24  51C8 FFFE               1784             DBRA  D0,*
 00A00D28  13FC 0015 00F00009      1785             MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
 00A00D30  4E75                    1786             RTS

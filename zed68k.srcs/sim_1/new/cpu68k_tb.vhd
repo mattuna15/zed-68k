@@ -51,16 +51,6 @@ begin
 		rxd1 => rxd,
 		txd1 => txd,
 		rts1 => rts
---		cpuAddress => cpuAddress,
---		cpuDataOut => cpuDataOut,
---		cpuDataIn => cpuDataIn,
---		memAddress => memAddress,
---		cpu_as => cpu_as, -- Address strobe
---        cpu_uds => cpu_uds, -- upper data strobe
---        cpu_lds => cpu_lds, -- lower data strobe
---        cpu_r_w => cpu_r_w, -- read(high)/write(low)
---        cpu_dtack => cpu_dtack, -- data transfer acknowledge
---        n_interface1CS => n_interface1CS        
    ); -- main_inst
    
 end architecture structural;

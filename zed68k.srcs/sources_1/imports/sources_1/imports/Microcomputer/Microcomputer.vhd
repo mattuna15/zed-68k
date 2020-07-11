@@ -108,7 +108,7 @@ architecture struct of Microcomputer is
     
     signal  regsel: std_logic := '1';
     
-    type t_Vector is array (0 to 10) of std_logic_vector(7 downto 0);
+    type t_Vector is array (0 to 10) of std_logic_vector(15 downto 0);
     signal r_vec : t_Vector;
     
     signal vecAddress: integer := 0;
@@ -140,14 +140,14 @@ cpu1 : entity work.TG68
    
     -- vector address storage
     vecAddress <= conv_integer(cpuAddress(3 downto 0)) / 2 ;
-    r_Vec(vecAddress) <= cpuDataOut(7 downto 0) when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ;
+    r_Vec(vecAddress) <= cpuDataOut when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ;
 -- ____________________________________________________________________________________
 -- ROM GOES HERE
     
 	rom1 : entity work.rom -- 8 
 	generic map (
 	   G_ADDR_BITS => 16,
-	   G_INIT_FILE => "D:/code/zed-68k/roms/hello_0.hex"
+	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_0.hex"
 	)
     port map(
         addr_i => memAddress,
@@ -158,7 +158,7 @@ cpu1 : entity work.TG68
     rom2 : entity work.rom -- 8 
 	generic map (
 	   G_ADDR_BITS => 16,
-	   G_INIT_FILE => "D:/code/zed-68k/roms/hello_1.hex"
+	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_1.hex"
 	)
     port map(
         addr_i => memAddress,
@@ -227,8 +227,8 @@ ps2Data => ps2Data
 -- CHIP SELECTS GO HERE
 
 
-n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(17 downto 16) = "01" else '1'; --10000-1FFFF
-n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(17 downto 16) = "01" else '1'; 
+n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; --A00000-A0FFFF
+n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; 
 n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
 regsel <= '0' when cpuAddress = X"f00009" else '1';
 n_interface2CS <= '1'; -- '1' when cpuAddress = X"f200000" else '1'; -- f200000
@@ -239,8 +239,11 @@ n_internalRam1CS <= '0'  when  cpuAddress <= X"FFFF" else '1' ;
 -- BUS ISOLATION GOES HERE
  
 cpuDataIn(15 downto 8) 
-<= X"00"
-when n_interface1CS = '0' or n_interface2CS = '0' or cpuAddress(31 downto 16) = X"FFFF" else
+<= 
+r_Vec(vecAddress)(15 downto 8)
+when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
+X"00"
+when n_interface1CS = '0' or n_interface2CS = '0' or (cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ) else
 basRomData(15 downto 8)
 when n_basRom1CS = '0' else
 internalRam1DataOut(15 downto 8)
@@ -248,7 +251,8 @@ when n_internalRam1CS= '0' else
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
-<= interface1DataOut 
+<= 
+interface1DataOut 
 when n_interface1CS = '0' else
 interface2DataOut
 when n_interface2CS = '0' else 
@@ -258,7 +262,7 @@ internalRam1DataOut(7 downto 0)
 when n_internalRam1CS = '0' else
 "00000" & cpuAddress(3 downto 1)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
-r_Vec(vecAddress)
+r_Vec(vecAddress)(7 downto 0)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' 
 else
 X"00" when cpu_lds = '1';

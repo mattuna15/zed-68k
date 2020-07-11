@@ -40,12 +40,27 @@ architecture structural of ram16 is
    -- This defines a type containing an array of bytes
    type mem_t is array (0 to 2**G_ADDR_BITS-1) of std_logic_vector(15 downto 0);
 
-   -- Initialize memory contents
-   signal mem : mem_t := (others => (others => '0'));
-
    -- Data read from memory.
    signal data : std_logic_vector(15 downto 0);
+   
+   signal init : std_logic := '0';
+   
+      -- This  sets up the initial vectors for the monitor
+   impure function InitRamFromArray return mem_t is
+      variable RAM : mem_t := (others => (others => '0'));
+   begin
+   
+        RAM(0) := x"0000";
+        RAM(2) := x"E000";
+        RAM(4) := x"00A0";
+        RAM(6) := x"0BB4";
+      
+      return RAM;
+   end function;
 
+ -- Initialize memory contents
+   signal mem : mem_t := InitRamFromArray ;
+   
 begin
 
    -- Write process

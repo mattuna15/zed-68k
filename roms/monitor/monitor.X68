@@ -126,7 +126,7 @@ RAMBASE  DS.L   1          ; RAM BASE ADDRESS
 ;
 ; ROM START
 ;
-   ORG $A00000
+    ORG $A00000
    ; Reset start vector
    DC.L SUPER_STACK        ; TOP OF SUPERVISOR STACK $130000
    DC.L MAIN               ; MONITOR START
@@ -1780,7 +1780,7 @@ NEXT18  BSR NEW_LINE
 ; INIT ACIA
 
 INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
-           MOVE.W #10000,D0
+           MOVE.W #100,D0
            DBRA  D0,*
            MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
            RTS
@@ -3128,6 +3128,9 @@ USER_STACK  EQU  STACK_AREA+$1F00    ; TOP OF STACK
 
 
        END	MAIN
+
+
+
 
 
 
