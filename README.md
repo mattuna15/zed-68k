@@ -4,7 +4,7 @@ Zedboard 68k
 Zedboard Motorola 68000 implementation of multicomp and MIC68K using the TG68 core. The ram code and memory map has been amended accordingly. Some of the memory and clocking routines are based on work by Michael Jørgensen.
 
 # Hardware
-Diglient Zedboard: https://store.digilentinc.com/zedboard-zynq-7000-arm-fpga-soc-development-board/ <br>
+Digilent Zedboard: https://store.digilentinc.com/zedboard-zynq-7000-arm-fpga-soc-development-board/ <br>
 Requires a ps2 pmod in JA: https://reference.digilentinc.com/reference/pmod/pmodps2/start<br>
 
 # Software
