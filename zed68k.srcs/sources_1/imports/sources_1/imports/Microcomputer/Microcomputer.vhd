@@ -59,7 +59,7 @@ architecture struct of Microcomputer is
 	signal n_RD							: std_logic;
 
 	signal basRomData					: std_logic_vector(15 downto 0);
-	signal internalRam1DataOut		: std_logic_vector(15 downto 0);
+	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
 	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
 	signal interface1DataOut		: std_logic_vector(7 downto 0);
 	signal interface2DataOut		: std_logic_vector(7 downto 0);
@@ -168,8 +168,9 @@ cpu1 : entity work.TG68
 -- ____________________________________________________________________________________
 -- RAM GOES HERE
 
-    ram1 : entity work.ram16 --64k
+    ram1 : entity work.ram --64k
     generic map (
+    G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_0.hex",
       -- Number of bits in the address bus. The size of the memory will
       -- be 2**G_ADDR_BITS bytes.
       G_ADDR_BITS => 16
@@ -178,17 +179,41 @@ cpu1 : entity work.TG68
       clk_i => clk,
 
       -- Current address selected.
-      addr_i => cpuAddress(15 downto 0),
+      addr_i => memAddress,
 
       -- Data contents at the selected address.
       -- Valid in same clock cycle.
       data_o  => internalRam1DataOut,
 
       -- New data to (optionally) be written to the selected address.
-      data_i => cpuDataOut,
+      data_i => cpuDataOut(15 downto 8),
 
       -- '1' indicates we wish to perform a write at the selected address.
       wren_i => not(cpu_r_w or n_internalRam1CS)
+   );
+   
+   ram2 : entity work.ram --64k
+    generic map (
+    G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_1.hex",
+      -- Number of bits in the address bus. The size of the memory will
+      -- be 2**G_ADDR_BITS bytes.
+      G_ADDR_BITS => 16
+    )
+   port map (
+      clk_i => clk,
+
+      -- Current address selected.
+      addr_i => memAddress,
+
+      -- Data contents at the selected address.
+      -- Valid in same clock cycle.
+      data_o  => internalRam2DataOut,
+
+      -- New data to (optionally) be written to the selected address.
+      data_i => cpuDataOut(7 downto 0),
+
+      -- '1' indicates we wish to perform a write at the selected address.
+      wren_i => not(cpu_r_w or n_internalRam2CS)
    );
 
 -- ____________________________________________________________________________________
@@ -233,8 +258,8 @@ n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else
 regsel <= '0' when cpuAddress = X"f00009" else '1';
 n_interface2CS <= '1'; -- '1' when cpuAddress = X"f200000" else '1'; -- f200000
 n_sdCardCS <= '1'; -- '0' when cpuAddress(15 downto 3) = "1111111111011" else '1'; -- 8 bytes FFD8-FFDF
-n_internalRam1CS <= '0'  when  cpuAddress <= X"FFFF" else '1' ;
-
+n_internalRam1CS <= '0'  when  cpuAddress <= X"FFFF" and cpu_uds = '0' else '1' ;
+n_internalRam2CS <= '0'  when  cpuAddress <= X"FFFF" and cpu_lds = '0' else '1' ;
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
  
@@ -246,7 +271,7 @@ X"00"
 when n_interface1CS = '0' or n_interface2CS = '0' or (cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ) else
 basRomData(15 downto 8)
 when n_basRom1CS = '0' else
-internalRam1DataOut(15 downto 8)
+internalRam1DataOut
 when n_internalRam1CS= '0' else
 X"00" when cpu_uds = '1';
 
@@ -258,15 +283,14 @@ interface2DataOut
 when n_interface2CS = '0' else 
 basRomData(7 downto 0)
 when n_basRom2CS = '0' else 
-internalRam1DataOut(7 downto 0)
-when n_internalRam1CS = '0' else
+internalRam2DataOut
+when n_internalRam2CS = '0' else
 "00000" & cpuAddress(3 downto 1)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
 r_Vec(vecAddress)(7 downto 0)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' 
 else
 X"00" when cpu_lds = '1';
-
 
 
 cpu_dtack <= '1' when cpu_lds = '1' and cpu_uds='1' else '0';

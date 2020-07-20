@@ -1,9 +1,9 @@
 
 * This lot is in RAM
 
-	OFFSET	0			* start of RAM
-
-ram_strt	ds.l	$100			* allow 1K for the stack, this should be plenty
+        ORG     100			* start of RAM
+ 
+ram_strt	ds.l	$300			* allow 1K for the stack, this should be plenty
 						* for any BASIC program that doesn't do something
 						* silly, it could even be much less.
 ram_base
@@ -193,12 +193,14 @@ ccnull	ds.b	1			* CTRL-C last received byte 'life' timer
 file_byte	ds.b	1			* load/save data byte
 file_id	ds.l	1			* load/save file ID
 
-		dc.w	0			* dummy even value and zero pad byte
+even			        * dummy even value and zero pad byte
 
 prg_strt
 
-	ORG	*
+* Use these two lines when running from ROM
+*ram_addr	EQU	$01000		* RAM start address
+*ram_size	EQU	$06000		* RAM size
 
-ram_addr	EQU	$80000		* RAM start address
-ram_size	EQU	$80000		* RAM size
-
+* Use these two lines when running from RAM
+ram_addr	EQU	$04000		* RAM start address
+ram_size	EQU	$04000		* RAM size
