@@ -5,16 +5,19 @@ Zedboard Motorola 68000 implementation of multicomp and MIC68K using the TG68 co
 
 # Hardware
 Digilent Zedboard: https://store.digilentinc.com/zedboard-zynq-7000-arm-fpga-soc-development-board/ <br>
+or Digilent Nexys4 DDR: https://store.digilentinc.com/nexys-4-ddr-artix-7-fpga-trainer-board-recommended-for-ece-curriculum/
 Requires a ps2 pmod in JA: https://reference.digilentinc.com/reference/pmod/pmodps2/start<br>
 
 # Software
 
 Roms compiled and converted using Easy68K and Srecord. 
 Currently has working ZBug Monitor rom working at memory location $A00000.
+and EhBasic from Lee Davison and Jeff Tranter working in ram.
 
 <hr>
 Project acknowledgments: <br>
 
+http://jefftranter.blogspot.com/search/label/Enhanced%20Basic<br>
 https://github.com/kanpapa/mic68k<br>
 https://github.com/ProfKelly/EASy68K<br>
 https://github.com/TobiFlex/TG68K.C<br>
