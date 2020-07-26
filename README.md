@@ -14,6 +14,8 @@ Roms compiled and converted using Easy68K and Srecord.
 Currently has working ZBug Monitor rom working at memory location $A00000.
 and EhBasic from Lee Davison and Jeff Tranter working in ram.
 
+SREC Compiled can be uploaded via option L in the monitor, then sent via Serial connection at 115200. Data confirmed via option D to disassemble in monitor.
+
 <hr>
 Project acknowledgments: <br>
 
