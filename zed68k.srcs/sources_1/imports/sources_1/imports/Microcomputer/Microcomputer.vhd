@@ -21,6 +21,7 @@ use IEEE.numeric_std.all;
 
 entity Microcomputer is
 	port(
+	    sys_clk     : in std_logic;
 		n_reset		: in std_logic;
 		clk			: in std_logic;
 		cpuClock	: in std_logic;
@@ -38,17 +39,17 @@ entity Microcomputer is
 		ps2Clk		: inout std_logic;
 		ps2Data		: inout std_logic;
 		
-
---		sdCS			: out std_logic;
---		sdMOSI		: out std_logic;
---		sdMISO		: in std_logic;
---		sdSCLK		: out std_logic;
---		driveLED		: out std_logic :='1';
+        sdCD		: in std_logic;
+		sdCS			: out std_logic;
+		sdMOSI		: out std_logic;
+		sdMISO		: in std_logic;
+		sdSCLK		: out std_logic;
 		
-		rxd1			: in std_logic;
-		txd1			: out std_logic;
-		rts1			: out std_logic
+		serialRead_en : out std_logic;
+        serialStatus: in std_logic_vector(7 downto 0);
+        serialData: in std_logic_vector(7 downto 0)
 	);
+	
 end Microcomputer;
 
 architecture struct of Microcomputer is
@@ -112,8 +113,31 @@ architecture struct of Microcomputer is
     signal r_vec : t_Vector;
     
     signal vecAddress: integer := 0;
+    
+    signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f300009
+    signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000a,b
+    -- data is on f30000c
+    
+    signal int_out: std_logic_vector(2 downto 0) := "111";
+    signal int_ack: std_logic := '0';
 	
 begin
+--interrupts
+
+interrupts: entity work.interrupt_controller
+	port map (
+		clk => clk,
+		reset => n_reset,
+		int1 => '0',
+		int2 => '0',
+		int3 => '0',
+		int4 => '0',
+		int5 => '0',
+		int6 => '0',
+		int7 => '0',
+		int_out => int_out,
+		ack => int_ack
+	);
 
 -- ____________________________________________________________________________________
 -- CPU CHOICE GOES HERE
@@ -125,7 +149,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => "111",	-- For this simple demo we'll ignore interrupts
+		IPL => int_out,	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
@@ -146,22 +170,22 @@ cpu1 : entity work.TG68
     
 	rom1 : entity work.rom -- 8 
 	generic map (
-	   G_ADDR_BITS => 16,
+	   G_ADDR_BITS => 13,
 	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_0.hex"
 	)
     port map(
-        addr_i => memAddress,
+        addr_i => memAddress(12 downto 0),
         clk_i => clk,
         data_o => basRomData(15 downto 8)
     );
     
     rom2 : entity work.rom -- 8 
 	generic map (
-	   G_ADDR_BITS => 16,
+	   G_ADDR_BITS => 13,
 	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_1.hex"
 	)
     port map(
-        addr_i => memAddress,
+        addr_i => memAddress(12 downto 0),
         clk_i => clk,
         data_o => basRomData(7 downto 0)
     );
@@ -218,46 +242,45 @@ cpu1 : entity work.TG68
 
 -- ____________________________________________________________________________________
 -- INPUT/OUTPUT DEVICES GO HERE	
-io1 : entity work.SBCTextDisplayRGB
-port map (
-n_reset => n_reset,
-clk => clk,
+    io1 : entity work.SBCTextDisplayRGB
+    port map (
+        n_reset => n_reset,
+        clk => clk,
+        
+        -- RGB video signals
+        hSync => hSync,
+        vSync => vSync,
+        videoR0 => videoR0,
+        videoR1 => videoR1,
+        videoG0 => videoG0,
+        videoG1 => videoG1,
+        videoB0 => videoB0,
+        videoB1 => videoB1,
+        
+        -- Monochrome video signals (when using TV timings only)
+        sync => open,
+        video => open,
+        
+        n_wr => n_interface1CS or cpu_r_w,
+        n_rd => n_interface1CS or (not cpu_r_w),
+        n_int => n_int1,
+        regSel => regsel,
+        dataIn => cpuDataOut(7 downto 0),
+        dataOut => interface1DataOut,
+        ps2Clk => ps2Clk,
+        ps2Data => ps2Data
+    );
 
--- RGB video signals
-hSync => hSync,
-vSync => vSync,
-videoR0 => videoR0,
-videoR1 => videoR1,
-videoG0 => videoG0,
-videoG1 => videoG1,
-videoB0 => videoB0,
-videoB1 => videoB1,
-
--- Monochrome video signals (when using TV timings only)
-sync => open,
-video => open,
-
-n_wr => n_interface1CS or cpu_r_w,
-n_rd => n_interface1CS or (not cpu_r_w),
-n_int => n_int1,
-regSel => regsel,
-dataIn => cpuDataOut(7 downto 0),
-dataOut => interface1DataOut,
-ps2Clk => ps2Clk,
-ps2Data => ps2Data
-);
-
-	
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
-
 
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; --A00000-A0FFFF
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; 
 n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
 regsel <= '0' when cpuAddress = X"f00009" else '1';
-n_interface2CS <= '1'; -- '1' when cpuAddress = X"f200000" else '1'; -- f200000
-n_sdCardCS <= '1'; -- '0' when cpuAddress(15 downto 3) = "1111111111011" else '1'; -- 8 bytes FFD8-FFDF
+serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
+n_sdCardCS <= '0' when cpuAddress(15 downto 0) >= x"f30009" 
+                    and cpuAddress(15 downto 0) <= x"f3000f" else '1'; 
 n_internalRam1CS <= '0'  when  cpuAddress <= X"FFFF" and cpu_uds = '0' else '1' ;
 n_internalRam2CS <= '0'  when  cpuAddress <= X"FFFF" and cpu_lds = '0' else '1' ;
 -- ____________________________________________________________________________________
@@ -279,8 +302,6 @@ cpuDataIn(7 downto 0)
 <= 
 interface1DataOut 
 when n_interface1CS = '0' else
-interface2DataOut
-when n_interface2CS = '0' else 
 basRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 internalRam2DataOut
@@ -288,12 +309,64 @@ when n_internalRam2CS = '0' else
 "00000" & cpuAddress(3 downto 1)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
 r_Vec(vecAddress)(7 downto 0)
-when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' 
-else
-X"00" when cpu_lds = '1';
+when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
+sdCardDataOut
+when n_sdCardCS = '0' and cpuAddress = x"f3000c" else
+sdStatus
+when n_sdCardCS = '0' and cpuAddress = x"f30009" else
+serialStatus
+when cpuAddress = x"f20009" else
+serialData 
+when serialRead_en = '1' else 
+X"00" 
+when cpu_lds = '1';
 
+sdAddress(31 downto 16)
+<= cpuDataOut when cpuAddress = x"f3000a";
+sdAddress(15 downto 0)
+<= cpuDataOut when cpuAddress = x"f3000b";
 
 cpu_dtack <= '1' when cpu_lds = '1' and cpu_uds='1' else '0';
+
+-- SD Card
+sd1: entity work.sd_controller
+port map (
+	cs => sdCS,			-- To SD card
+	mosi => sdMOSI,		-- To SD card
+	miso => sdMISO,			-- From SD card
+	sclk => sdSCLK,			-- To SD card
+	card_present => sdCD,	-- From socket - can be fixed to '1' if no switch is present
+	card_write_prot => '0',	-- From socket - can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
+
+	rd => (not n_sdCardCS) and cpu_r_w,
+	rd_multiple => '0',		-- Trigger multiple block read
+	dout => sdCardDataOut,	-- Data from SD card
+	dout_avail => sdStatus(0),		-- Set when dout is valid
+	dout_taken => sdStatus(1),		-- Acknowledgement for dout
+	
+	wr => (not n_sdCardCS) and (not cpu_r_w),				-- Trigger single block write
+	wr_multiple => '0',	-- Trigger multiple block write
+	din => cpuDataOut(7 downto 0),	-- Data to SD card
+	din_valid => sdStatus(2),		-- Set when din is valid
+	din_taken => sdStatus(3),		-- Ackowledgement for din
+	
+	addr => sdAddress,	-- Block address
+	erase_count => x"00", -- For wr_multiple only
+
+	sd_error => sdStatus(4),		-- '1' if an error occurs, reset on next RD or WR
+	sd_busy => sdStatus(5), 		-- '0' if a RD or WR can be accepted
+	sd_error_code => open, -- See above, 000=No error
+	
+	reset => not n_reset,	-- System reset
+	clk => clk		-- twice the SPI clk (max 50MHz)
+	
+	-- Optional debug outputs
+	--sd_type => open	-- Card status (see above)
+	--sd_fsm : out std_logic_vector(7 downto 0) := "11111111" -- FSM state (see block at end of file)
+);
+
+
+
 -- Serial clock DDS
 -- 50MHz master input clock:
 -- Baud Increment

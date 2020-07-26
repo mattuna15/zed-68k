@@ -1,6 +1,6 @@
 00A00BB4 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 16/07/2020 14:34:26
+Created On: 25/07/2020 21:16:15
 
 00000000                             1  ; FILE NAME zbug_mic68k.x68
 00000000                             2  ; zBug V1.0.1 for MIC68K by @kanpapa
@@ -20,7 +20,7 @@ Created On: 16/07/2020 14:34:26
 00000000                            16  ;
 00000000                            17  ; This program is free software; you can redistribute it and/or modify
 00000000                            18  ; it under the terms of the GNU General Public License as published by
-00000000                            19  ; the Free Software Foundation; either version 2 of the License, or
+00000000                            19  ; the Free Software Foundation; either version 2 of the License, orRAM
 00000000                            20  ; (at your option) any later version.
 00000000                            21  ;
 00000000                            22  ; This program is distributed in the hope that it will be useful,
@@ -1651,13 +1651,13 @@ Created On: 16/07/2020 14:34:26
 00A00BB8                          1647  
 00A00BB8  6100 015E               1648        BSR INIT_ACIA         ; ACIA init
 00A00BBC                          1649  
-00A00BBC  6100 0AFA               1650        BSR VECINIT           ; EXCEPTION VECTOR init
+00A00BBC  6100 0AC2               1650        BSR VECINIT           ; EXCEPTION VECTOR init
 00A00BC0                          1651  
 00A00BC0  6100 01D0               1652        BSR SCROLL            ; NEW LINE
 00A00BC4                          1653  
 00A00BC4  6100 08CA               1654        BSR CLEAR_MON_RAM     ; Initialize 1Kbyte from RAMBASE with 0.
 00A00BC8                          1655  
-00A00BC8  47F9 00A01783           1656        LEA.L TITLE1.L,A3     ; print START MESSAGE
+00A00BC8  47F9 00A0174B           1656        LEA.L TITLE1.L,A3     ; print START MESSAGE
 00A00BCE  6100 019A               1657        BSR PSTR
 00A00BD2                          1658  
 00A00BD2  2C79 000000C0           1659        MOVEA.L RAMBASE.L,A6  ; Initialize Monitor work area 
@@ -1687,7 +1687,7 @@ Created On: 16/07/2020 14:34:26
 00A00C1E                          1683  
 00A00C1E  B03C 0053               1684  NEXT1 CMP.B #'S',D0       
 00A00C22  6600 0008               1685        BNE NEXT2
-00A00C26  6100 09EC               1686        BSR VIEW_USP      ; VIEW USER STACK
+00A00C26  6100 09B4               1686        BSR VIEW_USP      ; VIEW USER STACK
 00A00C2A  60D2                    1687        BRA LOOP
 00A00C2C                          1688  
 00A00C2C                          1689  
@@ -1708,7 +1708,7 @@ Created On: 16/07/2020 14:34:26
 00A00C56                          1704  
 00A00C56  B03C 005A               1705  NEXT5 CMP.B #'Z',D0
 00A00C5A  6600 0008               1706        BNE NEXT6
-00A00C5E  6100 095C               1707        BSR UPLOAD         ; PRINT_DEBUG <------ USE Z FOR UPLOAD BINARY IMAGE
+00A00C5E  6100 0924               1707        BSR UPLOAD         ; PRINT_DEBUG <------ USE Z FOR UPLOAD BINARY IMAGE
 00A00C62  609A                    1708        BRA LOOP
 00A00C64                          1709  
 00A00C64                          1710  
@@ -1750,12 +1750,12 @@ Created On: 16/07/2020 14:34:26
 00A00CCC                          1746  
 00A00CCC  B03C 0044               1747  NEXT13 CMP.B #'D',D0
 00A00CD0  6608                    1748         BNE.S NEXT14
-00A00CD2  6100 0890               1749         BSR DISASSEMBLE
+00A00CD2  6100 0858               1749         BSR DISASSEMBLE
 00A00CD6  6000 FF26               1750         BRA LOOP
 00A00CDA                          1751  
 00A00CDA  B03C 0041               1752  NEXT14 CMP.B #'A',D0
 00A00CDE  6608                    1753         BNE.S NEXT15
-00A00CE0  6100 0926               1754         BSR ABOUT
+00A00CE0  6100 08EE               1754         BSR ABOUT
 00A00CE4  6000 FF18               1755         BRA LOOP
 00A00CE8                          1756  
 00A00CE8                          1757  
@@ -1771,7 +1771,7 @@ Created On: 16/07/2020 14:34:26
 00A00D02                          1767  
 00A00D02  B03C 0042               1768  NEXT17 CMP.B #'B',D0
 00A00D06  6604                    1769         BNE.S NEXT18
-00A00D08  6000 0976               1770         BRA BOOT_RAM
+00A00D08  6000 093E               1770         BRA BOOT_RAM
 00A00D0C                          1771  
 00A00D0C  6100 006A               1772  NEXT18  BSR NEW_LINE
 00A00D10  6100 00A6               1773        BSR SEND_TITLE
@@ -1795,9 +1795,9 @@ Created On: 16/07/2020 14:34:26
 00A00D42  4E75                    1791            RTS
 00A00D44                          1792  
 00A00D44                          1793  
-00A00D44  0839 0000 00F00009      1794  CINS      BTST.B #RDRF,ACIAC.L
+00A00D44  0839 0000 00F20009      1794  CINS      BTST.B #RDRF,ACIA2C.L
 00A00D4C  67F6                    1795            BEQ.S  CINS
-00A00D4E  1039 00F0000B           1796            MOVE.B ACIAD.L,D0
+00A00D4E  1039 00F2000B           1796            MOVE.B ACIA2D.L,D0
 00A00D54  4E75                    1797            RTS
 00A00D56                          1798  
 00A00D56                          1799  
@@ -1853,11 +1853,11 @@ Created On: 16/07/2020 14:34:26
 00A00DA4  61D2                    1849          BSR NEW_LINE
 00A00DA6  202E 00A6               1850          MOVE.L POINTER_NOW(A6),D0
 00A00DAA  6100 01A6               1851          BSR OUT6X
-00A00DAE  47F9 00A017B1           1852          LEA.L PROMPT.L,A3
+00A00DAE  47F9 00A01779           1852          LEA.L PROMPT.L,A3
 00A00DB4  61B4                    1853          BSR PSTR
 00A00DB6  4E75                    1854          RTS
 00A00DB8                          1855  
-00A00DB8  47F9 00A01768           1856  SEND_TITLE LEA.L TITLE.L,A3
+00A00DB8  47F9 00A01730           1856  SEND_TITLE LEA.L TITLE.L,A3
 00A00DBE  61AA                    1857             BSR PSTR
 00A00DC0  4E75                    1858             RTS
 00A00DC2                          1859  
@@ -1924,7 +1924,7 @@ Created On: 16/07/2020 14:34:26
 00A00E1C                          1920  ; D5 = BYTE CHECK SUM FOR EACH RECORD
 00A00E1C                          1921  ; D4 = NUMBER OF BYTE RECEIVED
 00A00E1C                          1922  
-00A00E1C  47F9 00A018D5           1923  READ_S_REC      LEA.L LOAD.L,A3
+00A00E1C  47F9 00A0189D           1923  READ_S_REC      LEA.L LOAD.L,A3
 00A00E22  6100 FF46               1924                  BSR PSTR
 00A00E26  4284                    1925                  CLR.L D4     ; CLEAR NUMBER OF BYTE 
 00A00E28  4285                    1926                  CLR.L D5     ; CLEAR CHECK SUM AND ERROR BYTE
@@ -1953,14 +1953,14 @@ Created On: 16/07/2020 14:34:26
 00A00E58  6100 FF1E               1949                  BSR NEW_LINE
 00A00E5C  2004                    1950                  MOVE.L D4,D0
 00A00E5E  6100 0324               1951                  BSR PRINT_DEC     ; SHOW NUMBER OF BYTE RECEIVED
-00A00E62  267C 00A0190D           1952                  MOVEA.L #NUMBER,A3
+00A00E62  267C 00A018D5           1952                  MOVEA.L #NUMBER,A3
 00A00E68  6100 FF00               1953                  BSR PSTR
 00A00E6C                          1954  
 00A00E6C  4845                    1955                  SWAP.W D5
 00A00E6E  4280                    1956                  CLR.L D0
 00A00E70  3005                    1957                  MOVE.W D5,D0
 00A00E72  6100 0310               1958                  BSR PRINT_DEC
-00A00E76  267C 00A0191D           1959                  MOVEA.L #ERROR,A3
+00A00E76  267C 00A018E5           1959                  MOVEA.L #ERROR,A3
 00A00E7C  6100 FEEC               1960                  BSR PSTR
 00A00E80  4E75                    1961                  RTS
 00A00E82                          1962  
@@ -2117,7 +2117,7 @@ Created On: 16/07/2020 14:34:26
 00A00F66                          2113  ; DUMP MEMORY CONTENT
 00A00F66                          2114  ; A3: START ADDRESS
 00A00F66                          2115  
-00A00F66  47F9 00A0188C           2116  HEX_DUMP    LEA.L HEX.L,A3
+00A00F66  47F9 00A01854           2116  HEX_DUMP    LEA.L HEX.L,A3
 00A00F6C  6100 FDFC               2117              BSR PSTR
 00A00F70                          2118  
 00A00F70  2C79 000000C0           2119              MOVEA.L RAMBASE.L,A6
@@ -2168,7 +2168,7 @@ Created On: 16/07/2020 14:34:26
 00A00FDA                          2164  ; NEW POINTER
 00A00FDA                          2165  ; CHANGE 24-BIT ADDRESS-> POINTER_NOW
 00A00FDA                          2166  
-00A00FDA  47F9 00A01853           2167  NEW_POINTER   LEA.L NEW.L,A3
+00A00FDA  47F9 00A0181B           2167  NEW_POINTER   LEA.L NEW.L,A3
 00A00FE0  6100 FD88               2168                BSR PSTR
 00A00FE4                          2169  
 00A00FE4  6100 FDB8               2170                BSR SEND_PROMPT
@@ -2194,7 +2194,7 @@ Created On: 16/07/2020 14:34:26
 00A01018  6100 FF40               2190                BSR OUT8X
 00A0101C  4E75                    2191                RTS
 00A0101E                          2192  
-00A0101E  47F9 00A01865           2193  QUICK_HOME    LEA.L QUICK.L,A3
+00A0101E  47F9 00A0182D           2193  QUICK_HOME    LEA.L QUICK.L,A3
 00A01024  6100 FD44               2194                BSR PSTR
 00A01028  2C79 000000C0           2195                MOVEA.L RAMBASE.L,A6
 00A0102E  2D7C 00000000 00A6      2196                MOVE.L #RAM,POINTER_NOW(A6)
@@ -2239,15 +2239,15 @@ Created On: 16/07/2020 14:34:26
 00A01076                          2235  
 00A01076                          2236  ; FILL MEMORY WITH 0xFF
 00A01076                          2237  
-00A01076  47F9 00A017CB           2238  FILL_MEMORY   LEA.L FILL.L,A3
+00A01076  47F9 00A01793           2238  FILL_MEMORY   LEA.L FILL.L,A3
 00A0107C  6100 FCEC               2239                BSR PSTR
 00A01080                          2240  
-00A01080  47F9 00A017E2           2241                LEA.L START.L,A3
+00A01080  47F9 00A017AA           2241                LEA.L START.L,A3
 00A01086  6100 FCE2               2242                BSR PSTR
 00A0108A  61CE                    2243                BSR GET_ADDRESS
 00A0108C  2846                    2244                MOVEA.L D6,A4             ; A4 START ADDRESS
 00A0108E                          2245  
-00A0108E  47F9 00A017F4           2246                LEA.L STOP.L,A3
+00A0108E  47F9 00A017BC           2246                LEA.L STOP.L,A3
 00A01094  6100 FCD4               2247                BSR PSTR
 00A01098  61C0                    2248                BSR GET_ADDRESS
 00A0109A  2A46                    2249                MOVEA.L D6,A5             ; A5 STOP ADDRESS
@@ -2256,21 +2256,21 @@ Created On: 16/07/2020 14:34:26
 00A010A0  BBCC                    2252                CMPA.L A4,A5
 00A010A2  6CF8                    2253                BGE.S FILL_MEMORY1
 00A010A4                          2254  
-00A010A4  267C 00A01805           2255                MOVEA.L #DONE,A3
+00A010A4  267C 00A017CD           2255                MOVEA.L #DONE,A3
 00A010AA  6100 FCBE               2256                BSR PSTR
 00A010AE  4E75                    2257                RTS
 00A010B0                          2258  
 00A010B0                          2259  ; CLEAR MEMORY WITH 0x00
 00A010B0                          2260  
-00A010B0  47F9 00A017B3           2261  CLEAR_MEMORY  LEA.L CLEAR.L,A3
+00A010B0  47F9 00A0177B           2261  CLEAR_MEMORY  LEA.L CLEAR.L,A3
 00A010B6  6100 FCB2               2262                BSR PSTR
 00A010BA                          2263  
-00A010BA  47F9 00A017E2           2264                LEA.L START.L,A3
+00A010BA  47F9 00A017AA           2264                LEA.L START.L,A3
 00A010C0  6100 FCA8               2265                BSR PSTR
 00A010C4  6194                    2266                BSR GET_ADDRESS
 00A010C6  2846                    2267                MOVEA.L D6,A4             ; A4 START ADDRESS
 00A010C8                          2268  
-00A010C8  47F9 00A017F4           2269                LEA.L STOP.L,A3
+00A010C8  47F9 00A017BC           2269                LEA.L STOP.L,A3
 00A010CE  6100 FC9A               2270                BSR PSTR
 00A010D2  6186                    2271                BSR GET_ADDRESS
 00A010D4  2A46                    2272                MOVEA.L D6,A5             ; A5 STOP ADDRESS
@@ -2279,17 +2279,17 @@ Created On: 16/07/2020 14:34:26
 00A010DA  BBCC                    2275                CMPA.L A4,A5
 00A010DC  6CF8                    2276                BGE.S CLEAR_MEMORY1
 00A010DE                          2277  
-00A010DE  267C 00A01805           2278                MOVEA.L #DONE,A3
+00A010DE  267C 00A017CD           2278                MOVEA.L #DONE,A3
 00A010E4  6100 FC84               2279                BSR PSTR
 00A010E8  4E75                    2280                RTS
 00A010EA                          2281  
 00A010EA                          2282  ; EDIT MEMORY
 00A010EA                          2283  ; PRESS SPACE BAR TO QUIT
 00A010EA                          2284  
-00A010EA  47F9 00A0180F           2285  EDIT_MEMORY   LEA.L EDIT1.L,A3
+00A010EA  47F9 00A017D7           2285  EDIT_MEMORY   LEA.L EDIT1.L,A3
 00A010F0  6100 FC78               2286                BSR PSTR
 00A010F4                          2287  
-00A010F4  47F9 00A01841           2288                LEA.L EDIT.L,A3
+00A010F4  47F9 00A01809           2288                LEA.L EDIT.L,A3
 00A010FA  6100 FC6E               2289                BSR PSTR
 00A010FE  6100 FF5A               2290                BSR GET_ADDRESS
 00A01102                          2291  
@@ -2335,7 +2335,7 @@ Created On: 16/07/2020 14:34:26
 00A0115E  600E                    2331                BRA.S EDIT_MEMORY4 
 00A01160                          2332  
 00A01160  2F0B                    2333  EDIT_MEMORY5  MOVE.L A3,-(SP)
-00A01162  47F9 00A0184D           2334                LEA.L ROM.L,A3
+00A01162  47F9 00A01815           2334                LEA.L ROM.L,A3
 00A01168  6100 FC00               2335                BSR PSTR
 00A0116C  265F                    2336                MOVEA.L (SP)+,A3
 00A0116E                          2337  
@@ -2349,7 +2349,7 @@ Created On: 16/07/2020 14:34:26
 00A01178                          2345  
 00A01178                          2346  ; HELP LIST MONITOR COMMANDS
 00A01178                          2347  
-00A01178  47F9 00A01AE8           2348  HELP          LEA.L HELP_LIST.L,A3
+00A01178  47F9 00A01AB0           2348  HELP          LEA.L HELP_LIST.L,A3
 00A0117E  6100 FBEA               2349                BSR PSTR
 00A01182  4E75                    2350                RTS
 00A01184                          2351  
@@ -2510,20 +2510,20 @@ Created On: 16/07/2020 14:34:26
 00A012A2                          2506  ; DISPLAY USER REGISTERS D0-D7 AND A0-A7
 00A012A2                          2507  ;
 00A012A2                          2508  
-00A012A2  47F9 00A01956           2509  DISPLAY_REG  LEA.L REGISTER_DISP.L,A3
+00A012A2  47F9 00A0191E           2509  DISPLAY_REG  LEA.L REGISTER_DISP.L,A3
 00A012A8  6100 FAC0               2510               BSR PSTR
 00A012AC                          2511  
 00A012AC  2C79 000000C0           2512  DISPLAY_REG1 MOVEA.L RAMBASE.L,A6
 00A012B2  6100 FAC4               2513               BSR NEW_LINE
 00A012B6  6100 FAC0               2514               BSR NEW_LINE
-00A012BA  267C 00A01AD1           2515               MOVEA.L #PC_REG,A3
+00A012BA  267C 00A01A99           2515               MOVEA.L #PC_REG,A3
 00A012C0  6100 FAA8               2516               BSR PSTR
 00A012C4  202E 00F0               2517               MOVE.L USER_PC(A6),D0
 00A012C8  6100 FC88               2518               BSR OUT6X
 00A012CC                          2519  
 00A012CC  6100 FABC               2520               BSR SPACE
 00A012D0                          2521  
-00A012D0  267C 00A01AD5           2522               MOVEA.L #SR_REG,A3
+00A012D0  267C 00A01A9D           2522               MOVEA.L #SR_REG,A3
 00A012D6  6100 FA92               2523               BSR PSTR
 00A012DA  302E 00EA               2524               MOVE.W USER_SR(A6),D0
 00A012DE  6100 FC6A               2525               BSR OUT4X
@@ -2534,31 +2534,31 @@ Created On: 16/07/2020 14:34:26
 00A012E4  E70C                    2530               LSL.B #3,D4        ; BIT POSITION BEFORE SHIFTING OUT
 00A012E6                          2531  
 00A012E6  6100 FAA2               2532               BSR SPACE
-00A012EA  267C 00A01AE5           2533               MOVEA.L #X_FLAG,A3
+00A012EA  267C 00A01AAD           2533               MOVEA.L #X_FLAG,A3
 00A012F0  6100 FA78               2534               BSR PSTR
 00A012F4  E30C                    2535               LSL.B #1,D4
 00A012F6  6100 00DA               2536               BSR PRINT_BIT
 00A012FA                          2537  
 00A012FA  6100 FA8E               2538               BSR SPACE
-00A012FE  267C 00A01AE2           2539               MOVEA.L #N_FLAG,A3
+00A012FE  267C 00A01AAA           2539               MOVEA.L #N_FLAG,A3
 00A01304  6100 FA64               2540               BSR PSTR
 00A01308  E30C                    2541               LSL.B #1,D4
 00A0130A  6100 00C6               2542               BSR PRINT_BIT
 00A0130E                          2543  
 00A0130E  6100 FA7A               2544               BSR SPACE
-00A01312  267C 00A01ADF           2545               MOVEA.L #Z_FLAG,A3
+00A01312  267C 00A01AA7           2545               MOVEA.L #Z_FLAG,A3
 00A01318  6100 FA50               2546               BSR PSTR
 00A0131C  E30C                    2547               LSL.B #1,D4
 00A0131E  6100 00B2               2548               BSR PRINT_BIT
 00A01322                          2549  
 00A01322  6100 FA66               2550               BSR SPACE
-00A01326  267C 00A01ADC           2551               MOVEA.L #V_FLAG,A3
+00A01326  267C 00A01AA4           2551               MOVEA.L #V_FLAG,A3
 00A0132C  6100 FA3C               2552               BSR PSTR
 00A01330  E30C                    2553               LSL.B #1,D4
 00A01332  6100 009E               2554               BSR PRINT_BIT
 00A01336                          2555  
 00A01336  6100 FA52               2556               BSR SPACE
-00A0133A  267C 00A01AD9           2557               MOVEA.L #CARRY_FLAG,A3
+00A0133A  267C 00A01AA1           2557               MOVEA.L #CARRY_FLAG,A3
 00A01340  6100 FA28               2558               BSR PSTR
 00A01344  E30C                    2559               LSL.B #1,D4
 00A01346  6100 008A               2560               BSR PRINT_BIT
@@ -2632,7 +2632,7 @@ Created On: 16/07/2020 14:34:26
 00A013E8                          2628  ; JUMP TO USER PROGRAM
 00A013E8                          2629  ; 
 00A013E8                          2630  
-00A013E8  47F9 00A01937           2631  JUMP       LEA.L JUMP_TO.L,A3
+00A013E8  47F9 00A018FF           2631  JUMP       LEA.L JUMP_TO.L,A3
 00A013EE  6100 F97A               2632             BSR PSTR
 00A013F2                          2633  
 00A013F2  2C79 000000C0           2634             MOVEA.L RAMBASE.L,A6
@@ -2677,7 +2677,7 @@ Created On: 16/07/2020 14:34:26
 00A0144C                          2673  ; TRACE JUMP
 00A0144C                          2674  ; SET TRACE BIT IN SAVED STATUS REGISTER
 00A0144C                          2675  
-00A0144C  47F9 00A01A41           2676  TRACE_JUMP LEA.L TRACE_MSG.L,A3
+00A0144C  47F9 00A01A09           2676  TRACE_JUMP LEA.L TRACE_MSG.L,A3
 00A01452  6100 F916               2677             BSR PSTR
 00A01456  6100 F920               2678             BSR NEW_LINE
 00A0145A                          2679  
@@ -2690,7 +2690,7 @@ Created On: 16/07/2020 14:34:26
 00A01474  4EB9 00A007B8           2686             JSR  DCODE68K.L
 00A0147A                          2687  
 00A0147A  6100 F8FC               2688             BSR NEW_LINE
-00A0147E  6100 0130               2689             BSR PRINT_LINE
+00A0147E  6100 00F8               2689             BSR PRINT_LINE
 00A01482                          2690  
 00A01482  2C79 000000C0           2691             MOVEA.L RAMBASE.L,A6
 00A01488                          2692  
@@ -2767,344 +2767,329 @@ Created On: 16/07/2020 14:34:26
 00A01522                          2763  ; TRAP #N SERVICES
 00A01522                          2764  ;
 00A01522                          2765  
-00A01522  2F08                    2766  SERVICE_TRAP0   MOVE.L A0,-(SP)      ; SAVE A0 BEFOREHAND
-00A01524  2079 000000C0           2767                  MOVEA.L RAMBASE.L,A0  ; USE A0 AS THE POINTER
-00A0152A  41E8 00AA               2768                  LEA.L USER_DATA(A0),A0
-00A0152E  48D0 7FFF               2769                  MOVEM.L D0-D7/A0-A6,(A0)
-00A01532  215F 0020               2770                  MOVE.L (SP)+,32(A0)  ; RESTORE A0
-00A01536                          2771  
-00A01536  2079 000000C0           2772                  MOVEA.L RAMBASE.L,A0
-00A0153C  315F 00EA               2773                  MOVE.W (SP)+,USER_SR(A0)
-00A01540  08A8 0007 00EA          2774                  BCLR.B #TRACE_BIT,USER_SR(A0) ; TURN TRACE BIT OFF
-00A01546  215F 00F0               2775                  MOVE.L (SP)+,USER_PC(A0)
-00A0154A                          2776  
-00A0154A  4E6A                    2777                  MOVE.L USP,A2
-00A0154C  214A 00E6               2778                  MOVE.L A2,USER_USP(A0)
-00A01550                          2779  
-00A01550  6100 FD5A               2780                  BSR DISPLAY_REG1
-00A01554                          2781  
-00A01554  2E7C 0000E000           2782                  MOVE.L #SUPER_STACK,SP  ; REINIT SYSTEM STACK
-00A0155A  46FC 2000               2783                  MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
-00A0155E                          2784  
-00A0155E  4EF9 00A00BFE           2785                  JMP LOOP.L        ; GET BACK MONITOR
-00A01564                          2786  
-00A01564                          2787  
-00A01564                          2788  ; DISASSEMBLE THE MACHNIE CODE INTO MNEMONIC
-00A01564                          2789  
-00A01564  47F9 00A01985           2790  DISASSEMBLE     LEA.L DIS.L,A3
-00A0156A  6100 F7FE               2791                  BSR PSTR
-00A0156E                          2792  
-00A0156E                          2793             ;   LEA.L $102000.L,A4
-00A0156E                          2794  
-00A0156E  2C79 000000C0           2795                 MOVEA.L RAMBASE.L,A6
-00A01574                          2796  
-00A01574  3E3C 0013               2797                 MOVE.W #19,D7       ; 20 LINES DISASSEMBLE
-00A01578                          2798  
-00A01578  286E 00A6               2799                 MOVEA.L POINTER_NOW(A6),A4
-00A0157C                          2800  
-00A0157C  4CD4 0007               2801  DIS1           MOVEM.L (A4),D0-D2
-00A01580  2A79 000000C0           2802                 MOVEA.L RAMBASE.L,A5
-00A01586  DBFC 00000026           2803                 ADDA.L #BUFFER,A5      ; LOAD A5 WITH $130000+BUFFER
-00A0158C                          2804  
-00A0158C  48E7 0102               2805                 MOVEM.L A6/D7,-(SP)
-00A01590                          2806  
-00A01590  4EB9 00A007B8           2807                 JSR  DCODE68K.L
-00A01596                          2808  
-00A01596  6100 F7E0               2809                 BSR NEW_LINE
-00A0159A  6100 0014               2810                 BSR PRINT_LINE
-00A0159E                          2811  
-00A0159E  4CDF 4080               2812                 MOVEM.L (SP)+,D7/A6
-00A015A2                          2813  
-00A015A2  51CF FFD8               2814                 DBRA D7,DIS1
-00A015A6                          2815  
-00A015A6  2D4C 00A6               2816                 MOVE.L A4,POINTER_NOW(A6) ; NEXT BLOCK
-00A015AA  6100 F7CC               2817                 BSR NEW_LINE
-00A015AE  4E75                    2818                 RTS
-00A015B0                          2819  
-00A015B0  101D                    2820  PRINT_LINE     MOVE.B (A5)+,D0
-00A015B2  6100 F77E               2821                 BSR COUT
-00A015B6  BDCD                    2822                 CMPA.L A5,A6
-00A015B8  66F6                    2823                 BNE.S PRINT_LINE
-00A015BA  4E75                    2824                 RTS
-00A015BC                          2825  
-00A015BC                          2826  
-00A015BC                          2827  ; UPLOAD BINARY IMAGE FROM MEMORY
-00A015BC                          2828  ; SEND IT TO TERMINAL AS HEX CODE IN LONG WORD FORMAT
-00A015BC                          2829  ; USE FOR DISASSEMBLER HEX CODE PREPARATION
-00A015BC                          2830  
-00A015BC  47F9 00A019AB           2831  UPLOAD        LEA.L UPLOAD1.L,A3
-00A015C2  6100 F7A6               2832                BSR PSTR
-00A015C6  6100 F78E               2833                BSR CIN
-00A015CA                          2834  
-00A015CA  4BF9 00100400           2835                LEA.L $100400.L,A5    ; START
-00A015D0  4DF9 00102000           2836                LEA.L $102000.L,A6    ; STOP
-00A015D6                          2837  
-00A015D6  6100 F7A0               2838  UPLOAD3       BSR NEW_LINE
-00A015DA  47F9 00A019D5           2839                LEA.L STRING1.L,A3
-00A015E0  6100 F788               2840                BSR PSTR
-00A015E4                          2841  
-00A015E4  3E3C 0007               2842                MOVE.W #7,D7
-00A015E8                          2843  
-00A015E8  103C 0024               2844  UPLOAD2       MOVE.B #'$',D0
-00A015EC  6100 F744               2845                BSR COUT
-00A015F0  201D                    2846                MOVE.L (A5)+,D0
-00A015F2  6100 F966               2847                BSR OUT8X
-00A015F6  103C 002C               2848                MOVE.B #',',D0
-00A015FA  6100 F736               2849                BSR COUT
-00A015FE  51CF FFE8               2850                DBRA D7,UPLOAD2
-00A01602                          2851  
-00A01602  BDCD                    2852                CMPA.L A5,A6
-00A01604  6ED0                    2853                BGT  UPLOAD3
-00A01606                          2854  
-00A01606  4E75                    2855                RTS
-00A01608                          2856  
-00A01608                          2857  ; ABOUT zBUG V1.0
-00A01608                          2858  
-00A01608  47F9 00A019DC           2859  ABOUT         LEA.L ABOUTZBUG.L,A3
-00A0160E  6100 F75A               2860                BSR PSTR
-00A01612  4E75                    2861                RTS
-00A01614                          2862  
-00A01614                          2863  ; VIEW USER STACK
-00A01614                          2864  
-00A01614  47F9 00A01A52           2865  VIEW_USP      LEA.L VIEW.L,A3
-00A0161A  6100 F74E               2866                BSR PSTR
-00A0161E                          2867  
-00A0161E  6100 F758               2868                BSR NEW_LINE
-00A01622                          2869  
-00A01622  227C 0000FFF4           2870                MOVEA.L #SUPER_STACK+USER_STACK,A1 ; TOP OF USER STACK
-00A01628                          2871  
-00A01628  41E9 FFE0               2872                LEA.L -32(A1),A0    ; EACH COMPOSED OF TWO BYTES
-00A0162C                          2873  
-00A0162C  3E3C 0010               2874                MOVE.W #16,D7
-00A01630  2C79 000000C0           2875                MOVEA.L RAMBASE.L,A6
-00A01636                          2876  
-00A01636                          2877  
-00A01636  2008                    2878  VIEW1         MOVE.L A0,D0
-00A01638                          2879  
-00A01638  2F00                    2880                MOVE.L D0,-(SP)
-00A0163A                          2881  
-00A0163A  B1EE 00E6               2882                CMPA.L USER_USP(A6),A0
-00A0163E  660C                    2883                BNE.S NOT_TOS
-00A01640                          2884  
-00A01640  47F9 00A01AC1           2885                LEA.L TOP_OF_STACK.L,A3
-00A01646  6100 F722               2886                BSR PSTR
-00A0164A  600A                    2887                BRA.S SKIP_PRINT_BLANK
-00A0164C                          2888  
-00A0164C  47F9 00A01AC9           2889  NOT_TOS       LEA.L BLANK_BLOCK.L,A3
-00A01652  6100 F716               2890                BSR PSTR
-00A01656                          2891  
-00A01656                          2892  SKIP_PRINT_BLANK
-00A01656                          2893  
-00A01656  201F                    2894                MOVE.L (SP)+,D0
-00A01658  6100 F8F8               2895                BSR OUT6X
-00A0165C  6100 F72C               2896                BSR SPACE
-00A01660                          2897  
-00A01660  103C 005B               2898                MOVE.B #'[',D0
-00A01664  6100 F6CC               2899                BSR COUT
-00A01668                          2900  
-00A01668  3018                    2901                MOVE.W (A0)+,D0
-00A0166A  6100 F8DE               2902                BSR OUT4X
-00A0166E                          2903  
-00A0166E  103C 005D               2904                MOVE.B #']',D0
-00A01672  6100 F6BE               2905                BSR COUT
-00A01676                          2906  
-00A01676  6100 F700               2907                BSR NEW_LINE
-00A0167A  51CF FFBA               2908                DBRA D7,VIEW1
-00A0167E                          2909  
-00A0167E  4E75                    2910                RTS
-00A01680                          2911  
-00A01680                          2912  
-00A01680                          2913  ; LOAD SP WITH [RAM] AND PC [RAM+4]
-00A01680                          2914  
-00A01680  2E79 00000000           2915  BOOT_RAM      MOVEA.L RAM.L,SP
-00A01686  2079 00000004           2916                MOVEA.L 4+RAM.L,A0
-00A0168C  4ED0                    2917                JMP     (A0)
-00A0168E                          2918  
-00A0168E                          2919  ; SERVICE BUS ERROR
-00A0168E  2679 00A01A7D           2920  SERVICE_BUSERROR MOVEA.L BUSERROR_MSG.L,A3
-00A01694  6000 001C               2921                  BRA SERVICE_MSG
-00A01698                          2922  
-00A01698                          2923  ; SERVICE ADDRESS ERROR
-00A01698  2679 00A01A8A           2924  SERVICE_ADDRESSERR MOVEA.L ADDRESSERR_MSG.L,A3
-00A0169E  6000 0012               2925                  BRA SERVICE_MSG
-00A016A2                          2926  
-00A016A2                          2927  ; SERVICE ILLEGAL INTSRUCTION
-00A016A2  2679 00A01A9B           2928  SERVICE_ILLEGAL MOVEA.L ILLEGAL_MSG.L,A3
-00A016A8  6000 0008               2929                  BRA SERVICE_MSG
-00A016AC                          2930  
-00A016AC                          2931  ; SERVICE ZERO DIVIDE
-00A016AC  2679 00A01AB2           2932  SERVICE_ZERODIV MOVEA.L ZERODIV_MSG.L,A3
-00A016B2  6100 F6B6               2933  SERVICE_MSG     BSR PSTR
-00A016B6  4E40                    2934                  TRAP #0
-00A016B8                          2935  
-00A016B8                          2936  ; vector table initrize
-00A016B8  41FA 0026               2937  VECINIT   LEA   VECTABLE(pc),a0
-00A016BC  327C 0008               2938            MOVEA.W   #$0008,a1
-00A016C0  700A                    2939            MOVEQ     #10,D0
-00A016C2  22D8                    2940  VECINIT1  MOVE.L    (a0)+,(a1)+
-00A016C4  5300                    2941            SUBQ.B    #1,D0
-00A016C6  66FA                    2942            BNE       VECINIT1
-00A016C8  327C 0060               2943            MOVEA.W   #$60,A1
-00A016CC  7018                    2944            MOVEQ     #24,D0
-00A016CE  22D8                    2945  VECINIT2  MOVE.L    (a0)+,(a1)+
-00A016D0  5300                    2946            SUBQ.B    #1,D0
-00A016D2  66FA                    2947            BNE       VECINIT2
-00A016D4  327C 00C0               2948            MOVEA.W   #$C0,A1
-00A016D8  22BC 0000E000           2949            MOVE.L    #RAMBASE_INIT,(a1)
-00A016DE  4E75                    2950            RTS
-00A016E0                          2951  
-00A016E0                          2952  ;----------------- M68000 EXCEPTION VECTOR TABLE -----------------------------
-00A016E0= 00A0168E                2953  VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
-00A016E4= 00A01698                2954            DC.L  SERVICE_ADDRESSERR   ; 3 Address error
-00A016E8= 00A016A2                2955            DC.L  SERVICE_ILLEGAL      ; 4 Illegal instruction
-00A016EC= 00A016AC                2956            DC.L  SERVICE_ZERODIV      ; 5 Zero divide
-00A016F0= 00A01522                2957            DC.L  SERVICE_TRAP0        ; 6 CHK instruction
-00A016F4= 00A01522                2958            DC.L  SERVICE_TRAP0        ; 7 TRAPV instruction
-00A016F8= 00A01522                2959            DC.L  SERVICE_TRAP0        ; 8 Privilege violation
-00A016FC= 00A01522                2960            DC.L  SERVICE_TRAP0        ; 9 Trace
-00A01700= 00A01522                2961            DC.L  SERVICE_TRAP0    ; 10 Line 1010 emulator
-00A01704= 00A01522                2962            DC.L  SERVICE_TRAP0    ; 11 Line 1111 emulator
-00A01708                          2963  
-00A01708= 00A01522                2964            DC.L  SERVICE_TRAP0    ; 24 Spurious Interupt
-00A0170C= 00A01522                2965            DC.L  SERVICE_TRAP0    ; 25 LEVEL 1 Interupt autovector
-00A01710= 00A01522                2966            DC.L  SERVICE_TRAP0    ; 26 LEVEL 2 Interupt autovector
-00A01714= 00A01522                2967            DC.L  SERVICE_TRAP0    ; 27 LEVEL 3 Interupt autovector
-00A01718= 00A01522                2968            DC.L  SERVICE_TRAP0    ; 28 LEVEL 4 Interupt autovector
-00A0171C= 00A01522                2969            DC.L  SERVICE_TRAP0    ; 29 LEVEL 5 Interupt autovector
-00A01720= 00A01522                2970            DC.L  SERVICE_TRAP0    ; 30 LEVEL 6 Interupt autovector
-00A01724= 00A01522                2971            DC.L  SERVICE_TRAP0    ; 31 LEVEL 7 Interupt autovector
-00A01728= 00A01522                2972            DC.L  SERVICE_TRAP0    ; 32 TRAP #0
-00A0172C= 00A01522                2973            DC.L  SERVICE_TRAP0    ; 33 TRAP #1
-00A01730= 00A01522                2974            DC.L  SERVICE_TRAP0    ; 34 TRAP #2
-00A01734= 00A01522                2975            DC.L  SERVICE_TRAP0    ; 35 TRAP #3
-00A01738= 00A01522                2976            DC.L  SERVICE_TRAP0    ; 36 TRAP #4
-00A0173C= 00A01522                2977            DC.L  SERVICE_TRAP0    ; 37 TRAP #5
-00A01740= 00A01522                2978            DC.L  SERVICE_TRAP0    ; 38 TRAP #6
-00A01744= 00A01522                2979            DC.L  SERVICE_TRAP0    ; 39 TRAP #7
-00A01748= 00A01522                2980            DC.L  SERVICE_TRAP0    ; 40 TRAP #8
-00A0174C= 00A01522                2981            DC.L  SERVICE_TRAP0    ; 41 TRAP #9
-00A01750= 00A01522                2982            DC.L  SERVICE_TRAP0    ; 42 TRAP #10
-00A01754= 00A01522                2983            DC.L  SERVICE_TRAP0    ; 43 TRAP #11
-00A01758= 00A01522                2984            DC.L  SERVICE_TRAP0    ; 44 TRAP #12
-00A0175C= 00A01522                2985            DC.L  SERVICE_TRAP0    ; 45 TRAP #13
-00A01760= 00A01522                2986            DC.L  SERVICE_TRAP0    ; 46 TRAP #14
-00A01764= 00A01522                2987            DC.L  SERVICE_TRAP0    ; 47 TRAP #15
-00A01768                          2988  ;----------------------- STRING CONSTANT -------------------------------------
-00A01768                          2989  
-00A01768= 0D 0A 7A 42 75 67 ...   2990  TITLE  DC.B 13,10,'zBug V1.0.1 for MIC68K',13,10,0
-00A01783= 0D 0A 7A 42 75 67 ...   2991  TITLE1 DC.B 13,10,'zBug V1.0.1 for MIC68K (press ? for help)',13,10,0
-00A017B1                          2992  
-00A017B1= 3E 00                   2993  PROMPT DC.B '>',0
-00A017B3                          2994  
-00A017B3= 6C 65 61 72 20 6D ...   2995  CLEAR  DC.B 'lear memory with 0x0000',0
-00A017CB= 69 6C 6C 20 6D 65 ...   2996  FILL   DC.B 'ill memory with 0xFFFF',0 
-00A017E2= 0D 0A 0A 73 74 61 ...   2997  START  DC.B 13,10,10,'start address=',0
-00A017F4= 0D 0A 73 74 6F 70 ...   2998  STOP   DC.B 13,10,'stop  address=',0
-00A01805= 0D 0A 64 6F 6E 65 ...   2999  DONE   DC.B 13,10,'done...',0
-00A0180F                          3000  
-00A0180F= 64 69 74 20 6D 65 ...   3001  EDIT1  DC.B 'dit memory (quit: SPACE BAR, next address: ENTER)',0
-00A01841= 0D 0A 0A 41 64 64 ...   3002  EDIT   DC.B 13,10,10,'Address=',0
-00A0184D= 20 20 72 6F 6D 00       3003  ROM    DC.B '  rom',0
-00A01853                          3004  
-00A01853= 65 77 20 32 34 2D ...   3005  NEW    DC.B 'ew 24-bit pointer',0
-00A01865                          3006  
-00A01865= 75 69 63 6B 20 68 ...   3007  QUICK  DC.B 'uick home, get back to start of RAM!',13,10,0
-00A0188C= 65 78 20 64 75 6D ...   3008  HEX    DC.B 'ex dump memory',13,10,10
-00A0189D= 41 44 44 52 45 53 ...   3009         DC.B 'ADDRESS  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F',0
-00A018D5                          3010  
-00A018D5= 6F 61 64 20 4D 6F ...   3011  LOAD   DC.B 'oad Motorola s-record (accept s1,s2 and s8) quit: ESC',13,10,0
-00A0190D                          3012  
-00A0190D= 20 62 79 74 65 73 ...   3013  NUMBER DC.B ' bytes loaded, ',0
-00A0191D= 20 72 65 63 6F 72 ...   3014  ERROR  DC.B ' records checksum error',13,10,0
-00A01937                          3015  
-00A01937= 75 6D 70 20 74 6F ...   3016  JUMP_TO DC.B 'ump to user program ',0 
-00A0194C                          3017  
-00A0194C= 20 54 52 41 50 20 ...   3018  TRAP_0 DC.B ' TRAP 0 !',0
-00A01956                          3019  
-00A01956= 65 67 69 73 74 65 ...   3020  REGISTER_DISP DC.B 'egister(user) display (A7= user stack pointer)',0
-00A01985                          3021  
-00A01985= 69 73 61 73 73 65 ...   3022  DIS    DC.B 'isassemble machine code to mnemonic',13,10,0
-00A019AB                          3023  
-00A019AB= 70 6C 6F 61 64 20 ...   3024  UPLOAD1 DC.B 'pload binary image, hit any key to begin ',0
-00A019D5= 20 20 44 46 4C 20 00    3025  STRING1 DC.B '  DFL ',0
-00A019DC                          3026  
-00A019DC= 62 6F 75 74 20 7A ...   3027  ABOUTZBUG DC.B 'bout zBuG V1.0',13,10,10
-00A019ED= 7A 42 75 67 20 56 ...   3028            DC.B 'zBug V1.0 Copyright (C) 2002 W.SIRICHOTE',13,10,10
-00A01A18= 7A 42 75 67 20 56 ...   3029            DC.B 'zBug V1.0.1 MIC68K Version by @kanpapa',13,10,0
-00A01A41                          3030  
-00A01A41= 72 61 63 65 20 69 ...   3031  TRACE_MSG DC.B 'race instruction',0
-00A01A52                          3032  
-00A01A52= 74 61 63 6B 20 28 ...   3033  VIEW      DC.B 'tack (user)s content, shows 16-WORD deep',13,10,0
-00A01A7D                          3034  
-00A01A7D= 62 75 73 20 65 72 ...   3035  BUSERROR_MSG DC.B 'bus error...',0
-00A01A8A= 61 64 64 72 65 73 ...   3036  ADDRESSERR_MSG DC.B 'address error...',0
-00A01A9B= 69 6C 6C 65 67 61 ...   3037  ILLEGAL_MSG DC.B 'illegal instruction...',0
-00A01AB2= 7A 65 72 6F 20 64 ...   3038  ZERODIV_MSG DC.B 'zero divide...',0
-00A01AC1                          3039  
-00A01AC1= 54 4F 53 2D 2D 2D ...   3040  TOP_OF_STACK DC.B 'TOS--->',0
-00A01AC9= 20 20 20 20 20 20 ...   3041  BLANK_BLOCK  DC.B '       ',0
-00A01AD1                          3042  
-00A01AD1= 50 43 3D 00             3043  PC_REG DC.B 'PC=',0
-00A01AD5= 53 52 3D 00             3044  SR_REG DC.B 'SR=',0
-00A01AD9                          3045  
-00A01AD9= 43 3D 00                3046  CARRY_FLAG DC.B 'C=',0
-00A01ADC= 56 3D 00                3047  V_FLAG     DC.B 'V=',0
-00A01ADF= 5A 3D 00                3048  Z_FLAG     DC.B 'Z=',0
-00A01AE2= 4E 3D 00                3049  N_FLAG     DC.B 'N=',0
-00A01AE5= 58 3D 00                3050  X_FLAG     DC.B 'X=',0
-00A01AE8                          3051  
-00A01AE8                          3052  
-00A01AE8= 20 6D 6F 6E 69 74 ...   3053  HELP_LIST DC.B ' monitor commands',13,10,10
-00A01AFC                          3054  
-00A01AFC= 41 20 20 20 41 62 ...   3055         DC.B 'A   About zBug V1.0',13,10
-00A01B11= 42 20 20 20 42 6F ...   3056         DC.B 'B   Boot from RAM [000000] -> SP [000004] ->PC',13,10
-00A01B41= 43 20 20 20 43 6C ...   3057         DC.B 'C   Clear memory with 0x0000',13,10
-00A01B5F= 44 20 20 20 44 69 ...   3058         DC.B 'D   Disassemble machine code to mnemonic',13,10
-00A01B89= 45 20 20 20 45 64 ...   3059         DC.B 'E   Edit memory',13,10
-00A01B9A= 46 20 20 20 46 69 ...   3060         DC.B 'F   Fill memory with 0xFFFF',13,10
-00A01BB7= 48 20 20 20 48 65 ...   3061         DC.B 'H   Hex dump memory',13,10
-00A01BCC= 4A 20 20 20 4A 75 ...   3062         DC.B 'J   Jump to address',13,10
-00A01BE1= 4C 20 20 20 4C 6F ...   3063         DC.B 'L   Load Motorola s-record',13,10
-00A01BFD= 4E 20 20 20 4E 65 ...   3064         DC.B 'N   New 24-bit pointer',13,10
-00A01C15= 52 20 20 20 52 65 ...   3065         DC.B 'R   Register(user) display',13,10
-00A01C31= 53 20 20 20 53 74 ...   3066         DC.B 'S   Stack(user)s content',13,10
-00A01C4B= 54 20 20 20 54 72 ...   3067         DC.B 'T   Trace instruction',13,10
-00A01C62= 2E 20 20 20 4D 6F ...   3068         DC.B '.   Modify user registers, exp .PC .D0 .A0',13,10
-00A01C8E= 3F 20 20 20 4D 6F ...   3069         DC.B '?   Monitor commands list',13,10,0
-00A01CAA                          3070  
-00A01CAA                          3071  
-00A01CAA                          3072  ; MONITOR'S RAM AREA
-00A01CAA                          3073  ; MUST BE EVEN ADDRESS FOE RAMBASE
-00A01CAA                          3074  ; THE A6 WAS LOADED WITH RAMBASE AS THE BASE MEMORY POINTER
-00A01CAA                          3075  ; THE FOLLOWING VARIABLE CAN BE ACCEESED BY USING INDIRECT WITH DISPLACMENT
-00A01CAA                          3076  
-00A01CAA                          3077  ;RAMBASE     DC.L   $130000     ; RAM BASE ADDRESS
-00A01CAA                          3078  
-00A01CAA                          3079  ; DCODE68K
-00A01CAA  =FFFFFFF0               3080  DDATA    EQU     $FFFFFFF0       ; DS.L 3
-00A01CAA  =FFFFFFFC               3081  HISPC    EQU     $FFFFFFFC       ; DS.L 1
-00A01CAA                          3082  
-00A01CAA                          3083  ; OFFSET(DISPLACEMENT) DEFINITION
-00A01CAA                          3084  
-00A01CAA  =00000000               3085  OFFSET      EQU  0               ; FOR DISASSEMBLER USAGE
-00A01CAA  =00000020               3086  DEBUG       EQU  OFFSET+32
-00A01CAA  =00000024               3087  FLAG        EQU  DEBUG+4         ; 16-BIT MONITOR FLAG
-00A01CAA  =00000026               3088  BUFFER      EQU  FLAG+2
-00A01CAA  =000000A6               3089  POINTER_NOW EQU  BUFFER+128
-00A01CAA  =000000AA               3090  USER_DATA   EQU  POINTER_NOW+4   ; USER D0-D7 AND A0-A7
-00A01CAA  =000000CA               3091  USER_ADDR   EQU  USER_DATA+32    ; USER ADDRESS REGISTERS, A0-A7
-00A01CAA  =000000E6               3092  USER_USP    EQU  USER_ADDR+28    ; A7 = USP
-00A01CAA  =000000EA               3093  USER_SR     EQU  USER_USP+4      ; 
-00A01CAA  =000000EC               3094  USER_SS     EQU  USER_SR+2
-00A01CAA  =000000F0               3095  USER_PC     EQU  USER_SS+4
-00A01CAA                          3096  
-00A01CAA  =000000F4               3097  STACK_AREA  EQU  USER_PC+4           ; 32kB USER STACK -> 2kB
-00A01CAA                          3098  ;USER_STACK  EQU  STACK_AREA+$7000    ; TOP OF STACK
-00A01CAA  =00001FF4               3099  USER_STACK  EQU  STACK_AREA+$1F00    ; TOP OF STACK
-00A01CAA                          3100  
-00A01CAA                          3101  
-00A01CAA                          3102  
-00A01CAA                          3103         END  MAIN
+00A01522                          2766  SERVICE_TRAP0   ;MOVE.B ACIA2D.L,D0
+00A01522                          2767                  ;BSR COUT
+00A01522  46FC 2000               2768                  MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
+00A01526                          2769  
+00A01526  4EF9 00A00BFE           2770                  JMP LOOP.L        ; GET BACK MONITOR
+00A0152C                          2771  
+00A0152C                          2772  
+00A0152C                          2773  ; DISASSEMBLE THE MACHNIE CODE INTO MNEMONIC
+00A0152C                          2774  
+00A0152C  47F9 00A0194D           2775  DISASSEMBLE     LEA.L DIS.L,A3
+00A01532  6100 F836               2776                  BSR PSTR
+00A01536                          2777  
+00A01536                          2778             ;   LEA.L $102000.L,A4
+00A01536                          2779  
+00A01536  2C79 000000C0           2780                 MOVEA.L RAMBASE.L,A6
+00A0153C                          2781  
+00A0153C  3E3C 0013               2782                 MOVE.W #19,D7       ; 20 LINES DISASSEMBLE
+00A01540                          2783  
+00A01540  286E 00A6               2784                 MOVEA.L POINTER_NOW(A6),A4
+00A01544                          2785  
+00A01544  4CD4 0007               2786  DIS1           MOVEM.L (A4),D0-D2
+00A01548  2A79 000000C0           2787                 MOVEA.L RAMBASE.L,A5
+00A0154E  DBFC 00000026           2788                 ADDA.L #BUFFER,A5      ; LOAD A5 WITH $130000+BUFFER
+00A01554                          2789  
+00A01554  48E7 0102               2790                 MOVEM.L A6/D7,-(SP)
+00A01558                          2791  
+00A01558  4EB9 00A007B8           2792                 JSR  DCODE68K.L
+00A0155E                          2793  
+00A0155E  6100 F818               2794                 BSR NEW_LINE
+00A01562  6100 0014               2795                 BSR PRINT_LINE
+00A01566                          2796  
+00A01566  4CDF 4080               2797                 MOVEM.L (SP)+,D7/A6
+00A0156A                          2798  
+00A0156A  51CF FFD8               2799                 DBRA D7,DIS1
+00A0156E                          2800  
+00A0156E  2D4C 00A6               2801                 MOVE.L A4,POINTER_NOW(A6) ; NEXT BLOCK
+00A01572  6100 F804               2802                 BSR NEW_LINE
+00A01576  4E75                    2803                 RTS
+00A01578                          2804  
+00A01578  101D                    2805  PRINT_LINE     MOVE.B (A5)+,D0
+00A0157A  6100 F7B6               2806                 BSR COUT
+00A0157E  BDCD                    2807                 CMPA.L A5,A6
+00A01580  66F6                    2808                 BNE.S PRINT_LINE
+00A01582  4E75                    2809                 RTS
+00A01584                          2810  
+00A01584                          2811  
+00A01584                          2812  ; UPLOAD BINARY IMAGE FROM MEMORY
+00A01584                          2813  ; SEND IT TO TERMINAL AS HEX CODE IN LONG WORD FORMAT
+00A01584                          2814  ; USE FOR DISASSEMBLER HEX CODE PREPARATION
+00A01584                          2815  
+00A01584  47F9 00A01973           2816  UPLOAD        LEA.L UPLOAD1.L,A3
+00A0158A  6100 F7DE               2817                BSR PSTR
+00A0158E  6100 F7C6               2818                BSR CIN
+00A01592                          2819  
+00A01592  4BF9 00100400           2820                LEA.L $100400.L,A5    ; START
+00A01598  4DF9 00102000           2821                LEA.L $102000.L,A6    ; STOP
+00A0159E                          2822  
+00A0159E  6100 F7D8               2823  UPLOAD3       BSR NEW_LINE
+00A015A2  47F9 00A0199D           2824                LEA.L STRING1.L,A3
+00A015A8  6100 F7C0               2825                BSR PSTR
+00A015AC                          2826  
+00A015AC  3E3C 0007               2827                MOVE.W #7,D7
+00A015B0                          2828  
+00A015B0  103C 0024               2829  UPLOAD2       MOVE.B #'$',D0
+00A015B4  6100 F77C               2830                BSR COUT
+00A015B8  201D                    2831                MOVE.L (A5)+,D0
+00A015BA  6100 F99E               2832                BSR OUT8X
+00A015BE  103C 002C               2833                MOVE.B #',',D0
+00A015C2  6100 F76E               2834                BSR COUT
+00A015C6  51CF FFE8               2835                DBRA D7,UPLOAD2
+00A015CA                          2836  
+00A015CA  BDCD                    2837                CMPA.L A5,A6
+00A015CC  6ED0                    2838                BGT  UPLOAD3
+00A015CE                          2839  
+00A015CE  4E75                    2840                RTS
+00A015D0                          2841  
+00A015D0                          2842  ; ABOUT zBUG V1.0
+00A015D0                          2843  
+00A015D0  47F9 00A019A4           2844  ABOUT         LEA.L ABOUTZBUG.L,A3
+00A015D6  6100 F792               2845                BSR PSTR
+00A015DA  4E75                    2846                RTS
+00A015DC                          2847  
+00A015DC                          2848  ; VIEW USER STACK
+00A015DC                          2849  
+00A015DC  47F9 00A01A1A           2850  VIEW_USP      LEA.L VIEW.L,A3
+00A015E2  6100 F786               2851                BSR PSTR
+00A015E6                          2852  
+00A015E6  6100 F790               2853                BSR NEW_LINE
+00A015EA                          2854  
+00A015EA  227C 0000FFF4           2855                MOVEA.L #SUPER_STACK+USER_STACK,A1 ; TOP OF USER STACK
+00A015F0                          2856  
+00A015F0  41E9 FFE0               2857                LEA.L -32(A1),A0    ; EACH COMPOSED OF TWO BYTES
+00A015F4                          2858  
+00A015F4  3E3C 0010               2859                MOVE.W #16,D7
+00A015F8  2C79 000000C0           2860                MOVEA.L RAMBASE.L,A6
+00A015FE                          2861  
+00A015FE                          2862  
+00A015FE  2008                    2863  VIEW1         MOVE.L A0,D0
+00A01600                          2864  
+00A01600  2F00                    2865                MOVE.L D0,-(SP)
+00A01602                          2866  
+00A01602  B1EE 00E6               2867                CMPA.L USER_USP(A6),A0
+00A01606  660C                    2868                BNE.S NOT_TOS
+00A01608                          2869  
+00A01608  47F9 00A01A89           2870                LEA.L TOP_OF_STACK.L,A3
+00A0160E  6100 F75A               2871                BSR PSTR
+00A01612  600A                    2872                BRA.S SKIP_PRINT_BLANK
+00A01614                          2873  
+00A01614  47F9 00A01A91           2874  NOT_TOS       LEA.L BLANK_BLOCK.L,A3
+00A0161A  6100 F74E               2875                BSR PSTR
+00A0161E                          2876  
+00A0161E                          2877  SKIP_PRINT_BLANK
+00A0161E                          2878  
+00A0161E  201F                    2879                MOVE.L (SP)+,D0
+00A01620  6100 F930               2880                BSR OUT6X
+00A01624  6100 F764               2881                BSR SPACE
+00A01628                          2882  
+00A01628  103C 005B               2883                MOVE.B #'[',D0
+00A0162C  6100 F704               2884                BSR COUT
+00A01630                          2885  
+00A01630  3018                    2886                MOVE.W (A0)+,D0
+00A01632  6100 F916               2887                BSR OUT4X
+00A01636                          2888  
+00A01636  103C 005D               2889                MOVE.B #']',D0
+00A0163A  6100 F6F6               2890                BSR COUT
+00A0163E                          2891  
+00A0163E  6100 F738               2892                BSR NEW_LINE
+00A01642  51CF FFBA               2893                DBRA D7,VIEW1
+00A01646                          2894  
+00A01646  4E75                    2895                RTS
+00A01648                          2896  
+00A01648                          2897  
+00A01648                          2898  ; LOAD SP WITH [RAM] AND PC [RAM+4]
+00A01648                          2899  
+00A01648  2E79 00000000           2900  BOOT_RAM      MOVEA.L RAM.L,SP
+00A0164E  2079 00000004           2901                MOVEA.L 4+RAM.L,A0
+00A01654  4ED0                    2902                JMP     (A0)
+00A01656                          2903  
+00A01656                          2904  ; SERVICE BUS ERROR
+00A01656  2679 00A01A45           2905  SERVICE_BUSERROR MOVEA.L BUSERROR_MSG.L,A3
+00A0165C  6000 001C               2906                  BRA SERVICE_MSG
+00A01660                          2907  
+00A01660                          2908  ; SERVICE ADDRESS ERROR
+00A01660  2679 00A01A52           2909  SERVICE_ADDRESSERR MOVEA.L ADDRESSERR_MSG.L,A3
+00A01666  6000 0012               2910                  BRA SERVICE_MSG
+00A0166A                          2911  
+00A0166A                          2912  ; SERVICE ILLEGAL INTSRUCTION
+00A0166A  2679 00A01A63           2913  SERVICE_ILLEGAL MOVEA.L ILLEGAL_MSG.L,A3
+00A01670  6000 0008               2914                  BRA SERVICE_MSG
+00A01674                          2915  
+00A01674                          2916  ; SERVICE ZERO DIVIDE
+00A01674  2679 00A01A7A           2917  SERVICE_ZERODIV MOVEA.L ZERODIV_MSG.L,A3
+00A0167A  6100 F6EE               2918  SERVICE_MSG     BSR PSTR
+00A0167E  4E40                    2919                  TRAP #0
+00A01680                          2920  
+00A01680                          2921  ; vector table initrize
+00A01680  41FA 0026               2922  VECINIT   LEA   VECTABLE(pc),a0
+00A01684  327C 0008               2923            MOVEA.W   #$0008,a1
+00A01688  700A                    2924            MOVEQ     #10,D0
+00A0168A  22D8                    2925  VECINIT1  MOVE.L    (a0)+,(a1)+
+00A0168C  5300                    2926            SUBQ.B    #1,D0
+00A0168E  66FA                    2927            BNE       VECINIT1
+00A01690  327C 0060               2928            MOVEA.W   #$60,A1
+00A01694  7018                    2929            MOVEQ     #24,D0
+00A01696  22D8                    2930  VECINIT2  MOVE.L    (a0)+,(a1)+
+00A01698  5300                    2931            SUBQ.B    #1,D0
+00A0169A  66FA                    2932            BNE       VECINIT2
+00A0169C  327C 00C0               2933            MOVEA.W   #$C0,A1
+00A016A0  22BC 0000E000           2934            MOVE.L    #RAMBASE_INIT,(a1)
+00A016A6  4E75                    2935            RTS
+00A016A8                          2936  
+00A016A8                          2937  ;----------------- M68000 EXCEPTION VECTOR TABLE -----------------------------
+00A016A8= 00A01656                2938  VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
+00A016AC= 00A01660                2939            DC.L  SERVICE_ADDRESSERR   ; 3 Address error
+00A016B0= 00A0166A                2940            DC.L  SERVICE_ILLEGAL      ; 4 Illegal instruction
+00A016B4= 00A01674                2941            DC.L  SERVICE_ZERODIV      ; 5 Zero divide
+00A016B8= 00A01522                2942            DC.L  SERVICE_TRAP0        ; 6 CHK instruction
+00A016BC= 00A01522                2943            DC.L  SERVICE_TRAP0        ; 7 TRAPV instruction
+00A016C0= 00A01522                2944            DC.L  SERVICE_TRAP0        ; 8 Privilege violation
+00A016C4= 00A01522                2945            DC.L  SERVICE_TRAP0        ; 9 Trace
+00A016C8= 00A01522                2946            DC.L  SERVICE_TRAP0    ; 10 Line 1010 emulator
+00A016CC= 00A01522                2947            DC.L  SERVICE_TRAP0    ; 11 Line 1111 emulator
+00A016D0                          2948  
+00A016D0= 00A01522                2949            DC.L  SERVICE_TRAP0    ; 24 Spurious Interupt
+00A016D4= 00A01522                2950            DC.L  SERVICE_TRAP0    ; 25 LEVEL 1 Interupt autovector
+00A016D8= 00A01522                2951            DC.L  SERVICE_TRAP0    ; 26 LEVEL 2 Interupt autovector
+00A016DC= 00A01522                2952            DC.L  SERVICE_TRAP0    ; 27 LEVEL 3 Interupt autovector
+00A016E0= 00A01522                2953            DC.L  SERVICE_TRAP0    ; 28 LEVEL 4 Interupt autovector
+00A016E4= 00A01522                2954            DC.L  SERVICE_TRAP0    ; 29 LEVEL 5 Interupt autovector
+00A016E8= 00A01522                2955            DC.L  SERVICE_TRAP0    ; 30 LEVEL 6 Interupt autovector
+00A016EC= 00A01522                2956            DC.L  SERVICE_TRAP0    ; 31 LEVEL 7 Interupt autovector
+00A016F0= 00A01522                2957            DC.L  SERVICE_TRAP0    ; 32 TRAP #0
+00A016F4= 00A01522                2958            DC.L  SERVICE_TRAP0    ; 33 TRAP #1
+00A016F8= 00A01522                2959            DC.L  SERVICE_TRAP0    ; 34 TRAP #2
+00A016FC= 00A01522                2960            DC.L  SERVICE_TRAP0    ; 35 TRAP #3
+00A01700= 00A01522                2961            DC.L  SERVICE_TRAP0    ; 36 TRAP #4
+00A01704= 00A01522                2962            DC.L  SERVICE_TRAP0    ; 37 TRAP #5
+00A01708= 00A01522                2963            DC.L  SERVICE_TRAP0    ; 38 TRAP #6
+00A0170C= 00A01522                2964            DC.L  SERVICE_TRAP0    ; 39 TRAP #7
+00A01710= 00A01522                2965            DC.L  SERVICE_TRAP0    ; 40 TRAP #8
+00A01714= 00A01522                2966            DC.L  SERVICE_TRAP0    ; 41 TRAP #9
+00A01718= 00A01522                2967            DC.L  SERVICE_TRAP0    ; 42 TRAP #10
+00A0171C= 00A01522                2968            DC.L  SERVICE_TRAP0    ; 43 TRAP #11
+00A01720= 00A01522                2969            DC.L  SERVICE_TRAP0    ; 44 TRAP #12
+00A01724= 00A01522                2970            DC.L  SERVICE_TRAP0    ; 45 TRAP #13
+00A01728= 00A01522                2971            DC.L  SERVICE_TRAP0    ; 46 TRAP #14
+00A0172C= 00A01522                2972            DC.L  SERVICE_TRAP0    ; 47 TRAP #15
+00A01730                          2973  ;----------------------- STRING CONSTANT -------------------------------------
+00A01730                          2974  
+00A01730= 0D 0A 7A 42 75 67 ...   2975  TITLE  DC.B 13,10,'zBug V1.0.1 for MIC68K',13,10,0
+00A0174B= 0D 0A 7A 42 75 67 ...   2976  TITLE1 DC.B 13,10,'zBug V1.0.1 for MIC68K (press ? for help)',13,10,0
+00A01779                          2977  
+00A01779= 3E 00                   2978  PROMPT DC.B '>',0
+00A0177B                          2979  
+00A0177B= 6C 65 61 72 20 6D ...   2980  CLEAR  DC.B 'lear memory with 0x0000',0
+00A01793= 69 6C 6C 20 6D 65 ...   2981  FILL   DC.B 'ill memory with 0xFFFF',0 
+00A017AA= 0D 0A 0A 73 74 61 ...   2982  START  DC.B 13,10,10,'start address=',0
+00A017BC= 0D 0A 73 74 6F 70 ...   2983  STOP   DC.B 13,10,'stop  address=',0
+00A017CD= 0D 0A 64 6F 6E 65 ...   2984  DONE   DC.B 13,10,'done...',0
+00A017D7                          2985  
+00A017D7= 64 69 74 20 6D 65 ...   2986  EDIT1  DC.B 'dit memory (quit: SPACE BAR, next address: ENTER)',0
+00A01809= 0D 0A 0A 41 64 64 ...   2987  EDIT   DC.B 13,10,10,'Address=',0
+00A01815= 20 20 72 6F 6D 00       2988  ROM    DC.B '  rom',0
+00A0181B                          2989  
+00A0181B= 65 77 20 32 34 2D ...   2990  NEW    DC.B 'ew 24-bit pointer',0
+00A0182D                          2991  
+00A0182D= 75 69 63 6B 20 68 ...   2992  QUICK  DC.B 'uick home, get back to start of RAM!',13,10,0
+00A01854= 65 78 20 64 75 6D ...   2993  HEX    DC.B 'ex dump memory',13,10,10
+00A01865= 41 44 44 52 45 53 ...   2994         DC.B 'ADDRESS  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F',0
+00A0189D                          2995  
+00A0189D= 6F 61 64 20 4D 6F ...   2996  LOAD   DC.B 'oad Motorola s-record (accept s1,s2 and s8) quit: ESC',13,10,0
+00A018D5                          2997  
+00A018D5= 20 62 79 74 65 73 ...   2998  NUMBER DC.B ' bytes loaded, ',0
+00A018E5= 20 72 65 63 6F 72 ...   2999  ERROR  DC.B ' records checksum error',13,10,0
+00A018FF                          3000  
+00A018FF= 75 6D 70 20 74 6F ...   3001  JUMP_TO DC.B 'ump to user program ',0 
+00A01914                          3002  
+00A01914= 20 54 52 41 50 20 ...   3003  TRAP_0 DC.B ' TRAP 0 !',0
+00A0191E                          3004  
+00A0191E= 65 67 69 73 74 65 ...   3005  REGISTER_DISP DC.B 'egister(user) display (A7= user stack pointer)',0
+00A0194D                          3006  
+00A0194D= 69 73 61 73 73 65 ...   3007  DIS    DC.B 'isassemble machine code to mnemonic',13,10,0
+00A01973                          3008  
+00A01973= 70 6C 6F 61 64 20 ...   3009  UPLOAD1 DC.B 'pload binary image, hit any key to begin ',0
+00A0199D= 20 20 44 46 4C 20 00    3010  STRING1 DC.B '  DFL ',0
+00A019A4                          3011  
+00A019A4= 62 6F 75 74 20 7A ...   3012  ABOUTZBUG DC.B 'bout zBuG V1.0',13,10,10
+00A019B5= 7A 42 75 67 20 56 ...   3013            DC.B 'zBug V1.0 Copyright (C) 2002 W.SIRICHOTE',13,10,10
+00A019E0= 7A 42 75 67 20 56 ...   3014            DC.B 'zBug V1.0.1 MIC68K Version by @kanpapa',13,10,0
+00A01A09                          3015  
+00A01A09= 72 61 63 65 20 69 ...   3016  TRACE_MSG DC.B 'race instruction',0
+00A01A1A                          3017  
+00A01A1A= 74 61 63 6B 20 28 ...   3018  VIEW      DC.B 'tack (user)s content, shows 16-WORD deep',13,10,0
+00A01A45                          3019  
+00A01A45= 62 75 73 20 65 72 ...   3020  BUSERROR_MSG DC.B 'bus error...',0
+00A01A52= 61 64 64 72 65 73 ...   3021  ADDRESSERR_MSG DC.B 'address error...',0
+00A01A63= 69 6C 6C 65 67 61 ...   3022  ILLEGAL_MSG DC.B 'illegal instruction...',0
+00A01A7A= 7A 65 72 6F 20 64 ...   3023  ZERODIV_MSG DC.B 'zero divide...',0
+00A01A89                          3024  
+00A01A89= 54 4F 53 2D 2D 2D ...   3025  TOP_OF_STACK DC.B 'TOS--->',0
+00A01A91= 20 20 20 20 20 20 ...   3026  BLANK_BLOCK  DC.B '       ',0
+00A01A99                          3027  
+00A01A99= 50 43 3D 00             3028  PC_REG DC.B 'PC=',0
+00A01A9D= 53 52 3D 00             3029  SR_REG DC.B 'SR=',0
+00A01AA1                          3030  
+00A01AA1= 43 3D 00                3031  CARRY_FLAG DC.B 'C=',0
+00A01AA4= 56 3D 00                3032  V_FLAG     DC.B 'V=',0
+00A01AA7= 5A 3D 00                3033  Z_FLAG     DC.B 'Z=',0
+00A01AAA= 4E 3D 00                3034  N_FLAG     DC.B 'N=',0
+00A01AAD= 58 3D 00                3035  X_FLAG     DC.B 'X=',0
+00A01AB0                          3036  
+00A01AB0                          3037  
+00A01AB0= 20 6D 6F 6E 69 74 ...   3038  HELP_LIST DC.B ' monitor commands',13,10,10
+00A01AC4                          3039  
+00A01AC4= 41 20 20 20 41 62 ...   3040         DC.B 'A   About zBug V1.0',13,10
+00A01AD9= 42 20 20 20 42 6F ...   3041         DC.B 'B   Boot from RAM [000000] -> SP [000004] ->PC',13,10
+00A01B09= 43 20 20 20 43 6C ...   3042         DC.B 'C   Clear memory with 0x0000',13,10
+00A01B27= 44 20 20 20 44 69 ...   3043         DC.B 'D   Disassemble machine code to mnemonic',13,10
+00A01B51= 45 20 20 20 45 64 ...   3044         DC.B 'E   Edit memory',13,10
+00A01B62= 46 20 20 20 46 69 ...   3045         DC.B 'F   Fill memory with 0xFFFF',13,10
+00A01B7F= 48 20 20 20 48 65 ...   3046         DC.B 'H   Hex dump memory',13,10
+00A01B94= 4A 20 20 20 4A 75 ...   3047         DC.B 'J   Jump to address',13,10
+00A01BA9= 4C 20 20 20 4C 6F ...   3048         DC.B 'L   Load Motorola s-record',13,10
+00A01BC5= 4E 20 20 20 4E 65 ...   3049         DC.B 'N   New 24-bit pointer',13,10
+00A01BDD= 52 20 20 20 52 65 ...   3050         DC.B 'R   Register(user) display',13,10
+00A01BF9= 53 20 20 20 53 74 ...   3051         DC.B 'S   Stack(user)s content',13,10
+00A01C13= 54 20 20 20 54 72 ...   3052         DC.B 'T   Trace instruction',13,10
+00A01C2A= 2E 20 20 20 4D 6F ...   3053         DC.B '.   Modify user registers, exp .PC .D0 .A0',13,10
+00A01C56= 3F 20 20 20 4D 6F ...   3054         DC.B '?   Monitor commands list',13,10,0
+00A01C72                          3055  
+00A01C72                          3056  
+00A01C72                          3057  ; MONITOR'S RAM AREA
+00A01C72                          3058  ; MUST BE EVEN ADDRESS FOE RAMBASE
+00A01C72                          3059  ; THE A6 WAS LOADED WITH RAMBASE AS THE BASE MEMORY POINTER
+00A01C72                          3060  ; THE FOLLOWING VARIABLE CAN BE ACCEESED BY USING INDIRECT WITH DISPLACMENT
+00A01C72                          3061  
+00A01C72                          3062  ;RAMBASE     DC.L   $130000     ; RAM BASE ADDRESS
+00A01C72                          3063  
+00A01C72                          3064  ; DCODE68K
+00A01C72  =FFFFFFF0               3065  DDATA    EQU     $FFFFFFF0       ; DS.L 3
+00A01C72  =FFFFFFFC               3066  HISPC    EQU     $FFFFFFFC       ; DS.L 1
+00A01C72                          3067  
+00A01C72                          3068  ; OFFSET(DISPLACEMENT) DEFINITION
+00A01C72                          3069  
+00A01C72  =00000000               3070  OFFSET      EQU  0               ; FOR DISASSEMBLER USAGE
+00A01C72  =00000020               3071  DEBUG       EQU  OFFSET+32
+00A01C72  =00000024               3072  FLAG        EQU  DEBUG+4         ; 16-BIT MONITOR FLAG
+00A01C72  =00000026               3073  BUFFER      EQU  FLAG+2
+00A01C72  =000000A6               3074  POINTER_NOW EQU  BUFFER+128
+00A01C72  =000000AA               3075  USER_DATA   EQU  POINTER_NOW+4   ; USER D0-D7 AND A0-A7
+00A01C72  =000000CA               3076  USER_ADDR   EQU  USER_DATA+32    ; USER ADDRESS REGISTERS, A0-A7
+00A01C72  =000000E6               3077  USER_USP    EQU  USER_ADDR+28    ; A7 = USP
+00A01C72  =000000EA               3078  USER_SR     EQU  USER_USP+4      ; 
+00A01C72  =000000EC               3079  USER_SS     EQU  USER_SR+2
+00A01C72  =000000F0               3080  USER_PC     EQU  USER_SS+4
+00A01C72                          3081  
+00A01C72  =000000F4               3082  STACK_AREA  EQU  USER_PC+4           ; 32kB USER STACK -> 2kB
+00A01C72                          3083  ;USER_STACK  EQU  STACK_AREA+$7000    ; TOP OF STACK
+00A01C72  =00001FF4               3084  USER_STACK  EQU  STACK_AREA+$1F00    ; TOP OF STACK
+00A01C72                          3085  
+00A01C72                          3086  
+00A01C72                          3087  
+00A01C72                          3088         END  MAIN
 
 No errors detected
 No warnings generated
@@ -3114,33 +3099,33 @@ SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
 ABORT               A01428
-ABOUT               A01608
-ABOUTZBUG           A019DC
+ABOUT               A015D0
+ABOUTZBUG           A019A4
 ACIA2C              F20009
 ACIA2D              F2000B
 ACIAC               F00009
 ACIAD               F0000B
-ADDRESSERR_MSG      A01A8A
+ADDRESSERR_MSG      A01A52
 ADDRESS_ERROR       C
 ADDRESS_REG2        A014FA
 BIT_ESC             0
 BLANK               20
-BLANK_BLOCK         A01AC9
-BOOT_RAM            A01680
+BLANK_BLOCK         A01A91
+BOOT_RAM            A01648
 BRTBL               A00460
 BS                  8
 BUFFER              26
 BUFSIZE             50
-BUSERROR_MSG        A01A7D
+BUSERROR_MSG        A01A45
 BUS_ERROR           8
 C68                 3D
-CARRY_FLAG          A01AD9
+CARRY_FLAG          A01AA1
 CHECKSUM_ERROR      A00F14
 CHECK_ESC           A00E36
 CHECK_START         A00E82
 CIN                 A00D56
 CINS                A00D44
-CLEAR               A017B3
+CLEAR               A0177B
 CLEAR1              A0149A
 CLEAR_MEMORY        A010B0
 CLEAR_MEMORY1       A010D6
@@ -3173,12 +3158,12 @@ DEC515              A0081E
 DEC530              A00826
 DEC535              A0082C
 DEC537              A00838
-DIS                 A01985
-DIS1                A0157C
-DISASSEMBLE         A01564
+DIS                 A0194D
+DIS1                A01544
+DISASSEMBLE         A0152C
 DISPLAY_REG         A012A2
 DISPLAY_REG1        A012AC
-DONE                A01805
+DONE                A017CD
 EA000               A00508
 EA001               A00514
 EA010               A00520
@@ -3201,8 +3186,8 @@ EAF25               A006B8
 EAF27               A006BC
 EAF35               A006D0
 EASY68K_SIM         0
-EDIT                A01841
-EDIT1               A0180F
+EDIT                A01809
+EDIT1               A017D7
 EDIT_MEMORY         A010EA
 EDIT_MEMORY2        A01108
 EDIT_MEMORY3        A01172
@@ -3211,7 +3196,7 @@ EDIT_MEMORY5        A01160
 EEA                 A00566
 EEA10               A0017A
 EOT                 4
-ERROR               A0191D
+ERROR               A018E5
 ESC                 1B
 FDATA               A
 FE10                A00562
@@ -3220,7 +3205,7 @@ FE12                A0080A
 FERROR              A0087E
 FERROR35            A00888
 FERROR39            A00894
-FILL                A017CB
+FILL                A01793
 FILL_MEMORY         A01076
 FILL_MEMORY1        A0109C
 FLAG                24
@@ -3274,8 +3259,8 @@ GET_HEX2            A00DF8
 GET_HEXS            A00E08
 GET_TYPE            A00E3E
 HELP                A01178
-HELP_LIST           A01AE8
-HEX                 A0188C
+HELP_LIST           A01AB0
+HEX                 A01854
 HEX2DEC             A011AA
 HEX_DUMP            A00F66
 HEX_DUMP1           A00F96
@@ -3304,7 +3289,7 @@ ICCCC9              A0045E
 IDBCC               A00368
 ILINK               A000E0
 ILLEGAL_INSTRUCTION  10
-ILLEGAL_MSG         A01A9B
+ILLEGAL_MSG         A01A63
 IM7788              A0001C
 IM7799              A00020
 IMMED               A00068
@@ -3348,11 +3333,11 @@ ISHIFTM1            A0042E
 ISTOP               A00054
 JUMP                A013E8
 JUMP1               A0142A
-JUMP_TO             A01937
+JUMP_TO             A018FF
 KI                  A008A8
 KIEND               A008AA
 LF                  A
-LOAD                A018D5
+LOAD                A0189D
 LOCVARSZ            10
 LONG                0
 LOOP                A00BFE
@@ -3371,7 +3356,7 @@ MOVEMS              A00728
 MOVEMS2             A00738
 MSG111              A0089E
 N68                 A9
-NEW                 A01853
+NEW                 A0181B
 NEW_LINE            A00D78
 NEW_POINTER         A00FDA
 NEXT1               A00C1E
@@ -3392,11 +3377,11 @@ NEXT6               A00C64
 NEXT7               A00C72
 NEXT8               A00C82
 NEXT9               A00C92
-NOT_TOS             A0164C
+NOT_TOS             A01614
 NO_CHANGE           A00C10
 NO_ERROR            A00F10
-NUMBER              A0190D
-N_FLAG              A01AE2
+NUMBER              A018D5
+N_FLAG              A01AAA
 OFFSET              0
 OPCTBL              A00AB4
 OUT1X               A00F28
@@ -3405,7 +3390,7 @@ OUT2X               A00F42
 OUT4X               A00F4A
 OUT6X               A00F52
 OUT8X               A00F5A
-PC_REG              A01AD1
+PC_REG              A01A99
 PNT2HX              A01228
 PNT4HX              A01220
 PNT6HX              A0121A
@@ -3415,12 +3400,12 @@ PRINT_BIT           A013D2
 PRINT_D0            A00F62
 PRINT_DEBUG         A01010
 PRINT_DEC           A01184
-PRINT_LINE          A015B0
-PROMPT              A017B1
+PRINT_LINE          A01578
+PROMPT              A01779
 PSTR                A00D6A
 PSTR1               A00D76
 PUTHEX              A01230
-QUICK               A01865
+QUICK               A0182D
 QUICK_HOME          A0101E
 RAM                 0
 RAMBASE             C0
@@ -3435,8 +3420,8 @@ REG1                A0135C
 REG2                A013CC
 REG3                A01398
 REG4                A01390
-REGISTER_DISP       A01956
-ROM                 A0184D
+REGISTER_DISP       A0191E
+ROM                 A01815
 RS                  1E
 SAVHEX              A01240
 SCHR                A002A8
@@ -3445,34 +3430,34 @@ SCROLL              A00D92
 SCROLL1             A00D96
 SEND_PROMPT         A00D9E
 SEND_TITLE          A00DB8
-SERVICE_ADDRESSERR  A01698
-SERVICE_BUSERROR    A0168E
-SERVICE_ILLEGAL     A016A2
-SERVICE_MSG         A016B2
+SERVICE_ADDRESSERR  A01660
+SERVICE_BUSERROR    A01656
+SERVICE_ILLEGAL     A0166A
+SERVICE_MSG         A0167A
 SERVICE_TRAP0       A01522
-SERVICE_ZERODIV     A016AC
-SKIP_PRINT_BLANK    A01656
+SERVICE_ZERODIV     A01674
+SKIP_PRINT_BLANK    A0161E
 SP                  20
 SPACE               A00D8A
-SR_REG              A01AD5
+SR_REG              A01A9D
 STACK_AREA          F4
-START               A017E2
+START               A017AA
 START_FOUND         A00E96
-STOP                A017F4
-STRING1             A019D5
+STOP                A017BC
+STRING1             A0199D
 SUPERVISOR_BIT      5
 SUPER_STACK         E000
 TBL                 A008AA
 TBLE                A00AB4
 TDRE                1
 TEST_RAM            A01074
-TITLE               A01768
-TITLE1              A01783
-TOP_OF_STACK        A01AC1
+TITLE               A01730
+TITLE1              A0174B
+TOP_OF_STACK        A01A89
 TO_HEX              A00DC2
 TRACE_BIT           7
 TRACE_JUMP          A0144C
-TRACE_MSG           A01A41
+TRACE_MSG           A01A09
 TRAP0               80
 TRAP1               84
 TRAP10              A8
@@ -3489,11 +3474,11 @@ TRAP6               98
 TRAP7               9C
 TRAP8               A0
 TRAP9               A4
-TRAP_0              A0194C
-UPLOAD              A015BC
-UPLOAD1             A019AB
-UPLOAD2             A015E8
-UPLOAD3             A015D6
+TRAP_0              A01914
+UPLOAD              A01584
+UPLOAD1             A01973
+UPLOAD2             A015B0
+UPLOAD3             A0159E
 USER_ADDR           CA
 USER_DATA           AA
 USER_PC             F0
@@ -3501,19 +3486,19 @@ USER_SR             EA
 USER_SS             EC
 USER_STACK          1FF4
 USER_USP            E6
-VECINIT             A016B8
-VECINIT1            A016C2
-VECINIT2            A016CE
-VECTABLE            A016E0
-VIEW                A01A52
-VIEW1               A01636
-VIEW_USP            A01614
-V_FLAG              A01ADC
+VECINIT             A01680
+VECINIT1            A0168A
+VECINIT2            A01696
+VECTABLE            A016A8
+VIEW                A01A1A
+VIEW1               A015FE
+VIEW_USP            A015DC
+V_FLAG              A01AA4
 WAIT_CR             A00E4A
 WHAT3               A01520
 WRITE_1             A013DE
 X                   A00008
-X_FLAG              A01AE5
-ZERODIV_MSG         A01AB2
+X_FLAG              A01AAD
+ZERODIV_MSG         A01A7A
 ZERO_TO_NINE        A00DD4
-Z_FLAG              A01ADF
+Z_FLAG              A01AA7

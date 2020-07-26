@@ -16,7 +16,7 @@
 ;
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation; either version 2 of the License, or
+; the Free Software Foundation; either version 2 of the License, orRAM
 ; (at your option) any later version.
 ;
 ; This program is distributed in the hope that it will be useful,
@@ -1791,9 +1791,9 @@ COUT      BTST.B #TDRE,ACIAC.L
           RTS
 
 
-CINS      BTST.B #RDRF,ACIAC.L
+CINS      BTST.B #RDRF,ACIA2C.L
           BEQ.S  CINS
-          MOVE.B ACIAD.L,D0
+          MOVE.B ACIA2D.L,D0
           RTS
 
 
@@ -2790,23 +2790,8 @@ WHAT3         RTS
 ; TRAP #N SERVICES
 ;
 
-SERVICE_TRAP0   MOVE.L A0,-(SP)      ; SAVE A0 BEFOREHAND
-                MOVEA.L RAMBASE.L,A0  ; USE A0 AS THE POINTER
-                LEA.L USER_DATA(A0),A0
-                MOVEM.L D0-D7/A0-A6,(A0)
-                MOVE.L (SP)+,32(A0)  ; RESTORE A0
-
-                MOVEA.L RAMBASE.L,A0
-                MOVE.W (SP)+,USER_SR(A0)
-                BCLR.B #TRACE_BIT,USER_SR(A0) ; TURN TRACE BIT OFF
-                MOVE.L (SP)+,USER_PC(A0)
-
-                MOVE.L USP,A2
-                MOVE.L A2,USER_USP(A0)
-
-                BSR DISPLAY_REG1
-
-                MOVE.L #SUPER_STACK,SP  ; REINIT SYSTEM STACK
+SERVICE_TRAP0   ;MOVE.B ACIA2D.L,D0
+                ;BSR COUT
                 MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
 
                 JMP LOOP.L        ; GET BACK MONITOR
@@ -3128,6 +3113,8 @@ USER_STACK  EQU  STACK_AREA+$1F00    ; TOP OF STACK
 
 
        END	MAIN
+
+
 
 
 
