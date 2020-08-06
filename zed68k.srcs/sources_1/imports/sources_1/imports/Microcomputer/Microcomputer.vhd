@@ -278,7 +278,7 @@ n_sdCardCS <= '0' when cpuAddress(15 downto 0) >= x"f30009"
 n_internalRam1CS <= '0' when  cpuAddress > x"0008" and cpuAddress <= X"FFFF" 
                     and cpu_uds = '0' else '1' ; --4k at bottom
 n_internalRam2CS <= '0' when  cpuAddress > x"0008" and cpuAddress <= X"FFFF" 
-                    and cpu_lds = '1' else '1' ; --4k at bottom
+                    and cpu_lds = '0' else '1' ; --4k at bottom
 
 -- external ram cpuAddress > X"FFFF" and
 
