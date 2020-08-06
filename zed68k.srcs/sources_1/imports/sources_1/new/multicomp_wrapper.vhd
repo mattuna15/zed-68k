@@ -22,6 +22,7 @@ use ieee.std_logic_1164.all;
 use  IEEE.STD_LOGIC_ARITH.all;
 use  IEEE.STD_LOGIC_UNSIGNED.all;
 use IEEE.numeric_std.all;
+use work.fun_pkg.all;
 
 
 -- Uncomment the following library declaration if using
@@ -35,7 +36,7 @@ use IEEE.numeric_std.all;
 
 entity multicomp_wrapper is
 port(
-        sys_clock : in STD_LOGIC;
+        sys_clock   : in std_logic;
         resetn      : in STD_LOGIC;
 		videoR0		: out std_logic;
 		videoG0		: out std_logic;
@@ -70,7 +71,22 @@ port(
 
     LED : out STD_LOGIC_VECTOR ( 15 downto 0 );
     rxd1 : in STD_LOGIC;
-    txd1 : out STD_LOGIC
+    txd1 : out STD_LOGIC;
+    
+      ddr2_addr            : out   std_logic_vector(12 downto 0);
+      ddr2_ba              : out   std_logic_vector(2 downto 0);
+      ddr2_ras_n           : out   std_logic;
+      ddr2_cas_n           : out   std_logic;
+      ddr2_we_n            : out   std_logic;
+      ddr2_ck_p            : out   std_logic_vector(0 downto 0);
+      ddr2_ck_n            : out   std_logic_vector(0 downto 0);
+      ddr2_cke             : out   std_logic_vector(0 downto 0);
+      ddr2_cs_n            : out   std_logic_vector(0 downto 0);
+      ddr2_dm              : out   std_logic_vector(1 downto 0);
+      ddr2_odt             : out   std_logic_vector(0 downto 0);
+      ddr2_dq              : inout std_logic_vector(15 downto 0);
+      ddr2_dqs_p           : inout std_logic_vector(1 downto 0);
+      ddr2_dqs_n           : inout std_logic_vector(1 downto 0)
     
 	);
 end multicomp_wrapper;
@@ -90,49 +106,125 @@ architecture Behavioral of multicomp_wrapper is
     signal serialRead_en: std_logic := '0';
     signal rxDataReady : std_logic := '0' ;
     
-    signal reset: std_logic;
+    signal reset: std_logic := '1' ;
     
     signal count: std_logic_vector( 7 downto 0) := x"00";
     signal data_trigger: std_logic := '0';
+    signal clk_locked: std_logic := '0';
+    
+
+    
+          -- RAM interface
+
+        signal mem_clock: std_logic := '0';
+        signal ram_access_delay: integer := 0;
+        signal ram_ack: std_logic := '1';
+        
+      signal cpuAddress                :    std_logic_vector(26 downto 0) := (others => '0');
+      signal oldAddress                :    std_logic_vector(26 downto 0) := (others => '0');
+      signal cpuDataOut             :     std_logic_vector(15 downto 0) := (others => '0');
+      signal cpuDataIn             :    std_logic_vector(15 downto 0) := (others => '0');
+      signal cpuCS              :    std_logic;
+      signal cpuAS      : std_logic; -- address steobe
+      signal cpuReadEn              :     std_logic;
+      signal cpuWriteEn              :     std_logic;
+      signal cpuUpper               :     std_logic;
+      signal cpuLower               :     std_logic;
+      signal mem_ready              :     std_logic := '0';
+      
+      signal sys_resetn : std_logic;
+      signal sys_clock100 : STD_LOGIC;
+
+    component pll
+    port (
+        resetn  : in std_logic;
+        clk_in : in std_logic;
+        locked : out std_logic;
+        clk100  : out std_logic;
+        clk200  : out std_logic;
+        clk50  : out std_logic;
+        clk25  : out std_logic
+    );
+    end component;
     
 begin
-
-   --------------------------------------------------
-   -- Generate Reset
-   --------------------------------------------------
-
-   main_rst_proc : process (clk50)
-   begin
-        if start_up = '0' then
-            reset <= '1', '0' after 25 ns;
-            start_up <= '1';
-        end if;
    
-      if rising_edge(clk50) and start_up = '1' then
-         -- Hold reset asserted for a number of clock cycles.
-            reset <= not resetn;
-      end if;
-   end process main_rst_proc;
-   
+
+
    --------------------------------------------------
    -- Instantiate Clock generation
    --------------------------------------------------
+       
+    pll1:  pll
+    port map (
+        clk_in => sys_clock,
+        resetn  => resetn,
+        locked => clk_locked,
+        clk100 => sys_clock100,
+        clk200 => mem_clock,
+        clk50 =>  clk50,
+        clk25 => clk25
+    );
 
-   clk_inst : entity work.clk_wiz_0_clk_wiz
-   port map (
-      clk_in1  => sys_clock,
-      eth_clk  => clk50, 
-      vga_clk  => clk25,
-      main_clk => open
-   ); -- clk_inst
+        memory_control: entity work.mem_control 
+        Port map (
 
+        mem_clock => mem_clock, 
+        resetn => resetn,
+        clk_locked => clk_locked, 
+        sys_clock => sys_clock100,
+    
+    -- ram
+    cpuAddress => cpuAddress,
+    cpuDataOut   => cpuDataOut,
+    ramDataOut => cpuDataIn,
+    mem_cen => cpuCS ,
+    mem_oen => cpuReadEn,
+    mem_wen => cpuWriteEn, -- chip enables
+    mem_ubs => cpuUpper,
+    mem_lbs => cpuLower,
+    mem_data_valid => ram_ack,
+    mem_ready => mem_ready,
+    
+    -- DDR2 interface
+
+      ddr2_addr            => ddr2_addr,
+      ddr2_ba              => ddr2_ba,
+      ddr2_ras_n           => ddr2_ras_n,
+      ddr2_cas_n           => ddr2_cas_n,
+      ddr2_we_n            => ddr2_we_n,
+      ddr2_ck_p            => ddr2_ck_p,
+      ddr2_ck_n            => ddr2_ck_n,
+      ddr2_cke             => ddr2_cke,
+      ddr2_cs_n            => ddr2_cs_n,
+      ddr2_dm              => ddr2_dm,
+      ddr2_dq             => ddr2_dq,
+      ddr2_odt             => ddr2_odt,
+      ddr2_dqs_p           => ddr2_dqs_p,
+      ddr2_dqs_n           => ddr2_dqs_n
+
+ );
+
+    reset_proc : process
+    begin
+    
+        if resetn = '1' and mem_ready = '1' and clk_locked = '1' then 
+            sys_resetn <= '1'; 
+        else 
+            sys_resetn <= '0';
+        end if;
+        
+        wait for 3us;
+        
+    end process;
+ 
  computer: entity work.Microcomputer 
     port map (
         
-        sys_clk => sys_clock,
-        n_reset	=> not reset,
+        sys_clk => sys_clock100,
+        n_reset	=> sys_resetn,
 		clk	=> clk50,
-		vgaClock => clk25,
+		vgaClock => clk50,
 		cpuClock => clk25,
 		videoR0	 => videoR0,
 		videoG0	=> videoG0,
@@ -154,10 +246,22 @@ begin
 		
 		serialRead_en => serialRead_en,
 		serialStatus => serialStatus,
-		serialData => serialData 
-
+		serialData => serialData,
+		
+		                  -- RAM interface
+      ram_a                => cpuAddress,
+      ram_dq_i             => cpuDataOut(15 downto 0),
+      ram_dq_o             => cpuDataIn(15 downto 0),
+      ram_cen              => cpuCS,
+      ram_oen              => cpuReadEn,
+      ram_wen              => cpuWriteEn,
+      ram_ub               => cpuUpper,
+      ram_lb               => cpuLower,
+      ram_ack              => ram_ack,
+      
+      cpu_as                => cpuAS
     );
-
+    
     --only using spi do drive dat1&2 high & reset is low.
     SD_RESET <= '0';
     SD_DAT1 <= '1';
@@ -169,18 +273,20 @@ begin
       rd_en => serialRead_en,
       m68_rxd => serialData,
       rd_clk => clk50,
-      reset_n => resetn,
+      reset_n => resetn and mem_ready and clk_locked,
       rxd1 => rxd1,
       rd_data_cnt(8 downto 1) => count,
       rd_data_cnt(0) => data_trigger,
-      sys_clock => sys_clock,
+      clk100_i => sys_clock100,
       cts => open,
       rts => open
     );  
-    
+        
     LED(8) <= serialRead_en;
     LED(9) <= serialStatus(0);
-    LED (15 downto 10) <= (others => '0');
+    
+    LED(10) <= mem_ready;
+    LED (15 downto 11) <= (others => '0');
     serialStatus(0) <= '1' when count > x"00" else '0';
     
 end Behavioral;

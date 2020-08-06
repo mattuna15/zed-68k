@@ -62,10 +62,8 @@ module design_1_fifo_generator_0_0 (
   dout,
   full,
   wr_ack,
-  overflow,
   empty,
   valid,
-  underflow,
   rd_data_count,
   wr_data_count
 );
@@ -87,11 +85,9 @@ output wire [7 : 0] dout;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE FULL" *)
 output wire full;
 output wire wr_ack;
-output wire overflow;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_read:1.0 FIFO_READ EMPTY" *)
 output wire empty;
 output wire valid;
-output wire underflow;
 output wire [8 : 0] rd_data_count;
 output wire [8 : 0] wr_data_count;
 
@@ -113,12 +109,12 @@ output wire [8 : 0] wr_data_count;
     .C_HAS_DATA_COUNT(0),
     .C_HAS_INT_CLK(0),
     .C_HAS_MEMINIT_FILE(0),
-    .C_HAS_OVERFLOW(1),
+    .C_HAS_OVERFLOW(0),
     .C_HAS_RD_DATA_COUNT(1),
     .C_HAS_RD_RST(0),
     .C_HAS_RST(0),
     .C_HAS_SRST(0),
-    .C_HAS_UNDERFLOW(1),
+    .C_HAS_UNDERFLOW(0),
     .C_HAS_VALID(1),
     .C_HAS_WR_ACK(1),
     .C_HAS_WR_DATA_COUNT(1),
@@ -325,11 +321,11 @@ output wire [8 : 0] wr_data_count;
     .full(full),
     .almost_full(),
     .wr_ack(wr_ack),
-    .overflow(overflow),
+    .overflow(),
     .empty(empty),
     .almost_empty(),
     .valid(valid),
-    .underflow(underflow),
+    .underflow(),
     .data_count(),
     .rd_data_count(rd_data_count),
     .wr_data_count(wr_data_count),

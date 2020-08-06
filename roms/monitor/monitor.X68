@@ -1909,7 +1909,7 @@ ZERO_TO_NINE
 
 GET_HEX  BSR CIN
 
-         CMP.B #' ',D0         ; IF BIT_ESC PRESSED
+         CMP.B #'X',D0         ; IF BIT_ESC PRESSED
          BNE.S GET_HEX1
          BSET.B #BIT_ESC,FLAG(A6)
          RTS
@@ -2999,8 +2999,8 @@ VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_TRAP0    ; 47 TRAP #15
 ;----------------------- STRING CONSTANT -------------------------------------
 
-TITLE  DC.B 13,10,'zBug V1.0.1 for MIC68K',13,10,0
-TITLE1 DC.B 13,10,'zBug V1.0.1 for MIC68K (press ? for help)',13,10,0
+TITLE  DC.B 13,10,'zBug V1.0.2 for NEX68K',13,10,0
+TITLE1 DC.B 13,10,'zBug V1.0.2 for NEX68K (press ? for help)',13,10,0
 
 PROMPT DC.B '>',0
 
@@ -3010,7 +3010,7 @@ START  DC.B 13,10,10,'start address=',0
 STOP   DC.B 13,10,'stop  address=',0
 DONE   DC.B 13,10,'done...',0
 
-EDIT1  DC.B 'dit memory (quit: SPACE BAR, next address: ENTER)',0
+EDIT1  DC.B 'dit memory (quit: X, next address: ENTER)',0
 EDIT   DC.B 13,10,10,'Address=',0
 ROM    DC.B '  rom',0
 
@@ -3038,7 +3038,7 @@ STRING1 DC.B '  DFL ',0
 
 ABOUTZBUG DC.B 'bout zBuG V1.0',13,10,10
           DC.B 'zBug V1.0 Copyright (C) 2002 W.SIRICHOTE',13,10,10
-          DC.B 'zBug V1.0.1 MIC68K Version by @kanpapa',13,10,0
+          DC.B 'zBug V1.0.2 NEX68K Version by Matt Pearce',13,10,0
 
 TRACE_MSG DC.B 'race instruction',0
 
@@ -3113,6 +3113,7 @@ USER_STACK  EQU  STACK_AREA+$1F00    ; TOP OF STACK
 
 
        END	MAIN
+
 
 
 

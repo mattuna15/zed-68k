@@ -1,7 +1,7 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Sun Jul 26 15:00:50 2020
+-- Date        : Sat Aug  1 21:12:25 2020
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0_sim_netlist.vhdl
@@ -2171,10 +2171,8 @@ use UNISIM.VCOMPONENTS.ALL;
 entity design_1_fifo_generator_0_0_rd_handshaking_flags is
   port (
     valid : out STD_LOGIC;
-    underflow : out STD_LOGIC;
     ram_valid_i : in STD_LOGIC;
-    rd_clk : in STD_LOGIC;
-    underflow_i0 : in STD_LOGIC
+    rd_clk : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of design_1_fifo_generator_0_0_rd_handshaking_flags : entity is "rd_handshaking_flags";
@@ -2182,17 +2180,6 @@ end design_1_fifo_generator_0_0_rd_handshaking_flags;
 
 architecture STRUCTURE of design_1_fifo_generator_0_0_rd_handshaking_flags is
 begin
-\guf.guf1.underflow_i_reg\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => rd_clk,
-      CE => '1',
-      D => underflow_i0,
-      Q => underflow,
-      R => '0'
-    );
 \gv.ram_valid_d1_reg\: unisim.vcomponents.FDRE
     generic map(
       INIT => '0'
@@ -2964,10 +2951,8 @@ use UNISIM.VCOMPONENTS.ALL;
 entity design_1_fifo_generator_0_0_wr_handshaking_flags is
   port (
     wr_ack : out STD_LOGIC;
-    overflow : out STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
-    wr_clk : in STD_LOGIC;
-    overflow_i0 : in STD_LOGIC
+    wr_clk : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of design_1_fifo_generator_0_0_wr_handshaking_flags : entity is "wr_handshaking_flags";
@@ -2975,17 +2960,6 @@ end design_1_fifo_generator_0_0_wr_handshaking_flags;
 
 architecture STRUCTURE of design_1_fifo_generator_0_0_wr_handshaking_flags is
 begin
-\gof.gof1.overflow_i_reg\: unisim.vcomponents.FDRE
-    generic map(
-      INIT => '0'
-    )
-        port map (
-      C => wr_clk,
-      CE => '1',
-      D => overflow_i0,
-      Q => overflow,
-      R => '0'
-    );
 \gwa.WR_ACK_reg\: unisim.vcomponents.FDRE
      port map (
       C => wr_clk,
@@ -3349,7 +3323,6 @@ entity design_1_fifo_generator_0_0_rd_status_flags_as is
     empty : out STD_LOGIC;
     E : out STD_LOGIC_VECTOR ( 0 to 0 );
     ram_valid_i : out STD_LOGIC;
-    underflow_i0 : out STD_LOGIC;
     v1_reg : in STD_LOGIC_VECTOR ( 3 downto 0 );
     ram_empty_fb_i_reg_0 : in STD_LOGIC;
     v1_reg_0 : in STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -3403,15 +3376,6 @@ c1: entity work.design_1_fifo_generator_0_0_compare_2
       ram_empty_fb_i_reg(0) => ram_empty_fb_i_reg_1(0),
       v1_reg_0(3 downto 0) => v1_reg_0(3 downto 0)
     );
-\guf.guf1.underflow_i_i_1\: unisim.vcomponents.LUT2
-    generic map(
-      INIT => X"8"
-    )
-        port map (
-      I0 => ram_empty_i,
-      I1 => rd_en,
-      O => underflow_i0
-    );
 \gv.ram_valid_d1_i_1\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"2"
@@ -3451,7 +3415,6 @@ use UNISIM.VCOMPONENTS.ALL;
 entity design_1_fifo_generator_0_0_wr_status_flags_as is
   port (
     full : out STD_LOGIC;
-    overflow_i0 : out STD_LOGIC;
     E : out STD_LOGIC_VECTOR ( 0 to 0 );
     \gmux.gm[4].gms.ms\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     v1_reg : in STD_LOGIC_VECTOR ( 0 to 0 );
@@ -3505,15 +3468,6 @@ c2: entity work.design_1_fifo_generator_0_0_compare_0
       comp2 => comp2,
       \gmux.gm[4].gms.ms_0\(3 downto 0) => \gmux.gm[4].gms.ms_0\(3 downto 0),
       v1_reg_0(0) => v1_reg_0(0)
-    );
-\gof.gof1.overflow_i_i_1\: unisim.vcomponents.LUT2
-    generic map(
-      INIT => X"8"
-    )
-        port map (
-      I0 => ram_full_fb_i,
-      I1 => wr_en,
-      O => overflow_i0
     );
 ram_full_fb_i_reg: unisim.vcomponents.FDRE
     generic map(
@@ -3579,7 +3533,6 @@ entity design_1_fifo_generator_0_0_rd_logic is
   port (
     empty : out STD_LOGIC;
     valid : out STD_LOGIC;
-    underflow : out STD_LOGIC;
     E : out STD_LOGIC_VECTOR ( 0 to 0 );
     Q : out STD_LOGIC_VECTOR ( 0 to 0 );
     \gc0.count_d1_reg[8]\ : out STD_LOGIC_VECTOR ( 8 downto 0 );
@@ -3602,7 +3555,6 @@ architecture STRUCTURE of design_1_fifo_generator_0_0_rd_logic is
   signal \^e\ : STD_LOGIC_VECTOR ( 0 to 0 );
   signal \c1/v1_reg\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal ram_valid_i : STD_LOGIC;
-  signal underflow_i0 : STD_LOGIC;
 begin
   E(0) <= \^e\(0);
 \gras.grdc1.rdc\: entity work.design_1_fifo_generator_0_0_rd_dc_as
@@ -3623,7 +3575,6 @@ begin
       ram_valid_i => ram_valid_i,
       rd_clk => rd_clk,
       rd_en => rd_en,
-      underflow_i0 => underflow_i0,
       v1_reg(3 downto 0) => v1_reg(3 downto 0),
       v1_reg_0(3 downto 0) => \c1/v1_reg\(3 downto 0)
     );
@@ -3631,8 +3582,6 @@ begin
      port map (
       ram_valid_i => ram_valid_i,
       rd_clk => rd_clk,
-      underflow => underflow,
-      underflow_i0 => underflow_i0,
       valid => valid
     );
 rpntr: entity work.design_1_fifo_generator_0_0_rd_bin_cntr
@@ -3654,7 +3603,6 @@ entity design_1_fifo_generator_0_0_wr_logic is
     full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
     E : out STD_LOGIC_VECTOR ( 0 to 0 );
-    overflow : out STD_LOGIC;
     Q : out STD_LOGIC_VECTOR ( 8 downto 0 );
     \gic0.gc0.count_reg[7]\ : out STD_LOGIC_VECTOR ( 7 downto 0 );
     \gic0.gc0.count_d1_reg[7]\ : out STD_LOGIC_VECTOR ( 7 downto 0 );
@@ -3674,7 +3622,6 @@ architecture STRUCTURE of design_1_fifo_generator_0_0_wr_logic is
   signal \^q\ : STD_LOGIC_VECTOR ( 8 downto 0 );
   signal \c1/v1_reg\ : STD_LOGIC_VECTOR ( 4 to 4 );
   signal \c2/v1_reg\ : STD_LOGIC_VECTOR ( 4 to 4 );
-  signal overflow_i0 : STD_LOGIC;
   signal wpntr_n_0 : STD_LOGIC;
   signal wpntr_n_1 : STD_LOGIC;
   signal wpntr_n_13 : STD_LOGIC;
@@ -3708,7 +3655,6 @@ begin
       full => full,
       \gmux.gm[4].gms.ms\(3 downto 0) => \gmux.gm[4].gms.ms\(3 downto 0),
       \gmux.gm[4].gms.ms_0\(3 downto 0) => \gmux.gm[4].gms.ms_0\(3 downto 0),
-      overflow_i0 => overflow_i0,
       v1_reg(0) => \c1/v1_reg\(4),
       v1_reg_0(0) => \c2/v1_reg\(4),
       wr_clk => wr_clk,
@@ -3717,8 +3663,6 @@ begin
 \gwhf.whf\: entity work.design_1_fifo_generator_0_0_wr_handshaking_flags
      port map (
       E(0) => \^e\(0),
-      overflow => overflow,
-      overflow_i0 => overflow_i0,
       wr_ack => wr_ack,
       wr_clk => wr_clk
     );
@@ -3885,9 +3829,7 @@ entity design_1_fifo_generator_0_0_fifo_generator_ramfifo is
     empty : out STD_LOGIC;
     full : out STD_LOGIC;
     valid : out STD_LOGIC;
-    underflow : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
-    overflow : out STD_LOGIC;
     rd_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     wr_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     rd_clk : in STD_LOGIC;
@@ -3972,7 +3914,6 @@ begin
       \rd_dc_i_reg[7]\(0) => \gntv_or_sync_fifo.gcx.clkx_n_15\,
       \rd_dc_i_reg[8]\(0) => \gntv_or_sync_fifo.gcx.clkx_n_17\,
       rd_en => rd_en,
-      underflow => underflow,
       v1_reg(3 downto 0) => \gras.rsts/c0/v1_reg\(3 downto 0),
       valid => valid
     );
@@ -3986,7 +3927,6 @@ begin
       \gic0.gc0.count_reg[7]\(7 downto 0) => wr_pntr_plus2(7 downto 0),
       \gmux.gm[4].gms.ms\(3 downto 0) => \gwas.wsts/c1/v1_reg\(3 downto 0),
       \gmux.gm[4].gms.ms_0\(3 downto 0) => \gwas.wsts/c2/v1_reg\(3 downto 0),
-      overflow => overflow,
       wr_ack => wr_ack,
       wr_clk => wr_clk,
       wr_data_count(8 downto 0) => wr_data_count(8 downto 0),
@@ -4014,9 +3954,7 @@ entity design_1_fifo_generator_0_0_fifo_generator_top is
     empty : out STD_LOGIC;
     full : out STD_LOGIC;
     valid : out STD_LOGIC;
-    underflow : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
-    overflow : out STD_LOGIC;
     rd_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     wr_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     rd_clk : in STD_LOGIC;
@@ -4037,11 +3975,9 @@ begin
       dout(7 downto 0) => dout(7 downto 0),
       empty => empty,
       full => full,
-      overflow => overflow,
       rd_clk => rd_clk,
       rd_data_count(8 downto 0) => rd_data_count(8 downto 0),
       rd_en => rd_en,
-      underflow => underflow,
       valid => valid,
       wr_ack => wr_ack,
       wr_clk => wr_clk,
@@ -4059,9 +3995,7 @@ entity design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth is
     empty : out STD_LOGIC;
     full : out STD_LOGIC;
     valid : out STD_LOGIC;
-    underflow : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
-    overflow : out STD_LOGIC;
     rd_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     wr_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     rd_clk : in STD_LOGIC;
@@ -4082,11 +4016,9 @@ begin
       dout(7 downto 0) => dout(7 downto 0),
       empty => empty,
       full => full,
-      overflow => overflow,
       rd_clk => rd_clk,
       rd_data_count(8 downto 0) => rd_data_count(8 downto 0),
       rd_en => rd_en,
-      underflow => underflow,
       valid => valid,
       wr_ack => wr_ack,
       wr_clk => wr_clk,
@@ -4491,7 +4423,7 @@ entity design_1_fifo_generator_0_0_fifo_generator_v13_2_5 is
   attribute C_HAS_MEMINIT_FILE : integer;
   attribute C_HAS_MEMINIT_FILE of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 0;
   attribute C_HAS_OVERFLOW : integer;
-  attribute C_HAS_OVERFLOW of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 1;
+  attribute C_HAS_OVERFLOW of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 0;
   attribute C_HAS_PROG_FLAGS_AXIS : integer;
   attribute C_HAS_PROG_FLAGS_AXIS of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 0;
   attribute C_HAS_PROG_FLAGS_RACH : integer;
@@ -4515,7 +4447,7 @@ entity design_1_fifo_generator_0_0_fifo_generator_v13_2_5 is
   attribute C_HAS_SRST : integer;
   attribute C_HAS_SRST of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 0;
   attribute C_HAS_UNDERFLOW : integer;
-  attribute C_HAS_UNDERFLOW of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 1;
+  attribute C_HAS_UNDERFLOW of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 0;
   attribute C_HAS_VALID : integer;
   attribute C_HAS_VALID of design_1_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 1;
   attribute C_HAS_WR_ACK : integer;
@@ -5160,6 +5092,7 @@ begin
   m_axis_tuser(1) <= \<const0>\;
   m_axis_tuser(0) <= \<const0>\;
   m_axis_tvalid <= \<const0>\;
+  overflow <= \<const0>\;
   prog_empty <= \<const0>\;
   prog_full <= \<const0>\;
   rd_rst_busy <= \<const0>\;
@@ -5243,6 +5176,7 @@ begin
   s_axi_wready <= \<const0>\;
   s_axis_tready <= \<const0>\;
   sbiterr <= \<const0>\;
+  underflow <= \<const0>\;
   wr_rst_busy <= \<const0>\;
 GND: unisim.vcomponents.GND
      port map (
@@ -5258,11 +5192,9 @@ inst_fifo_gen: entity work.design_1_fifo_generator_0_0_fifo_generator_v13_2_5_sy
       dout(7 downto 0) => dout(7 downto 0),
       empty => empty,
       full => full,
-      overflow => overflow,
       rd_clk => rd_clk,
       rd_data_count(8 downto 0) => rd_data_count(8 downto 0),
       rd_en => rd_en,
-      underflow => underflow,
       valid => valid,
       wr_ack => wr_ack,
       wr_clk => wr_clk,
@@ -5284,10 +5216,8 @@ entity design_1_fifo_generator_0_0 is
     dout : out STD_LOGIC_VECTOR ( 7 downto 0 );
     full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
-    overflow : out STD_LOGIC;
     empty : out STD_LOGIC;
     valid : out STD_LOGIC;
-    underflow : out STD_LOGIC;
     rd_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     wr_data_count : out STD_LOGIC_VECTOR ( 8 downto 0 )
   );
@@ -5349,6 +5279,7 @@ architecture STRUCTURE of design_1_fifo_generator_0_0 is
   signal NLW_U0_m_axi_wvalid_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_m_axis_tlast_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_m_axis_tvalid_UNCONNECTED : STD_LOGIC;
+  signal NLW_U0_overflow_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_prog_empty_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_prog_full_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_rd_rst_busy_UNCONNECTED : STD_LOGIC;
@@ -5360,6 +5291,7 @@ architecture STRUCTURE of design_1_fifo_generator_0_0 is
   signal NLW_U0_s_axi_wready_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_s_axis_tready_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_sbiterr_UNCONNECTED : STD_LOGIC;
+  signal NLW_U0_underflow_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_wr_rst_busy_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_axi_ar_data_count_UNCONNECTED : STD_LOGIC_VECTOR ( 4 downto 0 );
   signal NLW_U0_axi_ar_rd_data_count_UNCONNECTED : STD_LOGIC_VECTOR ( 4 downto 0 );
@@ -5578,7 +5510,7 @@ architecture STRUCTURE of design_1_fifo_generator_0_0 is
   attribute C_HAS_MEMINIT_FILE : integer;
   attribute C_HAS_MEMINIT_FILE of U0 : label is 0;
   attribute C_HAS_OVERFLOW : integer;
-  attribute C_HAS_OVERFLOW of U0 : label is 1;
+  attribute C_HAS_OVERFLOW of U0 : label is 0;
   attribute C_HAS_PROG_FLAGS_AXIS : integer;
   attribute C_HAS_PROG_FLAGS_AXIS of U0 : label is 0;
   attribute C_HAS_PROG_FLAGS_RACH : integer;
@@ -5602,7 +5534,7 @@ architecture STRUCTURE of design_1_fifo_generator_0_0 is
   attribute C_HAS_SRST : integer;
   attribute C_HAS_SRST of U0 : label is 0;
   attribute C_HAS_UNDERFLOW : integer;
-  attribute C_HAS_UNDERFLOW of U0 : label is 1;
+  attribute C_HAS_UNDERFLOW of U0 : label is 0;
   attribute C_HAS_VALID : integer;
   attribute C_HAS_VALID of U0 : label is 1;
   attribute C_HAS_WR_ACK : integer;
@@ -5988,7 +5920,7 @@ U0: entity work.design_1_fifo_generator_0_0_fifo_generator_v13_2_5
       m_axis_tstrb(0) => NLW_U0_m_axis_tstrb_UNCONNECTED(0),
       m_axis_tuser(3 downto 0) => NLW_U0_m_axis_tuser_UNCONNECTED(3 downto 0),
       m_axis_tvalid => NLW_U0_m_axis_tvalid_UNCONNECTED,
-      overflow => overflow,
+      overflow => NLW_U0_overflow_UNCONNECTED,
       prog_empty => NLW_U0_prog_empty_UNCONNECTED,
       prog_empty_thresh(8 downto 0) => B"000000000",
       prog_empty_thresh_assert(8 downto 0) => B"000000000",
@@ -6063,7 +5995,7 @@ U0: entity work.design_1_fifo_generator_0_0_fifo_generator_v13_2_5
       sbiterr => NLW_U0_sbiterr_UNCONNECTED,
       sleep => '0',
       srst => '0',
-      underflow => underflow,
+      underflow => NLW_U0_underflow_UNCONNECTED,
       valid => valid,
       wr_ack => wr_ack,
       wr_clk => wr_clk,

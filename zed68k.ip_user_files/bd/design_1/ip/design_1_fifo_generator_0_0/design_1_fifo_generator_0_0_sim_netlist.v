@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sun Jul 26 15:00:50 2020
+// Date        : Sat Aug  1 21:12:25 2020
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0_sim_netlist.v
@@ -23,10 +23,8 @@ module design_1_fifo_generator_0_0
     dout,
     full,
     wr_ack,
-    overflow,
     empty,
     valid,
-    underflow,
     rd_data_count,
     wr_data_count);
   (* x_interface_info = "xilinx.com:signal:clock:1.0 write_clk CLK" *) (* x_interface_parameter = "XIL_INTERFACENAME write_clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1, INSERT_VIP 0" *) input wr_clk;
@@ -37,10 +35,8 @@ module design_1_fifo_generator_0_0
   (* x_interface_info = "xilinx.com:interface:fifo_read:1.0 FIFO_READ RD_DATA" *) output [7:0]dout;
   (* x_interface_info = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE FULL" *) output full;
   output wr_ack;
-  output overflow;
   (* x_interface_info = "xilinx.com:interface:fifo_read:1.0 FIFO_READ EMPTY" *) output empty;
   output valid;
-  output underflow;
   output [8:0]rd_data_count;
   output [8:0]wr_data_count;
 
@@ -48,11 +44,9 @@ module design_1_fifo_generator_0_0
   wire [7:0]dout;
   wire empty;
   wire full;
-  wire overflow;
   wire rd_clk;
   wire [8:0]rd_data_count;
   wire rd_en;
-  wire underflow;
   wire valid;
   wire wr_ack;
   wire wr_clk;
@@ -105,6 +99,7 @@ module design_1_fifo_generator_0_0
   wire NLW_U0_m_axi_wvalid_UNCONNECTED;
   wire NLW_U0_m_axis_tlast_UNCONNECTED;
   wire NLW_U0_m_axis_tvalid_UNCONNECTED;
+  wire NLW_U0_overflow_UNCONNECTED;
   wire NLW_U0_prog_empty_UNCONNECTED;
   wire NLW_U0_prog_full_UNCONNECTED;
   wire NLW_U0_rd_rst_busy_UNCONNECTED;
@@ -116,6 +111,7 @@ module design_1_fifo_generator_0_0
   wire NLW_U0_s_axi_wready_UNCONNECTED;
   wire NLW_U0_s_axis_tready_UNCONNECTED;
   wire NLW_U0_sbiterr_UNCONNECTED;
+  wire NLW_U0_underflow_UNCONNECTED;
   wire NLW_U0_wr_rst_busy_UNCONNECTED;
   wire [4:0]NLW_U0_axi_ar_data_count_UNCONNECTED;
   wire [4:0]NLW_U0_axi_ar_rd_data_count_UNCONNECTED;
@@ -255,7 +251,7 @@ module design_1_fifo_generator_0_0
   (* C_HAS_INT_CLK = "0" *) 
   (* C_HAS_MASTER_CE = "0" *) 
   (* C_HAS_MEMINIT_FILE = "0" *) 
-  (* C_HAS_OVERFLOW = "1" *) 
+  (* C_HAS_OVERFLOW = "0" *) 
   (* C_HAS_PROG_FLAGS_AXIS = "0" *) 
   (* C_HAS_PROG_FLAGS_RACH = "0" *) 
   (* C_HAS_PROG_FLAGS_RDCH = "0" *) 
@@ -267,7 +263,7 @@ module design_1_fifo_generator_0_0
   (* C_HAS_RST = "0" *) 
   (* C_HAS_SLAVE_CE = "0" *) 
   (* C_HAS_SRST = "0" *) 
-  (* C_HAS_UNDERFLOW = "1" *) 
+  (* C_HAS_UNDERFLOW = "0" *) 
   (* C_HAS_VALID = "1" *) 
   (* C_HAS_WR_ACK = "1" *) 
   (* C_HAS_WR_DATA_COUNT = "1" *) 
@@ -528,7 +524,7 @@ module design_1_fifo_generator_0_0
         .m_axis_tstrb(NLW_U0_m_axis_tstrb_UNCONNECTED[0]),
         .m_axis_tuser(NLW_U0_m_axis_tuser_UNCONNECTED[3:0]),
         .m_axis_tvalid(NLW_U0_m_axis_tvalid_UNCONNECTED),
-        .overflow(overflow),
+        .overflow(NLW_U0_overflow_UNCONNECTED),
         .prog_empty(NLW_U0_prog_empty_UNCONNECTED),
         .prog_empty_thresh({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
         .prog_empty_thresh_assert({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
@@ -603,7 +599,7 @@ module design_1_fifo_generator_0_0
         .sbiterr(NLW_U0_sbiterr_UNCONNECTED),
         .sleep(1'b0),
         .srst(1'b0),
-        .underflow(underflow),
+        .underflow(NLW_U0_underflow_UNCONNECTED),
         .valid(valid),
         .wr_ack(wr_ack),
         .wr_clk(wr_clk),
@@ -2284,9 +2280,7 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
     empty,
     full,
     valid,
-    underflow,
     wr_ack,
-    overflow,
     rd_data_count,
     wr_data_count,
     rd_clk,
@@ -2298,9 +2292,7 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
   output empty;
   output full;
   output valid;
-  output underflow;
   output wr_ack;
-  output overflow;
   output [8:0]rd_data_count;
   output [8:0]wr_data_count;
   input rd_clk;
@@ -2327,7 +2319,6 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
   wire [4:4]\gras.rsts/c1/v1_reg ;
   wire [3:0]\gwas.wsts/c1/v1_reg ;
   wire [3:0]\gwas.wsts/c2/v1_reg ;
-  wire overflow;
   wire ram_rd_en_i;
   wire ram_wr_en;
   wire rd_clk;
@@ -2336,7 +2327,6 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
   wire [8:0]rd_pntr;
   wire [8:8]rd_pntr_plus1;
   wire [8:0]rd_pntr_wr;
-  wire underflow;
   wire valid;
   wire wr_ack;
   wire wr_clk;
@@ -2379,7 +2369,6 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
         .\rd_dc_i_reg[7] ({\gntv_or_sync_fifo.gcx.clkx_n_12 ,\gntv_or_sync_fifo.gcx.clkx_n_13 ,\gntv_or_sync_fifo.gcx.clkx_n_14 ,\gntv_or_sync_fifo.gcx.clkx_n_15 }),
         .\rd_dc_i_reg[8] (\gntv_or_sync_fifo.gcx.clkx_n_17 ),
         .rd_en(rd_en),
-        .underflow(underflow),
         .v1_reg(\gras.rsts/c0/v1_reg ),
         .valid(valid));
   design_1_fifo_generator_0_0_wr_logic \gntv_or_sync_fifo.gl0.wr 
@@ -2391,7 +2380,6 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
         .\gic0.gc0.count_reg[7] (wr_pntr_plus2),
         .\gmux.gm[4].gms.ms (\gwas.wsts/c1/v1_reg ),
         .\gmux.gm[4].gms.ms_0 (\gwas.wsts/c2/v1_reg ),
-        .overflow(overflow),
         .wr_ack(wr_ack),
         .wr_clk(wr_clk),
         .wr_data_count(wr_data_count),
@@ -2413,9 +2401,7 @@ module design_1_fifo_generator_0_0_fifo_generator_top
     empty,
     full,
     valid,
-    underflow,
     wr_ack,
-    overflow,
     rd_data_count,
     wr_data_count,
     rd_clk,
@@ -2427,9 +2413,7 @@ module design_1_fifo_generator_0_0_fifo_generator_top
   output empty;
   output full;
   output valid;
-  output underflow;
   output wr_ack;
-  output overflow;
   output [8:0]rd_data_count;
   output [8:0]wr_data_count;
   input rd_clk;
@@ -2442,11 +2426,9 @@ module design_1_fifo_generator_0_0_fifo_generator_top
   wire [7:0]dout;
   wire empty;
   wire full;
-  wire overflow;
   wire rd_clk;
   wire [8:0]rd_data_count;
   wire rd_en;
-  wire underflow;
   wire valid;
   wire wr_ack;
   wire wr_clk;
@@ -2458,11 +2440,9 @@ module design_1_fifo_generator_0_0_fifo_generator_top
         .dout(dout),
         .empty(empty),
         .full(full),
-        .overflow(overflow),
         .rd_clk(rd_clk),
         .rd_data_count(rd_data_count),
         .rd_en(rd_en),
-        .underflow(underflow),
         .valid(valid),
         .wr_ack(wr_ack),
         .wr_clk(wr_clk),
@@ -2496,11 +2476,11 @@ endmodule
 (* C_HAS_DATA_COUNT = "0" *) (* C_HAS_DATA_COUNTS_AXIS = "0" *) (* C_HAS_DATA_COUNTS_RACH = "0" *) 
 (* C_HAS_DATA_COUNTS_RDCH = "0" *) (* C_HAS_DATA_COUNTS_WACH = "0" *) (* C_HAS_DATA_COUNTS_WDCH = "0" *) 
 (* C_HAS_DATA_COUNTS_WRCH = "0" *) (* C_HAS_INT_CLK = "0" *) (* C_HAS_MASTER_CE = "0" *) 
-(* C_HAS_MEMINIT_FILE = "0" *) (* C_HAS_OVERFLOW = "1" *) (* C_HAS_PROG_FLAGS_AXIS = "0" *) 
+(* C_HAS_MEMINIT_FILE = "0" *) (* C_HAS_OVERFLOW = "0" *) (* C_HAS_PROG_FLAGS_AXIS = "0" *) 
 (* C_HAS_PROG_FLAGS_RACH = "0" *) (* C_HAS_PROG_FLAGS_RDCH = "0" *) (* C_HAS_PROG_FLAGS_WACH = "0" *) 
 (* C_HAS_PROG_FLAGS_WDCH = "0" *) (* C_HAS_PROG_FLAGS_WRCH = "0" *) (* C_HAS_RD_DATA_COUNT = "1" *) 
 (* C_HAS_RD_RST = "0" *) (* C_HAS_RST = "0" *) (* C_HAS_SLAVE_CE = "0" *) 
-(* C_HAS_SRST = "0" *) (* C_HAS_UNDERFLOW = "1" *) (* C_HAS_VALID = "1" *) 
+(* C_HAS_SRST = "0" *) (* C_HAS_UNDERFLOW = "0" *) (* C_HAS_VALID = "1" *) 
 (* C_HAS_WR_ACK = "1" *) (* C_HAS_WR_DATA_COUNT = "1" *) (* C_HAS_WR_RST = "0" *) 
 (* C_IMPLEMENTATION_TYPE = "2" *) (* C_IMPLEMENTATION_TYPE_AXIS = "1" *) (* C_IMPLEMENTATION_TYPE_RACH = "1" *) 
 (* C_IMPLEMENTATION_TYPE_RDCH = "1" *) (* C_IMPLEMENTATION_TYPE_WACH = "1" *) (* C_IMPLEMENTATION_TYPE_WDCH = "1" *) 
@@ -3008,11 +2988,9 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5
   wire [7:0]dout;
   wire empty;
   wire full;
-  wire overflow;
   wire rd_clk;
   wire [8:0]rd_data_count;
   wire rd_en;
-  wire underflow;
   wire valid;
   wire wr_ack;
   wire wr_clk;
@@ -3435,6 +3413,7 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5
   assign m_axis_tuser[1] = \<const0> ;
   assign m_axis_tuser[0] = \<const0> ;
   assign m_axis_tvalid = \<const0> ;
+  assign overflow = \<const0> ;
   assign prog_empty = \<const0> ;
   assign prog_full = \<const0> ;
   assign rd_rst_busy = \<const0> ;
@@ -3518,6 +3497,7 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5
   assign s_axi_wready = \<const0> ;
   assign s_axis_tready = \<const0> ;
   assign sbiterr = \<const0> ;
+  assign underflow = \<const0> ;
   assign wr_rst_busy = \<const0> ;
   GND GND
        (.G(\<const0> ));
@@ -3528,11 +3508,9 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5
         .dout(dout),
         .empty(empty),
         .full(full),
-        .overflow(overflow),
         .rd_clk(rd_clk),
         .rd_data_count(rd_data_count),
         .rd_en(rd_en),
-        .underflow(underflow),
         .valid(valid),
         .wr_ack(wr_ack),
         .wr_clk(wr_clk),
@@ -3546,9 +3524,7 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth
     empty,
     full,
     valid,
-    underflow,
     wr_ack,
-    overflow,
     rd_data_count,
     wr_data_count,
     rd_clk,
@@ -3560,9 +3536,7 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth
   output empty;
   output full;
   output valid;
-  output underflow;
   output wr_ack;
-  output overflow;
   output [8:0]rd_data_count;
   output [8:0]wr_data_count;
   input rd_clk;
@@ -3575,11 +3549,9 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth
   wire [7:0]dout;
   wire empty;
   wire full;
-  wire overflow;
   wire rd_clk;
   wire [8:0]rd_data_count;
   wire rd_en;
-  wire underflow;
   wire valid;
   wire wr_ack;
   wire wr_clk;
@@ -3591,11 +3563,9 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth
         .dout(dout),
         .empty(empty),
         .full(full),
-        .overflow(overflow),
         .rd_clk(rd_clk),
         .rd_data_count(rd_data_count),
         .rd_en(rd_en),
-        .underflow(underflow),
         .valid(valid),
         .wr_ack(wr_ack),
         .wr_clk(wr_clk),
@@ -4061,30 +4031,16 @@ endmodule
 (* ORIG_REF_NAME = "rd_handshaking_flags" *) 
 module design_1_fifo_generator_0_0_rd_handshaking_flags
    (valid,
-    underflow,
     ram_valid_i,
-    rd_clk,
-    underflow_i0);
+    rd_clk);
   output valid;
-  output underflow;
   input ram_valid_i;
   input rd_clk;
-  input underflow_i0;
 
   wire ram_valid_i;
   wire rd_clk;
-  wire underflow;
-  wire underflow_i0;
   wire valid;
 
-  FDRE #(
-    .INIT(1'b0)) 
-    \guf.guf1.underflow_i_reg 
-       (.C(rd_clk),
-        .CE(1'b1),
-        .D(underflow_i0),
-        .Q(underflow),
-        .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
     \gv.ram_valid_d1_reg 
@@ -4099,7 +4055,6 @@ endmodule
 module design_1_fifo_generator_0_0_rd_logic
    (empty,
     valid,
-    underflow,
     E,
     Q,
     \gc0.count_d1_reg[8] ,
@@ -4115,7 +4070,6 @@ module design_1_fifo_generator_0_0_rd_logic
     rd_en);
   output empty;
   output valid;
-  output underflow;
   output [0:0]E;
   output [0:0]Q;
   output [8:0]\gc0.count_d1_reg[8] ;
@@ -4145,8 +4099,6 @@ module design_1_fifo_generator_0_0_rd_logic
   wire [3:0]\rd_dc_i_reg[7] ;
   wire [0:0]\rd_dc_i_reg[8] ;
   wire rd_en;
-  wire underflow;
-  wire underflow_i0;
   wire [3:0]v1_reg;
   wire valid;
 
@@ -4165,14 +4117,11 @@ module design_1_fifo_generator_0_0_rd_logic
         .ram_valid_i(ram_valid_i),
         .rd_clk(rd_clk),
         .rd_en(rd_en),
-        .underflow_i0(underflow_i0),
         .v1_reg(v1_reg),
         .v1_reg_0(\c1/v1_reg ));
   design_1_fifo_generator_0_0_rd_handshaking_flags \grhf.rhf 
        (.ram_valid_i(ram_valid_i),
         .rd_clk(rd_clk),
-        .underflow(underflow),
-        .underflow_i0(underflow_i0),
         .valid(valid));
   design_1_fifo_generator_0_0_rd_bin_cntr rpntr
        (.E(E),
@@ -4188,7 +4137,6 @@ module design_1_fifo_generator_0_0_rd_status_flags_as
    (empty,
     E,
     ram_valid_i,
-    underflow_i0,
     v1_reg,
     ram_empty_fb_i_reg_0,
     v1_reg_0,
@@ -4198,7 +4146,6 @@ module design_1_fifo_generator_0_0_rd_status_flags_as
   output empty;
   output [0:0]E;
   output ram_valid_i;
-  output underflow_i0;
   input [3:0]v1_reg;
   input ram_empty_fb_i_reg_0;
   input [3:0]v1_reg_0;
@@ -4216,7 +4163,6 @@ module design_1_fifo_generator_0_0_rd_status_flags_as
   wire ram_valid_i;
   wire rd_clk;
   wire rd_en;
-  wire underflow_i0;
   wire [3:0]v1_reg;
   wire [3:0]v1_reg_0;
 
@@ -4238,12 +4184,6 @@ module design_1_fifo_generator_0_0_rd_status_flags_as
        (.comp1(comp1),
         .ram_empty_fb_i_reg(ram_empty_fb_i_reg_1),
         .v1_reg_0(v1_reg_0));
-  LUT2 #(
-    .INIT(4'h8)) 
-    \guf.guf1.underflow_i_i_1 
-       (.I0(ram_empty_i),
-        .I1(rd_en),
-        .O(underflow_i0));
   LUT2 #(
     .INIT(4'h2)) 
     \gv.ram_valid_d1_i_1 
@@ -4836,30 +4776,16 @@ endmodule
 (* ORIG_REF_NAME = "wr_handshaking_flags" *) 
 module design_1_fifo_generator_0_0_wr_handshaking_flags
    (wr_ack,
-    overflow,
     E,
-    wr_clk,
-    overflow_i0);
+    wr_clk);
   output wr_ack;
-  output overflow;
   input [0:0]E;
   input wr_clk;
-  input overflow_i0;
 
   wire [0:0]E;
-  wire overflow;
-  wire overflow_i0;
   wire wr_ack;
   wire wr_clk;
 
-  FDRE #(
-    .INIT(1'b0)) 
-    \gof.gof1.overflow_i_reg 
-       (.C(wr_clk),
-        .CE(1'b1),
-        .D(overflow_i0),
-        .Q(overflow),
-        .R(1'b0));
   FDRE \gwa.WR_ACK_reg 
        (.C(wr_clk),
         .CE(1'b1),
@@ -4873,7 +4799,6 @@ module design_1_fifo_generator_0_0_wr_logic
    (full,
     wr_ack,
     E,
-    overflow,
     Q,
     \gic0.gc0.count_reg[7] ,
     \gic0.gc0.count_d1_reg[7] ,
@@ -4886,7 +4811,6 @@ module design_1_fifo_generator_0_0_wr_logic
   output full;
   output wr_ack;
   output [0:0]E;
-  output overflow;
   output [8:0]Q;
   output [7:0]\gic0.gc0.count_reg[7] ;
   output [7:0]\gic0.gc0.count_d1_reg[7] ;
@@ -4907,8 +4831,6 @@ module design_1_fifo_generator_0_0_wr_logic
   wire [7:0]\gic0.gc0.count_reg[7] ;
   wire [3:0]\gmux.gm[4].gms.ms ;
   wire [3:0]\gmux.gm[4].gms.ms_0 ;
-  wire overflow;
-  wire overflow_i0;
   wire wpntr_n_0;
   wire wpntr_n_1;
   wire wpntr_n_13;
@@ -4935,15 +4857,12 @@ module design_1_fifo_generator_0_0_wr_logic
         .full(full),
         .\gmux.gm[4].gms.ms (\gmux.gm[4].gms.ms ),
         .\gmux.gm[4].gms.ms_0 (\gmux.gm[4].gms.ms_0 ),
-        .overflow_i0(overflow_i0),
         .v1_reg(\c1/v1_reg ),
         .v1_reg_0(\c2/v1_reg ),
         .wr_clk(wr_clk),
         .wr_en(wr_en));
   design_1_fifo_generator_0_0_wr_handshaking_flags \gwhf.whf 
        (.E(E),
-        .overflow(overflow),
-        .overflow_i0(overflow_i0),
         .wr_ack(wr_ack),
         .wr_clk(wr_clk));
   design_1_fifo_generator_0_0_wr_bin_cntr wpntr
@@ -4963,7 +4882,6 @@ endmodule
 (* ORIG_REF_NAME = "wr_status_flags_as" *) 
 module design_1_fifo_generator_0_0_wr_status_flags_as
    (full,
-    overflow_i0,
     E,
     \gmux.gm[4].gms.ms ,
     v1_reg,
@@ -4972,7 +4890,6 @@ module design_1_fifo_generator_0_0_wr_status_flags_as
     wr_clk,
     wr_en);
   output full;
-  output overflow_i0;
   output [0:0]E;
   input [3:0]\gmux.gm[4].gms.ms ;
   input [0:0]v1_reg;
@@ -4986,7 +4903,6 @@ module design_1_fifo_generator_0_0_wr_status_flags_as
   wire comp2;
   wire [3:0]\gmux.gm[4].gms.ms ;
   wire [3:0]\gmux.gm[4].gms.ms_0 ;
-  wire overflow_i0;
   (* DONT_TOUCH *) wire ram_full_fb_i;
   (* DONT_TOUCH *) wire ram_full_i;
   wire [0:0]v1_reg;
@@ -5012,12 +4928,6 @@ module design_1_fifo_generator_0_0_wr_status_flags_as
        (.comp2(comp2),
         .\gmux.gm[4].gms.ms_0 (\gmux.gm[4].gms.ms_0 ),
         .v1_reg_0(v1_reg_0));
-  LUT2 #(
-    .INIT(4'h8)) 
-    \gof.gof1.overflow_i_i_1 
-       (.I0(ram_full_fb_i),
-        .I1(wr_en),
-        .O(overflow_i0));
   (* DONT_TOUCH *) 
   (* KEEP = "yes" *) 
   (* equivalent_register_removal = "no" *) 

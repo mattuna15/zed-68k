@@ -9,7 +9,7 @@ architecture structural of main_tb is
 
    -- Clock
    signal main_clk  : std_logic;
-   signal reset : std_logic := '0' ;
+   signal resetn : std_logic := '0' ;
 
    signal LED : STD_LOGIC_VECTOR ( 15 downto 0 );
 
@@ -20,6 +20,23 @@ architecture structural of main_tb is
     signal qspi_flash_ss_io :  STD_LOGIC;
     signal usb_uart_rxd :  STD_LOGIC := '0';
     signal usb_uart_txd :  STD_LOGIC;
+    signal ddr2_addr            :    std_logic_vector(12 downto 0);
+    signal  ddr2_ba              :    std_logic_vector(2 downto 0);
+    signal  ddr2_ras_n           :    std_logic;
+    signal  ddr2_cas_n           :    std_logic;
+    signal  ddr2_we_n            :    std_logic;
+    signal  ddr2_ck_p            :    std_logic_vector(0 downto 0);
+    signal  ddr2_ck_n            :    std_logic_vector(0 downto 0);
+    signal  ddr2_cke             :    std_logic_vector(0 downto 0);
+    signal  ddr2_cs_n            :    std_logic_vector(0 downto 0);
+    signal  ddr2_dm              :    std_logic_vector(1 downto 0);
+    signal  ddr2_odt             :    std_logic_vector(0 downto 0);
+    signal  ddr2_dq              :  std_logic_vector(15 downto 0);
+    signal  ddr2_dqs_p           :  std_logic_vector(1 downto 0);
+    signal  ddr2_dqs_n           :  std_logic_vector(1 downto 0);
+    signal ddr2_rdqs_n           :  std_logic_vector(1 downto 0);
+    
+    signal start : std_logic := '0';
     
        
    -- Low-level byte-write
@@ -53,19 +70,48 @@ begin
    main_clk_proc : process
    begin
       main_clk <= '1', '0' after 5 ns; -- 100 MHz
+      
+      if start = '0' then
+        resetn <= '0', '1' after 25ns;
+        start <= '1';
+      end if;
+      
       wait for 10 ns;
    end process main_clk_proc;
+   
+   
 
-    serial: process
-    begin
-        wait for 100900 ns;
-        wait until rising_edge(main_clk);
-        UART_WRITE_BYTE(X"3F", usb_uart_rxd);
-        wait until rising_edge(main_clk);
-        UART_WRITE_BYTE(X"3F", usb_uart_rxd);
-        wait until rising_edge(main_clk);
-        UART_WRITE_BYTE(X"3F", usb_uart_rxd);        
-    end process serial;
+--    serial: process
+--    begin
+--        wait for 100900 ns;
+--        wait until rising_edge(main_clk);
+--        UART_WRITE_BYTE(X"3F", usb_uart_rxd);
+--        wait until rising_edge(main_clk);
+--        UART_WRITE_BYTE(X"3F", usb_uart_rxd);
+--        wait until rising_edge(main_clk);
+--        UART_WRITE_BYTE(X"3F", usb_uart_rxd);        
+--    end process serial;
+
+
+    fake_ddr2: entity ddr2_model 
+    port map (
+        ck => ddr2_ck_p,
+        ck_n => ddr2_ck_n,
+        cke => ddr2_cke,
+        cs_n => ddr2_cs_n,
+        ras_n => ddr2_ras_n,
+        cas_n => ddr2_cas_n,
+        we_n => ddr2_we_n,
+        dm_rdqs => ddr2_dm,
+        ba => ddr2_ba,
+        addr => ddr2_addr,
+        dq => ddr2_dq,
+        dqs => ddr2_dqs_p,
+        dqs_n => ddr2_dqs_n,
+        rdqs_n  => ddr2_rdqs_n,
+        odt => ddr2_odt
+        );
+
    --------------------------------------------------
    -- Instantiate MAIN
    --------------------------------------------------
@@ -74,7 +120,7 @@ begin
 
    port map (
         sys_clock => main_clk,
-        resetn => not reset,
+        resetn => resetn,
 		videoR0	=> open,
 		videoG0	=> open,
 		videoB0	=> open,
@@ -99,7 +145,23 @@ begin
          LED => open,
         
         rxd1 => usb_uart_rxd,
-        txd1 => open
+        txd1 => open,
+        
+              -- DDR2 interface
+      ddr2_addr            => ddr2_addr,
+      ddr2_ba              => ddr2_ba,
+      ddr2_ras_n           => ddr2_ras_n,
+      ddr2_cas_n           => ddr2_cas_n,
+      ddr2_we_n            => ddr2_we_n,
+      ddr2_ck_p            => ddr2_ck_p,
+      ddr2_ck_n            => ddr2_ck_n,
+      ddr2_cke             => ddr2_cke,
+      ddr2_cs_n            => ddr2_cs_n,
+      ddr2_dm              => ddr2_dm,
+      ddr2_dq             => ddr2_dq,
+      ddr2_odt             => ddr2_odt,
+      ddr2_dqs_p           => ddr2_dqs_p,
+      ddr2_dqs_n           => ddr2_dqs_n
    ); -- main_inst
    
 

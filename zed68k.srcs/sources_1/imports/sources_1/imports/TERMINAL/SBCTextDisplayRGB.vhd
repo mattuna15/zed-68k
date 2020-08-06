@@ -665,7 +665,7 @@ end generate GEN_NO_ATTRAM;
 					ps2ClkCount<=ps2ClkCount+1;
 				else -- stop bit - use this time to store
 					-- F-keys
-					if ps2ConvertedByte>x"10" and ps2ConvertedByte<x"1D" then
+					if ps2ConvertedByte>x"10" and ps2ConvertedByte<x"1B" then
 						if ps2PreviousByte /= x"F0" then
 							FNtoggledKeysSig(to_integer(unsigned(ps2ConvertedByte))-16#10#) <= FNtoggledKeysSig(to_integer(unsigned(ps2ConvertedByte))-16#10#);
 							FNKeysSig(to_integer(unsigned(ps2ConvertedByte))-16#10#) <= '1';

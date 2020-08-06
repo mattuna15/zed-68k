@@ -166,6 +166,7 @@ proc create_root_design { parentCell } {
 
   # Create ports
   set LED [ create_bd_port -dir O -from 7 -to 0 LED ]
+  set clk100_i [ create_bd_port -dir I -type clk clk100_i ]
   set cts [ create_bd_port -dir O cts ]
   set m68_rxd [ create_bd_port -dir O -from 7 -to 0 m68_rxd ]
   set rd_clk [ create_bd_port -dir I -type clk rd_clk ]
@@ -174,11 +175,6 @@ proc create_root_design { parentCell } {
   set reset_n [ create_bd_port -dir I -type rst reset_n ]
   set rts [ create_bd_port -dir O rts ]
   set rxd1 [ create_bd_port -dir I rxd1 ]
-  set sys_clock [ create_bd_port -dir I -type clk -freq_hz 100000000 sys_clock ]
-  set_property -dict [ list \
-   CONFIG.ASSOCIATED_RESET {reset} \
-   CONFIG.PHASE {0.000} \
- ] $sys_clock
 
   # Create instance: UART_FIFO_IO_cntl_pr_0, and set properties
   set block_name UART_FIFO_IO_cntl_proc
@@ -202,16 +198,6 @@ proc create_root_design { parentCell } {
      return 1
    }
   
-  # Create instance: clk_wiz_0, and set properties
-  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0 ]
-  set_property -dict [ list \
-   CONFIG.CLK_IN1_BOARD_INTERFACE {sys_clock} \
-   CONFIG.RESET_BOARD_INTERFACE {reset} \
-   CONFIG.RESET_PORT {resetn} \
-   CONFIG.RESET_TYPE {ACTIVE_LOW} \
-   CONFIG.USE_BOARD_FLOW {true} \
- ] $clk_wiz_0
-
   # Create instance: fifo_generator_0, and set properties
   set fifo_generator_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:fifo_generator:13.2 fifo_generator_0 ]
   set_property -dict [ list \
@@ -228,14 +214,14 @@ proc create_root_design { parentCell } {
    CONFIG.Input_Depth {512} \
    CONFIG.Output_Data_Width {8} \
    CONFIG.Output_Depth {512} \
-   CONFIG.Overflow_Flag {true} \
+   CONFIG.Overflow_Flag {false} \
    CONFIG.Programmable_Empty_Type {No_Programmable_Empty_Threshold} \
    CONFIG.Read_Clock_Frequency {1} \
    CONFIG.Read_Data_Count {true} \
    CONFIG.Read_Data_Count_Width {9} \
    CONFIG.Reset_Pin {false} \
    CONFIG.Reset_Type {Asynchronous_Reset} \
-   CONFIG.Underflow_Flag {true} \
+   CONFIG.Underflow_Flag {false} \
    CONFIG.Use_Dout_Reset {false} \
    CONFIG.Use_Embedded_Registers {false} \
    CONFIG.Valid_Flag {true} \
@@ -251,7 +237,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en [get_bd_ports rts] [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_tx_wr_en]
   connect_bd_net -net UART_RX_0_o_RX_Byte [get_bd_pins UART_RX_0/o_RX_Byte] [get_bd_pins fifo_generator_0/din]
   connect_bd_net -net UART_RX_0_o_RX_DV [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_rx_dv] [get_bd_pins UART_RX_0/o_RX_DV]
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins UART_FIFO_IO_cntl_pr_0/clk] [get_bd_pins UART_RX_0/i_Clk] [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins fifo_generator_0/wr_clk]
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_ports clk100_i] [get_bd_pins UART_FIFO_IO_cntl_pr_0/clk] [get_bd_pins UART_RX_0/i_Clk] [get_bd_pins fifo_generator_0/wr_clk]
   connect_bd_net -net fifo_generator_0_dout [get_bd_ports LED] [get_bd_ports m68_rxd] [get_bd_pins fifo_generator_0/dout]
   connect_bd_net -net fifo_generator_0_empty [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_empty] [get_bd_pins fifo_generator_0/empty]
   connect_bd_net -net fifo_generator_0_full [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_full] [get_bd_pins fifo_generator_0/full]
@@ -259,9 +245,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net fifo_generator_0_wr_ack [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_wr_ack] [get_bd_pins fifo_generator_0/wr_ack]
   connect_bd_net -net rd_clk_0_1 [get_bd_ports rd_clk] [get_bd_pins fifo_generator_0/rd_clk]
   connect_bd_net -net rd_en_0_1 [get_bd_ports rd_en] [get_bd_pins fifo_generator_0/rd_en]
-  connect_bd_net -net reset_n_1 [get_bd_ports reset_n] [get_bd_pins UART_FIFO_IO_cntl_pr_0/rst] [get_bd_pins clk_wiz_0/resetn]
+  connect_bd_net -net reset_n_1 [get_bd_ports reset_n] [get_bd_pins UART_FIFO_IO_cntl_pr_0/rst]
   connect_bd_net -net rxd1_1 [get_bd_ports rxd1] [get_bd_pins UART_RX_0/i_RX_Serial]
-  connect_bd_net -net sys_clock_1 [get_bd_ports sys_clock] [get_bd_pins clk_wiz_0/clk_in1]
 
   # Create address segments
 

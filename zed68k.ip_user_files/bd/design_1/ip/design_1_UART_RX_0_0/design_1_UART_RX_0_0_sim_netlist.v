@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sun Jul 26 14:59:46 2020
+// Date        : Sat Aug  1 16:05:47 2020
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0_sim_netlist.v
