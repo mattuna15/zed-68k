@@ -51,6 +51,12 @@ entity Microcomputer is
         serialStatus: in std_logic_vector(7 downto 0);
         serialData: in std_logic_vector(7 downto 0);
         
+        rxd1 : in STD_LOGIC;
+        txd1 : out STD_LOGIC;
+        cts1 : in STD_LOGIC;
+        rts1 : out STD_LOGIC;
+        serialClock : in STD_LOGIC;
+        
               -- RAM interface
       ram_a                : out    std_logic_vector(26 downto 0);
       ram_dq_i             : out    std_logic_vector(15 downto 0);
@@ -236,33 +242,23 @@ ram1 : entity work.ram --64k
  
 -- ____________________________________________________________________________________
 -- INPUT/OUTPUT DEVICES GO HERE	
-    io1 : entity work.SBCTextDisplayRGB
-    port map (
-        n_reset => n_reset,
-        clk => vgaclock,
-        
-        -- RGB video signals
-        hSync => hSync,
-        vSync => vSync,
-        videoR0 => videoR0,
-        videoR1 => videoR1,
-        videoG0 => videoG0,
-        videoG1 => videoG1,
-        videoB0 => videoB0,
-        videoB1 => videoB1,
-        
-        -- Monochrome video signals (when using TV timings only)
-        sync => open,
-        video => open,
-        
+
+    io1 : entity work.bufferedUART
+    port map(
+        clk => clk,
         n_wr => n_interface1CS or cpu_r_w,
         n_rd => n_interface1CS or (not cpu_r_w),
         n_int => n_int1,
         regSel => regsel,
         dataIn => cpuDataOut(7 downto 0),
         dataOut => interface1DataOut,
-        ps2Clk => ps2Clk,
-        ps2Data => ps2Data
+        rxClock => serialClock,
+        txClock => serialClock,
+        rxd => rxd1,
+        txd => txd1,
+        n_cts => '0',
+        n_dcd => '0',
+        n_rts => rts1
     );
 
 -- ____________________________________________________________________________________
@@ -275,14 +271,14 @@ regsel <= '0' when cpuAddress = X"f00009" else '1';
 serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
 n_sdCardCS <= '0' when cpuAddress(15 downto 0) >= x"f30009" 
                     and cpuAddress(15 downto 0) <= x"f3000f" else '1'; 
-n_internalRam1CS <= '0' when  cpuAddress > x"0008" and cpuAddress <= X"FFFF" 
+n_internalRam1CS <= '0' when  cpuAddress <= X"FFFF" 
                     and cpu_uds = '0' else '1' ; --4k at bottom
-n_internalRam2CS <= '0' when  cpuAddress > x"0008" and cpuAddress <= X"FFFF" 
+n_internalRam2CS <= '0' when  cpuAddress <= X"FFFF" 
                     and cpu_lds = '0' else '1' ; --4k at bottom
 
 -- external ram cpuAddress > X"FFFF" and
 
-ram_cen <= '0' when  n_internalRam1CS = '1' and cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
+ram_cen <= '0' when cpuAddress > X"FFFF"  and cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
 ram_a <= cpuAddress(26 downto 0) when ram_cen ='0' else (others => '0'); -- address
@@ -314,7 +310,7 @@ when n_interface1CS = '0' else
 basRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 internalRam2DataOut
-when n_internalRam1CS = '0' else
+when n_internalRam2CS = '0' else
 "00000" & cpuAddress(3 downto 1)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
 r_Vec(vecAddress)(7 downto 0)

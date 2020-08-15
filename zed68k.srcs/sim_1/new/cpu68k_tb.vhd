@@ -146,6 +146,9 @@ begin
         
         rxd1 => usb_uart_rxd,
         txd1 => open,
+        cts1 => '1',
+        rts1 => open,
+        rxd2 => '0',
         
               -- DDR2 interface
       ddr2_addr            => ddr2_addr,

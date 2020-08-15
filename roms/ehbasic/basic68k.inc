@@ -1,9 +1,9 @@
 
 * This lot is in RAM
 
-        ORG     100			* start of RAM
+        ORG     0			* start of RAM
  
-ram_strt	ds.l	$300			* allow 1K for the stack, this should be plenty
+ram_strt	ds.l	$100			* allow 1K for the stack, this should be plenty
 						* for any BASIC program that doesn't do something
 						* silly, it could even be much less.
 ram_base
@@ -195,12 +195,3 @@ file_id	ds.l	1			* load/save file ID
 
 even			        * dummy even value and zero pad byte
 
-prg_strt
-
-* Use these two lines when running from ROM
-*ram_addr	EQU	$01000		* RAM start address
-*ram_size	EQU	$06000		* RAM size
-
-* Use these two lines when running from RAM
-ram_addr	EQU	$04000		* RAM start address
-ram_size	EQU	$04000		* RAM size

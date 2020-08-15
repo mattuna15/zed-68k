@@ -72,6 +72,10 @@ port(
     LED : out STD_LOGIC_VECTOR ( 15 downto 0 );
     rxd1 : in STD_LOGIC;
     txd1 : out STD_LOGIC;
+    cts1 : in STD_LOGIC;
+    rts1 : out STD_LOGIC;
+    
+        rxd2 : in STD_LOGIC;
     
       ddr2_addr            : out   std_logic_vector(12 downto 0);
       ddr2_ba              : out   std_logic_vector(2 downto 0);
@@ -101,8 +105,6 @@ architecture Behavioral of multicomp_wrapper is
     signal serialStatus: std_logic_vector(7 downto 0) := x"00"; 
     signal rxSerialData: std_logic_vector(7 downto 0) := x"00";
     signal serialData: std_logic_vector(7 downto 0) := x"00";
-    signal serialIdle: std_logic := '0';
-    signal serialEOF: std_logic_vector(0 downto 0) := "0";
     signal serialRead_en: std_logic := '0';
     signal rxDataReady : std_logic := '0' ;
     
@@ -111,7 +113,8 @@ architecture Behavioral of multicomp_wrapper is
     signal count: std_logic_vector( 7 downto 0) := x"00";
     signal data_trigger: std_logic := '0';
     signal clk_locked: std_logic := '0';
-    
+    signal serialClkCount			: std_logic_vector(15 downto 0) := (others => '0');
+    signal serialClock   			: std_logic;
 
     
           -- RAM interface
@@ -259,7 +262,13 @@ begin
       ram_lb               => cpuLower,
       ram_ack              => ram_ack,
       
-      cpu_as                => cpuAS
+      cpu_as                => cpuAS,
+      
+      rxd1 => rxd1,
+      txd1 => txd1,
+      cts1 => cts1,
+      rts1 => rts1,
+      serialClock => serialClock
     );
     
     --only using spi do drive dat1&2 high & reset is low.
@@ -272,15 +281,18 @@ begin
       LED => LED(7 downto 0),
       rd_en => serialRead_en,
       m68_rxd => serialData,
-      rd_clk => clk50,
+      rd_clk => sys_clock100,
       reset_n => resetn and mem_ready and clk_locked,
-      rxd1 => rxd1,
+      rxd1 => rxd2,
       rd_data_cnt(8 downto 1) => count,
       rd_data_cnt(0) => data_trigger,
       clk100_i => sys_clock100,
       cts => open,
       rts => open
     );  
+
+
+    
         
     LED(8) <= serialRead_en;
     LED(9) <= serialStatus(0);
@@ -288,5 +300,25 @@ begin
     LED(10) <= mem_ready;
     LED (15 downto 11) <= (others => '0');
     serialStatus(0) <= '1' when count > x"00" else '0';
+
+    -- SUB-CIRCUIT CLOCK SIGNALS
+    serialClock <= serialClkCount(15);
+    process (clk50)
+    begin
+        if rising_edge(clk50) then
+        
+        
+        -- Serial clock DDS
+        -- 50MHz master input clock:
+        -- Baud Increment
+        -- 115200 2416
+        -- 38400 805
+        -- 19200 403
+        -- 9600 201
+        -- 4800 101
+        -- 2400 50
+            serialClkCount <= serialClkCount + 201;
+        end if;
+    end process;
     
 end Behavioral;

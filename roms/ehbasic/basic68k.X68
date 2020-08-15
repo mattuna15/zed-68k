@@ -70,50 +70,53 @@ nobrk		EQU	0				* null response to INPUT causes a break
 							* RAM offset definitions
 
 * Use this value to run out of ROM
-*	ORG		$A00000			
+*	ORG		$00C000			* past the vectors in a real system
 * Use this value to run out of RAM
 	ORG		$000800			* past the vectors in a real system
+
+* Use these two lines when running from ROM
+*ram_addr	EQU	$02000		* RAM start address
+*ram_size	EQU	$06000		* RAM size
+prg_strt
+
+* Use these two lines when running from RAM
+ram_addr	EQU	$04000		* RAM start address
+ram_size	EQU	$04000		* RAM size
 
 ACIAC    EQU $F00009
 ACIAD    EQU ACIAC+2
 RDRF     EQU 0           ; ACIAC Receive Data Register Full
 TDRE     EQU 1           ; ACIAC Transmit Data Register Empty
 
-
          BRA    code_start       * For convenience, so you can start from first address
 
 *************************************************************************************
 *
 * the following code is simulator specific, change to suit your system
-
 * output character to the console from register d0.b
 
+
 VEC_OUT
-        ;MOVEM.L  A0/D1,-(A7)    * Save working registers
         BTST.B #TDRE,ACIAC.L
         BEQ.S  VEC_OUT
         MOVE.B D0,ACIAD.L
-        ;MOVEM.L  (A7)+,A0/D1    * Restore working registers
         RTS
-
 
 *************************************************************************************
 *
 * input a character from the console into register d0
-* else return Cb=0 if there's no character available
+* else return Cb=0 if theres no character available
+
 
 VEC_IN
-       ; MOVEM.L  A0/D1,-(A7)    * Save working registers
         BTST.B #RDRF,ACIAC.L
         BEQ.S  RXNOTREADY
         MOVE.B ACIAD.L,D0
-       ; MOVEM.L  (A7)+,A0/D1    * Restore working registers
 	    ORI.b	 #1,CCR	        * Set the carry, flag we got a byte
         RTS                     * Return
 RXNOTREADY
-        ;MOVEM.L  (A7)+,A0/D1    * Restore working registers
 	    ANDI.b	#$FE,CCR	* Clear the carry, flag character available
-	    RTS
+		RTS
 
 *************************************************************************************
 *
@@ -136,7 +139,7 @@ VEC_SV
 * turn off simulator key echo
 
 code_start
-
+                                * Set up ACIA parameters
         LEA.L   ACIAC,A0       * A0 points to console ACIA
         MOVE.B  #$15,(A0)       * Set up ACIA1 constants (no IRQ,
                                 * RTS* low, 8 bit, no parity, 1 stop)
@@ -181,7 +184,7 @@ LAB_sizok
 	MOVEA.l	a0,a3				* copy RAM base to a3
 	ADDA.l	d0,a0				* a0 is top of RAM
 	MOVE.l	a0,Ememl(a3)		* set end of mem
-    LEA		ram_base(a3),sp		* set stack to RAM start + 1k  * set stack to RAM start + 1k
+	LEA		ram_base(a3),sp		* set stack to RAM start + 1k
 
 	MOVE.w	#$4EF9,d0			* JMP opcode
 	MOVEA.l	sp,a0				* point to start of vector table
@@ -313,7 +316,7 @@ LAB_UVER
 	ADD.l		d0,d0				* .......$ .......& ........ .......0
 	SWAP		d0				* ........ .......0 .......$ .......&
 	ROR.b		#1,d0				* ........ .......0 .......$ &.......
-	LSR.w		#1,d0				* ........ .......0 0....... $&.....­.
+	LSR.w		#1,d0				* ........ .......0 0....... $&.....?.
 	AND.b		#$C0,d0			* mask the type bits
 	MOVE.b	d0,Dtypef(a3)		* save the data type
 
@@ -970,7 +973,7 @@ LAB_1491
 	LEA		des_sk(a3),a4		* reset descriptor stack pointer
 
 	MOVE.l	(sp)+,d0			* pull return address
-    LEA		ram_base(a3),sp		* set stack to RAM start + 1k* set stack to RAM start + 1k, flush stack
+	LEA		ram_base(a3),sp		* set stack to RAM start + 1k, flush stack
 	MOVE.l	d0,-(sp)			* restore return address
 
 	MOVEQ		#0,d0				* clear longword
@@ -3332,7 +3335,7 @@ LAB_1DD7
 	ADD.l		d1,d1				* .......$ .......& ........ .......0
 	SWAP		d1				* ........ .......0 .......$ .......&
 	ROR.b		#1,d1				* ........ .......0 .......$ &.......
-	LSR.w		#1,d1				* ........ .......0 0....... $&.....­.
+	LSR.w		#1,d1				* ........ .......0 0....... $&.....?.
 	AND.b		#$C0,d1			* mask the type bits
 	MOVE.b	d1,Dtypef(a3)		* save the data type
 
@@ -8996,7 +8999,7 @@ LAB_RMSG
 	dc.b	$0D,$0A,'Ready',$0D,$0A,$00
 LAB_SMSG
 	dc.b	' Bytes free',$0D,$0A,$0A
-	dc.b	'Matt Pearce Enhanced 68k BASIC Version 3.52',$0D,$0A,$00
+	dc.b	'Enhanced 68k BASIC Version 3.52',$0D,$0A,$00
 
 
 *************************************************************************************

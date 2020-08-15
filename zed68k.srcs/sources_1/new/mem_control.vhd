@@ -111,7 +111,7 @@ component mem_example
    
 end component;
 
-signal boot_rom : std_logic := '1';
+signal boot_rom : std_logic := '0';
 signal oldAddress : std_logic_vector(26 downto 0) := (others => '0');
 
       signal initial_stack: std_logic_vector(31 downto 0) := x"00000E00";
