@@ -68,20 +68,21 @@ nobrk		EQU	0				* null response to INPUT causes a break
 
 	INCLUDE	"basic68k.inc"
 							* RAM offset definitions
-
-* Use this value to run out of ROM
-*	ORG		$00C000			* past the vectors in a real system
-* Use this value to run out of RAM
-	ORG		$000800			* past the vectors in a real system
-
-* Use these two lines when running from ROM
-*ram_addr	EQU	$02000		* RAM start address
-*ram_size	EQU	$06000		* RAM size
 prg_strt
+* Use this value to run out of ROM
+    ORG $B00000			* past the vectors in a real system
+* Use this value to run out of RAM
+*	ORG		$000800			* past the vectors in a real system
+
+
 
 * Use these two lines when running from RAM
-ram_addr	EQU	$04000		* RAM start address
-ram_size	EQU	$04000		* RAM size
+*ram_addr	EQU	$04000		* RAM start address
+*ram_size	EQU	$04000		* RAM size
+
+* Use these two lines when running from ROM
+ram_addr	EQU	$02000		* RAM start address
+ram_size	EQU	$08000		* RAM size
 
 ACIAC    EQU $F00009
 ACIAD    EQU ACIAC+2
@@ -9155,6 +9156,7 @@ LAB_SMSG
 	END	code_start
 
 *************************************************************************************
+
 
 
 *~Font name~Courier New~

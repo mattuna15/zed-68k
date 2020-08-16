@@ -21,10 +21,10 @@ ttyst	equ	$f00009
 ttyd	equ	$f0000b
 
 ; System stack
-stack	equ	$00fff0
+stack	equ	$00E000
 
 ; Reset Vector   
-	org	$010000
+	org	$001000
 	dc.l	stack		;system stack
 	dc.l	start		;initial pc
 
@@ -70,6 +70,7 @@ message	dc.b	'HELLO WORLD',cr,lf,0
 strmsg dc.b 'STARTING',cr,lf,0
 
 	end	start
+
 
 *~Font name~Courier New~
 *~Font size~10~

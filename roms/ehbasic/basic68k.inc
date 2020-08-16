@@ -1,7 +1,7 @@
 
 * This lot is in RAM
 
-        ORG     0			* start of RAM
+        ORG     100			* start of RAM
  
 ram_strt	ds.l	$100			* allow 1K for the stack, this should be plenty
 						* for any BASIC program that doesn't do something

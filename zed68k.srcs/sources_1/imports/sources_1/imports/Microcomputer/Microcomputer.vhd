@@ -74,6 +74,7 @@ end Microcomputer;
 architecture struct of Microcomputer is
 
 	signal basRomData					: std_logic_vector(15 downto 0);
+    signal monRomData					: std_logic_vector(15 downto 0);
 	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
 	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
 	signal interface1DataOut		: std_logic_vector(7 downto 0);
@@ -88,6 +89,8 @@ architecture struct of Microcomputer is
 	signal n_internalRam2CS			: std_logic :='1';
 	signal n_basRom1CS					: std_logic :='1';
     signal n_basRom2CS					: std_logic :='1';
+    signal n_basRom3CS					: std_logic :='1';
+    signal n_basRom4CS					: std_logic :='1';
 
 	signal n_interface1CS			: std_logic :='1';
 	signal n_interface2CS			: std_logic :='1';
@@ -175,13 +178,35 @@ cpu1 : entity work.TG68
     port map(
         addr_i => memAddress(12 downto 0),
         clk_i => sys_clk,
-        data_o => basRomData(15 downto 8)
+        data_o => monRomData(15 downto 8)
     );
     
     rom2 : entity work.rom -- 8 
 	generic map (
 	   G_ADDR_BITS => 13,
 	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_1.hex"
+	)
+    port map(
+        addr_i => memAddress(12 downto 0),
+        clk_i => sys_clk,
+        data_o => monRomData(7 downto 0)
+    );
+    
+    rom3 : entity work.rom -- 8 
+	generic map (
+	   G_ADDR_BITS => 13,
+	   G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_0.hex"
+	)
+    port map(
+        addr_i => memAddress(12 downto 0),
+        clk_i => sys_clk,
+        data_o => basRomData(15 downto 8)
+    );
+    
+    rom4 : entity work.rom -- 8 
+	generic map (
+	   G_ADDR_BITS => 13,
+	   G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_1.hex"
 	)
     port map(
         addr_i => memAddress(12 downto 0),
@@ -193,7 +218,7 @@ cpu1 : entity work.TG68
 
 ram1 : entity work.ram --64k
     generic map (
-    G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_0.hex",
+    G_INIT_FILE => "D:/code/zed-68k/roms/empty_1.hex",
       -- Number of bits in the address bus. The size of the memory will
       -- be 2**G_ADDR_BITS bytes.
       G_ADDR_BITS => 16
@@ -218,7 +243,7 @@ ram1 : entity work.ram --64k
    
    ram2 : entity work.ram --64k
     generic map (
-    G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_1.hex",
+    G_INIT_FILE => "D:/code/zed-68k/roms/empty_2.hex",
       -- Number of bits in the address bus. The size of the memory will
       -- be 2**G_ADDR_BITS bytes.
       G_ADDR_BITS => 16
@@ -266,6 +291,8 @@ ram1 : entity work.ram --64k
 
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; --A00000-A0FFFF
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; 
+n_basRom3CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; --B00000-B0FFFF
+n_basRom4CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; 
 n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
 regsel <= '0' when cpuAddress = X"f00009" else '1';
 serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
@@ -295,8 +322,10 @@ r_Vec(vecAddress)(15 downto 8)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
 X"00"
 when n_interface1CS = '0' or n_interface2CS = '0' or (cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ) else
-basRomData(15 downto 8)
+monRomData(15 downto 8)
 when n_basRom1CS = '0' else
+basRomData(15 downto 8)
+when n_basRom3CS = '0' else
 internalRam1DataOut
 when n_internalRam1CS= '0' else
 ram_dq_o(15 downto 8)
@@ -307,8 +336,10 @@ cpuDataIn(7 downto 0)
 <= 
 interface1DataOut 
 when n_interface1CS = '0' else
-basRomData(7 downto 0)
+monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
+basRomData(7 downto 0)
+when n_basRom4CS = '0' else 
 internalRam2DataOut
 when n_internalRam2CS = '0' else
 "00000" & cpuAddress(3 downto 1)

@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="92657527303fs"></ZoomStartTime>
-      <ZoomEndTime time="135157527304fs"></ZoomEndTime>
-      <Cursor1Time time="132257527303fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="486000000001fs"></ZoomEndTime>
+      <Cursor1Time time="113000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="186"></NameColumnWidth>
-      <ValueColumnWidth column_width="81"></ValueColumnWidth>
+      <ValueColumnWidth column_width="77"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="19" />
+   <WVObjectSize size="20" />
    <wvobject fp_name="/main_tb/main_inst/computer/cpuAddress" type="array">
       <obj_property name="ElementShortName">cpuAddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">cpuAddress[31:0]</obj_property>
@@ -98,5 +98,9 @@
    <wvobject fp_name="/main_tb/main_inst/computer/memAddress" type="array">
       <obj_property name="ElementShortName">memAddress[15:0]</obj_property>
       <obj_property name="ObjectShortName">memAddress[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/io1/txBitCount" type="array">
+      <obj_property name="ElementShortName">txBitCount[3:0]</obj_property>
+      <obj_property name="ObjectShortName">txBitCount[3:0]</obj_property>
    </wvobject>
 </wave_config>
