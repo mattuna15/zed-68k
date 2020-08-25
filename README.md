@@ -1,14 +1,13 @@
-# Zed-68k
-Zedboard 68k
+# Nex-68k
+Nexys 4 DDR 68k
 
 Zedboard Motorola 68000 implementation of multicomp, Gameduino and MIC68K using the TG68 core. 
 The ram code and memory map has been amended accordingly. Some of the memory and clocking routines are based on work by Michael Jørgensen.
 The VGA Engine is based on Gameduino by James Bowman - modified for the Nexys.
 
 # Hardware
-Digilent Zedboard: https://store.digilentinc.com/zedboard-zynq-7000-arm-fpga-soc-development-board/ <br>
-or Digilent Nexys4 DDR: https://store.digilentinc.com/nexys-4-ddr-artix-7-fpga-trainer-board-recommended-for-ece-curriculum/
-Requires a ps2 pmod in JA: https://reference.digilentinc.com/reference/pmod/pmodps2/start<br>
+Digilent Nexys4 DDR: https://store.digilentinc.com/nexys-4-ddr-artix-7-fpga-trainer-board-recommended-for-ece-curriculum/
+Uses a ps2 pmod in JA: https://reference.digilentinc.com/reference/pmod/pmodps2/start<br>
 
 # Software
 
