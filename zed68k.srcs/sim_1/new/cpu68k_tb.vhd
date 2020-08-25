@@ -121,14 +121,6 @@ begin
    port map (
         sys_clock => main_clk,
         resetn => resetn,
-		videoR0	=> open,
-		videoG0	=> open,
-		videoB0	=> open,
-		videoR1	=> open,
-		videoG1 => open,
-		videoB1 => open,
-		hSync	=> open,
-		vSync	=> open,
 
 		ps2Clk	=> open,
 		ps2Data	=> open,
@@ -146,7 +138,7 @@ begin
         
         rxd1 => usb_uart_rxd,
         txd1 => open,
-        cts1 => '1',
+        cts1 => '0',
         rts1 => open,
         rxd2 => '0',
         

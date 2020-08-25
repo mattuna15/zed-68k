@@ -15,14 +15,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="486000000001fs"></ZoomEndTime>
-      <Cursor1Time time="113000000000fs"></Cursor1Time>
+      <ZoomEndTime time="138657060521fs"></ZoomEndTime>
+      <Cursor1Time time="83600000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="186"></NameColumnWidth>
-      <ValueColumnWidth column_width="77"></ValueColumnWidth>
+      <ValueColumnWidth column_width="61"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="20" />
+   <WVObjectSize size="35" />
    <wvobject fp_name="/main_tb/main_inst/computer/cpuAddress" type="array">
       <obj_property name="ElementShortName">cpuAddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">cpuAddress[31:0]</obj_property>
@@ -91,16 +91,76 @@
       <obj_property name="ElementShortName">txBuffer[7:0]</obj_property>
       <obj_property name="ObjectShortName">txBuffer[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/regsel" type="logic">
-      <obj_property name="ElementShortName">regsel</obj_property>
-      <obj_property name="ObjectShortName">regsel</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/memAddress" type="array">
-      <obj_property name="ElementShortName">memAddress[15:0]</obj_property>
-      <obj_property name="ObjectShortName">memAddress[15:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/main_tb/main_inst/computer/io1/txBitCount" type="array">
       <obj_property name="ElementShortName">txBitCount[3:0]</obj_property>
       <obj_property name="ObjectShortName">txBitCount[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/serialStatus" type="array">
+      <obj_property name="ElementShortName">serialStatus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">serialStatus[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/serialData" type="array">
+      <obj_property name="ElementShortName">serialData[7:0]</obj_property>
+      <obj_property name="ObjectShortName">serialData[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/vga_addr" type="array">
+      <obj_property name="ElementShortName">vga_addr[15:0]</obj_property>
+      <obj_property name="ObjectShortName">vga_addr[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/vga_wr_en" type="logic">
+      <obj_property name="ElementShortName">vga_wr_en</obj_property>
+      <obj_property name="ObjectShortName">vga_wr_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/vga_rd_en" type="logic">
+      <obj_property name="ElementShortName">vga_rd_en</obj_property>
+      <obj_property name="ObjectShortName">vga_rd_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/vga_wr_data" type="array">
+      <obj_property name="ElementShortName">vga_wr_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">vga_wr_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/vga_rd_data" type="array">
+      <obj_property name="ElementShortName">vga_rd_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">vga_rd_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/n_interface2CS" type="logic">
+      <obj_property name="ElementShortName">n_interface2CS</obj_property>
+      <obj_property name="ObjectShortName">n_interface2CS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/coll_rd" type="logic">
+      <obj_property name="ElementShortName">coll_rd</obj_property>
+      <obj_property name="ObjectShortName">coll_rd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/coll_d" type="array">
+      <obj_property name="ElementShortName">coll_d[7:0]</obj_property>
+      <obj_property name="ObjectShortName">coll_d[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/coll_w_addr" type="array">
+      <obj_property name="ElementShortName">coll_w_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">coll_w_addr[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/coll_we" type="logic">
+      <obj_property name="ElementShortName">coll_we</obj_property>
+      <obj_property name="ObjectShortName">coll_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/coll_addr" type="array">
+      <obj_property name="ElementShortName">coll_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">coll_addr[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/coll_o" type="array">
+      <obj_property name="ElementShortName">coll_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">coll_o[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/CounterX" type="array">
+      <obj_property name="ElementShortName">CounterX[10:0]</obj_property>
+      <obj_property name="ObjectShortName">CounterX[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/CounterY" type="array">
+      <obj_property name="ElementShortName">CounterY[9:0]</obj_property>
+      <obj_property name="ObjectShortName">CounterY[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/vga/yy" type="array">
+      <obj_property name="ElementShortName">yy[10:0]</obj_property>
+      <obj_property name="ObjectShortName">yy[10:0]</obj_property>
    </wvobject>
 </wave_config>

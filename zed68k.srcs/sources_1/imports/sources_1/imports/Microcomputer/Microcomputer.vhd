@@ -23,23 +23,8 @@ entity Microcomputer is
 	port(
 	    sys_clk     : in std_logic;
 		n_reset		: in std_logic;
-		clk			: in std_logic;
-		cpuClock	: in std_logic;
-		vgaClock    : in std_logic;
-		
+        clk50       : in std_logic;
 		cpu_as      : out std_logic; -- Address strobe
-
-		videoR0		: out std_logic;
-		videoG0		: out std_logic;
-		videoB0		: out std_logic;
-		videoR1		: out std_logic;
-		videoG1		: out std_logic;
-		videoB1		: out std_logic;
-		hSync			: buffer std_logic;
-		vSync			: buffer std_logic;
-
-		ps2Clk		: inout std_logic;
-		ps2Data		: inout std_logic;
 		
         sdCD		: in std_logic;
 		sdCS			: out std_logic;
@@ -66,7 +51,17 @@ entity Microcomputer is
       ram_wen              : out    std_logic;
       ram_ub               : out    std_logic;
       ram_lb               : out    std_logic;
-      ram_ack              : in     std_logic
+      ram_ack              : in     std_logic;
+      
+      -- vga
+      vga_addr              : out   std_logic_vector(15 downto 0);
+      vga_wr_en             : out   std_logic;
+      vga_rd_en             : out   std_logic;
+      vga_wr_data           : out   std_logic_vector(7 downto 0);
+      vga_rd_data           : in    std_logic_vector(7 downto 0)
+     -- vga_irq               : in    std_logic
+      
+      
 	);
 	
 end Microcomputer;
@@ -78,7 +73,8 @@ architecture struct of Microcomputer is
 	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
 	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
 	signal interface1DataOut		: std_logic_vector(7 downto 0);
-	signal interface2DataOut		: std_logic_vector(7 downto 0);
+	signal interface1DataOut50		: std_logic_vector(7 downto 0);
+
 	signal sdCardDataOut				: std_logic_vector(7 downto 0);
 
 	signal n_int1						: std_logic :='1';	
@@ -102,6 +98,7 @@ architecture struct of Microcomputer is
 	signal	  cpuDataOut		:  std_logic_vector(15 downto 0);
 	signal    cpuDataIn		:  std_logic_vector(15 downto 0);
 	signal    memAddress		:  std_logic_vector(15 downto 0);
+	signal    vgaAddress        : std_logic_vector(15 downto 0);
 	
     signal    cpu_uds :  std_logic; -- upper data strobe
     signal    cpu_lds :  std_logic; -- lower data strobe
@@ -127,7 +124,7 @@ begin
 
 interrupts: entity work.interrupt_controller
 	port map (
-		clk => clk,
+		clk => sys_clk,
 		reset => n_reset,
 		int1 => '0',
 		int2 => '0',
@@ -162,6 +159,7 @@ cpu1 : entity work.TG68
 	
 	-- rom address
     memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
+    vgaAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, vgaAddress'length)) ;
    
     -- vector address storage
     vecAddress <= conv_integer(cpuAddress(3 downto 0)) / 2 ;
@@ -270,7 +268,7 @@ ram1 : entity work.ram --64k
 
     io1 : entity work.bufferedUART
     port map(
-        clk => clk,
+        clk => sys_clk,
         n_wr => n_interface1CS or cpu_r_w,
         n_rd => n_interface1CS or (not cpu_r_w),
         n_int => n_int1,
@@ -293,7 +291,9 @@ n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1010" else
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; 
 n_basRom3CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; --B00000-B0FFFF
 n_basRom4CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; 
+n_interface2CS <= '0' when cpuAddress >= X"C00000" and cpuAddress <= X"CFFFFF" else '1'; --VGA
 n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
+
 regsel <= '0' when cpuAddress = X"f00009" else '1';
 serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
 n_sdCardCS <= '0' when cpuAddress(15 downto 0) >= x"f30009" 
@@ -303,8 +303,7 @@ n_internalRam1CS <= '0' when  cpuAddress <= X"FFFF"
 n_internalRam2CS <= '0' when  cpuAddress <= X"FFFF" 
                     and cpu_lds = '0' else '1' ; --4k at bottom
 
--- external ram cpuAddress > X"FFFF" and
-
+-- RAM
 ram_cen <= '0' when cpuAddress > X"FFFF"  and cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
@@ -312,6 +311,13 @@ ram_a <= cpuAddress(26 downto 0) when ram_cen ='0' else (others => '0'); -- addr
 ram_ub <= cpu_uds;
 ram_lb <= cpu_lds;
 ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
+
+-- VGA
+vga_addr <= vgaAddress when n_interface2CS = '0';
+vga_wr_en <= not cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
+vga_rd_en <= cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
+
+vga_wr_data <= cpuDataOut(7 downto 0) when n_interface2CS = '0' and vga_wr_en = '1' ;
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
@@ -321,7 +327,7 @@ cpuDataIn(15 downto 8)
 r_Vec(vecAddress)(15 downto 8)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
 X"00"
-when n_interface1CS = '0' or n_interface2CS = '0' or (cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ) else
+when n_interface1CS = '0' or (cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ) else
 monRomData(15 downto 8)
 when n_basRom1CS = '0' else
 basRomData(15 downto 8)
@@ -329,13 +335,15 @@ when n_basRom3CS = '0' else
 internalRam1DataOut
 when n_internalRam1CS= '0' else
 ram_dq_o(15 downto 8)
-when ram_oen = '0' else
-X"00" when cpu_uds = '1';
+when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
+X"00";
 
 cpuDataIn(7 downto 0)
 <= 
 interface1DataOut 
 when n_interface1CS = '0' else
+vga_rd_data 
+when n_interface2CS = '0' and vga_rd_en = '1' else
 monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 basRomData(7 downto 0)
@@ -355,9 +363,9 @@ when cpuAddress = x"f20009" else
 serialData 
 when serialRead_en = '1' else 
 ram_dq_o(7 downto 0)
-when ram_oen = '0' else
-X"00" 
-when cpu_lds = '1';
+when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0'  else
+X"00" ;
+--when cpu_lds = '1' ;
 
 sdAddress(31 downto 16)
 <= cpuDataOut when cpuAddress = x"f3000a";

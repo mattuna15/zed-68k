@@ -46,20 +46,20 @@
     <Option Name="DSADesignIntentExternalHost" Val="false"/>
     <Option Name="DSADesignIntentEmbedded" Val="true"/>
     <Option Name="DSADesignIntentDatacenter" Val="false"/>
-    <Option Name="WTXSimLaunchSim" Val="632"/>
+    <Option Name="WTXSimLaunchSim" Val="644"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="72"/>
-    <Option Name="WTModelSimExportSim" Val="72"/>
-    <Option Name="WTQuestaExportSim" Val="72"/>
-    <Option Name="WTIesExportSim" Val="72"/>
-    <Option Name="WTVcsExportSim" Val="72"/>
-    <Option Name="WTRivieraExportSim" Val="72"/>
-    <Option Name="WTActivehdlExportSim" Val="72"/>
+    <Option Name="WTXSimExportSim" Val="73"/>
+    <Option Name="WTModelSimExportSim" Val="73"/>
+    <Option Name="WTQuestaExportSim" Val="73"/>
+    <Option Name="WTIesExportSim" Val="73"/>
+    <Option Name="WTVcsExportSim" Val="73"/>
+    <Option Name="WTRivieraExportSim" Val="73"/>
+    <Option Name="WTActivehdlExportSim" Val="73"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -93,11 +93,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0.xci">
-          <Proxy FileSetName="design_1_UART_FIFO_IO_cntl_pr_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
           <Proxy FileSetName="design_1_UART_RX_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0.xci">
+          <Proxy FileSetName="design_1_UART_FIFO_IO_cntl_pr_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/write_fifo/write_fifo.bd">
@@ -110,7 +110,21 @@
           <Proxy FileSetName="write_fifo_fifo_generator_0_0"/>
         </CompFileExtendedInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/ip/pll/pll.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/imports/new/ff_sync.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../gameduino/original/fifo.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -124,6 +138,20 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../gameduino/original/generated.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../gameduino/original/j0.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/imports/mig_example.srcs/io_def.vh">
         <FileInfo RelPath="mig_example.srcs/io_def.vh">
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -131,6 +159,19 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/new/mem_example.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../gameduino/original/revision.v">
+        <FileInfo SFType="VHeader">
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../gameduino/original/top.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -322,6 +363,14 @@
           <Attr Name="ScopedToCell" Val="mig"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../gameduino/original/ck_div.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="multicomp_wrapper"/>
@@ -372,6 +421,14 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../gameduino/original/testtop.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="main_tb"/>
@@ -401,19 +458,6 @@
       </File>
       <Config>
         <Option Name="TopAutoSet" Val="TRUE"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="pll" Type="BlockSrcs" RelSrcDir="$PSRCDIR/pll">
-      <File Path="$PSRCDIR/sources_1/ip/pll/pll.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="pll"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
     <FileSet Name="mig" Type="BlockSrcs" RelSrcDir="$PSRCDIR/mig">
@@ -480,16 +524,6 @@
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2019"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="pll_synth_1" Type="Ft3:Synth" SrcSet="pll" Part="xc7a100tcsg324-1" ConstrsSet="pll" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pll_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
@@ -685,23 +719,6 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pll_impl_1" Type="Ft2:EntireDesign" Part="xc7a100tcsg324-1" ConstrsSet="pll" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pll_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
     <Run Id="mig_impl_1" Type="Ft2:EntireDesign" Part="xc7a100tcsg324-1" ConstrsSet="mig" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="mig_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
@@ -797,7 +814,7 @@
     <MsgAttr Name="ShowRule" Val="1"/>
     <MsgAttr Name="RuleSource" Val="2"/>
     <MsgAttr Name="StringIsRegExp" Val="0"/>
-    <MsgAttr Name="RuleId" Val="21"/>
+    <MsgAttr Name="RuleId" Val="1"/>
     <MsgAttr Name="Note" Val=""/>
     <MsgAttr Name="Author" Val=""/>
     <MsgAttr Name="CreatedTimestamp" Val=""/>
@@ -811,7 +828,7 @@
     <MsgAttr Name="ShowRule" Val="1"/>
     <MsgAttr Name="RuleSource" Val="2"/>
     <MsgAttr Name="StringIsRegExp" Val="0"/>
-    <MsgAttr Name="RuleId" Val="22"/>
+    <MsgAttr Name="RuleId" Val="2"/>
     <MsgAttr Name="Note" Val=""/>
     <MsgAttr Name="Author" Val=""/>
     <MsgAttr Name="CreatedTimestamp" Val=""/>

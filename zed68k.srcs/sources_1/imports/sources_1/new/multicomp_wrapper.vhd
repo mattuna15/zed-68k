@@ -38,12 +38,10 @@ entity multicomp_wrapper is
 port(
         sys_clock   : in std_logic;
         resetn      : in STD_LOGIC;
-		videoR0		: out std_logic;
-		videoG0		: out std_logic;
-		videoB0		: out std_logic;
-		videoR1		: out std_logic;
-		videoG1		: out std_logic;
-		videoB1		: out std_logic;
+
+        VGA_R       : out std_logic_vector(3 downto 0);
+        VGA_G       : out std_logic_vector(3 downto 0);
+        VGA_B       : out std_logic_vector(3 downto 0);
 		hSync			: buffer std_logic;
 		vSync			: buffer std_logic;
 
@@ -98,6 +96,17 @@ end multicomp_wrapper;
 
 architecture Behavioral of multicomp_wrapper is
 
+function reverse_any_vector (a: in std_logic_vector)
+return std_logic_vector is
+  variable result: std_logic_vector(a'RANGE);
+  alias aa: std_logic_vector(a'REVERSE_RANGE) is a;
+begin
+  for i in aa'RANGE loop
+    result(i) := aa(i);
+  end loop;
+  return result;
+end; -- function reverse_any_vector
+
     signal clk50 : std_logic := '0';
     signal clk25 : std_logic := '0';
     signal start_up  : std_logic := '0';
@@ -137,9 +146,18 @@ architecture Behavioral of multicomp_wrapper is
       
       signal sys_resetn : std_logic;
       signal sys_clock100 : STD_LOGIC;
+      
+          
+            -- vga
+      signal vga_irq               :    std_logic;
+      signal vga_addr              :    std_logic_vector(15 downto 0);
+      signal vga_wr_en             :    std_logic;
+      signal vga_rd_en             :    std_logic;
+      signal vga_wr_data           :    std_logic_vector(7 downto 0);
+      signal vga_rd_data           :    std_logic_vector(7 downto 0);
 
     component pll
-    port (
+    port ( 
         resetn  : in std_logic;
         clk_in : in std_logic;
         locked : out std_logic;
@@ -151,9 +169,6 @@ architecture Behavioral of multicomp_wrapper is
     end component;
     
 begin
-   
-
-
    --------------------------------------------------
    -- Instantiate Clock generation
    --------------------------------------------------
@@ -226,20 +241,7 @@ begin
         
         sys_clk => sys_clock100,
         n_reset	=> sys_resetn,
-		clk	=> clk50,
-		vgaClock => clk50,
-		cpuClock => clk25,
-		videoR0	 => videoR0,
-		videoG0	=> videoG0,
-		videoB0	=> videoB0,
-		videoR1	=> videoR1,
-		videoG1	=> videoG1,
-		videoB1	=> videoB1,
-		hSync	=> hSync,
-		vSync	=> vSync,
-
-		ps2Clk => ps2Clk,
-		ps2Data	=> ps2Data,
+        clk50 => clk50,
 		
 		sdCD => SD_CD,
 		sdCS => SD_DAT3,
@@ -268,7 +270,15 @@ begin
       txd1 => txd1,
       cts1 => cts1,
       rts1 => rts1,
-      serialClock => serialClock
+      serialClock => serialClock,
+      
+        vga_addr => vga_addr,
+        vga_wr_en =>  vga_wr_en,
+        vga_rd_en => vga_rd_en,
+        vga_wr_data => vga_wr_data,
+        vga_rd_data => vga_rd_data
+       -- vga_irq => vga_irq
+
     );
     
     --only using spi do drive dat1&2 high & reset is low.
@@ -291,14 +301,41 @@ begin
       rts => open
     );  
 
-
+vga: entity work.gameduino_main
+    port map (
+      vga_clk => clk50, -- Twice the frequency of the original clka board clock
+      vga_red => VGA_R(3 downto 1),
+      vga_green => VGA_G(3 downto 1),
+      vga_blue => VGA_B(3 downto 1),
+      vga_hsync => hSync,
+      vga_vsync => vSync,
+      vga_active => open,
+      --coll_rd => vga_irq,
     
-        
-    LED(8) <= serialRead_en;
-    LED(9) <= serialStatus(0);
+      mem_clk => sys_clock100, -- Should probably be same as vga_clk
+      host_mem_wr => vga_wr_en,             -- set to zero if not used
+      host_mem_w_addr => vga_addr(14 downto 0),  -- set to zero if not used
+      host_mem_data_wr => vga_wr_data,  -- set to zero if not used
+      host_mem_rd => vga_rd_en,            -- set to zero if not used
+      host_mem_r_addr => vga_addr(14 downto 0),  -- set to zero if not used
+      host_mem_data_rd => vga_rd_data,
+    
+      AUX_in => std_logic_vector(to_unsigned(0, 1)), -- set to zero if not used
+      AUX_out => open,
+      AUX_tristate => open,
+    
+      AUDIOL => open,
+      AUDIOR => open,
+    
+      pin2f => open,
+      pin2j => open,
+      j1_flashMOSI  => open,
+      j1_flashSCK  => open,
+      j1_flashSSEL  => open,
+      flashMISO => std_logic_vector(to_unsigned(0, 1))
+  );
     
     LED(10) <= mem_ready;
-    LED (15 downto 11) <= (others => '0');
     serialStatus(0) <= '1' when count > x"00" else '0';
 
     -- SUB-CIRCUIT CLOCK SIGNALS
