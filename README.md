@@ -1,8 +1,9 @@
 # Nex-68k
 Nexys 4 DDR 68k
 
-Zedboard Motorola 68000 implementation of multicomp, Gameduino and MIC68K using the TG68 core. 
-The ram code and memory map has been amended accordingly. Some of the memory and clocking routines are based on work by Michael Jørgensen.
+Nexys4DDR Motorola 68000 implementation of multicomp, Gameduino and MIC68K using the TG68 core. 
+The ram code and memory map has been amended accordingly.
+Some of the memory and clocking routines are based on work by Michael Jørgensen.
 The VGA Engine is based on Gameduino by James Bowman - modified for the Nexys.
 
 # Hardware
@@ -11,7 +12,8 @@ Uses a ps2 pmod in JA: https://reference.digilentinc.com/reference/pmod/pmodps2/
 
 # Software
 
-Roms compiled and converted using Easy68K and Srecord. 
+Roms assembled and converted using Easy68K and Srecord. 
+Block Ram from $0000 to $FFFF, DDR from $10000 to $A00000
 ZBug Monitor rom working at memory location $A00000.
 EhBasic from Lee Davison and Jeff Tranter working in rom at $B00000.
 Modified Gameduino v1 at $C00000
