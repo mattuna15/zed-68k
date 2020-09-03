@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x9AD055DACAA1BD70",
+      "boundary_crc": "0xA697DDDBF6E63571",
       "device": "xc7a100tcsg324-1",
       "name": "write_fifo",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -47,12 +47,12 @@
       },
       "din": {
         "direction": "I",
-        "left": "42",
+        "left": "44",
         "right": "0"
       },
       "dout": {
         "direction": "O",
-        "left": "42",
+        "left": "44",
         "right": "0"
       },
       "rd_en": {
@@ -79,13 +79,13 @@
             "value": "9"
           },
           "Input_Data_Width": {
-            "value": "43"
+            "value": "45"
           },
           "Input_Depth": {
             "value": "512"
           },
           "Output_Data_Width": {
-            "value": "43"
+            "value": "45"
           },
           "Performance_Options": {
             "value": "Standard_FIFO"

@@ -1,5 +1,0 @@
-vhdl xil_defaultlib  \
-"../../../bd/debug/ip/debug_ila_0_0/sim/debug_ila_0_0.vhd" \
-"../../../bd/debug/sim/debug.vhd" \
-
-nosort

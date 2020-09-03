@@ -121,6 +121,12 @@ begin
    port map (
         sys_clock => main_clk,
         resetn => resetn,
+        
+                VGA_R      => open,
+        VGA_G      => open,
+        VGA_B     => open,
+		hSync	=> open,
+		vSync	=> open,
 
 		ps2Clk	=> open,
 		ps2Data	=> open,
@@ -156,7 +162,9 @@ begin
       ddr2_dq             => ddr2_dq,
       ddr2_odt             => ddr2_odt,
       ddr2_dqs_p           => ddr2_dqs_p,
-      ddr2_dqs_n           => ddr2_dqs_n
+      ddr2_dqs_n           => ddr2_dqs_n,
+      AUD_PWM              => open,
+      AUD_SD               => open
    ); -- main_inst
    
 

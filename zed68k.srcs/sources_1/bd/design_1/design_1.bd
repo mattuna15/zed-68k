@@ -221,10 +221,6 @@
               "CLK_DOMAIN": {
                 "value": "design_1_clk100_i",
                 "value_src": "default_prop"
-              },
-              "PHASE": {
-                "value": "0.000",
-                "value_src": "default_prop"
               }
             }
           },

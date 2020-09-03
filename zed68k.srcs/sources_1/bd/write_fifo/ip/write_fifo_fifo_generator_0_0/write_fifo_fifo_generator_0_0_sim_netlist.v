@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Wed Aug  5 13:33:21 2020
+// Date        : Sat Aug 29 11:12:54 2020
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/write_fifo/ip/write_fifo_fifo_generator_0_0/write_fifo_fifo_generator_0_0_sim_netlist.v
@@ -27,10 +27,10 @@ module write_fifo_fifo_generator_0_0
     data_count);
   (* x_interface_info = "xilinx.com:signal:clock:1.0 core_clk CLK" *) (* x_interface_parameter = "XIL_INTERFACENAME core_clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN write_fifo_clk, INSERT_VIP 0" *) input clk;
   input srst;
-  (* x_interface_info = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE WR_DATA" *) input [42:0]din;
+  (* x_interface_info = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE WR_DATA" *) input [44:0]din;
   (* x_interface_info = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE WR_EN" *) input wr_en;
   (* x_interface_info = "xilinx.com:interface:fifo_read:1.0 FIFO_READ RD_EN" *) input rd_en;
-  (* x_interface_info = "xilinx.com:interface:fifo_read:1.0 FIFO_READ RD_DATA" *) output [42:0]dout;
+  (* x_interface_info = "xilinx.com:interface:fifo_read:1.0 FIFO_READ RD_DATA" *) output [44:0]dout;
   (* x_interface_info = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE FULL" *) output full;
   output wr_ack;
   (* x_interface_info = "xilinx.com:interface:fifo_read:1.0 FIFO_READ EMPTY" *) output empty;
@@ -38,8 +38,8 @@ module write_fifo_fifo_generator_0_0
 
   wire clk;
   wire [8:0]data_count;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire empty;
   wire full;
   wire rd_en;
@@ -197,7 +197,7 @@ module write_fifo_fifo_generator_0_0
   (* C_COUNT_TYPE = "0" *) 
   (* C_DATA_COUNT_WIDTH = "9" *) 
   (* C_DEFAULT_VALUE = "BlankString" *) 
-  (* C_DIN_WIDTH = "43" *) 
+  (* C_DIN_WIDTH = "45" *) 
   (* C_DIN_WIDTH_AXIS = "1" *) 
   (* C_DIN_WIDTH_RACH = "32" *) 
   (* C_DIN_WIDTH_RDCH = "64" *) 
@@ -205,7 +205,7 @@ module write_fifo_fifo_generator_0_0
   (* C_DIN_WIDTH_WDCH = "64" *) 
   (* C_DIN_WIDTH_WRCH = "2" *) 
   (* C_DOUT_RST_VAL = "0" *) 
-  (* C_DOUT_WIDTH = "43" *) 
+  (* C_DOUT_WIDTH = "45" *) 
   (* C_ENABLE_RLOCS = "0" *) 
   (* C_ENABLE_RST_SYNC = "1" *) 
   (* C_EN_SAFETY_CKT = "0" *) 
@@ -615,21 +615,21 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_generic_cstr
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ,
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ,
     din);
-  output [42:0]dout;
+  output [44:0]dout;
   input clk;
   input tmp_ram_rd_en;
   input [0:0]E;
   input srst;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
-  input [42:0]din;
+  input [44:0]din;
 
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   wire [0:0]E;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire srst;
   wire tmp_ram_rd_en;
 
@@ -654,21 +654,21 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_prim_width
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ,
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ,
     din);
-  output [42:0]dout;
+  output [44:0]dout;
   input clk;
   input tmp_ram_rd_en;
   input [0:0]E;
   input srst;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
-  input [42:0]din;
+  input [44:0]din;
 
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   wire [0:0]E;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire srst;
   wire tmp_ram_rd_en;
 
@@ -693,14 +693,14 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ,
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_1 ,
     din);
-  output [42:0]dout;
+  output [44:0]dout;
   input clk;
   input tmp_ram_rd_en;
   input [0:0]E;
   input srst;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_1 ;
-  input [42:0]din;
+  input [44:0]din;
 
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_1 ;
@@ -708,7 +708,6 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_13 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_20 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21 ;
-  wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_22 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_28 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_29 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_36 ;
@@ -717,7 +716,6 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_4 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_44 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_45 ;
-  wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_46 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_5 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_52 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53 ;
@@ -735,8 +733,8 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_75 ;
   wire [0:0]E;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire srst;
   wire tmp_ram_rd_en;
   wire \NLW_DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_CASCADEOUTA_UNCONNECTED ;
@@ -933,12 +931,12 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper
         .CLKARDCLK(clk),
         .CLKBWRCLK(clk),
         .DBITERR(\NLW_DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_DBITERR_UNCONNECTED ),
-        .DIADI({1'b0,1'b0,1'b0,din[21:17],1'b0,1'b0,din[16:11],1'b0,1'b0,1'b0,din[10:6],1'b0,1'b0,din[5:0]}),
-        .DIBDI({1'b0,1'b0,1'b0,din[42:38],1'b0,1'b0,1'b0,din[37:33],1'b0,1'b0,1'b0,din[32:28],1'b0,1'b0,din[27:22]}),
+        .DIADI({1'b0,1'b0,1'b0,din[22:18],1'b0,1'b0,din[17:12],1'b0,1'b0,din[11:6],1'b0,1'b0,din[5:0]}),
+        .DIBDI({1'b0,1'b0,1'b0,din[44:40],1'b0,1'b0,din[39:34],1'b0,1'b0,1'b0,din[33:29],1'b0,1'b0,din[28:23]}),
         .DIPADIP({1'b0,1'b0,1'b0,1'b0}),
         .DIPBDIP({1'b0,1'b0,1'b0,1'b0}),
-        .DOADO({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_4 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_5 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_6 ,dout[21:17],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_12 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_13 ,dout[16:11],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_20 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_22 ,dout[10:6],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_28 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_29 ,dout[5:0]}),
-        .DOBDO({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_36 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_37 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_38 ,dout[42:38],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_44 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_45 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_46 ,dout[37:33],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_52 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_54 ,dout[32:28],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_60 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_61 ,dout[27:22]}),
+        .DOADO({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_4 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_5 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_6 ,dout[22:18],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_12 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_13 ,dout[17:12],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_20 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21 ,dout[11:6],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_28 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_29 ,dout[5:0]}),
+        .DOBDO({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_36 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_37 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_38 ,dout[44:40],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_44 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_45 ,dout[39:34],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_52 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_54 ,dout[33:29],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_60 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_61 ,dout[28:23]}),
         .DOPADOP({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_68 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_69 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_70 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_71 }),
         .DOPBDOP({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_72 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_73 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_74 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_75 }),
         .ECCPARITY(\NLW_DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_ECCPARITY_UNCONNECTED [7:0]),
@@ -968,21 +966,21 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_top
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ,
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ,
     din);
-  output [42:0]dout;
+  output [44:0]dout;
   input clk;
   input tmp_ram_rd_en;
   input [0:0]E;
   input srst;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
-  input [42:0]din;
+  input [44:0]din;
 
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   wire [0:0]E;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire srst;
   wire tmp_ram_rd_en;
 
@@ -1007,21 +1005,21 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_v8_4_4
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ,
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ,
     din);
-  output [42:0]dout;
+  output [44:0]dout;
   input clk;
   input tmp_ram_rd_en;
   input [0:0]E;
   input srst;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
-  input [42:0]din;
+  input [44:0]din;
 
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   wire [0:0]E;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire srst;
   wire tmp_ram_rd_en;
 
@@ -1046,21 +1044,21 @@ module write_fifo_fifo_generator_0_0_blk_mem_gen_v8_4_4_synth
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ,
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ,
     din);
-  output [42:0]dout;
+  output [44:0]dout;
   input clk;
   input tmp_ram_rd_en;
   input [0:0]E;
   input srst;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
-  input [42:0]din;
+  input [44:0]din;
 
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   wire [0:0]E;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire srst;
   wire tmp_ram_rd_en;
 
@@ -1356,20 +1354,20 @@ module write_fifo_fifo_generator_0_0_fifo_generator_ramfifo
     din,
     wr_en);
   output [8:0]data_count;
-  output [42:0]dout;
+  output [44:0]dout;
   output empty;
   output full;
   output wr_ack;
   input rd_en;
   input clk;
   input srst;
-  input [42:0]din;
+  input [44:0]din;
   input wr_en;
 
   wire clk;
   wire [8:0]data_count;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire empty;
   wire empty_fb_i;
   wire full;
@@ -1452,20 +1450,20 @@ module write_fifo_fifo_generator_0_0_fifo_generator_top
     din,
     wr_en);
   output [8:0]DATA_COUNT;
-  output [42:0]dout;
+  output [44:0]dout;
   output empty;
   output full;
   output wr_ack;
   input rd_en;
   input clk;
   input srst;
-  input [42:0]din;
+  input [44:0]din;
   input wr_en;
 
   wire [8:0]DATA_COUNT;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire empty;
   wire full;
   wire rd_en;
@@ -1495,10 +1493,10 @@ endmodule
 (* C_AXI_DATA_WIDTH = "64" *) (* C_AXI_ID_WIDTH = "1" *) (* C_AXI_LEN_WIDTH = "8" *) 
 (* C_AXI_LOCK_WIDTH = "1" *) (* C_AXI_RUSER_WIDTH = "1" *) (* C_AXI_TYPE = "1" *) 
 (* C_AXI_WUSER_WIDTH = "1" *) (* C_COMMON_CLOCK = "1" *) (* C_COUNT_TYPE = "0" *) 
-(* C_DATA_COUNT_WIDTH = "9" *) (* C_DEFAULT_VALUE = "BlankString" *) (* C_DIN_WIDTH = "43" *) 
+(* C_DATA_COUNT_WIDTH = "9" *) (* C_DEFAULT_VALUE = "BlankString" *) (* C_DIN_WIDTH = "45" *) 
 (* C_DIN_WIDTH_AXIS = "1" *) (* C_DIN_WIDTH_RACH = "32" *) (* C_DIN_WIDTH_RDCH = "64" *) 
 (* C_DIN_WIDTH_WACH = "1" *) (* C_DIN_WIDTH_WDCH = "64" *) (* C_DIN_WIDTH_WRCH = "2" *) 
-(* C_DOUT_RST_VAL = "0" *) (* C_DOUT_WIDTH = "43" *) (* C_ENABLE_RLOCS = "0" *) 
+(* C_DOUT_RST_VAL = "0" *) (* C_DOUT_WIDTH = "45" *) (* C_ENABLE_RLOCS = "0" *) 
 (* C_ENABLE_RST_SYNC = "1" *) (* C_EN_SAFETY_CKT = "0" *) (* C_ERROR_INJECTION_TYPE = "0" *) 
 (* C_ERROR_INJECTION_TYPE_AXIS = "0" *) (* C_ERROR_INJECTION_TYPE_RACH = "0" *) (* C_ERROR_INJECTION_TYPE_RDCH = "0" *) 
 (* C_ERROR_INJECTION_TYPE_WACH = "0" *) (* C_ERROR_INJECTION_TYPE_WDCH = "0" *) (* C_ERROR_INJECTION_TYPE_WRCH = "0" *) 
@@ -1795,7 +1793,7 @@ module write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5
   input wr_rst;
   input rd_clk;
   input rd_rst;
-  input [42:0]din;
+  input [44:0]din;
   input wr_en;
   input rd_en;
   input [8:0]prog_empty_thresh;
@@ -1808,7 +1806,7 @@ module write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5
   input injectdbiterr;
   input injectsbiterr;
   input sleep;
-  output [42:0]dout;
+  output [44:0]dout;
   output full;
   output almost_full;
   output wr_ack;
@@ -2022,8 +2020,8 @@ module write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5
   wire \<const1> ;
   wire clk;
   wire [8:0]data_count;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire empty;
   wire full;
   wire rd_en;
@@ -2573,20 +2571,20 @@ module write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5_synth
     din,
     wr_en);
   output [8:0]data_count;
-  output [42:0]dout;
+  output [44:0]dout;
   output empty;
   output full;
   output wr_ack;
   input rd_en;
   input clk;
   input srst;
-  input [42:0]din;
+  input [44:0]din;
   input wr_en;
 
   wire clk;
   wire [8:0]data_count;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire empty;
   wire full;
   wire rd_en;
@@ -2617,21 +2615,21 @@ module write_fifo_fifo_generator_0_0_memory
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ,
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ,
     din);
-  output [42:0]dout;
+  output [44:0]dout;
   input clk;
   input tmp_ram_rd_en;
   input [0:0]E;
   input srst;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   input [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
-  input [42:0]din;
+  input [44:0]din;
 
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram ;
   wire [8:0]\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0 ;
   wire [0:0]E;
   wire clk;
-  wire [42:0]din;
-  wire [42:0]dout;
+  wire [44:0]din;
+  wire [44:0]dout;
   wire srst;
   wire tmp_ram_rd_en;
 

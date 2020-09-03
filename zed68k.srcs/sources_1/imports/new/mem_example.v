@@ -40,6 +40,10 @@ module mem_example(
     output reg[63:0] data_out,
     input rstrobe,
     input wstrobe,
+    input mem_upper,
+    input mem_lower,
+    input rd_mem_upper,
+    input rd_mem_lower,
     output wire read_transaction_complete,
     output wire write_transaction_complete,
     output init_calib_complete,
@@ -92,7 +96,7 @@ module mem_example(
         .ddr2_dm(ddr2_dm),
         .ddr2_odt(ddr2_odt),
 
-        .app_addr(addr[27:1]),
+        .app_addr({addr[26:3], 3'b000}),
         .app_cmd(mem_cmd),
         .app_en(mem_en),
         .app_wdf_data(mem_wdf_data),
@@ -194,34 +198,43 @@ module mem_example(
    
         if(ui_clk_sync_rst) begin
             data_out <= 64'h0;
-        end else begin
+        end 
+        else 
+            begin
             if (state == STATE_READ && mem_rd_data_valid || //Data is available normally
                 state == STATE_PREREAD && mem_rdy && mem_rd_data_valid) begin //Data happens to be available immediately
-                if(~addr[0]) begin
-                    if(~mem_rd_data_end) case(width)
-                        `RAM_WIDTH64: data_out[63:0] <= {mem_rd_data[7:0],mem_rd_data[15:8],
-                                                   mem_rd_data[23:16],mem_rd_data[31:24],
-                                                   mem_rd_data[39:32],mem_rd_data[47:40],
-                                                   mem_rd_data[55:48],mem_rd_data[63:56]};
-                        `RAM_WIDTH32: data_out[63:0] <= {mem_rd_data[7:0],mem_rd_data[15:8],
-                                                   mem_rd_data[23:16],mem_rd_data[31:24],32'h0};
-                        `RAM_WIDTH16: data_out[63:0] <= {mem_rd_data[7:0],mem_rd_data[15:8],48'h0};
-                        `RAM_WIDTH8: data_out[63:0] <= {mem_rd_data[7:0],56'h0};
-                    endcase
-                end else begin
-                    if(mem_rd_data_end) begin
-                        if(width == `RAM_WIDTH64) data_out[7:0] <= mem_rd_data[7:0];
-                    end else case(width)
-                        `RAM_WIDTH64: data_out[63:8] <= {mem_rd_data[15:8],mem_rd_data[23:16],
-                                                         mem_rd_data[31:24],mem_rd_data[39:32],
-                                                         mem_rd_data[47:40],mem_rd_data[55:48],
-                                                         mem_rd_data[63:56]};
-                        `RAM_WIDTH32: data_out[63:0] <= {mem_rd_data[15:8],mem_rd_data[23:16],
-                                                         mem_rd_data[31:24],mem_rd_data[39:32],32'h0};
-                        `RAM_WIDTH16: data_out[63:0] <= {mem_rd_data[15:8],mem_rd_data[23:16],48'h0};
-                        `RAM_WIDTH8: data_out[63:0]  <= {mem_rd_data[15:8],56'h0};
-                    endcase
-                end
+                if(addr[2:1] == 2'b00) begin
+                    if (~rd_mem_upper && rd_mem_lower)
+                       data_out[63:0] <= {mem_rd_data[7:0],mem_rd_data[7:0],48'h0};
+                    else if (rd_mem_upper && ~rd_mem_lower)
+                       data_out[63:0] <= {mem_rd_data[15:8],mem_rd_data[15:8],48'h0};
+                    else 
+                       data_out[63:0] <= {mem_rd_data[7:0],mem_rd_data[15:8],48'h0};
+                    end 
+                else if (addr[2:1] == 2'b01) begin
+                          if (~rd_mem_upper && rd_mem_lower)
+                             data_out[63:0] <= {mem_rd_data[23:16],mem_rd_data[23:16],48'h0};
+                          else if (rd_mem_upper && ~rd_mem_lower)
+                             data_out[63:0] <= {mem_rd_data[31:24],mem_rd_data[31:24],48'h0};
+                          else 
+                             data_out[63:0] <= {mem_rd_data[23:16],mem_rd_data[31:24],48'h0};
+                end 
+                else if (addr[2:1] == 2'b10) begin
+                          if (~rd_mem_upper && rd_mem_lower)
+                             data_out[63:0] <= {mem_rd_data[39:32],mem_rd_data[39:32],48'h0};
+                          else if (rd_mem_upper && ~rd_mem_lower)
+                             data_out[63:0] <= {mem_rd_data[47:40],mem_rd_data[47:40],48'h0};
+                          else 
+                             data_out[63:0] <= {mem_rd_data[39:32],mem_rd_data[47:40],48'h0};
+                end 
+                else if (addr[2:1] == 2'b11) begin
+                          if (~rd_mem_upper && rd_mem_lower)
+                             data_out[63:0] <= {mem_rd_data[55:48],mem_rd_data[55:48],48'h0};
+                          else if (rd_mem_upper && ~rd_mem_lower)
+                             data_out[63:0] <= {mem_rd_data[63:56],mem_rd_data[63:56],48'h0};
+                          else 
+                             data_out[63:0] <= {mem_rd_data[55:48],mem_rd_data[63:56],48'h0};
+                end     
             end
         end
     end
@@ -276,44 +289,77 @@ module mem_example(
 
             STATE_WRITEDATA_H: begin
                 if(mem_wdf_rdy) begin //Wait for Write Data queue to have space
-                    if(~addr[0]) case(width)
-                        `RAM_WIDTH64: begin
-                            mem_wdf_mask <= 8'h00;
-                            mem_wdf_data <= {data_in[7:0],data_in[15:8],data_in[23:16],data_in[31:24],
-                                             data_in[39:32],data_in[47:40],data_in[55:48],data_in[63:56]};
+                    if(addr[2:1] == 2'b00) begin
+                            if (~mem_upper && mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'hFE;
+                                mem_wdf_data <= {56'h0,data_in[15:8]};
+                            end
+                            else if (mem_upper && ~mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'hFD;
+                                mem_wdf_data <= {48'h0,data_in[7:0],8'h0};
+                            end
+                            else begin
+                                    mem_wdf_mask <= 8'hFC;
+                                    mem_wdf_data <= {48'h0,data_in[7:0],data_in[15:8]};
+                            end
+                                    
                         end
-                        `RAM_WIDTH32: begin
-                            mem_wdf_mask <= 8'hF0;
-                            mem_wdf_data <= {32'h0,data_in[7:0],data_in[15:8],data_in[23:16],data_in[31:24]};
-                        end
-                        `RAM_WIDTH16: begin
-                            mem_wdf_mask <= 8'hFC;
-                            mem_wdf_data <= {48'h0,data_in[7:0],data_in[15:8]};
-                        end
-                        `RAM_WIDTH8: begin
-                            mem_wdf_mask <= 8'hFE;
-                            mem_wdf_data <= {56'h0,data_in[7:0]};
-                        end
-                        endcase
-                    else case(width)
-                        `RAM_WIDTH64: begin
-                            mem_wdf_mask <= 8'h01;
-                            mem_wdf_data <= {data_in[15:8],data_in[23:16],data_in[31:24],
-                                             data_in[39:32],data_in[47:40],data_in[55:48],data_in[63:56],8'h0};
-                        end
-                        `RAM_WIDTH32: begin
-                            mem_wdf_mask <= 8'hE1;
-                            mem_wdf_data <= {24'h0,data_in[7:0],data_in[15:8],data_in[23:16],data_in[31:24],8'h0};
-                        end
-                        `RAM_WIDTH16: begin
-                            mem_wdf_mask <= 8'hF9;
-                            mem_wdf_data <= {40'h0,data_in[7:0],data_in[15:8],8'h0};
-                        end
-                        `RAM_WIDTH8: begin
-                            mem_wdf_mask <= 8'hFD;
-                            mem_wdf_data <= {48'h0,data_in[7:0],8'h0};
-                        end
-                        endcase
+                    else if(addr[2:1] == 2'b01) 
+                    begin
+                            
+                            if (~mem_upper && mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'hFB;
+                                mem_wdf_data <= {40'h0,data_in[15:8],16'h0};
+                            end
+                            else if (mem_upper && ~mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'hF7;
+                                mem_wdf_data <= {32'h0,data_in[7:0],24'h0};
+                            end
+                            else begin
+                                mem_wdf_mask <= 8'hF3;
+                                mem_wdf_data <= {32'h0,data_in[7:0],data_in[15:8],16'h0};
+                            end
+                    end
+                    else if(addr[2:1] == 2'b10) 
+                    begin
+                            
+                            if (~mem_upper && mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'hEF;
+                                mem_wdf_data <= {24'h0,data_in[15:8],32'h0};
+                            end
+                            else if (mem_upper && ~mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'hDF;
+                                mem_wdf_data <= {16'h0,data_in[7:0],40'h0};
+                            end
+                            else begin
+                                mem_wdf_mask <= 8'hCF;
+                                mem_wdf_data <= {16'h0,data_in[7:0],data_in[15:8],32'h0};
+                            end
+                    end 
+                    else if(addr[2:1] == 2'b11) 
+                    begin
+                            
+                            if (~mem_upper && mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'hBF;
+                                mem_wdf_data <= {8'h0,data_in[15:8],48'h0};
+                            end
+                            else if (mem_upper && ~mem_lower)
+                            begin
+                                mem_wdf_mask <= 8'h7F;
+                                mem_wdf_data <= {data_in[7:0],56'h0};
+                            end
+                            else begin
+                                mem_wdf_mask <= 8'h3F;
+                                mem_wdf_data <= {data_in[7:0],data_in[15:8],48'h0};
+                            end
+                    end                        
 
                     mem_wdf_wren <= 1;
                     state <= STATE_WRITEDATA_L;
@@ -322,14 +368,6 @@ module mem_example(
 
             STATE_WRITEDATA_L: begin
                 if(mem_wdf_rdy) begin //Wait for Write Data queue to have space
-                    if(~addr[0]) begin
-                        mem_wdf_mask <= 8'hFF;
-                        mem_wdf_data <= 64'h0;
-                    end else begin
-                        mem_wdf_mask <= 8'hFE;
-                        mem_wdf_data <= {56'h0,data_in[7:0]};
-                    end
-                    mem_wdf_wren <= 1;
                     mem_wdf_end <= 1;
                     write_complete <= 1;
                     state <= STATE_IDLE;

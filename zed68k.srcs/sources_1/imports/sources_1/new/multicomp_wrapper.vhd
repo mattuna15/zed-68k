@@ -88,7 +88,10 @@ port(
       ddr2_odt             : out   std_logic_vector(0 downto 0);
       ddr2_dq              : inout std_logic_vector(15 downto 0);
       ddr2_dqs_p           : inout std_logic_vector(1 downto 0);
-      ddr2_dqs_n           : inout std_logic_vector(1 downto 0)
+      ddr2_dqs_n           : inout std_logic_vector(1 downto 0);
+      
+      AUD_PWM              : inout std_logic;
+      AUD_SD               : out std_logic
     
 	);
 end multicomp_wrapper;
@@ -110,20 +113,26 @@ end; -- function reverse_any_vector
     signal clk50 : std_logic := '0';
     signal clk25 : std_logic := '0';
     signal start_up  : std_logic := '0';
+    --serial term
+    signal serialTermStatus: std_logic_vector(7 downto 0) := x"00"; 
+    signal serialTermRxData: std_logic_vector(7 downto 0) := x"00";
+    signal serialTermRead_en: std_logic := '0';
+    signal serialTermTxData: std_logic_vector(7 downto 0) := x"00";
+    signal serialTermTxActive : std_logic := '0';
+    signal serialTermTxWrite_en: std_logic;
+    signal rx_count: std_logic_vector( 7 downto 0) := x"00";
+    signal rx_data_trigger: std_logic := '0';
     
+    --serial s-rec
     signal serialStatus: std_logic_vector(7 downto 0) := x"00"; 
-    signal rxSerialData: std_logic_vector(7 downto 0) := x"00";
     signal serialData: std_logic_vector(7 downto 0) := x"00";
     signal serialRead_en: std_logic := '0';
-    signal rxDataReady : std_logic := '0' ;
-    
-    signal reset: std_logic := '1' ;
-    
     signal count: std_logic_vector( 7 downto 0) := x"00";
     signal data_trigger: std_logic := '0';
+    
+    signal reset: std_logic := '1' ;
     signal clk_locked: std_logic := '0';
-    signal serialClkCount			: std_logic_vector(15 downto 0) := (others => '0');
-    signal serialClock   			: std_logic;
+
 
     
           -- RAM interface
@@ -155,6 +164,10 @@ end; -- function reverse_any_vector
       signal vga_rd_en             :    std_logic;
       signal vga_wr_data           :    std_logic_vector(7 downto 0);
       signal vga_rd_data           :    std_logic_vector(7 downto 0);
+      
+      --audio 
+      signal audio_data_wr         : std_logic_vector(15 downto 0);
+      signal audio_wr_ack          : std_logic;
 
     component pll
     port ( 
@@ -167,6 +180,21 @@ end; -- function reverse_any_vector
         clk25  : out std_logic
     );
     end component;
+    
+  component serial_rx
+  port (
+    LED : out STD_LOGIC_VECTOR ( 7 downto 0 );
+    clk100_i : in STD_LOGIC;
+    cts : out STD_LOGIC;
+    m68_rxd : out STD_LOGIC_VECTOR ( 7 downto 0 );
+    rd_clk : in STD_LOGIC;
+    rd_data_cnt : out STD_LOGIC_VECTOR ( 8 downto 0 );
+    rd_en : in STD_LOGIC;
+    reset_n : in STD_LOGIC;
+    rts : out STD_LOGIC;
+    rxd1 : in STD_LOGIC
+  );
+end component;
     
 begin
    --------------------------------------------------
@@ -249,9 +277,18 @@ begin
 		sdMISO => SD_DAT0,
 		sdSCLK => SD_SCK,
 		
-		serialRead_en => serialRead_en,
+		--srec
+	    serialRead_en => serialRead_en,
 		serialStatus => serialStatus,
 		serialData => serialData,
+		
+		--terminal
+
+        serialTerminalStatus => serialTermStatus,
+        rx_serialRead_en => serialTermRead_en,
+        serialRxData => serialTermRxData,
+        tx_serialWrite_en => serialTermTxWrite_en,
+        serialTxData => serialTermTxData,
 		
 		                  -- RAM interface
       ram_a                => cpuAddress,
@@ -266,18 +303,15 @@ begin
       
       cpu_as                => cpuAS,
       
-      rxd1 => rxd1,
-      txd1 => txd1,
-      cts1 => cts1,
-      rts1 => rts1,
-      serialClock => serialClock,
-      
         vga_addr => vga_addr,
         vga_wr_en =>  vga_wr_en,
         vga_rd_en => vga_rd_en,
         vga_wr_data => vga_wr_data,
-        vga_rd_data => vga_rd_data
+        vga_rd_data => vga_rd_data,
        -- vga_irq => vga_irq
+       
+       audio_wr_data => audio_data_wr,
+       audio_wr_ack => audio_wr_ack
 
     );
     
@@ -286,7 +320,38 @@ begin
     SD_DAT1 <= '1';
     SD_DAT2 <= '1';
     
-    io_serial: entity work.design_1_wrapper
+    
+    --serial
+    
+    io_serial_term_tx: entity work.serial_wrapper 
+        port map (
+        sys_clk => sys_clock100,
+        tx_data => serialTermTxData,
+        tx_wr_en => serialTermTxWrite_en,
+        cts => open,
+        rts => open,
+        reset_n => resetn and mem_ready and clk_locked,
+        txd => txd1,
+        tx_send_active => serialTermTxActive
+  );
+  
+  io_serial_term_rx : serial_rx
+    port map (
+      LED => open,
+      rd_en => serialTermRead_en,
+      m68_rxd => serialTermRxData,
+      rd_clk => sys_clock100,
+      reset_n => resetn and mem_ready and clk_locked,
+      rxd1 => rxd1,
+      rd_data_cnt(8 downto 1) => rx_count,
+      rd_data_cnt(0) => rx_data_trigger,
+      clk100_i => sys_clock100,
+      cts => open,
+      rts => open
+    );  
+    
+    
+    io_serial_load : serial_rx
     port map (
       LED => LED(7 downto 0),
       rd_en => serialRead_en,
@@ -334,28 +399,22 @@ vga: entity work.gameduino_main
       j1_flashSSEL  => open,
       flashMISO => std_logic_vector(to_unsigned(0, 1))
   );
+  
+  audio : entity work.ym2151_top 
+   port map (
+      sys_clk_i  => sys_clock100,    -- 100 MHz
+      sys_rstn_i => sys_resetn,
+      m68k_data_i => audio_data_wr,  -- register - data
+      audio_wr_ack => audio_wr_ack,
+      aud_pwm_o  => AUD_PWM,
+      aud_sd_o   => AUD_SD
+   );
     
     LED(10) <= mem_ready;
+    
+    serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
+    serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
     serialStatus(0) <= '1' when count > x"00" else '0';
 
-    -- SUB-CIRCUIT CLOCK SIGNALS
-    serialClock <= serialClkCount(15);
-    process (clk50)
-    begin
-        if rising_edge(clk50) then
-        
-        
-        -- Serial clock DDS
-        -- 50MHz master input clock:
-        -- Baud Increment
-        -- 115200 2416
-        -- 38400 805
-        -- 19200 403
-        -- 9600 201
-        -- 4800 101
-        -- 2400 50
-            serialClkCount <= serialClkCount + 201;
-        end if;
-    end process;
     
 end Behavioral;

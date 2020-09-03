@@ -1,6 +1,6 @@
 -- 6850 ACIA COMPATIBLE UART WITH HARDWARE INPUT BUFFER AND HANDSHAKE
 
--- This file is copyright by Grant Searle 2013
+-- Original file is copyright by Grant Searle 2013
 -- You are free to use this file in your own projects but must never charge for it nor use it without
 -- acknowledgement.
 -- Please ask permission from Grant Searle before republishing elsewhere.
@@ -14,6 +14,22 @@
 --
 -- Grant Searle
 -- eMail address available on my main web page link above.
+--
+-- 10-Nov-2015 foofoobedoo@gmail.com
+-- Modifications to use rising clk and to use baud rate enables rather than clocks,
+-- slowly but surely moving towards a totally synchronous implementation.
+-- 
+-- control reg
+--     7               6                     5              4          3        2         1         0
+-- Rx int en | Tx control (INT/RTS) | Tx control (RTS) | ignored | ignored | ignored | reset A | reset B
+--             [        0                   1         ] = RTS LOW
+--                                                                             RESET = [  1         1  ]
+
+-- status reg
+--     7              6                5         4          3        2         1            0
+--    irq   |   parity error      | overrun | frame err | n_cts  | n_dcd |  tx empty | rx not empty
+--            always 0 (no parity)    n/a        n/a
+	
 
 library ieee;
 	use ieee.std_logic_1164.all;
@@ -22,20 +38,22 @@ library ieee;
 
 entity bufferedUART is
 	port (
-		clk     : in std_logic;
+		clk     : in  std_logic;
 		n_wr    : in  std_logic;
 		n_rd    : in  std_logic;
 		regSel  : in  std_logic;
 		dataIn  : in  std_logic_vector(7 downto 0);
 		dataOut : out std_logic_vector(7 downto 0);
-		n_int   : out std_logic; 
-		rxClock : in  std_logic; -- 16 x baud rate
-		txClock : in  std_logic; -- 16 x baud rate
-		rxd     : in  std_logic;
+		n_int   : out std_logic;
+                -- these clock enables are asserted for one period of input clk,
+                -- at 16x the baud rate.
+		rxClkEn : in  std_logic; -- 16 x baud rate.
+		txClkEn : in  std_logic; -- 16 x baud rate
+		rxd     : in  std_logic := '1';
 		txd     : out std_logic;
-		n_rts   : out std_logic :='0';
-		n_cts   : in  std_logic; 
-		n_dcd   : in  std_logic
+		n_rts   : out std_logic;
+		n_cts   : in  std_logic := '0';
+		n_dcd   : in  std_logic := '0'
    );
 end bufferedUART;
 
@@ -68,19 +86,30 @@ type serialStateType is ( idle, dataBit, stopBit );
 signal rxState : serialStateType;
 signal txState : serialStateType;
 
-signal reset : std_logic := '0';
+signal func_reset : std_logic := '0';
 
 type rxBuffArray is array (0 to 15) of std_logic_vector(7 downto 0);
 signal rxBuffer : rxBuffArray;
 
-signal rxInPointer: integer range 0 to 63 :=0;
-signal rxReadPointer: integer range 0 to 63 :=0;
-signal rxBuffCount: integer range 0 to 63 :=0;
+signal rxInPointer: integer range 0 to 63 :=0;       -- registered on clk
+signal rxReadPointer: integer range 0 to 63 :=0;     -- registered on n_rd
+signal rxBuffCount: integer range 0 to 63 :=0;       -- combinational
 
 signal rxFilter : integer range 0 to 50; 
 
 signal rxdFiltered : std_logic := '1';
 
+-- control reg
+--     7               6                     5              4          3        2         1         0
+-- Rx int en | Tx control (INT/RTS) | Tx control (RTS) | ignored | ignored | ignored | reset A | reset B
+--             [        0                   1         ] = RTS LOW
+--                                                                             RESET = [  1         1  ]
+
+-- status reg
+--     7              6                5         4          3        2         1            0
+--    irq   |   parity error      | overrun | frame err | n_cts  | n_dcd |  tx empty | rx not empty
+--            always 0 (no parity)    n/a        n/a
+	
 begin
 	-- minimal 6850 compatibility
 	statusReg(0) <= '0' when rxInPointer=rxReadPointer else '1';
@@ -96,7 +125,7 @@ begin
 				else '1';
 
 -- raise (inhibit) n_rts when buffer over half-full
---	6850 implementatit = n_rts <= '1' when controlReg(6)='1' and controlReg(5)='0' else '0';
+--	6850 implementation = n_rts <= '1' when controlReg(6)='1' and controlReg(5)='0' else '0';
 
 	rxBuffCount <= 0 + rxInPointer - rxReadPointer when rxInPointer >= rxReadPointer
 		else 16 + rxInPointer - rxReadPointer;
@@ -106,7 +135,7 @@ begin
 	-- stop flow if greater that 8 chars in buffer (to allow 8 byte overflow)
 	process (clk)
 	begin
-		if falling_edge(clk) then
+		if rising_edge(clk) then
 			if rxBuffCount<2 then
 				n_rts <= '0';
 			end if;
@@ -116,7 +145,7 @@ begin
 		end if;
 	end process;
 		
---	n_rts <= '1' when rxBuffCount > 24 else '0';
+--	n_rts <= '1' when rxBuffCount > 8 else '0';
 	
 	-- control reg
 	--     7               6                     5              4          3        2         1         0
@@ -130,8 +159,16 @@ begin
    --            always 0 (no parity)    n/a        n/a
 	
 	-- write of xxxxxx11 to control reg will reset
-	reset <= '1' when n_wr = '0' and dataIn(1 downto 0) = "11" and regSel = '0' else '0';
-
+	process (clk)
+	begin
+		if rising_edge(clk) then
+			if n_wr = '0' and dataIn(1 downto 0) = "11" and regSel = '0' then
+				func_reset <= '1';
+                        else
+				func_reset <= '0';
+                        end if;
+		end if;
+	end process;
 
 	-- RX de-glitcher - important because the FPGA is very sensistive
 	-- Filtered RX will not switch low to high until there is 50 more high samples than lows
@@ -140,7 +177,7 @@ begin
 	-- However, then makes serial comms 100% reliable
 	process (clk)
 	begin
-		if falling_edge(clk) then
+		if rising_edge(clk) then
 			if rxd = '1' and rxFilter=50 then
 				rxdFiltered <= '1';
 			end if;
@@ -156,9 +193,11 @@ begin
 		end if;
 	end process;
 	
-	process( n_rd )
+	process( n_rd, func_reset )
 	begin
-		if falling_edge(n_rd) then -- Standard CPU - present data on leading edge of rd
+		if func_reset='1' then
+			rxReadPointer <= 0;
+		elsif falling_edge(n_rd) then -- Standard CPU - present data on leading edge of rd
 			if regSel='1' then
 				dataOut <= rxBuffer(rxReadPointer);
 				if rxInPointer /= rxReadPointer then
@@ -188,13 +227,14 @@ begin
 		end if;
 	end process;
 
-	process( rxClock , reset )
+	rx_fsm: process( clk, rxClkEn , func_reset )
 	begin
-		if reset='1' then
+		if func_reset='1' then
 			rxState <= idle;
 			rxBitCount<=(others=>'0');
 			rxClockCount<=(others=>'0');
-		elsif falling_edge(rxClock) then
+                        rxInPointer<=0;
+		elsif rising_edge(clk) and rxClkEn = '1' then
 			case rxState is
 			when idle =>
 				if rxdFiltered='1' then -- high so idle
@@ -233,18 +273,18 @@ begin
 					rxClockCount<=rxClockCount+1;
 				end if;
 			end case;
-		end if;              
+		end if;
 	end process;
 
-	process( txClock , reset )
+	tx_fsm: process( clk, txClkEn , func_reset )
 	begin
-		if reset='1' then
+		if func_reset='1' then
 			txState <= idle;
 			txBitCount<=(others=>'0');
 			txClockCount<=(others=>'0');
 			txByteSent <= '0';
 
-		elsif falling_edge(txClock) then
+		elsif rising_edge(clk) and txClkEn = '1' then
 			case txState is
 			when idle =>
 				txd <= '1';

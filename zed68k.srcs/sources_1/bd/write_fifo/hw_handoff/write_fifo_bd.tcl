@@ -160,8 +160,8 @@ proc create_root_design { parentCell } {
   # Create ports
   set clk [ create_bd_port -dir I -type clk clk ]
   set data_count [ create_bd_port -dir O -from 8 -to 0 data_count ]
-  set din [ create_bd_port -dir I -from 42 -to 0 din ]
-  set dout [ create_bd_port -dir O -from 42 -to 0 dout ]
+  set din [ create_bd_port -dir I -from 44 -to 0 din ]
+  set dout [ create_bd_port -dir O -from 44 -to 0 dout ]
   set rd_en [ create_bd_port -dir I rd_en ]
   set rst [ create_bd_port -dir I rst ]
   set wr_ack [ create_bd_port -dir O wr_ack ]
@@ -176,9 +176,9 @@ proc create_root_design { parentCell } {
    CONFIG.Empty_Threshold_Negate_Value {3} \
    CONFIG.Full_Threshold_Assert_Value {510} \
    CONFIG.Full_Threshold_Negate_Value {509} \
-   CONFIG.Input_Data_Width {43} \
+   CONFIG.Input_Data_Width {45} \
    CONFIG.Input_Depth {512} \
-   CONFIG.Output_Data_Width {43} \
+   CONFIG.Output_Data_Width {45} \
    CONFIG.Output_Depth {512} \
    CONFIG.Performance_Options {Standard_FIFO} \
    CONFIG.Read_Data_Count_Width {9} \

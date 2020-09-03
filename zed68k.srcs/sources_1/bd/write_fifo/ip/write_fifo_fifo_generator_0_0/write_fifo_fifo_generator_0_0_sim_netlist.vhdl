@@ -1,7 +1,7 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Wed Aug  5 13:33:21 2020
+-- Date        : Sat Aug 29 11:12:54 2020
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               d:/code/zed-68k/zed68k.srcs/sources_1/bd/write_fifo/ip/write_fifo_fifo_generator_0_0/write_fifo_fifo_generator_0_0_sim_netlist.vhdl
@@ -16,14 +16,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper is
   port (
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     clk : in STD_LOGIC;
     tmp_ram_rd_en : in STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     srst : in STD_LOGIC;
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_1\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 )
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 )
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper : entity is "blk_mem_gen_prim_wrapper";
@@ -34,7 +34,6 @@ architecture STRUCTURE of write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_13\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_20\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21\ : STD_LOGIC;
-  signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_22\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_28\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_29\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_36\ : STD_LOGIC;
@@ -43,7 +42,6 @@ architecture STRUCTURE of write_fifo_fifo_generator_0_0_blk_mem_gen_prim_wrapper
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_4\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_44\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_45\ : STD_LOGIC;
-  signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_46\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_5\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_52\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53\ : STD_LOGIC;
@@ -261,52 +259,50 @@ begin
       CLKBWRCLK => clk,
       DBITERR => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_DBITERR_UNCONNECTED\,
       DIADI(31 downto 29) => B"000",
-      DIADI(28 downto 24) => din(21 downto 17),
+      DIADI(28 downto 24) => din(22 downto 18),
       DIADI(23 downto 22) => B"00",
-      DIADI(21 downto 16) => din(16 downto 11),
-      DIADI(15 downto 13) => B"000",
-      DIADI(12 downto 8) => din(10 downto 6),
+      DIADI(21 downto 16) => din(17 downto 12),
+      DIADI(15 downto 14) => B"00",
+      DIADI(13 downto 8) => din(11 downto 6),
       DIADI(7 downto 6) => B"00",
       DIADI(5 downto 0) => din(5 downto 0),
       DIBDI(31 downto 29) => B"000",
-      DIBDI(28 downto 24) => din(42 downto 38),
-      DIBDI(23 downto 21) => B"000",
-      DIBDI(20 downto 16) => din(37 downto 33),
+      DIBDI(28 downto 24) => din(44 downto 40),
+      DIBDI(23 downto 22) => B"00",
+      DIBDI(21 downto 16) => din(39 downto 34),
       DIBDI(15 downto 13) => B"000",
-      DIBDI(12 downto 8) => din(32 downto 28),
+      DIBDI(12 downto 8) => din(33 downto 29),
       DIBDI(7 downto 6) => B"00",
-      DIBDI(5 downto 0) => din(27 downto 22),
+      DIBDI(5 downto 0) => din(28 downto 23),
       DIPADIP(3 downto 0) => B"0000",
       DIPBDIP(3 downto 0) => B"0000",
       DOADO(31) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_4\,
       DOADO(30) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_5\,
       DOADO(29) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_6\,
-      DOADO(28 downto 24) => dout(21 downto 17),
+      DOADO(28 downto 24) => dout(22 downto 18),
       DOADO(23) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_12\,
       DOADO(22) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_13\,
-      DOADO(21 downto 16) => dout(16 downto 11),
+      DOADO(21 downto 16) => dout(17 downto 12),
       DOADO(15) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_20\,
       DOADO(14) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21\,
-      DOADO(13) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_22\,
-      DOADO(12 downto 8) => dout(10 downto 6),
+      DOADO(13 downto 8) => dout(11 downto 6),
       DOADO(7) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_28\,
       DOADO(6) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_29\,
       DOADO(5 downto 0) => dout(5 downto 0),
       DOBDO(31) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_36\,
       DOBDO(30) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_37\,
       DOBDO(29) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_38\,
-      DOBDO(28 downto 24) => dout(42 downto 38),
+      DOBDO(28 downto 24) => dout(44 downto 40),
       DOBDO(23) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_44\,
       DOBDO(22) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_45\,
-      DOBDO(21) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_46\,
-      DOBDO(20 downto 16) => dout(37 downto 33),
+      DOBDO(21 downto 16) => dout(39 downto 34),
       DOBDO(15) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_52\,
       DOBDO(14) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53\,
       DOBDO(13) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_54\,
-      DOBDO(12 downto 8) => dout(32 downto 28),
+      DOBDO(12 downto 8) => dout(33 downto 29),
       DOBDO(7) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_60\,
       DOBDO(6) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_61\,
-      DOBDO(5 downto 0) => dout(27 downto 22),
+      DOBDO(5 downto 0) => dout(28 downto 23),
       DOPADOP(3) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_68\,
       DOPADOP(2) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_69\,
       DOPADOP(1) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_70\,
@@ -1857,14 +1853,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_blk_mem_gen_prim_width is
   port (
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     clk : in STD_LOGIC;
     tmp_ram_rd_en : in STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     srst : in STD_LOGIC;
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 )
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 )
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of write_fifo_fifo_generator_0_0_blk_mem_gen_prim_width : entity is "blk_mem_gen_prim_width";
@@ -1878,8 +1874,8 @@ begin
       \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_1\(8 downto 0) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0),
       E(0) => E(0),
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       srst => srst,
       tmp_ram_rd_en => tmp_ram_rd_en
     );
@@ -2150,14 +2146,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_blk_mem_gen_generic_cstr is
   port (
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     clk : in STD_LOGIC;
     tmp_ram_rd_en : in STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     srst : in STD_LOGIC;
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 )
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 )
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of write_fifo_fifo_generator_0_0_blk_mem_gen_generic_cstr : entity is "blk_mem_gen_generic_cstr";
@@ -2171,8 +2167,8 @@ begin
       \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0),
       E(0) => E(0),
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       srst => srst,
       tmp_ram_rd_en => tmp_ram_rd_en
     );
@@ -2341,14 +2337,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_blk_mem_gen_top is
   port (
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     clk : in STD_LOGIC;
     tmp_ram_rd_en : in STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     srst : in STD_LOGIC;
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 )
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 )
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of write_fifo_fifo_generator_0_0_blk_mem_gen_top : entity is "blk_mem_gen_top";
@@ -2362,8 +2358,8 @@ begin
       \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0),
       E(0) => E(0),
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       srst => srst,
       tmp_ram_rd_en => tmp_ram_rd_en
     );
@@ -2374,14 +2370,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_blk_mem_gen_v8_4_4_synth is
   port (
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     clk : in STD_LOGIC;
     tmp_ram_rd_en : in STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     srst : in STD_LOGIC;
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 )
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 )
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of write_fifo_fifo_generator_0_0_blk_mem_gen_v8_4_4_synth : entity is "blk_mem_gen_v8_4_4_synth";
@@ -2395,8 +2391,8 @@ begin
       \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0),
       E(0) => E(0),
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       srst => srst,
       tmp_ram_rd_en => tmp_ram_rd_en
     );
@@ -2407,14 +2403,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_blk_mem_gen_v8_4_4 is
   port (
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     clk : in STD_LOGIC;
     tmp_ram_rd_en : in STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     srst : in STD_LOGIC;
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 )
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 )
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of write_fifo_fifo_generator_0_0_blk_mem_gen_v8_4_4 : entity is "blk_mem_gen_v8_4_4";
@@ -2428,8 +2424,8 @@ inst_blk_mem_gen: entity work.write_fifo_fifo_generator_0_0_blk_mem_gen_v8_4_4_s
       \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0),
       E(0) => E(0),
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       srst => srst,
       tmp_ram_rd_en => tmp_ram_rd_en
     );
@@ -2440,14 +2436,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_memory is
   port (
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     clk : in STD_LOGIC;
     tmp_ram_rd_en : in STD_LOGIC;
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     srst : in STD_LOGIC;
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\ : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 )
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 )
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of write_fifo_fifo_generator_0_0_memory : entity is "memory";
@@ -2461,8 +2457,8 @@ begin
       \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0),
       E(0) => E(0),
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       srst => srst,
       tmp_ram_rd_en => tmp_ram_rd_en
     );
@@ -2474,14 +2470,14 @@ use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_fifo_generator_ramfifo is
   port (
     data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     empty : out STD_LOGIC;
     full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
     rd_en : in STD_LOGIC;
     clk : in STD_LOGIC;
     srst : in STD_LOGIC;
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
     wr_en : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
@@ -2551,8 +2547,8 @@ begin
       \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\(8 downto 0) => wr_pntr(8 downto 0),
       E(0) => ram_wr_en,
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       srst => srst,
       tmp_ram_rd_en => tmp_ram_rd_en
     );
@@ -2564,14 +2560,14 @@ use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_fifo_generator_top is
   port (
     DATA_COUNT : out STD_LOGIC_VECTOR ( 8 downto 0 );
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     empty : out STD_LOGIC;
     full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
     rd_en : in STD_LOGIC;
     clk : in STD_LOGIC;
     srst : in STD_LOGIC;
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
     wr_en : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
@@ -2584,8 +2580,8 @@ begin
      port map (
       clk => clk,
       data_count(8 downto 0) => DATA_COUNT(8 downto 0),
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       empty => empty,
       full => full,
       rd_en => rd_en,
@@ -2601,14 +2597,14 @@ use UNISIM.VCOMPONENTS.ALL;
 entity write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5_synth is
   port (
     data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     empty : out STD_LOGIC;
     full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
     rd_en : in STD_LOGIC;
     clk : in STD_LOGIC;
     srst : in STD_LOGIC;
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
     wr_en : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
@@ -2621,8 +2617,8 @@ begin
      port map (
       DATA_COUNT(8 downto 0) => data_count(8 downto 0),
       clk => clk,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       empty => empty,
       full => full,
       rd_en => rd_en,
@@ -2646,7 +2642,7 @@ entity write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 is
     wr_rst : in STD_LOGIC;
     rd_clk : in STD_LOGIC;
     rd_rst : in STD_LOGIC;
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
     wr_en : in STD_LOGIC;
     rd_en : in STD_LOGIC;
     prog_empty_thresh : in STD_LOGIC_VECTOR ( 8 downto 0 );
@@ -2659,7 +2655,7 @@ entity write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 is
     injectdbiterr : in STD_LOGIC;
     injectsbiterr : in STD_LOGIC;
     sleep : in STD_LOGIC;
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     full : out STD_LOGIC;
     almost_full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
@@ -2928,7 +2924,7 @@ entity write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 is
   attribute C_DEFAULT_VALUE : string;
   attribute C_DEFAULT_VALUE of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is "BlankString";
   attribute C_DIN_WIDTH : integer;
-  attribute C_DIN_WIDTH of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 43;
+  attribute C_DIN_WIDTH of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 45;
   attribute C_DIN_WIDTH_AXIS : integer;
   attribute C_DIN_WIDTH_AXIS of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 1;
   attribute C_DIN_WIDTH_RACH : integer;
@@ -2944,7 +2940,7 @@ entity write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 is
   attribute C_DOUT_RST_VAL : string;
   attribute C_DOUT_RST_VAL of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is "0";
   attribute C_DOUT_WIDTH : integer;
-  attribute C_DOUT_WIDTH of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 43;
+  attribute C_DOUT_WIDTH of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 45;
   attribute C_ENABLE_RLOCS : integer;
   attribute C_ENABLE_RLOCS of write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 0;
   attribute C_ENABLE_RST_SYNC : integer;
@@ -3805,8 +3801,8 @@ inst_fifo_gen: entity work.write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5_
      port map (
       clk => clk,
       data_count(8 downto 0) => data_count(8 downto 0),
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       empty => empty,
       full => full,
       rd_en => rd_en,
@@ -3823,10 +3819,10 @@ entity write_fifo_fifo_generator_0_0 is
   port (
     clk : in STD_LOGIC;
     srst : in STD_LOGIC;
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
     wr_en : in STD_LOGIC;
     rd_en : in STD_LOGIC;
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
     empty : out STD_LOGIC;
@@ -4023,7 +4019,7 @@ architecture STRUCTURE of write_fifo_fifo_generator_0_0 is
   attribute C_DEFAULT_VALUE : string;
   attribute C_DEFAULT_VALUE of U0 : label is "BlankString";
   attribute C_DIN_WIDTH : integer;
-  attribute C_DIN_WIDTH of U0 : label is 43;
+  attribute C_DIN_WIDTH of U0 : label is 45;
   attribute C_DIN_WIDTH_AXIS : integer;
   attribute C_DIN_WIDTH_AXIS of U0 : label is 1;
   attribute C_DIN_WIDTH_RACH : integer;
@@ -4039,7 +4035,7 @@ architecture STRUCTURE of write_fifo_fifo_generator_0_0 is
   attribute C_DOUT_RST_VAL : string;
   attribute C_DOUT_RST_VAL of U0 : label is "0";
   attribute C_DOUT_WIDTH : integer;
-  attribute C_DOUT_WIDTH of U0 : label is 43;
+  attribute C_DOUT_WIDTH of U0 : label is 45;
   attribute C_ENABLE_RLOCS : integer;
   attribute C_ENABLE_RLOCS of U0 : label is 0;
   attribute C_ENABLE_RST_SYNC : integer;
@@ -4468,8 +4464,8 @@ U0: entity work.write_fifo_fifo_generator_0_0_fifo_generator_v13_2_5
       clk => clk,
       data_count(8 downto 0) => data_count(8 downto 0),
       dbiterr => NLW_U0_dbiterr_UNCONNECTED,
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       empty => empty,
       full => full,
       injectdbiterr => '0',

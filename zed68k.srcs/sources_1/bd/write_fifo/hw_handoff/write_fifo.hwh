@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Aug  5 13:31:05 2020" VIVADOVERSION="2020.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Sat Aug 29 11:10:28 2020" VIVADOVERSION="2020.1">
 
   <SYSTEMINFO ARCH="artix7" BOARD="digilentinc.com:nexys4_ddr:part0:1.1" DEVICE="7a100t" NAME="write_fifo" PACKAGE="csg324" SPEEDGRADE="-1"/>
 
@@ -19,12 +19,12 @@
         <CONNECTION INSTANCE="fifo_generator_0" PORT="wr_ack"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="I" LEFT="42" NAME="din" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_din">
+    <PORT DIR="I" LEFT="44" NAME="din" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_din">
       <CONNECTIONS>
         <CONNECTION INSTANCE="fifo_generator_0" PORT="din"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="42" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="fifo_generator_0_dout">
+    <PORT DIR="O" LEFT="44" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="fifo_generator_0_dout">
       <CONNECTIONS>
         <CONNECTION INSTANCE="fifo_generator_0" PORT="dout"/>
       </CONNECTIONS>
@@ -59,9 +59,9 @@
         <PARAMETER NAME="C_COUNT_TYPE" VALUE="0"/>
         <PARAMETER NAME="C_DATA_COUNT_WIDTH" VALUE="9"/>
         <PARAMETER NAME="C_DEFAULT_VALUE" VALUE="BlankString"/>
-        <PARAMETER NAME="C_DIN_WIDTH" VALUE="43"/>
+        <PARAMETER NAME="C_DIN_WIDTH" VALUE="45"/>
         <PARAMETER NAME="C_DOUT_RST_VAL" VALUE="0"/>
-        <PARAMETER NAME="C_DOUT_WIDTH" VALUE="43"/>
+        <PARAMETER NAME="C_DOUT_WIDTH" VALUE="45"/>
         <PARAMETER NAME="C_ENABLE_RLOCS" VALUE="0"/>
         <PARAMETER NAME="C_FAMILY" VALUE="artix7"/>
         <PARAMETER NAME="C_FULL_FLAGS_RST_VAL" VALUE="0"/>
@@ -263,9 +263,9 @@
         <PARAMETER NAME="INTERFACE_TYPE" VALUE="Native"/>
         <PARAMETER NAME="Performance_Options" VALUE="Standard_FIFO"/>
         <PARAMETER NAME="asymmetric_port_width" VALUE="false"/>
-        <PARAMETER NAME="Input_Data_Width" VALUE="43"/>
+        <PARAMETER NAME="Input_Data_Width" VALUE="45"/>
         <PARAMETER NAME="Input_Depth" VALUE="512"/>
-        <PARAMETER NAME="Output_Data_Width" VALUE="43"/>
+        <PARAMETER NAME="Output_Data_Width" VALUE="45"/>
         <PARAMETER NAME="Output_Depth" VALUE="512"/>
         <PARAMETER NAME="Enable_ECC" VALUE="false"/>
         <PARAMETER NAME="Use_Embedded_Registers" VALUE="false"/>
@@ -436,7 +436,7 @@
             <CONNECTION INSTANCE="External_Ports" PORT="rst"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" LEFT="42" NAME="din" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_din">
+        <PORT DIR="I" LEFT="44" NAME="din" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_din">
           <CONNECTIONS>
             <CONNECTION INSTANCE="External_Ports" PORT="din"/>
           </CONNECTIONS>
@@ -451,7 +451,7 @@
             <CONNECTION INSTANCE="External_Ports" PORT="rd_en"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" LEFT="42" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="fifo_generator_0_dout">
+        <PORT DIR="O" LEFT="44" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="fifo_generator_0_dout">
           <CONNECTIONS>
             <CONNECTION INSTANCE="External_Ports" PORT="dout"/>
           </CONNECTIONS>

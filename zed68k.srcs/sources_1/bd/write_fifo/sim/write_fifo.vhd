@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
---Date        : Wed Aug  5 13:31:04 2020
+--Date        : Sat Aug 29 11:10:27 2020
 --Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 --Command     : generate_target write_fifo.bd
 --Design      : write_fifo
@@ -15,8 +15,8 @@ entity write_fifo is
   port (
     clk : in STD_LOGIC;
     data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     rd_en : in STD_LOGIC;
     rst : in STD_LOGIC;
     wr_ack : out STD_LOGIC;
@@ -33,10 +33,10 @@ architecture STRUCTURE of write_fifo is
   port (
     clk : in STD_LOGIC;
     srst : in STD_LOGIC;
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
     wr_en : in STD_LOGIC;
     rd_en : in STD_LOGIC;
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     full : out STD_LOGIC;
     wr_ack : out STD_LOGIC;
     empty : out STD_LOGIC;
@@ -44,9 +44,9 @@ architecture STRUCTURE of write_fifo is
   );
   end component write_fifo_fifo_generator_0_0;
   signal clk_0_1 : STD_LOGIC;
-  signal din_0_1 : STD_LOGIC_VECTOR ( 42 downto 0 );
+  signal din_0_1 : STD_LOGIC_VECTOR ( 44 downto 0 );
   signal fifo_generator_0_data_count : STD_LOGIC_VECTOR ( 8 downto 0 );
-  signal fifo_generator_0_dout : STD_LOGIC_VECTOR ( 42 downto 0 );
+  signal fifo_generator_0_dout : STD_LOGIC_VECTOR ( 44 downto 0 );
   signal fifo_generator_0_wr_ack : STD_LOGIC;
   signal rd_en_0_1 : STD_LOGIC;
   signal srst_0_1 : STD_LOGIC;
@@ -60,8 +60,8 @@ architecture STRUCTURE of write_fifo is
 begin
   clk_0_1 <= clk;
   data_count(8 downto 0) <= fifo_generator_0_data_count(8 downto 0);
-  din_0_1(42 downto 0) <= din(42 downto 0);
-  dout(42 downto 0) <= fifo_generator_0_dout(42 downto 0);
+  din_0_1(44 downto 0) <= din(44 downto 0);
+  dout(44 downto 0) <= fifo_generator_0_dout(44 downto 0);
   rd_en_0_1 <= rd_en;
   srst_0_1 <= rst;
   wr_ack <= fifo_generator_0_wr_ack;
@@ -70,8 +70,8 @@ fifo_generator_0: component write_fifo_fifo_generator_0_0
      port map (
       clk => clk_0_1,
       data_count(8 downto 0) => fifo_generator_0_data_count(8 downto 0),
-      din(42 downto 0) => din_0_1(42 downto 0),
-      dout(42 downto 0) => fifo_generator_0_dout(42 downto 0),
+      din(44 downto 0) => din_0_1(44 downto 0),
+      dout(44 downto 0) => fifo_generator_0_dout(44 downto 0),
       empty => NLW_fifo_generator_0_empty_UNCONNECTED,
       full => NLW_fifo_generator_0_full_UNCONNECTED,
       rd_en => rd_en_0_1,

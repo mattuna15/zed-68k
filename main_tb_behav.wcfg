@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="138657060521fs"></ZoomEndTime>
-      <Cursor1Time time="83600000000fs"></Cursor1Time>
+      <ZoomStartTime time="78973409313fs"></ZoomStartTime>
+      <ZoomEndTime time="79555409314fs"></ZoomEndTime>
+      <Cursor1Time time="85574409313fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="186"></NameColumnWidth>
-      <ValueColumnWidth column_width="61"></ValueColumnWidth>
+      <NameColumnWidth column_width="149"></NameColumnWidth>
+      <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="35" />
+   <WVObjectSize size="50" />
    <wvobject fp_name="/main_tb/main_inst/computer/cpuAddress" type="array">
       <obj_property name="ElementShortName">cpuAddress[31:0]</obj_property>
       <obj_property name="ObjectShortName">cpuAddress[31:0]</obj_property>
@@ -35,37 +35,13 @@
       <obj_property name="ElementShortName">cpuDataIn[15:0]</obj_property>
       <obj_property name="ObjectShortName">cpuDataIn[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/rxd1" type="logic">
-      <obj_property name="ElementShortName">rxd1</obj_property>
-      <obj_property name="ObjectShortName">rxd1</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/computer/memAddress" type="array">
+      <obj_property name="ElementShortName">memAddress[15:0]</obj_property>
+      <obj_property name="ObjectShortName">memAddress[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/txd1" type="logic">
-      <obj_property name="ElementShortName">txd1</obj_property>
-      <obj_property name="ObjectShortName">txd1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/cts1" type="logic">
-      <obj_property name="ElementShortName">cts1</obj_property>
-      <obj_property name="ObjectShortName">cts1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/rts1" type="logic">
-      <obj_property name="ElementShortName">rts1</obj_property>
-      <obj_property name="ObjectShortName">rts1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/serialClock" type="logic">
-      <obj_property name="ElementShortName">serialClock</obj_property>
-      <obj_property name="ObjectShortName">serialClock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/interface1DataOut" type="array">
-      <obj_property name="ElementShortName">interface1DataOut[7:0]</obj_property>
-      <obj_property name="ObjectShortName">interface1DataOut[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/n_int1" type="logic">
-      <obj_property name="ElementShortName">n_int1</obj_property>
-      <obj_property name="ObjectShortName">n_int1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/n_interface1CS" type="logic">
-      <obj_property name="ElementShortName">n_interface1CS</obj_property>
-      <obj_property name="ObjectShortName">n_interface1CS</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/computer/vgaAddress" type="array">
+      <obj_property name="ElementShortName">vgaAddress[15:0]</obj_property>
+      <obj_property name="ObjectShortName">vgaAddress[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/main_tb/main_inst/computer/cpu_uds" type="logic">
       <obj_property name="ElementShortName">cpu_uds</obj_property>
@@ -79,88 +55,172 @@
       <obj_property name="ElementShortName">cpu_r_w</obj_property>
       <obj_property name="ObjectShortName">cpu_r_w</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/io1/txByteWritten" type="logic">
-      <obj_property name="ElementShortName">txByteWritten</obj_property>
-      <obj_property name="ObjectShortName">txByteWritten</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpu_dtack" type="logic">
+      <obj_property name="ElementShortName">cpu_dtack</obj_property>
+      <obj_property name="ObjectShortName">cpu_dtack</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/io1/txByteLatch" type="array">
-      <obj_property name="ElementShortName">txByteLatch[7:0]</obj_property>
-      <obj_property name="ObjectShortName">txByteLatch[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cState" type="other">
+      <obj_property name="ElementShortName">cState</obj_property>
+      <obj_property name="ObjectShortName">cState</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/io1/txBuffer" type="array">
-      <obj_property name="ElementShortName">txBuffer[7:0]</obj_property>
-      <obj_property name="ObjectShortName">txBuffer[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/nState" type="other">
+      <obj_property name="ElementShortName">nState</obj_property>
+      <obj_property name="ObjectShortName">nState</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/io1/txBitCount" type="array">
-      <obj_property name="ElementShortName">txBitCount[3:0]</obj_property>
-      <obj_property name="ObjectShortName">txBitCount[3:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_cen_int" type="logic">
+      <obj_property name="ElementShortName">mem_cen_int</obj_property>
+      <obj_property name="ObjectShortName">mem_cen_int</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/serialStatus" type="array">
-      <obj_property name="ElementShortName">serialStatus[7:0]</obj_property>
-      <obj_property name="ObjectShortName">serialStatus[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_oen_int" type="logic">
+      <obj_property name="ElementShortName">mem_oen_int</obj_property>
+      <obj_property name="ObjectShortName">mem_oen_int</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/serialData" type="array">
-      <obj_property name="ElementShortName">serialData[7:0]</obj_property>
-      <obj_property name="ObjectShortName">serialData[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_wen_int" type="logic">
+      <obj_property name="ElementShortName">mem_wen_int</obj_property>
+      <obj_property name="ObjectShortName">mem_wen_int</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/vga_addr" type="array">
-      <obj_property name="ElementShortName">vga_addr[15:0]</obj_property>
-      <obj_property name="ObjectShortName">vga_addr[15:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_data_ready" type="logic">
+      <obj_property name="ElementShortName">mem_data_ready</obj_property>
+      <obj_property name="ObjectShortName">mem_data_ready</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/vga_wr_en" type="logic">
-      <obj_property name="ElementShortName">vga_wr_en</obj_property>
-      <obj_property name="ObjectShortName">vga_wr_en</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_write_complete" type="logic">
+      <obj_property name="ElementShortName">mem_write_complete</obj_property>
+      <obj_property name="ObjectShortName">mem_write_complete</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/vga_rd_en" type="logic">
-      <obj_property name="ElementShortName">vga_rd_en</obj_property>
-      <obj_property name="ObjectShortName">vga_rd_en</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_data_out" type="array">
+      <obj_property name="ElementShortName">mem_data_out[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_data_out[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/vga_wr_data" type="array">
-      <obj_property name="ElementShortName">vga_wr_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">vga_wr_data[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_write_ack" type="logic">
+      <obj_property name="ElementShortName">cache_write_ack</obj_property>
+      <obj_property name="ObjectShortName">cache_write_ack</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/vga_rd_data" type="array">
-      <obj_property name="ElementShortName">vga_rd_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">vga_rd_data[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_write_en" type="logic">
+      <obj_property name="ElementShortName">cache_write_en</obj_property>
+      <obj_property name="ObjectShortName">cache_write_en</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/computer/n_interface2CS" type="logic">
-      <obj_property name="ElementShortName">n_interface2CS</obj_property>
-      <obj_property name="ObjectShortName">n_interface2CS</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_read_en" type="logic">
+      <obj_property name="ElementShortName">cache_read_en</obj_property>
+      <obj_property name="ObjectShortName">cache_read_en</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/coll_rd" type="logic">
-      <obj_property name="ElementShortName">coll_rd</obj_property>
-      <obj_property name="ObjectShortName">coll_rd</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_busy" type="logic">
+      <obj_property name="ElementShortName">mem_busy</obj_property>
+      <obj_property name="ObjectShortName">mem_busy</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/coll_d" type="array">
-      <obj_property name="ElementShortName">coll_d[7:0]</obj_property>
-      <obj_property name="ObjectShortName">coll_d[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_data_out" type="array">
+      <obj_property name="ElementShortName">cache_data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_data_out[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/coll_w_addr" type="array">
-      <obj_property name="ElementShortName">coll_w_addr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">coll_w_addr[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/saveData" type="array">
+      <obj_property name="ElementShortName">saveData[15:0]</obj_property>
+      <obj_property name="ObjectShortName">saveData[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/coll_we" type="logic">
-      <obj_property name="ElementShortName">coll_we</obj_property>
-      <obj_property name="ObjectShortName">coll_we</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_addr_out" type="array">
+      <obj_property name="ElementShortName">cache_addr_out[26:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_addr_out[26:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/coll_addr" type="array">
-      <obj_property name="ElementShortName">coll_addr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">coll_addr[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/read_address" type="array">
+      <obj_property name="ElementShortName">read_address[26:0]</obj_property>
+      <obj_property name="ObjectShortName">read_address[26:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/coll_o" type="array">
-      <obj_property name="ElementShortName">coll_o[7:0]</obj_property>
-      <obj_property name="ObjectShortName">coll_o[7:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_data_in" type="array">
+      <obj_property name="ElementShortName">cache_data_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_data_in[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/CounterX" type="array">
-      <obj_property name="ElementShortName">CounterX[10:0]</obj_property>
-      <obj_property name="ObjectShortName">CounterX[10:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_addr_in" type="array">
+      <obj_property name="ElementShortName">cache_addr_in[26:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_addr_in[26:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/CounterY" type="array">
-      <obj_property name="ElementShortName">CounterY[9:0]</obj_property>
-      <obj_property name="ObjectShortName">CounterY[9:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_data_count" type="array">
+      <obj_property name="ElementShortName">cache_data_count[8:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_data_count[8:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/main_tb/main_inst/vga/yy" type="array">
-      <obj_property name="ElementShortName">yy[10:0]</obj_property>
-      <obj_property name="ObjectShortName">yy[10:0]</obj_property>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_upper_in" type="array">
+      <obj_property name="ElementShortName">cache_upper_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_upper_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_lower_in" type="array">
+      <obj_property name="ElementShortName">cache_lower_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_lower_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_lower_out" type="array">
+      <obj_property name="ElementShortName">cache_lower_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_lower_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cache_upper_out" type="array">
+      <obj_property name="ElementShortName">cache_upper_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_upper_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cpuAddress" type="array">
+      <obj_property name="ElementShortName">cpuAddress[26:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuAddress[26:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/cpuDataOut" type="array">
+      <obj_property name="ElementShortName">cpuDataOut[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuDataOut[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_cen" type="logic">
+      <obj_property name="ElementShortName">mem_cen</obj_property>
+      <obj_property name="ObjectShortName">mem_cen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_oen" type="logic">
+      <obj_property name="ElementShortName">mem_oen</obj_property>
+      <obj_property name="ObjectShortName">mem_oen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_wen" type="logic">
+      <obj_property name="ElementShortName">mem_wen</obj_property>
+      <obj_property name="ObjectShortName">mem_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_ubs" type="logic">
+      <obj_property name="ElementShortName">mem_ubs</obj_property>
+      <obj_property name="ObjectShortName">mem_ubs</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_lbs" type="logic">
+      <obj_property name="ElementShortName">mem_lbs</obj_property>
+      <obj_property name="ObjectShortName">mem_lbs</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_data_valid" type="logic">
+      <obj_property name="ElementShortName">mem_data_valid</obj_property>
+      <obj_property name="ObjectShortName">mem_data_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/mem_ready" type="logic">
+      <obj_property name="ElementShortName">mem_ready</obj_property>
+      <obj_property name="ObjectShortName">mem_ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/mem_rd_data" type="array">
+      <obj_property name="ElementShortName">mem_rd_data[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_rd_data[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/mem_wdf_data" type="array">
+      <obj_property name="ElementShortName">mem_wdf_data[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wdf_data[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/mem_wdf_end" type="logic">
+      <obj_property name="ElementShortName">mem_wdf_end</obj_property>
+      <obj_property name="ObjectShortName">mem_wdf_end</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/mem_wdf_wren" type="logic">
+      <obj_property name="ElementShortName">mem_wdf_wren</obj_property>
+      <obj_property name="ObjectShortName">mem_wdf_wren</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/mem_wdf_mask" type="array">
+      <obj_property name="ElementShortName">mem_wdf_mask[7:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wdf_mask[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/mem_wdf_rdy" type="logic">
+      <obj_property name="ElementShortName">mem_wdf_rdy</obj_property>
+      <obj_property name="ObjectShortName">mem_wdf_rdy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/write_addr" type="array">
+      <obj_property name="ElementShortName">write_addr[27:0]</obj_property>
+      <obj_property name="ObjectShortName">write_addr[27:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/read_addr" type="array">
+      <obj_property name="ElementShortName">read_addr[27:0]</obj_property>
+      <obj_property name="ObjectShortName">read_addr[27:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory_control/ext_ram/addr" type="array">
+      <obj_property name="ElementShortName">addr[27:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[27:0]</obj_property>
    </wvobject>
 </wave_config>

@@ -31,16 +31,21 @@ entity Microcomputer is
 		sdMOSI		: out std_logic;
 		sdMISO		: in std_logic;
 		sdSCLK		: out std_logic;
-		
+-- terminal
+
+        serialTerminalStatus: in std_logic_vector(7 downto 0);
+        
+		rx_serialRead_en : out std_logic;
+        serialRxData: in std_logic_vector(7 downto 0);
+        
+        tx_serialWrite_en : out std_logic;
+        serialTxData: out std_logic_vector(7 downto 0);
+
+-- srec		
 		serialRead_en : out std_logic;
         serialStatus: in std_logic_vector(7 downto 0);
         serialData: in std_logic_vector(7 downto 0);
         
-        rxd1 : in STD_LOGIC;
-        txd1 : out STD_LOGIC;
-        cts1 : in STD_LOGIC;
-        rts1 : out STD_LOGIC;
-        serialClock : in STD_LOGIC;
         
               -- RAM interface
       ram_a                : out    std_logic_vector(26 downto 0);
@@ -58,9 +63,12 @@ entity Microcomputer is
       vga_wr_en             : out   std_logic;
       vga_rd_en             : out   std_logic;
       vga_wr_data           : out   std_logic_vector(7 downto 0);
-      vga_rd_data           : in    std_logic_vector(7 downto 0)
+      vga_rd_data           : in    std_logic_vector(7 downto 0);
      -- vga_irq               : in    std_logic
       
+      --audio
+      audio_wr_data         : out   std_logic_vector(15 downto 0);
+      audio_wr_ack          : in    std_logic
       
 	);
 	
@@ -87,8 +95,8 @@ architecture struct of Microcomputer is
     signal n_basRom2CS					: std_logic :='1';
     signal n_basRom3CS					: std_logic :='1';
     signal n_basRom4CS					: std_logic :='1';
+    signal n_audioCS                    : std_logic :='1';
 
-	signal n_interface1CS			: std_logic :='1';
 	signal n_interface2CS			: std_logic :='1';
 	signal n_sdCardCS					: std_logic :='1';
 
@@ -105,7 +113,6 @@ architecture struct of Microcomputer is
     signal    cpu_r_w :   std_logic; -- read(high)/write(low)
     signal    cpu_dtack :  std_logic; -- data transfer acknowledge
     
-    signal  regsel: std_logic := '1';
     
     type t_Vector is array (0 to 10) of std_logic_vector(15 downto 0);
     signal r_vec : t_Vector;
@@ -263,39 +270,52 @@ ram1 : entity work.ram --64k
       wren_i => not(cpu_r_w or n_internalRam2CS)
    );
  
--- ____________________________________________________________________________________
--- INPUT/OUTPUT DEVICES GO HERE	
+---- ____________________________________________________________________________________
+---- INPUT/OUTPUT DEVICES GO HERE	
 
-    io1 : entity work.bufferedUART
-    port map(
-        clk => sys_clk,
-        n_wr => n_interface1CS or cpu_r_w,
-        n_rd => n_interface1CS or (not cpu_r_w),
-        n_int => n_int1,
-        regSel => regsel,
-        dataIn => cpuDataOut(7 downto 0),
-        dataOut => interface1DataOut,
-        rxClock => serialClock,
-        txClock => serialClock,
-        rxd => rxd1,
-        txd => txd1,
-        n_cts => '0',
-        n_dcd => '0',
-        n_rts => rts1
-    );
+--    io1 : entity work.bufferedUART
+--    port map(
+--        clk => sys_clk,
+--        n_wr => n_interface1CS or cpu_r_w,
+--        n_rd => n_interface1CS or (not cpu_r_w),
+--        n_int => n_int1,
+--        regSel => regsel,
+--        dataIn => cpuDataOut(7 downto 0),
+--        dataOut => interface1DataOut,
+--		rxClkEn => serialClock, -- 16 x baud rate.
+--		txClkEn => serialClock, -- 16 x baud rate
+--        rxd => rxd1,
+--        txd => txd1,
+--        n_cts => '0',
+--        n_dcd => '0',
+--        n_rts => rts1
+--    );
 
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
+--        serialTerminalStatus: in std_logic_vector(7 downto 0);
+        
+--		rx_serialRead_en : out std_logic;
+--        serialRxData: in std_logic_vector(7 downto 0);
+        
+--        tx_serialWrite_en : out std_logic;
+--        serialTxData: out std_logic_vector(7 downto 0);
 
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; --A00000-A0FFFF
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; 
 n_basRom3CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; --B00000-B0FFFF
 n_basRom4CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; 
 n_interface2CS <= '0' when cpuAddress >= X"C00000" and cpuAddress <= X"CFFFFF" else '1'; --VGA
-n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
+--n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
+n_audioCS <= '0' when cpuAddress = X"f40000" else '1'; --audio
 
-regsel <= '0' when cpuAddress = X"f00009" else '1';
+--terminal
+tx_serialWrite_en <= '1' when cpuAddress = X"f0000b"  and cpu_r_w = '0' and cpu_lds = '0' else '0';
+rx_serialRead_en <= '1' when cpuAddress = X"f0000b" and cpu_r_w = '1' and cpu_lds = '0'  else '0';
+-- srec
 serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
+
+
 n_sdCardCS <= '0' when cpuAddress(15 downto 0) >= x"f30009" 
                     and cpuAddress(15 downto 0) <= x"f3000f" else '1'; 
 n_internalRam1CS <= '0' when  cpuAddress <= X"FFFF" 
@@ -316,8 +336,13 @@ ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
 vga_addr <= vgaAddress when n_interface2CS = '0';
 vga_wr_en <= not cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
 vga_rd_en <= cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
-
 vga_wr_data <= cpuDataOut(7 downto 0) when n_interface2CS = '0' and vga_wr_en = '1' ;
+
+--terminal
+serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
+
+-- audio
+audio_wr_data <= cpuDataOut when n_audioCS = '0';
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
@@ -327,7 +352,7 @@ cpuDataIn(15 downto 8)
 r_Vec(vecAddress)(15 downto 8)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
 X"00"
-when n_interface1CS = '0' or (cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ) else
+when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0'  else
 monRomData(15 downto 8)
 when n_basRom1CS = '0' else
 basRomData(15 downto 8)
@@ -336,12 +361,12 @@ internalRam1DataOut
 when n_internalRam1CS= '0' else
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
-X"00";
+X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
 <= 
-interface1DataOut 
-when n_interface1CS = '0' else
+--interface1DataOut 
+--when n_interface1CS = '0' else
 vga_rd_data 
 when n_interface2CS = '0' and vga_rd_en = '1' else
 monRomData(7 downto 0)
@@ -362,17 +387,23 @@ serialStatus
 when cpuAddress = x"f20009" else
 serialData 
 when serialRead_en = '1' else 
+serialTerminalStatus
+when cpuAddress = x"f00009" else
+serialRxData 
+when rx_serialRead_en = '1' else 
 ram_dq_o(7 downto 0)
-when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0'  else
-X"00" ;
---when cpu_lds = '1' ;
+when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"A00000" else
+X"00" when cpu_lds = '1' ;
 
 sdAddress(31 downto 16)
 <= cpuDataOut when cpuAddress = x"f3000a";
 sdAddress(15 downto 0)
 <= cpuDataOut when cpuAddress = x"f3000b";
 
-cpu_dtack <= not ram_ack when ram_cen = '0' else '0';
+cpu_dtack <= 
+not ram_ack when ram_cen = '0' else 
+not audio_wr_ack when n_audioCS = '0' and cpuAddress = X"f40000"
+else '0';
 
 -- SD Card
 --sd1: entity work.sd_controller

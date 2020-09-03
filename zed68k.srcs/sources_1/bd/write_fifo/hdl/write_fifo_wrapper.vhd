@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
---Date        : Wed Aug  5 13:31:04 2020
+--Date        : Sat Aug 29 11:10:27 2020
 --Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 --Command     : generate_target write_fifo_wrapper.bd
 --Design      : write_fifo_wrapper
@@ -15,8 +15,8 @@ entity write_fifo_wrapper is
   port (
     clk : in STD_LOGIC;
     data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     rd_en : in STD_LOGIC;
     rst : in STD_LOGIC;
     wr_ack : out STD_LOGIC;
@@ -30,8 +30,8 @@ architecture STRUCTURE of write_fifo_wrapper is
     rst : in STD_LOGIC;
     clk : in STD_LOGIC;
     wr_ack : out STD_LOGIC;
-    din : in STD_LOGIC_VECTOR ( 42 downto 0 );
-    dout : out STD_LOGIC_VECTOR ( 42 downto 0 );
+    din : in STD_LOGIC_VECTOR ( 44 downto 0 );
+    dout : out STD_LOGIC_VECTOR ( 44 downto 0 );
     rd_en : in STD_LOGIC;
     data_count : out STD_LOGIC_VECTOR ( 8 downto 0 );
     wr_en : in STD_LOGIC
@@ -42,8 +42,8 @@ write_fifo_i: component write_fifo
      port map (
       clk => clk,
       data_count(8 downto 0) => data_count(8 downto 0),
-      din(42 downto 0) => din(42 downto 0),
-      dout(42 downto 0) => dout(42 downto 0),
+      din(44 downto 0) => din(44 downto 0),
+      dout(44 downto 0) => dout(44 downto 0),
       rd_en => rd_en,
       rst => rst,
       wr_ack => wr_ack,

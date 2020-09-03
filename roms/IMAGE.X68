@@ -94,7 +94,7 @@ SETUP:
     LEA.L  SPRVX,A4
     LEA.L  SPRVY,A5   
     
-    for d4 = #0 to #5 do.s
+    for d4 = #0 to #0 do.s
 
         ;Y
         MOVE.W #YMIN, D5
@@ -143,7 +143,7 @@ MOVESPR
     LEA.L  SPRVX,A4
     LEA.L  SPRVY,A5  
     
-    for d4 = #0 to #5 do.s
+    for d4 = #0 to #0 do.s
 
         ;X
         CMPI.W #LWALL, (A2)
@@ -314,8 +314,8 @@ SPRPAL
 	DC.W $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $80
     
 SPRIMG
-    ORG $C08000
-    DC.W $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff,  $ff 
+    ORG $010000
+    DC.W $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff,  $00ff
 	DC.W $ff,  $ff,  $4d,  $49,  $46,  $02,  $41,  $43,  $45,  $46,  $49,  $4c,  $4d,  $ff,  $ff,  $ff 
 	DC.W $ff,  $ff,  $ff,  $ff,  $53,  $52,  $50,  $4f,  $50,  $52,  $53,  $55,  $ff,  $ff,  $ff,  $ff 
 	DC.W $ff,  $ff,  $ff,  $53,  $52,  $02,  $4f,  $4f,  $4f,  $50,  $52,  $53,  $55,  $ff,  $ff,  $ff 
@@ -1566,6 +1566,7 @@ MERLIN_PAL
 	dc.w $42,  $08,  $21,  $04,  $42,  $08,  $42,  $08,  $42,  $08,  $42,  $08,  $42,  $08,  $42,  $08
 	
     END MAIN
+
 
 
 

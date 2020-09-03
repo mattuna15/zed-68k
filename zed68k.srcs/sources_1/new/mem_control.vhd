@@ -83,7 +83,7 @@ component mem_example
       data_in               : std_logic_vector(63 downto 0);
 
       data_out              : std_logic_vector(63 downto 0);
-      width                : std_logic_vector(2 downto 0);
+      width                : std_logic_vector(1 downto 0);
       rstrobe              : std_logic;
       wstrobe             : std_logic;
       transaction_complete : std_logic;
@@ -131,12 +131,15 @@ signal oldAddress : std_logic_vector(26 downto 0) := (others => '0');
 
     signal cache_write_ack, cache_write_en, cache_read_en : std_logic := '0';
     signal mem_busy: std_logic;
-    signal cache_data_out: std_logic_vector(15 downto 0);
+    signal cache_data_out, saveData: std_logic_vector(15 downto 0);
     signal cache_addr_out, read_address: std_logic_vector(26 downto 0);
     signal cache_data_in: std_logic_vector(15 downto 0);
     signal cache_addr_in: std_logic_vector(26 downto 0);
     signal cache_data_count: std_logic_vector(8 downto 0);
     
+    signal cache_upper_in, cache_lower_in, cache_lower_out, cache_upper_out : std_logic_vector(0 downto 0);
+    
+    signal data_width : std_logic_vector(1 downto 0);
 begin
 
 ext_ram: entity work.mem_example 
@@ -157,6 +160,10 @@ ext_ram: entity work.mem_example
       data_in(15 downto 0)   => cache_data_out,
       data_out => mem_data_out,
       width                 => std_logic_vector(to_unsigned(2, 2)), -- 16-bit
+      mem_upper            => cache_upper_out,
+      mem_lower            => cache_lower_out,
+      rd_mem_upper            => mem_ubs,
+      rd_mem_lower            => mem_lbs,
       rstrobe              => not mem_oen and not boot_rom and (not mem_ubs or not mem_lbs), 
       wstrobe              => cache_read_en,
       read_transaction_complete => mem_data_ready,
@@ -188,8 +195,12 @@ ext_ram: entity work.mem_example
       clk => sys_clock,
       din(15 downto 0) => cache_data_in,
       din(42 downto 16) => cache_addr_in,
+      din(43 downto 43) => cache_lower_in,
+      din(44 downto 44) => cache_upper_in,
       dout(15 downto 0) => cache_data_out,
       dout(42 downto 16) => cache_addr_out,
+      dout(43 downto 43) => cache_lower_out,
+      dout(44 downto 44) => cache_upper_out,
       data_count => cache_data_count,
       wr_en => cache_write_en,
       rd_en => cache_read_en, --cache_read_en,
@@ -221,22 +232,19 @@ ext_ram: entity work.mem_example
             
             if cpuAddress = x"0000" then
                   ramDataOut <= initial_stack(31 downto 16);
-	        else if cpuAddress = x"0002" then
+	        elsif cpuAddress = x"0002" then
 	              ramDataOut <= initial_stack(15 downto 0); 
-	        else if cpuAddress = x"0004" then
+	        elsif cpuAddress = x"0004" then
 	              ramDataOut <= initial_pc(31 downto 16);
-	        else if cpuAddress = x"0006" then
+	        elsif cpuAddress = x"0006" then
                   ramDataOut <= initial_pc(15 downto 0);
             end if;
-            end if;
-            end if;
-            end if;
+
 	           
             if cpuAddress > x"0008" then 
                 boot_rom <= '0';
-            else if resetn = '0' then
+            elsif resetn = '0' then
                 boot_rom <= '1';
-            end if;
             end if;
             
         else 
@@ -250,11 +258,12 @@ ext_ram: entity work.mem_example
                 mem_wen_int <= '1';
                 mem_data_valid <= '0';
                 
-                if cpuAddress /= oldAddress 
+                if (cpuAddress /= oldAddress or cpuDataOut /= saveData)
                    and mem_cen = '0' and (mem_ubs = '0' or mem_lbs = '0') 
                    and cpuAddress /= x"00"
                    then
                         oldAddress <= cpuAddress;
+                        saveData <= cpuDataOut;
                         nState <= stAddressPending; --address changing
                 
                 else if cpuAddress = x"00" then                     
@@ -275,6 +284,8 @@ ext_ram: entity work.mem_example
                 else if mem_wen_int = '0' then
                     cache_addr_in <= cpuAddress;
                     cache_data_in <= cpuDataOut;
+                    cache_upper_in(0) <= mem_ubs;
+                    cache_lower_in(0) <= mem_lbs;
                     cache_write_en <= '1';
                     nState <= stWritePending;
                 end if;
@@ -287,13 +298,13 @@ ext_ram: entity work.mem_example
                 mem_oen_int <= '0';
                 mem_wen_int <= '1'; 
             
-                if mem_data_ready = '1' and first_read_rcvd = '1' then
+               if mem_data_ready = '1' and first_read_rcvd = '1' then
                     first_read_rcvd <= '0';
                     nState <= stDataReady;
-               else if mem_data_ready = '1' then
+               elsif mem_data_ready = '1' then
                     first_read_rcvd <= '1';
-                end if;
-                end if;
+               end if;
+
                
             when stWritePending =>
             
