@@ -168,6 +168,14 @@ end; -- function reverse_any_vector
       --audio 
       signal audio_data_wr         : std_logic_vector(15 downto 0);
       signal audio_wr_ack          : std_logic;
+      signal audio_playing         : std_logic;
+      signal audio_wr_en           : std_logic;
+      signal audio_enable          : std_logic;
+      signal audio_regsel          : std_logic;
+      
+      signal pwm_audio_o : std_logic;
+      
+
 
     component pll
     port ( 
@@ -309,10 +317,7 @@ begin
         vga_wr_data => vga_wr_data,
         vga_rd_data => vga_rd_data,
        -- vga_irq => vga_irq
-       
-       audio_wr_data => audio_data_wr,
-       audio_wr_ack => audio_wr_ack
-
+       driveLED => LED(0)
     );
     
     --only using spi do drive dat1&2 high & reset is low.
@@ -353,7 +358,7 @@ begin
     
     io_serial_load : serial_rx
     port map (
-      LED => LED(7 downto 0),
+      LED => open,
       rd_en => serialRead_en,
       m68_rxd => serialData,
       rd_clk => sys_clock100,
@@ -389,8 +394,9 @@ vga: entity work.gameduino_main
       AUX_out => open,
       AUX_tristate => open,
     
-      AUDIOL => open,
+      AUDIOL => pwm_audio_o,
       AUDIOR => open,
+      audio_trigger => audio_playing,
     
       pin2f => open,
       pin2j => open,
@@ -399,22 +405,13 @@ vga: entity work.gameduino_main
       j1_flashSSEL  => open,
       flashMISO => std_logic_vector(to_unsigned(0, 1))
   );
-  
-  audio : entity work.ym2151_top 
-   port map (
-      sys_clk_i  => sys_clock100,    -- 100 MHz
-      sys_rstn_i => sys_resetn,
-      m68k_data_i => audio_data_wr,  -- register - data
-      audio_wr_ack => audio_wr_ack,
-      aud_pwm_o  => AUD_PWM,
-      aud_sd_o   => AUD_SD
-   );
     
-    LED(10) <= mem_ready;
+   LED(1) <= pwm_audio_o; 
+   AUD_SD  <= '1';
+   AUD_PWM <= '0' when pwm_audio_o = '0' else 'Z';
     
-    serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
-    serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
-    serialStatus(0) <= '1' when count > x"00" else '0';
+   serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
+   serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
+   serialStatus(0) <= '1' when count > x"00" else '0';
 
-    
 end Behavioral;

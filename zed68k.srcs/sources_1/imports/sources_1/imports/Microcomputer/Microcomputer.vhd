@@ -31,6 +31,7 @@ entity Microcomputer is
 		sdMOSI		: out std_logic;
 		sdMISO		: in std_logic;
 		sdSCLK		: out std_logic;
+		driveLED    : out std_logic;
 -- terminal
 
         serialTerminalStatus: in std_logic_vector(7 downto 0);
@@ -63,12 +64,8 @@ entity Microcomputer is
       vga_wr_en             : out   std_logic;
       vga_rd_en             : out   std_logic;
       vga_wr_data           : out   std_logic_vector(7 downto 0);
-      vga_rd_data           : in    std_logic_vector(7 downto 0);
+      vga_rd_data           : in    std_logic_vector(7 downto 0)
      -- vga_irq               : in    std_logic
-      
-      --audio
-      audio_wr_data         : out   std_logic_vector(15 downto 0);
-      audio_wr_ack          : in    std_logic
       
 	);
 	
@@ -80,14 +77,10 @@ architecture struct of Microcomputer is
     signal monRomData					: std_logic_vector(15 downto 0);
 	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
 	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
-	signal interface1DataOut		: std_logic_vector(7 downto 0);
-	signal interface1DataOut50		: std_logic_vector(7 downto 0);
 
 	signal sdCardDataOut				: std_logic_vector(7 downto 0);
 
-	signal n_int1						: std_logic :='1';	
-	signal n_int2						: std_logic :='1';	
-	
+	signal n_interface2CS			: std_logic :='1';
 	signal n_externalRamCS			: std_logic :='1';
 	signal n_internalRam1CS			: std_logic :='1';
 	signal n_internalRam2CS			: std_logic :='1';
@@ -95,9 +88,7 @@ architecture struct of Microcomputer is
     signal n_basRom2CS					: std_logic :='1';
     signal n_basRom3CS					: std_logic :='1';
     signal n_basRom4CS					: std_logic :='1';
-    signal n_audioCS                    : std_logic :='1';
 
-	signal n_interface2CS			: std_logic :='1';
 	signal n_sdCardCS					: std_logic :='1';
 
 	signal topAddress               : std_logic_vector(7 downto 0);
@@ -125,6 +116,7 @@ architecture struct of Microcomputer is
     
     signal int_out: std_logic_vector(2 downto 0) := "111";
     signal int_ack: std_logic := '0';
+    signal audio_status :std_logic_vector(7 downto 0) := (others => '0');
 	
 begin
 --interrupts
@@ -269,45 +261,16 @@ ram1 : entity work.ram --64k
       -- '1' indicates we wish to perform a write at the selected address.
       wren_i => not(cpu_r_w or n_internalRam2CS)
    );
- 
----- ____________________________________________________________________________________
----- INPUT/OUTPUT DEVICES GO HERE	
-
---    io1 : entity work.bufferedUART
---    port map(
---        clk => sys_clk,
---        n_wr => n_interface1CS or cpu_r_w,
---        n_rd => n_interface1CS or (not cpu_r_w),
---        n_int => n_int1,
---        regSel => regsel,
---        dataIn => cpuDataOut(7 downto 0),
---        dataOut => interface1DataOut,
---		rxClkEn => serialClock, -- 16 x baud rate.
---		txClkEn => serialClock, -- 16 x baud rate
---        rxd => rxd1,
---        txd => txd1,
---        n_cts => '0',
---        n_dcd => '0',
---        n_rts => rts1
---    );
 
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
---        serialTerminalStatus: in std_logic_vector(7 downto 0);
-        
---		rx_serialRead_en : out std_logic;
---        serialRxData: in std_logic_vector(7 downto 0);
-        
---        tx_serialWrite_en : out std_logic;
---        serialTxData: out std_logic_vector(7 downto 0);
+  
 
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; --A00000-A0FFFF
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; 
 n_basRom3CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; --B00000-B0FFFF
 n_basRom4CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; 
 n_interface2CS <= '0' when cpuAddress >= X"C00000" and cpuAddress <= X"CFFFFF" else '1'; --VGA
---n_interface1CS <= '0' when cpuAddress = X"f0000b" or cpuAddress = X"f00009" else '1'; -- f00000b
-n_audioCS <= '0' when cpuAddress = X"f40000" else '1'; --audio
 
 --terminal
 tx_serialWrite_en <= '1' when cpuAddress = X"f0000b"  and cpu_r_w = '0' and cpu_lds = '0' else '0';
@@ -341,14 +304,13 @@ vga_wr_data <= cpuDataOut(7 downto 0) when n_interface2CS = '0' and vga_wr_en = 
 --terminal
 serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
 
--- audio
-audio_wr_data <= cpuDataOut when n_audioCS = '0';
-
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
  
 cpuDataIn(15 downto 8) 
 <= 
+X"00"
+when n_interface2CS = '0' and vga_rd_en = '1' else
 r_Vec(vecAddress)(15 downto 8)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
 X"00"
@@ -401,45 +363,24 @@ sdAddress(15 downto 0)
 <= cpuDataOut when cpuAddress = x"f3000b";
 
 cpu_dtack <= 
-not ram_ack when ram_cen = '0' else 
-not audio_wr_ack when n_audioCS = '0' and cpuAddress = X"f40000"
+not ram_ack when ram_cen = '0' 
 else '0';
 
 -- SD Card
---sd1: entity work.sd_controller
---port map (
---	cs => sdCS,			-- To SD card
---	mosi => sdMOSI,		-- To SD card
---	miso => sdMISO,			-- From SD card
---	sclk => sdSCLK,			-- To SD card
---	card_present => sdCD,	-- From socket - can be fixed to '1' if no switch is present
---	card_write_prot => '0',	-- From socket - can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
-
---	rd => (not n_sdCardCS) and cpu_r_w,
---	rd_multiple => '0',		-- Trigger multiple block read
---	dout => sdCardDataOut,	-- Data from SD card
---	dout_avail => sdStatus(0),		-- Set when dout is valid
---	dout_taken => sdStatus(1),		-- Acknowledgement for dout
-	
---	wr => (not n_sdCardCS) and (not cpu_r_w),				-- Trigger single block write
---	wr_multiple => '0',	-- Trigger multiple block write
---	din => cpuDataOut(7 downto 0),	-- Data to SD card
---	din_valid => sdStatus(2),		-- Set when din is valid
---	din_taken => sdStatus(3),		-- Ackowledgement for din
-	
---	addr => sdAddress,	-- Block address
---	erase_count => x"00", -- For wr_multiple only
-
---	sd_error => sdStatus(4),		-- '1' if an error occurs, reset on next RD or WR
---	sd_busy => sdStatus(5), 		-- '0' if a RD or WR can be accepted
---	sd_error_code => open, -- See above, 000=No error
-	
---	reset => not n_reset,	-- System reset
---	clk => clk		-- twice the SPI clk (max 50MHz)
-	
---	-- Optional debug outputs
---	--sd_type => open	-- Card status (see above)
---	--sd_fsm : out std_logic_vector(7 downto 0) := "11111111" -- FSM state (see block at end of file)
---);
+sd1 : entity work.sd_controller
+port map(
+    sdCS => sdCS,
+    sdMOSI => sdMOSI,
+    sdMISO => sdMISO,
+    sdSCLK => sdSCLK,
+    n_wr => n_sdCardCS or sys_clk or cpu_r_w,
+    n_rd => n_sdCardCS or sys_clk or (not cpu_r_w),
+    n_reset => n_reset,
+    dataIn => cpuDataOut,
+    dataOut => sdCardDataOut,
+    regAddr => cpuAddress(2 downto 0),
+    driveLED => driveLED,
+    clk => clk50 -- twice the spi clk
+);
     
 end;

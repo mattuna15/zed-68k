@@ -12,8 +12,9 @@
       <Properties Property="PROGRAM.CFG_PROGRAM" value="1"/>
       <Properties Property="PROGRAM.CHECKSUM" value="0"/>
       <Properties Property="PROGRAM.ERASE" value="1"/>
-      <Properties Property="PROGRAM.FILES" value="C:/Users/LattePanda/AppData/Roaming/Xilinx/Vivado/m68.bin"/>
-      <Properties Property="PROGRAM.PRM_FILE" value="C:/Users/LattePanda/AppData/Roaming/Xilinx/Vivado/m68.prm"/>
+      <Properties Property="PROGRAM.FILES" value="m68.bin"/>
+      <Properties Property="PROGRAM.PRM_FILE" value="m68.prm"/>
+      <Properties Property="PROGRAM.PRM_FILES" value="m68.prm"/>
       <Properties Property="PROGRAM.UNUSED_PIN_TERMINATION" value="pull-none"/>
       <Properties Property="PROGRAM.VERIFY" value="1"/>
     </Object>
@@ -29,7 +30,7 @@
     <Object name="xc7z020_1" gui_info="">
       <Properties Property="FULL_PROBES.FILE" value=""/>
       <Properties Property="PROBES.FILE" value=""/>
-      <Properties Property="PROGRAM.HW_BITSTREAM" value="$_project_name_.runs/impl_1/multicomp_wrapper.bit"/>
+      <Properties Property="PROGRAM.HW_BITSTREAM" value="$_project_name_.runs/impl_1_nex/multicomp_wrapper.bit"/>
       <Properties Property="SLR.COUNT" value="1"/>
     </Object>
   </ObjectList>

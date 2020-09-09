@@ -33,6 +33,17 @@ BS      EQU 8
 RS      EQU $1E
 ESC     EQU $1B
 
+AUDIO_OUT EQU $F40000
+AUDIO_STS EQU $F40002
+*-- f40002 - (0) - audio enable
+*--          (1) - write enable
+*--          (2) - write ack
+*--          (3) - currently playing 1 = yes
+AUDIO_EN EQU 0
+AUDIO_WR_EN EQU 1
+AUDIO_WR_ACK EQU 2
+AUDIO_PLAYING EQU 3
+
 
    ORG $C0
 RAMBASE  DS.L   1          ; RAM BASE ADDRESS
@@ -48,7 +59,32 @@ MAIN        MOVE.W #INT_OFF,SR
    
             LEA.L TITLE1.L,A3     ; print START MESSAGE
             BSR PSTR
+            
+            LEA.L AUDIO_OUT.L,A4
+            LEA.L AUDIO_STS.L,A5
+            LEA.L MUSIC.L,A6
+            
+            BSET.b #AUDIO_EN, (A5)  * ENABLE AUDIO
+        
+AUDIO       MOVE.W (A6)+, D1
+            CMP.W  #0, D1
+            BEQ.S  LOADED
+            
+            LEA.L TITLE2.L,A3     ; print START MESSAGE
+            BSR PSTR
+            
+            BSET.B #AUDIO_WR_EN, (A5)  * WRITE ENABLE AUDIO  
+            MOVE.W D1, A4          * MOVE DATA TO AUDIO
 
+WAIT_ACK    BTST.B #AUDIO_WR_ACK, (A5)   *WR_ACK?
+            BEQ.S WAIT_ACK
+            BCLR #AUDIO_WR_EN, (A5)
+            
+            BRA.S AUDIO
+            
+LOADED      JMP $A00BB4
+            
+            
 
 INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
            MOVE.W #100,D0
@@ -86,7 +122,8 @@ PSTR     MOVE.B (A3)+,D0
 PSTR1    RTS
 
 * Put variables and constants here
-TITLE1 DC.B 13,10,'Blank tester',13,10,0
+TITLE1 DC.B 13,10,'Music',13,10,0
+TITLE2 DC.B 13,10,'Playing',13,10,0
 
     ORG $10000
 * FM Notes
@@ -2565,6 +2602,7 @@ MUSIC
 
 
     END    MAIN        ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~
