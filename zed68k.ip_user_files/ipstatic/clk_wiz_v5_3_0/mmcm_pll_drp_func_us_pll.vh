@@ -1,21 +1,17 @@
 ///////////////////////////////////////////////////////////////////////////////
 //    
 //    Company:          Xilinx
-//    Engineer:         Jim Tatsukawa, Ralf Krueger, updated for Ultrascale+ 
-//    Date:             6/15/2015
-//    Design Name:      PLLE4 DRP
-//    Module Name:      plle4_drp_func.h
-//    Version:          2.0
-//    Target Devices:   UltraScale+ Architecture
-//    Tool versions:    2017.1
+//    Engineer:         Jim Tatsukawa
+//    Date:             7/30/2014
+//    Design Name:      PLLE2 DRP
+//    Module Name:      plle2_drp_func.h
+//    Version:          1.00
+//    Target Devices:   UltraScale Architecture || PLL
+//    Tool versions:    2014.2
 //    Description:      This header provides the functions necessary to  
 //                      calculate the DRP register values for the V6 PLL.
 //                      
 //	Revision Notes:	8/11 - PLLE3 updated for PLLE3 file 4564419
-//	Revision Notes:	6/15 - pll_filter_lookup fixed for max M of 19
-//                           M_Rise bits have been removed for PLLE3
-//	Revision Notes:	2/28/17 - pll_filter_lookup and CPRES updated for 
-//                           Ultrascale+ and for max M of 21
 // 
 //    Disclaimer:  XILINX IS PROVIDING THIS DESIGN, CODE, OR
 //                 INFORMATION "AS IS" SOLELY FOR USE IN DEVELOPING
@@ -35,7 +31,7 @@
 //                 OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
 //                 PURPOSE.
 // 
-//                 (c) Copyright 2009-2017 Xilinx, Inc.
+//                 (c) Copyright 2009-2010 Xilinx, Inc.
 //                 All rights reserved.
 // 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,9 +107,7 @@ function [13:0] mmcm_pll_divider
    begin
       // Duty Cycle must be between 0 and 1,000
       if(duty_cycle <=0 || duty_cycle >= 100000) begin
-`ifndef SYNTHESIS
          $display("ERROR: duty_cycle: %d is invalid", duty_cycle);
-   `endif
          $finish;
       end
 
@@ -188,14 +182,12 @@ function [10:0] mmcm_pll_phase
 
    begin
 `ifdef DEBUG
-      $display("pll_phase-divide:%d,phase:%d",
+      $display("mmcm_pll_phase-divide:%d,phase:%d",
          divide, phase);
 `endif
    
       if ((phase < -360000) || (phase > 360000)) begin
-`ifndef SYNTHESIS
          $display("ERROR: phase of $phase is not between -360000 and 360000");
-`endif
          $finish;
       end
 
@@ -234,42 +226,85 @@ endfunction
 // This function takes the divide value and outputs the necessary lock values
 function [39:0] mmcm_pll_lock_lookup
    (
-      input [6:0] divide // Max divide is 21
+      input [6:0] divide // Max divide is 64
    );
    
-   reg [839:0]   lookup;
+   reg [2559:0]   lookup;
    
    begin
       lookup = {
          // This table is composed of:
          // LockRefDly_LockFBDly_LockCnt_LockSatHigh_UnlockCnt
-         40'b00110_00110_1111101000_1111101001_0000000001, //1 illegal in Ultrascale+
-         40'b00110_00110_1111101000_1111101001_0000000001, //2
-         40'b01000_01000_1111101000_1111101001_0000000001, //3
-         40'b01011_01011_1111101000_1111101001_0000000001, //4
-         40'b01110_01110_1111101000_1111101001_0000000001, //5
-         40'b10001_10001_1111101000_1111101001_0000000001, //6
-         40'b10011_10011_1111101000_1111101001_0000000001, //7
-         40'b10110_10110_1111101000_1111101001_0000000001, //8
-         40'b11001_11001_1111101000_1111101001_0000000001, //9
-         40'b11100_11100_1111101000_1111101001_0000000001, //10
-         40'b11111_11111_1110000100_1111101001_0000000001, //11
-         40'b11111_11111_1100111001_1111101001_0000000001, //12
-         40'b11111_11111_1011101110_1111101001_0000000001, //13
-         40'b11111_11111_1010111100_1111101001_0000000001, //14
-         40'b11111_11111_1010001010_1111101001_0000000001, //15
-         40'b11111_11111_1001110001_1111101001_0000000001, //16
-         40'b11111_11111_1000111111_1111101001_0000000001, //17
-         40'b11111_11111_1000100110_1111101001_0000000001, //18
-         40'b11111_11111_1000001101_1111101001_0000000001, //19
-         40'b11111_11111_0111110100_1111101001_0000000001, //20
-         40'b11111_11111_0111011011_1111101001_0000000001  //21
+         40'b00110_00110_0111101000_0111101001_0000000001, //1
+         40'b00110_00110_0111101000_0111101001_0000000001, //2
+         40'b01000_01000_0111101000_0111101001_0000000001, //3
+         40'b01011_01011_0111101000_0111101001_0000000001, //4
+         40'b01110_01110_0111101000_0111101001_0000000001, //5
+         40'b10001_10001_0111101000_0111101001_0000000001, //6
+         40'b10011_10011_0111101000_0111101001_0000000001, //7
+         40'b10110_10110_0111101000_0111101001_0000000001, //8
+         40'b11001_11001_0111101000_0111101001_0000000001, //9
+         40'b11100_11100_0111101000_0111101001_0000000001, //10
+         40'b11111_11111_0110000100_0111101001_0000000001, //11
+         40'b11111_11111_0100111001_0111101001_0000000001, //12
+         40'b11111_11111_0111101110_0111101001_0000000001, //13
+         40'b11111_11111_0110111100_0111101001_0000000001, //14
+         40'b11111_11111_0110001010_0111101001_0000000001, //15
+         40'b11111_11111_0101110001_0111101001_0000000001, //16
+         40'b11111_11111_0100111111_0111101001_0000000001, //17
+         40'b11111_11111_0100100110_0111101001_0000000001, //18
+         40'b11111_11111_0100001101_0111101001_0000000001, //19
+         40'b11111_11111_0011110100_0111101001_0000000001, //20
+         40'b11111_11111_0011011011_0111101001_0000000001, //21
+         40'b11111_11111_0011000010_0111101001_0000000001, //22
+         40'b11111_11111_0010101001_0111101001_0000000001, //23
+         40'b11111_11111_0010010000_0111101001_0000000001, //24
+         40'b11111_11111_0010010000_0111101001_0000000001, //25
+         40'b11111_11111_0001110111_0111101001_0000000001, //26
+         40'b11111_11111_0001011110_0111101001_0000000001, //27
+         40'b11111_11111_0001011110_0111101001_0000000001, //28
+         40'b11111_11111_0001000101_0111101001_0000000001, //29
+         40'b11111_11111_0001000101_0111101001_0000000001, //30
+         40'b11111_11111_0000101100_0111101001_0000000001, //31
+         40'b11111_11111_0000101100_0111101001_0000000001, //32
+         40'b11111_11111_0000101100_0111101001_0000000001, //33
+         40'b11111_11111_0000010011_0111101001_0000000001, //34
+         40'b11111_11111_0000010011_0111101001_0000000001, //35
+         40'b11111_11111_0000010011_0111101001_0000000001, //36
+         40'b11111_11111_0011111010_0111101001_0000000001, //37
+         40'b11111_11111_0011111010_0111101001_0000000001, //38
+         40'b11111_11111_0011111010_0111101001_0000000001, //39
+         40'b11111_11111_0011111010_0111101001_0000000001, //40
+         40'b11111_11111_0011111010_0111101001_0000000001, //41
+         40'b11111_11111_0011111010_0111101001_0000000001, //42
+         40'b11111_11111_0011111010_0111101001_0000000001, //43
+         40'b11111_11111_0011111010_0111101001_0000000001, //44
+         40'b11111_11111_0011111010_0111101001_0000000001, //45
+         40'b11111_11111_0011111010_0111101001_0000000001, //46
+         40'b11111_11111_0011111010_0111101001_0000000001, //47
+         40'b11111_11111_0011111010_0111101001_0000000001, //48
+         40'b11111_11111_0011111010_0111101001_0000000001, //49
+         40'b11111_11111_0011111010_0111101001_0000000001, //50
+         40'b11111_11111_0011111010_0111101001_0000000001, //51
+         40'b11111_11111_0011111010_0111101001_0000000001, //52
+         40'b11111_11111_0011111010_0111101001_0000000001, //53
+         40'b11111_11111_0011111010_0111101001_0000000001, //54
+         40'b11111_11111_0011111010_0111101001_0000000001, //55
+         40'b11111_11111_0011111010_0111101001_0000000001, //56
+         40'b11111_11111_0011111010_0111101001_0000000001, //57
+         40'b11111_11111_0011111010_0111101001_0000000001, //58
+         40'b11111_11111_0011111010_0111101001_0000000001, //59
+         40'b11111_11111_0011111010_0111101001_0000000001, //60
+         40'b11111_11111_0011111010_0111101001_0000000001, //61
+         40'b11111_11111_0011111010_0111101001_0000000001, //62
+         40'b11111_11111_0011111010_0111101001_0000000001, //63
+         40'b11111_11111_0011111010_0111101001_0000000001  //64
       };
       
       // Set lookup_entry with the explicit bits from lookup with a part select
-      mmcm_pll_lock_lookup = lookup[ ((21-divide)*40) +: 40];
+      mmcm_pll_lock_lookup = lookup[ ((64-divide)*40) +: 40];
    `ifdef DEBUG
-      $display("lock_lookup: %b", pll_lock_lookup);
+      $display("lock_lookup: %b", mmcm_pll_lock_lookup);
    `endif
    end
 endfunction
@@ -278,43 +313,41 @@ endfunction
 //  and outputs the digital filter settings necessary. Removing bandwidth setting for PLLE3.
 function [9:0] mmcm_pll_filter_lookup
    (
-      input [6:0] divide // Max divide is 21
+      input [6:0] divide // Max divide is 19
    );
    
-   reg [209:0] lookup;
+   reg [639:0] lookup;
    reg [9:0] lookup_entry;
    
    begin
 
       lookup = {
          // CP_RES_LFHF
-         10'b0011_0111_11, //1  not legal in Ultrascale+
-         10'b0011_0111_11, //2
+         10'b0010_1111_01, //1
+         10'b0010_0011_11, //2
          10'b0011_0011_11, //3
-         10'b0011_1001_11, //4
-         10'b0011_0001_11, //5
-         10'b0100_1110_11, //6
-         10'b0011_0110_11, //7
-         10'b0011_1010_11, //8
-         10'b0111_1001_11, //9
-         10'b0111_1001_11, //10
-         10'b0101_0110_11, //11
-         10'b1100_0101_11, //12
-         10'b0101_1010_11, //13
-         10'b0110_0110_11, //14
-         10'b0110_1010_11, //15
-         10'b0111_0110_11, //16
-         10'b1111_0101_11, //17
-         10'b1100_0110_11, //18
-         10'b1110_0001_11, //19
-         10'b1101_0110_11, //20
-         10'b1111_0001_11  //21
+         10'b0010_0001_11, //4
+         10'b0010_0110_11, //5
+         10'b0010_1010_11, //6
+         10'b0010_1010_11, //7
+         10'b0011_0110_11, //8
+         10'b0010_1100_11, //9
+         10'b0010_1100_11, //10
+         10'b0010_1100_11, //11
+         10'b0010_0010_11, //12
+         10'b0011_1100_11, //13
+         10'b0011_1100_11, //14
+         10'b0011_1100_11, //15
+         10'b0011_1100_11, //16
+         10'b0011_0010_11, //17
+         10'b0011_0010_11, //18
+         10'b0011_0010_11 //19
       };
       
-         mmcm_pll_filter_lookup = lookup [ ((21-divide)*10) +: 10];
+         mmcm_pll_filter_lookup = lookup [ ((19-divide)*10) +: 10];
       
    `ifdef DEBUG
-      $display("filter_lookup: %b", pll_filter_lookup);
+      $display("filter_lookup: %b", mmcm_pll_filter_lookup);
    `endif
    end
 endfunction
@@ -322,10 +355,7 @@ endfunction
 // This function set the CLKOUTPHY divide settings to match
 // the desired CLKOUTPHY_MODE setting. To create VCO_X2, then
 // the CLKOUTPHY will be set to 2'b00 since the VCO is internally
-// doubled and 2'b00 will represent divide by 1. Similarly "VCO" 
-// will need to divide the doubled clock VCO clock frequency by 
-// 2 therefore 2'b01 will match a divide by 2.And VCO_HALF will 
-// need to divide the doubled VCO by 4, therefore 2'b10
+// doubled and 2'b00 will represent divide by 1. Similarly "VCO" // will need to divide the doubled clock VCO clock frequency by // 2 therefore 2'b01 will match a divide by 2.And VCO_HALF will // need to divide the doubled VCO by 4, therefore 2'b10
 function [9:0] mmcm_pll_clkoutphy_calc
    (
       input [8*9:0] CLKOUTPHY_MODE
@@ -358,7 +388,7 @@ function [37:0] mmcm_pll_count_calc
    
    begin
    `ifdef DEBUG
-      $display("pll_count_calc- divide:%h, phase:%d, duty_cycle:%d",
+      $display("mmcm_pll_count_calc- divide:%h, phase:%d, duty_cycle:%d",
          divide, phase, duty_cycle);
    `endif
    
@@ -384,7 +414,7 @@ function [37:0] mmcm_pll_count_calc
       $display("div:%d dc:%d phase:%d ht:%d lt:%d ed:%d nc:%d mx:%d dt:%d pm:%d",
          divide, duty_cycle, phase, div_calc[11:6], div_calc[5:0], 
          div_calc[13], div_calc[12], 
-         phase_calc[16:15], phase_calc[5:0], 3'b000); //Removed PM_Rise bits
+         phase_calc[16:15], phase_calc[5:0], 3'b000);//phase_calc[14:12]);
    `endif
       
       mmcm_pll_count_calc =
@@ -452,15 +482,13 @@ function [37:0] mmcm_pll_frac_count_calc
 
    begin
 	`ifdef DEBUG
-			$display("pll_frac_count_calc- divide:%h, phase:%d, duty_cycle:%d",
+			$display("mmcm_pll_frac_count_calc- divide:%h, phase:%d, duty_cycle:%d",
 				divide, phase, duty_cycle);
 	`endif
    
    //convert phase to fixed
    if ((phase < -360000) || (phase > 360000)) begin
-`ifndef SYNTHESIS
       $display("ERROR: phase of $phase is not between -360000 and 360000");
-	`endif
       $finish;
    end
 
@@ -524,7 +552,8 @@ function [37:0] mmcm_pll_frac_count_calc
       mmcm_pll_frac_count_calc[37:0] =
          {		2'b00, pm_fall_frac_filtered[2:0], wf_fall_frac,
 			1'b0, clkout0_divide_frac[2:0], 1'b1, wf_rise_frac, phase_calc[10:9], div_calc[13:12], dt[5:0], 
-			3'b000, 1'b0, ht_frac[5:0], lt_frac[5:0] //Removed PM_Rise bits
+            3'b000, 1'b0, ht_frac[5:0],lt_frac[5:0]
+//			pm_rise_frac_filtered[2], pm_rise_frac_filtered[1], pm_rise_frac_filtered[0], 1'b0, ht_frac[5:0], lt_frac[5:0]
 		} ;
 
    `ifdef DEBUG
@@ -533,4 +562,5 @@ function [37:0] mmcm_pll_frac_count_calc
 
    end
 endfunction
+
 

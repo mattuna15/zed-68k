@@ -1,18 +1,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 //    
 //    Company:          Xilinx
-//    Engineer:         Jim Tatsukawa
+//    Engineer:         Jim Tatsukawa, Karl Kurbjun and Carl Ribbing
 //    Date:             7/30/2014
-//    Design Name:      MMCME2 DRP
-//    Module Name:      mmcme2_drp_func.h
-//    Version:          1.04
-//    Target Devices:   UltraScale Architecture || MMCM 
+//    Design Name:      PLLE2 DRP
+//    Module Name:      plle2_drp_func.h
+//    Version:          2.00
+//    Target Devices:   7 Series || PLL
 //    Tool versions:    2014.3
 //    Description:      This header provides the functions necessary to  
-//                      calculate the DRP register values for the V6 MMCM.
-//                      
-//	Revision Notes:	3/22 - Updating lookup_low/lookup_high (CR)
-//				4/13 - Fractional divide function in mmcm_frac_count_calc function. CRS610807
+//                      calculate the DRP register values for the V6 PLL.
+//                      Updated for CR663854.
 // 
 //    Disclaimer:  XILINX IS PROVIDING THIS DESIGN, CODE, OR
 //                 INFORMATION "AS IS" SOLELY FOR USE IN DEVELOPING
@@ -67,18 +65,18 @@ function [`FIXED_WIDTH:1] round_frac
 
    begin
    
-   `ifdef DEBUG
+`ifdef DEBUG
       $display("round_frac - decimal: %h, precision: %h", decimal, precision);
-   `endif
+`endif
       // If the fractional precision bit is high then round up
       if( decimal[(`FRAC_PRECISION-precision)] == 1'b1) begin
          round_frac = decimal + (1'b1 << (`FRAC_PRECISION-precision));
       end else begin
          round_frac = decimal;
       end
-   `ifdef DEBUG
+`ifdef DEBUG
       $display("round_frac: %h", round_frac);
-   `endif
+`endif
    end
 endfunction
 
@@ -108,18 +106,16 @@ function [13:0] mmcm_pll_divider
    begin
       // Duty Cycle must be between 0 and 1,000
       if(duty_cycle <=0 || duty_cycle >= 100000) begin
-`ifndef SYNTHESIS
          $display("ERROR: duty_cycle: %d is invalid", duty_cycle);
-   `endif
          $finish;
       end
 
       // Convert to FIXED_WIDTH-FRAC_PRECISION.FRAC_PRECISION fixed point
       duty_cycle_fix = (duty_cycle << `FRAC_PRECISION) / 100_000;
       
-   `ifdef DEBUG
+`ifdef DEBUG
       $display("duty_cycle_fix: %h", duty_cycle_fix);
-   `endif
+`endif
 
       // If the divide is 1 nothing needs to be set except the no_count bit.
       //    Other values are dummies
@@ -190,9 +186,7 @@ function [10:0] mmcm_pll_phase
 `endif
    
       if ((phase < -360000) || (phase > 360000)) begin
-`ifndef SYNTHESIS
-      $display("ERROR: phase of $phase is not between -360000 and 360000");
-	`endif
+         $display("ERROR: phase of $phase is not between -360000 and 360000");
          $finish;
       end
 
@@ -219,9 +213,9 @@ function [10:0] mmcm_pll_phase
 	 phase_mux      =  temp[`FRAC_PRECISION:`FRAC_PRECISION-2];
 	 delay_time     =  temp[`FRAC_PRECISION+6:`FRAC_PRECISION+1];
       
-   `ifdef DEBUG
+`ifdef DEBUG
       $display("temp: %h", temp);
-   `endif
+`endif
 
       // Setup the return value
       mmcm_pll_phase={mx, phase_mux, delay_time};
@@ -314,7 +308,7 @@ function [39:0] mmcm_pll_lock_lookup
    end
 endfunction
 
-// This function takes the divide value and the bandwidth setting of the MMCM
+// This function takes the divide value and the bandwidth setting of the PLL
 //  and outputs the digital filter settings necessary.
 function [9:0] mmcm_pll_filter_lookup
    (
@@ -330,138 +324,138 @@ function [9:0] mmcm_pll_filter_lookup
    begin
       lookup_low = {
          // CP_RES_LFHF
-         10'b0010_1111_11,
-         10'b0010_1111_11,
-         10'b0010_1111_11,
-         10'b0010_1111_11,
-         10'b0010_1111_11,
-         10'b0010_1111_11,
-         10'b0010_0111_11,
-         10'b0010_0111_11,
-         10'b0010_0111_11,
-         10'b0010_1101_11,
-         10'b0010_1101_11,
-         10'b0010_1101_11,
-         10'b0010_0011_11,
-         10'b0010_0101_11,
-         10'b0010_0101_11,
-         10'b0010_0101_11,
-         10'b0010_1001_11,
-         10'b0010_1001_11,
-         10'b0010_1110_11,
-         10'b0010_1110_11,
-         10'b0010_1110_11,
-         10'b0010_1110_11,
-         10'b0010_1110_11,
-         10'b0010_1110_11,
-         10'b0010_0001_11,
-         10'b0010_0001_11,
-         10'b0010_0001_11,
-         10'b0010_0001_11,
-         10'b0010_0001_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_0110_11,
-         10'b0010_1010_11,
-         10'b0010_1010_11,
-         10'b0010_1010_11,
-         10'b0010_1010_11,
-         10'b0010_1010_11,
-         10'b0010_1010_11,
-         10'b0010_1010_11,
-         10'b0010_1010_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11,
-         10'b0010_1100_11
+         10'b0010_1111_00,
+         10'b0010_1111_00,
+         10'b0010_0111_00,
+         10'b0010_1101_00,
+         10'b0010_0101_00,
+         10'b0010_0101_00,
+         10'b0010_1001_00,
+         10'b0010_1110_00,
+         10'b0010_1110_00,
+         10'b0010_0001_00,
+         10'b0010_0001_00,
+         10'b0010_0110_00,
+         10'b0010_0110_00,
+         10'b0010_0110_00,
+         10'b0010_0110_00,
+         10'b0010_1010_00,
+         10'b0010_1010_00,
+         10'b0010_1010_00,
+         10'b0010_1010_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_1100_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0010_0010_00,
+         10'b0011_1100_00,
+         10'b0011_1100_00,
+         10'b0011_1100_00,
+         10'b0011_1100_00,
+         10'b0011_1100_00,
+         10'b0011_1100_00,
+         10'b0011_1100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00
       };
       
       lookup_high = {
          // CP_RES_LFHF
-         10'b0010_1111_11,
-         10'b0010_1111_11,
-         10'b0010_1011_11,
-         10'b0011_1111_11,
-         10'b0100_1111_11,
-         10'b0100_1111_11,
-         10'b0101_1111_11,
-         10'b0110_1111_11,
-         10'b0111_1111_11,
-         10'b0111_1111_11,
-         10'b1100_1111_11,
-         10'b1101_1111_11,
-         10'b1110_1111_11,
-         10'b1111_1111_11,
-         10'b1111_1111_11,
-         10'b1110_0111_11,
-         10'b1110_1011_11,
-         10'b1111_0111_11,
-         10'b1111_1011_11,
-         10'b1111_1011_11,
-         10'b1110_1101_11,
-         10'b1111_1101_11,
-         10'b1111_1101_11,
-         10'b1111_0011_11,
-         10'b1111_0011_11,
-         10'b1111_0011_11,
-         10'b1110_0101_11,
-         10'b1110_0101_11,
-         10'b1110_0101_11,
-         10'b1111_0101_11,
-         10'b1111_0101_11,
-         10'b1111_0101_11,
-         10'b1111_1001_11,
-         10'b1111_1001_11,
-         10'b1111_1001_11,
-         10'b1111_1001_11,
-         10'b1111_1001_11,
-         10'b1110_1110_11,
-         10'b1110_1110_11,
-         10'b1110_1110_11,
-         10'b1110_1110_11,
-         10'b1111_1110_11,
-         10'b1111_1110_11,
-         10'b1111_1110_11,
-         10'b1111_1110_11,
-         10'b1111_1110_11,
-         10'b1111_1110_11,
-         10'b1111_1110_11,
-         10'b1110_0001_11,
-         10'b1110_0001_11,
-         10'b1110_0001_11,
-         10'b1110_0001_11,
-         10'b1110_0001_11,
-         10'b1100_0110_11,
-         10'b1100_0110_11,
-         10'b1100_0110_11,
-         10'b1100_0110_11,
-         10'b1100_0110_11,
-         10'b1100_0110_11,
-         10'b1100_0110_11,
-         10'b1100_1010_11,
-         10'b1100_1010_11,
-         10'b1100_1010_11,
-         10'b1100_1010_11
+         10'b0011_0111_00,
+         10'b0011_0111_00,
+         10'b0101_1111_00,
+         10'b0111_1111_00,
+         10'b0111_1011_00,
+         10'b1101_0111_00,
+         10'b1110_1011_00,
+         10'b1110_1101_00,
+         10'b1111_1101_00,
+         10'b1111_0111_00,
+         10'b1111_1011_00,
+         10'b1111_1101_00,
+         10'b1111_0011_00,
+         10'b1110_0101_00,
+         10'b1111_0101_00,
+         10'b1111_0101_00,
+         10'b1111_0101_00,
+         10'b1111_0101_00,
+         10'b0111_0110_00,
+         10'b0111_0110_00,
+         10'b0111_0110_00,
+         10'b0111_0110_00,
+         10'b0101_1100_00,
+         10'b0101_1100_00,
+         10'b0101_1100_00,
+         10'b1100_0001_00,
+         10'b1100_0001_00,
+         10'b1100_0001_00,
+         10'b1100_0001_00,
+         10'b1100_0001_00,
+         10'b1100_0001_00,
+         10'b1100_0001_00,
+         10'b1100_0001_00,
+         10'b0100_0010_00,
+         10'b0100_0010_00,
+         10'b0100_0010_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0011_0100_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0010_1000_00,
+         10'b0100_1100_00,
+         10'b0100_1100_00,
+         10'b0100_1100_00,
+         10'b0100_1100_00,
+         10'b0100_1100_00,
+         10'b0100_1100_00,
+         10'b0100_1100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00,
+         10'b0010_0100_00
       };
       
       // Set lookup_entry with the explicit bits from lookup with a part select
@@ -495,7 +489,7 @@ function [37:0] mmcm_pll_count_calc
    `ifdef DEBUG
       $display("mmcm_pll_count_calc- divide:%h, phase:%d, duty_cycle:%d",
          divide, phase, duty_cycle);
-   `endif
+`endif
    
       // w_edge[13], no_count[12], high_time[11:6], low_time[5:0]
       div_calc = mmcm_pll_divider(divide, duty_cycle);
@@ -515,12 +509,12 @@ function [37:0] mmcm_pll_count_calc
       //       HIGH_TIME   [11:6]
       //       LOW_TIME    [5:0]
       
-   `ifdef DEBUG
+`ifdef DEBUG
       $display("div:%d dc:%d phase:%d ht:%d lt:%d ed:%d nc:%d mx:%d dt:%d pm:%d",
          divide, duty_cycle, phase, div_calc[11:6], div_calc[5:0], 
          div_calc[13], div_calc[12], 
          phase_calc[16:15], phase_calc[5:0], phase_calc[14:12]);
-   `endif
+`endif
       
       mmcm_pll_count_calc =
          {
@@ -531,141 +525,3 @@ function [37:0] mmcm_pll_count_calc
          };
    end
 endfunction
-
-
-// This function takes in the divide, phase, and duty cycle
-// setting to calculate the upper and lower counter registers.
-// for fractional multiply/divide functions.
-//
-// 
-function [37:0] mmcm_frac_count_calc
-   (
-      input [7:0] divide, // Max divide is 128
-      input signed [31:0] phase,
-      input [31:0] duty_cycle, // Multiplied by 1,000
-      input [9:0] frac // Multiplied by 1000
-   );
-   
-	//Required for fractional divide calculations
-			  reg	[7:0]			lt_frac;
-			  reg	[7:0]			ht_frac;
-			
-			  reg	/*[7:0]*/			wf_fall_frac;
-			  reg	/*[7:0]*/			wf_rise_frac;
-
-			  reg [31:0] a;
-			  reg	[7:0]			pm_rise_frac_filtered ;
-			  reg	[7:0]			pm_fall_frac_filtered ;	
-			  reg [7:0]			clkout0_divide_int;
-			  reg [2:0]			clkout0_divide_frac;
-			  reg	[7:0]			even_part_high;
-			  reg	[7:0]			even_part_low;
-
-			  reg	[7:0]			odd;
-			  reg	[7:0]			odd_and_frac;
-
-			  reg	[7:0]			pm_fall;
-			  reg	[7:0]			pm_rise;
-			  reg	[7:0]			dt;
-			  reg	[7:0]			dt_int; 
-			  reg [63:0]		dt_calc;
-
-			  reg	[7:0]			pm_rise_frac; 
-			  reg	[7:0]			pm_fall_frac;
-	 
-			  reg [31:0] a_per_in_octets;
-			  reg [31:0] a_phase_in_cycles;
-
-				parameter precision = 0.125;
-
-			  reg [31:0] phase_fixed; // changed to 31:0 from 32:1 jt 5/2/11
-			  reg [31: 0] phase_pos;
-			  reg [31: 0] phase_vco;
-			  reg [31:0] temp;// changed to 31:0 from 32:1 jt 5/2/11
-			  reg [13:0] div_calc;
-			  reg [16:0] phase_calc;
-
-   begin
-	`ifdef DEBUG
-			$display("mmcm_frac_count_calc- divide:%h, phase:%d, duty_cycle:%d",
-				divide, phase, duty_cycle);
-	`endif
-   
-   //convert phase to fixed
-   if ((phase < -360000) || (phase > 360000)) begin
-`ifndef SYNTHESIS
-      $display("ERROR: phase of $phase is not between -360000 and 360000");
-	`endif
-      $finish;
-   end
-
-
-      // Return value is
-      //    Transfer data
-      //       RESERVED     [37:36]
-      //       FRAC_TIME    [35:33]
-      //       FRAC_WF_FALL [32]
-      //    Upper address is:
-      //       RESERVED     [31:26]
-      //       MX           [25:24]
-      //       EDGE         [23]
-      //       NOCOUNT      [22]
-      //       DELAY_TIME   [21:16]
-      //    Lower Address is:
-      //       PHASE_MUX    [15:13]
-      //       RESERVED     [12]
-      //       HIGH_TIME    [11:6]
-      //       LOW_TIME     [5:0]
-      
-      
-
-	clkout0_divide_frac = frac / 125;
-	clkout0_divide_int = divide;
-
-	even_part_high = clkout0_divide_int >> 1;//$rtoi(clkout0_divide_int / 2);
-	even_part_low = even_part_high;
-									
-	odd = clkout0_divide_int - even_part_high - even_part_low;
-	odd_and_frac = (8*odd) + clkout0_divide_frac;
-
-	lt_frac = even_part_high - (odd_and_frac <= 9);//IF(odd_and_frac>9,even_part_high, even_part_high - 1)
-	ht_frac = even_part_low  - (odd_and_frac <= 8);//IF(odd_and_frac>8,even_part_low, even_part_low- 1)
-
-	pm_fall =  {odd[6:0],2'b00} + {6'h00, clkout0_divide_frac[2:1]}; // using >> instead of clkout0_divide_frac / 2 
-	pm_rise = 0; //0
-    
-	wf_fall_frac = ((odd_and_frac >=2) && (odd_and_frac <=9)) || ((clkout0_divide_frac == 1) && (clkout0_divide_int == 2));//CRS610807
-	wf_rise_frac = (odd_and_frac >=1) && (odd_and_frac <=8);//IF(odd_and_frac>=1,IF(odd_and_frac <= 8,1,0),0)
-
-
-
-	//Calculate phase in fractional cycles
-	a_per_in_octets		= (8 * divide) + (frac / 125) ;
-	a_phase_in_cycles	= (phase+10) * a_per_in_octets / 360000 ;//Adding 1 due to rounding errors
-	pm_rise_frac		= (a_phase_in_cycles[7:0] ==8'h00)?8'h00:a_phase_in_cycles[7:0] - {a_phase_in_cycles[7:3],3'b000};
-
-	dt_calc 	= ((phase+10) * a_per_in_octets / 8 )/360000 ;//TRUNC(phase* divide / 360); //or_simply (a_per_in_octets / 8)
-	dt 	= dt_calc[7:0];
-
-	pm_rise_frac_filtered = (pm_rise_frac >=8) ? (pm_rise_frac ) - 8: pm_rise_frac ;				//((phase_fixed * (divide + frac / 1000)) / 360) - {pm_rise_frac[7:3],3'b000};//$rtoi(clkout0_phase * clkout0_divide / 45);//a;
-
-	dt_int			= dt + (& pm_rise_frac[7:4]); //IF(pm_rise_overwriting>7,dt+1,dt)
-	pm_fall_frac		= pm_fall + pm_rise_frac;
-	pm_fall_frac_filtered	= pm_fall + pm_rise_frac - {pm_fall_frac[7:3], 3'b000};
-
-	div_calc	= mmcm_pll_divider(divide, duty_cycle); //Use to determine edge[7], no count[6]
-	phase_calc	= mmcm_pll_phase(divide, phase);// returns{mx[1:0], phase_mux[2:0], delay_time[5:0]}
-		
-      mmcm_frac_count_calc[37:0] =
-         {		2'b00, pm_fall_frac_filtered[2:0], wf_fall_frac,
-			1'b0, clkout0_divide_frac[2:0], 1'b1, wf_rise_frac, phase_calc[10:9], div_calc[13:12], dt[5:0], 
-			pm_rise_frac_filtered[2], pm_rise_frac_filtered[1], pm_rise_frac_filtered[0], 1'b0, ht_frac[5:0], lt_frac[5:0]
-		} ;
-
-   `ifdef DEBUG
-      $display("-%d.%d p%d>>  :DADDR_9_15 frac30to28.frac_en.wf_r_frac.dt:%b%d%d_%b:DADDR_7_13 pm_f_frac_filtered_29to27.wf_f_frac_26:%b%d:DADDR_8_14.pm_r_frac_filt_15to13.ht_frac.lt_frac:%b%b%b:", divide, frac, phase, clkout0_divide_frac, 1, wf_rise_frac, dt, pm_fall_frac_filtered, wf_fall_frac, pm_rise_frac_filtered, ht_frac, lt_frac);
-   `endif
-
-   end
-endfunction
-

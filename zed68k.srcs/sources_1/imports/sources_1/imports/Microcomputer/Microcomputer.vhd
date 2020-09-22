@@ -64,8 +64,18 @@ entity Microcomputer is
       vga_wr_en             : out   std_logic;
       vga_rd_en             : out   std_logic;
       vga_wr_data           : out   std_logic_vector(7 downto 0);
-      vga_rd_data           : in    std_logic_vector(7 downto 0)
-     -- vga_irq               : in    std_logic
+      vga_rd_data           : in    std_logic_vector(7 downto 0);
+      vga_irq               : in    std_logic;
+     
+     			-- UART
+		uart_rxd : in std_logic;
+		uart_txd : out std_logic;
+		
+		--ps2
+		ps2k_clk_in : in std_logic;
+		ps2k_dat_in : in std_logic;
+		ps2m_clk_in : in std_logic;
+		ps2m_dat_in : in std_logic
       
 	);
 	
@@ -78,8 +88,6 @@ architecture struct of Microcomputer is
 	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
 	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
 
-	signal sdCardDataOut				: std_logic_vector(7 downto 0);
-
 	signal n_interface2CS			: std_logic :='1';
 	signal n_externalRamCS			: std_logic :='1';
 	signal n_internalRam1CS			: std_logic :='1';
@@ -90,6 +98,14 @@ architecture struct of Microcomputer is
     signal n_basRom4CS					: std_logic :='1';
 
 	signal n_sdCardCS					: std_logic :='1';
+    signal sdCardDataOut				: std_logic_vector(7 downto 0);
+    signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f30009
+    signal sdControl: std_logic_vector(7 downto 0); --f3000a
+    
+    signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000-2
+    signal sd_rden : std_logic;
+    signal sd_wren : std_logic;
+    signal sd_ack  : std_logic;
 
 	signal topAddress               : std_logic_vector(7 downto 0);
     
@@ -109,14 +125,28 @@ architecture struct of Microcomputer is
     signal r_vec : t_Vector;
     
     signal vecAddress: integer := 0;
-    
-    signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f300009
-    signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000a,b
-    -- data is on f30000c
+
     
     signal int_out: std_logic_vector(2 downto 0) := "111";
     signal int_ack: std_logic := '0';
     signal audio_status :std_logic_vector(7 downto 0) := (others => '0');
+    
+    signal per_data_out: std_logic_vector(15 downto 0);
+    signal per_reg_sel: std_logic;
+    signal per_dtack: std_logic;
+    
+    signal uart_int :  std_logic;
+	signal	timer_int :  std_logic;
+	signal	ps2_int :  std_logic;
+	signal	spi_int :  std_logic;
+
+		-- PS/2 keyboard / mouse
+
+	signal	ps2k_clk_out :  std_logic;
+	signal	ps2k_dat_out :  std_logic;
+
+	signal	ps2m_clk_out :  std_logic;
+	signal	ps2m_dat_out :  std_logic;
 	
 begin
 --interrupts
@@ -125,16 +155,131 @@ interrupts: entity work.interrupt_controller
 	port map (
 		clk => sys_clk,
 		reset => n_reset,
-		int1 => '0',
-		int2 => '0',
-		int3 => '0',
-		int4 => '0',
-		int5 => '0',
-		int6 => '0',
+		int1 => vga_irq,
+		int2 => uart_int,
+		int3 => timer_int,
+		int4 => ps2_int,
+		int5 => spi_int,
+	    int6 => '0',
 		int7 => '0',
 		int_out => int_out,
 		ack => int_ack
+		);
+		
+peripherals: entity work.peripheral_controller
+	generic map (
+		sysclk_frequency => 1000, -- Sysclk frequency * 10
+		spi_maxspeed => 4	-- lowest acceptable timer DIV7 value
+	)
+  port map (
+		clk => sys_clk,
+		reset=> n_reset,
+		
+		-- CPU interface
+
+		reg_addr_in => cpuAddress(11 downto 0),
+		reg_data_in => cpuDataIn(15 downto 0),
+		reg_data_out => per_data_out,
+		reg_rw => cpu_r_w,
+		reg_uds => cpu_uds,
+		reg_lds => cpu_lds,
+		reg_dtack => per_dtack,	-- Needed for char ram access.
+		reg_req => per_reg_sel,
+
+		-- Interrupts
+		
+		uart_int => uart_int,
+		timer_int => timer_int,
+		ps2_int => ps2_int,
+		spi_int => spi_int,
+
+		-- UART
+		uart_rxd => uart_rxd,
+		uart_txd => uart_txd,
+
+		-- PS/2 keyboard / mouse
+		ps2k_clk_in => ps2k_clk_in,
+		ps2k_dat_in => ps2k_dat_in,
+		ps2k_clk_out => ps2k_clk_out,
+		ps2k_dat_out => ps2k_dat_out,
+		ps2m_clk_in => ps2m_clk_in,
+		ps2m_dat_in => ps2m_dat_in,
+		ps2m_clk_out => ps2m_clk_out,
+		ps2m_dat_out => ps2m_dat_out,
+
+		-- Misc
+		-- gpio_out : out std_logic_vector(15 downto 0);
+		-- gpio_in : in std_logic_vector(15 downto 0) := X"0000";
+		
+		gpio_dir =>  open,
+		gpio_data => open,
+		
+		hex => open,
+
+		bootrom_overlay => open,	-- Low page reads
+		bootram_overlay => open  -- Low page writes
 	);
+
+
+--		spi_cs => sdCS,
+--		miso => sdMISO,
+--		mosi => sdMOSI,
+--		spiclk_out => sdSCLK,
+
+-- sdControl f4000a
+-- 0 - din valid (a)
+-- 1 - dout ack (a)
+-- 2  - rden
+-- 3  - wren
+
+-- sdstatus f40009
+-- 0 error
+-- 1,2,3 - Error code
+-- 4 - dout valid
+-- 5 - Busy
+-- 6,7 - card status
+
+-- data f4000b
+
+-- 32bit address - f40000 & f40002
+
+
+sdcard: entity work.sd_controller 
+    port map   (
+	cs => sdCS,			-- To SD card
+	mosi => sdMOSI,			-- To SD card
+	miso => sdMISO,			-- From SD card
+	sclk => sdSCLK,			-- To SD card
+	card_present => not sdCD,	-- From socket - can be fixed to '1' if no switch is present
+	card_write_prot => '0',	-- From socket - can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
+
+	rd => sd_rden,				-- Trigger single block read
+	rd_multiple => '0',		-- Trigger multiple block read
+	dout => sdCardDataOut,	-- Data from SD card
+	dout_avail => sdStatus(4),		-- Set when dout is valid
+	dout_taken => sdControl(1),		-- Acknowledgement for dout
+	
+	wr => sd_wren,				-- Trigger single block write
+	wr_multiple => '0',		-- Trigger multiple block write
+	din => cpuDataOut(7 downto 0),	-- Data to SD card
+	din_valid => sdControl(0),		-- Set when din is valid
+	din_taken => sd_ack,		-- Ackowledgement for din
+	
+	addr => sdAddress,	-- Block address
+	erase_count => x"00", -- For wr_multiple only
+
+	sd_error => sdStatus(0),		-- '1' if an error occurs, reset on next RD or WR (just check for error code)
+	sd_busy => sdStatus(5),		-- '0' if a RD or WR can be accepted
+	sd_error_code => sdStatus (3 downto 1), -- See above, 000=No error
+	
+	
+	reset => not n_reset,	-- System reset
+	clk => clk50,		-- twice the SPI clk (max 50MHz)
+	
+	-- Optional debug outputs
+	sd_type => sdStatus(7 downto 6),	-- Card status (see above)
+	sd_fsm => open -- FSM state (see block at end of file)
+);
 
 -- ____________________________________________________________________________________
 -- CPU CHOICE GOES HERE
@@ -158,11 +303,14 @@ cpu1 : entity work.TG68
 	
 	-- rom address
     memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
+    
+    --gameduino address
     vgaAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, vgaAddress'length)) ;
    
     -- vector address storage
     vecAddress <= conv_integer(cpuAddress(3 downto 0)) / 2 ;
     r_Vec(vecAddress) <= cpuDataOut when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ;
+    int_ack <= '1' when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else '0'; -- acknowledge interrupts
     
 -- ____________________________________________________________________________________
 -- ROM GOES HERE
@@ -278,13 +426,16 @@ rx_serialRead_en <= '1' when cpuAddress = X"f0000b" and cpu_r_w = '1' and cpu_ld
 -- srec
 serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
 
+--periph
+per_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" else '0';
 
-n_sdCardCS <= '0' when cpuAddress(15 downto 0) >= x"f30009" 
-                    and cpuAddress(15 downto 0) <= x"f3000f" else '1'; 
+-- block ram
 n_internalRam1CS <= '0' when  cpuAddress <= X"FFFF" 
                     and cpu_uds = '0' else '1' ; --4k at bottom
 n_internalRam2CS <= '0' when  cpuAddress <= X"FFFF" 
                     and cpu_lds = '0' else '1' ; --4k at bottom
+                    
+               
 
 -- RAM
 ram_cen <= '0' when cpuAddress > X"FFFF"  and cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
@@ -303,6 +454,16 @@ vga_wr_data <= cpuDataOut(7 downto 0) when n_interface2CS = '0' and vga_wr_en = 
 
 --terminal
 serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
+
+-- sd card
+
+n_sdCardCS <= '0' when cpuAddress >= x"f40000" and cpuAddress <= x"f4ffff" else '1';
+sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40000" and cpu_r_w = '0';
+sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40002" and cpu_r_w = '0';
+sdControl <= cpuDataOut(7 downto 0) when cpuAddress = x"f4000b" and cpu_r_w = '0' and cpu_lds = '0';
+sd_rden <= sdControl(2);
+sd_wren <= sdControl(3);
+driveLED <= sdStatus(5);
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
@@ -323,12 +484,22 @@ internalRam1DataOut
 when n_internalRam1CS= '0' else
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
+per_data_out(15 downto 8) 
+when per_reg_sel = '1' and cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" and cpu_uds = '0' else
+sdAddress(31 downto 24)
+when cpuAddress = x"f40000" and cpu_r_w = '1' and cpu_uds = '0' else 
+sdAddress(15 downto 8)
+when cpuAddress = x"f40002" and cpu_r_w = '1' and cpu_uds = '0' else 
+x"00"
+when cpuAddress = x"f4000d" and cpu_r_w = '1' and cpu_uds = '0' else
+x"00"
+when cpuAddress = x"f4000b" and cpu_r_w = '1' and cpu_uds = '0' else
+x"00"
+when cpuAddress = x"f40009" and cpu_r_w = '1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
 <= 
---interface1DataOut 
---when n_interface1CS = '0' else
 vga_rd_data 
 when n_interface2CS = '0' and vga_rd_en = '1' else
 monRomData(7 downto 0)
@@ -341,10 +512,6 @@ when n_internalRam2CS = '0' else
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
 r_Vec(vecAddress)(7 downto 0)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
-sdCardDataOut
-when n_sdCardCS = '0' and cpuAddress = x"f3000c" else
-sdStatus
-when n_sdCardCS = '0' and cpuAddress = x"f30009" else
 serialStatus
 when cpuAddress = x"f20009" else
 serialData 
@@ -355,32 +522,27 @@ serialRxData
 when rx_serialRead_en = '1' else 
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"A00000" else
+per_data_out(7 downto 0) 
+when per_reg_sel = '1' and cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" and cpu_lds = '0' else 
+sdCardDataOut
+when cpuAddress = x"f4000d" and cpu_r_w = '1' and cpu_lds = '0' else
+sdControl
+when cpuAddress = x"f4000b" and cpu_r_w = '1' and cpu_lds = '0' else
+sdStatus
+when cpuAddress = x"f40009" and cpu_r_w = '1' and cpu_lds = '0' else
+sdAddress(23 downto 16)
+when cpuAddress = x"f40000" and cpu_r_w = '1' and cpu_lds = '0' else 
+sdAddress(7 downto 0)
+when cpuAddress = x"f40002" and cpu_r_w = '1' and cpu_lds = '0' else 
 X"00" when cpu_lds = '1' ;
 
-sdAddress(31 downto 16)
-<= cpuDataOut when cpuAddress = x"f3000a";
-sdAddress(15 downto 0)
-<= cpuDataOut when cpuAddress = x"f3000b";
-
 cpu_dtack <= 
-not ram_ack when ram_cen = '0' 
+not ram_ack when ram_cen = '0' else
+sd_ack when
+cpuAddress = x"f4000d" and cpu_r_w = '0' else
+per_dtack 
+when per_reg_sel = '1' and cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" 
 else '0';
 
--- SD Card
-sd1 : entity work.sd_controller
-port map(
-    sdCS => sdCS,
-    sdMOSI => sdMOSI,
-    sdMISO => sdMISO,
-    sdSCLK => sdSCLK,
-    n_wr => n_sdCardCS or sys_clk or cpu_r_w,
-    n_rd => n_sdCardCS or sys_clk or (not cpu_r_w),
-    n_reset => n_reset,
-    dataIn => cpuDataOut,
-    dataOut => sdCardDataOut,
-    regAddr => cpuAddress(2 downto 0),
-    driveLED => driveLED,
-    clk => clk50 -- twice the spi clk
-);
     
 end;

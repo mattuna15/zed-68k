@@ -1,0 +1,7 @@
+xpm_cdc.sv,systemverilog,xpm,D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv,incdir="$ref_dir/../../../ipstatic"incdir="../../../ipstatic"
+xpm_memory.sv,systemverilog,xpm,D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv,incdir="$ref_dir/../../../ipstatic"incdir="../../../ipstatic"
+xpm_fifo.sv,systemverilog,xpm,D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv,incdir="$ref_dir/../../../ipstatic"incdir="../../../ipstatic"
+xpm_VCOMP.vhd,vhdl,xpm,D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_VCOMP.vhd,incdir="$ref_dir/../../../ipstatic"incdir="../../../ipstatic"
+clk_gen_clk_wiz.v,verilog,xil_defaultlib,../../../../../../xilinx/Downloads/opl3_fpga-master/fpga/modules/clks/ip/clk_gen/clk_gen_clk_wiz.v,incdir="$ref_dir/../../../ipstatic"incdir="../../../ipstatic"
+clk_gen.v,verilog,xil_defaultlib,../../../../../../xilinx/Downloads/opl3_fpga-master/fpga/modules/clks/ip/clk_gen/clk_gen.v,incdir="$ref_dir/../../../ipstatic"incdir="../../../ipstatic"
+glbl.v,Verilog,xil_defaultlib,glbl.v

@@ -24,6 +24,30 @@ ESC     EQU $1B
 SUPER_STACK   EQU $00E000   ; SUPER STACK TOP Address
 RAMBASE_INIT  EQU $00E000
 
+*-- sdControl f4000a
+*-- 0 - din valid (a)
+*-- 1 - dout ack (a)
+* 2 - rden
+* 3 - wren
+*-- sdstatus f40009
+*-- 0 error
+*-- 1,2,3 - Error code
+*-- 4 - dout valid
+*-- 5 - Busy
+*-- 6,7 - card TYPE
+
+*-- sd_type:
+*-- 00 No card
+*-- 01 SD V1
+*-- 10 SD V2
+*-- 11 SDHC
+
+
+SDADDRESS EQU $F40000  ;LONG (32BIT)
+SDDATA    EQU $F4000d  
+SDCONTROL EQU $F4000b
+SDSTATUS  EQU $F40009
+
    ORG $C0
 RAMBASE  DS.L   1          ; RAM BASE ADDRESS
 
@@ -31,26 +55,147 @@ RAMBASE  DS.L   1          ; RAM BASE ADDRESS
    ; Reset start vector
    DC.L SUPER_STACK        ; TOP OF SUPERVISOR STACK $130000
    DC.L MAIN               ; MONITOR START
-   
-MAIN MOVE.W #INT_OFF,SR 
-     BSR INIT_ACIA
+
+**************************************************
+
+MAIN 
+
+    MOVE.W #INT_OFF,SR 
+    BSR INIT_ACIA
    
     LEA.L TITLE1.L,A3     ; print START MESSAGE
     BSR PSTR
+
+    ;LOAD FONT
+    BSR SETUP_FONT
+
+
+CHKDRV    
     
-GET_DATA
-    LEA.L WAITING.L,A3     ; print START MESSAGE
-    BSR PSTR
+    ;CHECK SD CARD
+    BSR CHECK_DRIVE
+    
+    BSR READDRV
+    
+    
+**************************************************
    
-SETUP_FONT    LEA.L FONT,A5
+SETUP_FONT    
+              
+              LEA.L WAITING.L,A3     ; print START MESSAGE
+              BSR PSTR
+    
+              LEA.L FONT,A5
               LEA.L $C01000,A6
               for d5 = #1 to #768 do.s
                     MOVE.B  (a5)+, (a6)+
               endf
               
-              JMP $A00BB4
+              RTS
 
-   
+**************************************************            
+CHECK_DRIVE   
+            LEA.L CHECKING.L,A3     ; print START MESSAGE
+            BSR PSTR
+            
+            LEA.L SDSTATUS.L,A4
+            
+            MOVE.b (A4), D1
+            LSR.B #$06, D1  ; GET BYTES 7,6 
+
+            CMP.B #$00,D1
+            BEQ NO_CARD
+            
+            CMP.B #$01,D1
+            BEQ CARD_V1
+            
+            CMP.B #$02,D1
+            BEQ CARD_V2
+
+            CMP.B #$03,D1
+            BEQ CARD_HC   
+
+NO_CARD     
+            LEA.L NOCARD.L,A3     ; print START MESSAGE
+            BSR PSTR 
+            JMP $A00BB4 ;EXIT BACK TO MON
+            ;BRA RETURN
+CARD_V1
+            LEA.L CARDV1.L,A3     ; print START MESSAGE
+            BSR PSTR 
+            BRA RETURN
+CARD_V2
+            LEA.L CARDV2.L,A3     ; print START MESSAGE
+            BSR PSTR 
+            BRA RETURN
+
+CARD_HC     LEA.L CARDHC.L,A3     ; print START MESSAGE
+            BSR PSTR        
+            
+RETURN      RTS
+
+**************************************************
+
+
+READDRV     
+
+            LEA.L READING.L, A3     ; print START MESSAGE
+            BSR PSTR  
+            
+            
+BUSY        LEA.L SDSTATUS.L,A4
+            MOVE.b (A4), D1
+            CMP.b #$c0,D1
+            BEQ RDEN               ; busy 0
+            
+            
+            LEA.L BUSYSTR.L,A3     ; print START MESSAGE
+            BSR PSTR 
+            
+            BRA.S BUSY
+            
+            
+
+            
+RDEN        for d5 = #1 to #10 do.s
+            LEA.L READING.L,A3     ; print START MESSAGE
+            BSR PSTR
+            
+            LEA.L SDADDRESS.L,A1
+            LEA.L SDCONTROL.L,A2
+            
+            LEA.L CHECKING.L,A3     ; print START MESSAGE
+            BSR PSTR
+            
+            MOVE.l #00, (a1)
+            BSET.b #02, (a2)  
+
+DOUT        MOVE.b (A4), D1
+            CMP.B #$f0,D1
+            BEQ READ
+            BRA.S DOUT                ; IT'S 0 SO NO DATA YET
+
+READ        LEA.L RECVD.L,A3     ; print START MESSAGE
+            BSR PSTR 
+            
+            LEA.l SDDATA.L,A5
+            MOVE.b (A5), D0
+            BSET.b   #01, (a2)  ;ACK
+            
+            
+            BSR COUT
+            
+            BCLR.b  #01, (a2)
+            BSR CIN
+            endf
+
+            
+            BCLR.b  #02, (a2)  ; REMOVE RDEN
+            
+            RTS
+
+
+**************************************************   
    ; INIT ACIA
 
 INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
@@ -92,6 +237,14 @@ PSTR1    RTS
 TITLE1 DC.B 13,10,'Font Loader',13,10,0
 WAITING DC.B 13,10,'Loading',13,10,0
 RECVD DC.B 13,10,'Byte Received',13,10,0
+CHECKING DC.B 13,10,'Checking',13,10,0
+NOCARD DC.B 13,10,'No Card',13,10,0
+CARDV1 DC.B 13,10,'Card V1',13,10,0
+CARDV2 DC.B 13,10,'Card V2',13,10,0
+CARDHC DC.B 13,10,'CARD HC',13,10,0
+READING DC.B 13,10,'Reading',13,10,0
+BUSYSTR DC.B 13,10,'Busy',13,10,0
+
 FONT    dc.b $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $18,  $18,  $18,  $18,  $18,  $00,  $18,  $00 
         dc.b $6c,  $6c,  $6c,  $00,  $00,  $00,  $00,  $00,  $36,  $36,  $7f,  $36,  $7f,  $36,  $36,  $00 
         dc.b $0c,  $3f,  $68,  $3e,  $0b,  $7e,  $18,  $00,  $60,  $66,  $0c,  $18,  $30,  $66,  $06,  $00 
@@ -144,6 +297,10 @@ FONT    dc.b $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $18,  $18,  $18,  $
 
 
        END	MAIN
+
+
+
+
 
 
 

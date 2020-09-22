@@ -108,9 +108,7 @@ function [13:0] mmcm_pll_divider
    begin
       // Duty Cycle must be between 0 and 1,000
       if(duty_cycle <=0 || duty_cycle >= 100000) begin
-`ifndef SYNTHESIS
          $display("ERROR: duty_cycle: %d is invalid", duty_cycle);
-   `endif
          $finish;
       end
 
@@ -190,9 +188,7 @@ function [10:0] mmcm_pll_phase
 `endif
    
       if ((phase < -360000) || (phase > 360000)) begin
-`ifndef SYNTHESIS
-      $display("ERROR: phase of $phase is not between -360000 and 360000");
-	`endif
+         $display("ERROR: phase of $phase is not between -360000 and 360000");
          $finish;
       end
 
@@ -593,9 +589,7 @@ function [37:0] mmcm_frac_count_calc
    
    //convert phase to fixed
    if ((phase < -360000) || (phase > 360000)) begin
-`ifndef SYNTHESIS
       $display("ERROR: phase of $phase is not between -360000 and 360000");
-	`endif
       $finish;
    end
 

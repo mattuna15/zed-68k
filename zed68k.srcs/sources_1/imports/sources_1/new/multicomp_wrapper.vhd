@@ -45,8 +45,8 @@ port(
 		hSync			: buffer std_logic;
 		vSync			: buffer std_logic;
 
-		ps2Clk		: inout std_logic;
-		ps2Data		: inout std_logic;
+		ps2k_clk_in		: inout std_logic;
+		ps2k_dat_in		: inout std_logic;
 
          SD_RESET: inout std_logic; -- #IO_L14P_T2_SRCC_35 Sch=sd_reset
          SD_CD : in std_logic;  --#IO_L9N_T1_DQS_AD7N_35 Sch=sd_cd
@@ -91,8 +91,28 @@ port(
       ddr2_dqs_n           : inout std_logic_vector(1 downto 0);
       
       AUD_PWM              : inout std_logic;
-      AUD_SD               : out std_logic
-    
+      AUD_SD               : out std_logic;
+     
+     	-- UART(esp)
+		uart_rxd : in std_logic;
+		uart_txd : out std_logic;
+		
+		--ps2
+		ps2m_clk_in : in std_logic;
+		ps2m_dat_in : in std_logic;
+		
+		-- ethernet
+
+                ETH_MDC : OUT STD_LOGIC; --	output        eth_mdc,
+                ETH_MDIO : INOUT STD_LOGIC; --	inout         eth_mdio, 
+                ETH_RSTN : OUT STD_LOGIC; --	output        eth_rstn,
+                ETH_CRSDV :  INOUT STD_LOGIC; --	inout         eth_crsdv,
+                ETH_RXERR : INOUT STD_LOGIC; --	inout         eth_rxerr,
+                ETH_RXD : INOUT STD_LOGIC_VECTOR(1 DOWNTO 0); --	inout  [1:0]  eth_rxd,
+                ETH_TXEN : OUT STD_LOGIC; --	output        eth_txen,
+                ETH_TXD : INOUT STD_LOGIC_VECTOR(1 DOWNTO 0); --	output [1:0]  eth_txd,
+                ETH_REFCLK : OUT STD_LOGIC; --	output        eth_clkin,
+                ETH_INTN :  INOUT STD_LOGIC --	inout         eth_intn,
 	);
 end multicomp_wrapper;
 
@@ -284,6 +304,7 @@ begin
 		sdMOSI => SD_CMD,
 		sdMISO => SD_DAT0,
 		sdSCLK => SD_SCK,
+		driveLED => LED(0),
 		
 		--srec
 	    serialRead_en => serialRead_en,
@@ -316,15 +337,24 @@ begin
         vga_rd_en => vga_rd_en,
         vga_wr_data => vga_wr_data,
         vga_rd_data => vga_rd_data,
-       -- vga_irq => vga_irq
-       driveLED => LED(0)
+       vga_irq => vga_irq,
+
+             	-- UART(esp)
+		uart_rxd => uart_rxd,
+		uart_txd => uart_txd,
+		
+		--ps2
+		ps2k_clk_in => ps2k_clk_in,
+		ps2k_dat_in => ps2k_dat_in,
+		ps2m_clk_in => ps2m_clk_in,
+		ps2m_dat_in => ps2m_dat_in
     );
     
     --only using spi do drive dat1&2 high & reset is low.
     SD_RESET <= '0';
     SD_DAT1 <= '1';
     SD_DAT2 <= '1';
-    
+    LED(1) <= not SD_CD;
     
     --serial
     
@@ -406,7 +436,69 @@ vga: entity work.gameduino_main
       flashMISO => std_logic_vector(to_unsigned(0, 1))
   );
     
-   LED(1) <= pwm_audio_o; 
+--ethernet: entity work.eth_mac
+--    port map (
+--	input         clk_mac,
+--	input         clk_phy,
+--	input         rst_n,
+--	input [2:0]   mode_straps,
+	
+	
+--	--board
+--	eth_mdc =>  ETH_MDC, 
+--	eth_mdio => ETH_MDIO,  --	inout         eth_mdio, 
+--    eth_rstn => ETH_RSTN , --	output        eth_rstn,
+--    eth_crsdv => ETH_CRSDV, -- :  INOUT STD_LOGIC; --	inout         eth_crsdv,
+--    eth_rxerr => ETH_RXERR, -- : INOUT STD_LOGIC; --	inout         eth_rxerr,
+--    eth_rxd => ETH_RXD, --	inout  [1:0]  eth_rxd,
+--    eth_txen => ETH_TXEN, --	output        eth_txen,
+--    eth_txd => ETH_TXD,  --	output [1:0]  eth_txd,
+--    eth_clkin =>  ETH_REFCLK, --	output        eth_clkin,
+--    eth_intn =>  ETH_INTN, -- :  INOUT STD_LOGIC --	inout         eth_intn,
+
+
+--	inout         eth_intn,
+	
+--	--rx
+--	output        rx_vld,
+--	output [7:0]  rx_dat,
+--	output        rx_sof,
+--	output        rx_eof,
+--	output        rx_err,
+	
+--	output [7:0]  rx_axis_mac_tdata,
+--	output        rx_axis_mac_tvalid,
+--	output        rx_axis_mac_tlast,
+--	output        rx_axis_mac_tuser,
+	
+--	--tx
+--	input         tx_vld,
+--	input [7:0]   tx_dat,
+--	input         tx_sof,
+--	input         tx_eof,
+--	output        tx_ack,
+	
+--	input  [7:0]  tx_axis_mac_tdata,
+--	input         tx_axis_mac_tvalid,
+--	input         tx_axis_mac_tlast,
+--	output        tx_axis_mac_tready,
+	
+--	--status
+--	input         reg_vld,
+--	input  [4:0]  reg_addr,
+--	input         reg_write,
+--	input  [15:0] reg_wval,
+--	output [15:0] reg_rval,
+--	output        reg_ack,
+	
+--	output        speed_100,
+--	output        full_duplex,
+--	output        link_up,
+--	output        remote_fault,
+--	output        auto_neg_done
+--);
+
+
    AUD_SD  <= '1';
    AUD_PWM <= '0' when pwm_audio_o = '0' else 'Z';
     
