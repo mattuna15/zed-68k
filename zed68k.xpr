@@ -93,14 +93,14 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
+        <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_UART_TX_0_0/serial_UART_TX_0_0.xci">
+          <Proxy FileSetName="serial_UART_TX_0_0"/>
+        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_UART_FIFO_IO_cntl_pr_0_0/serial_UART_FIFO_IO_cntl_pr_0_0.xci">
           <Proxy FileSetName="serial_UART_FIFO_IO_cntl_pr_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_fifo_generator_0_0/serial_fifo_generator_0_0.xci">
           <Proxy FileSetName="serial_fifo_generator_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_UART_TX_0_0/serial_UART_TX_0_0.xci">
-          <Proxy FileSetName="serial_UART_TX_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/write_fifo/write_fifo.bd">
@@ -401,11 +401,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
-          <Proxy FileSetName="design_1_UART_RX_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0.xci">
           <Proxy FileSetName="design_1_UART_FIFO_IO_cntl_pr_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
+          <Proxy FileSetName="design_1_UART_RX_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/design_1/hdl/design_1_wrapper.vhd">
@@ -654,14 +654,6 @@
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/new/ethernet_controller.v">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>

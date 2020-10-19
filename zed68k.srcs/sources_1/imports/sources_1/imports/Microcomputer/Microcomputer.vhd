@@ -460,7 +460,7 @@ serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
 n_sdCardCS <= '0' when cpuAddress >= x"f40000" and cpuAddress <= x"f4ffff" else '1';
 sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40000" and cpu_r_w = '0';
 sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40002" and cpu_r_w = '0';
-sdControl <= cpuDataOut(7 downto 0) when cpuAddress = x"f4000b" and cpu_r_w = '0' and cpu_lds = '0';
+sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f4000b" or cpuAddress = x"f4000a") and cpu_r_w = '0' and cpu_lds = '0';
 sd_rden <= sdControl(2);
 sd_wren <= sdControl(3);
 driveLED <= sdStatus(5);
@@ -491,11 +491,7 @@ when cpuAddress = x"f40000" and cpu_r_w = '1' and cpu_uds = '0' else
 sdAddress(15 downto 8)
 when cpuAddress = x"f40002" and cpu_r_w = '1' and cpu_uds = '0' else 
 x"00"
-when cpuAddress = x"f4000d" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when cpuAddress = x"f4000b" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when cpuAddress = x"f40009" and cpu_r_w = '1' and cpu_uds = '0' else
+when cpuAddress >= x"f40008" and cpuAddress <= x"f4000d" and cpu_r_w = '1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
@@ -525,11 +521,11 @@ when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"A00000
 per_data_out(7 downto 0) 
 when per_reg_sel = '1' and cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" and cpu_lds = '0' else 
 sdCardDataOut
-when cpuAddress = x"f4000d" and cpu_r_w = '1' and cpu_lds = '0' else
+when (cpuAddress = x"f4000c" or cpuAddress = x"f4000d") and cpu_r_w = '1' and cpu_lds = '0' else
 sdControl
-when cpuAddress = x"f4000b" and cpu_r_w = '1' and cpu_lds = '0' else
+when (cpuAddress = x"f4000a" or cpuAddress = x"f4000b") and cpu_r_w = '1' and cpu_lds = '0' else
 sdStatus
-when cpuAddress = x"f40009" and cpu_r_w = '1' and cpu_lds = '0' else
+when (cpuAddress = x"f40008" or cpuAddress = x"f40009") and cpu_r_w = '1' and cpu_lds = '0' else
 sdAddress(23 downto 16)
 when cpuAddress = x"f40000" and cpu_r_w = '1' and cpu_lds = '0' else 
 sdAddress(7 downto 0)
@@ -539,7 +535,7 @@ X"00" when cpu_lds = '1' ;
 cpu_dtack <= 
 not ram_ack when ram_cen = '0' else
 sd_ack when
-cpuAddress = x"f4000d" and cpu_r_w = '0' else
+(cpuAddress = x"f4000c" or cpuAddress = x"f4000d") and cpu_r_w = '0' else
 per_dtack 
 when per_reg_sel = '1' and cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" 
 else '0';

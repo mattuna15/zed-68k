@@ -1,2 +1,0 @@
-lo68 -s -tB00 -uldr -o cpmldr.sys booter.o ldrlib ldbiosa.o ldbios.o 0:clib
-

@@ -67,16 +67,18 @@ MAIN
     BSR PSTR
 
     ;LOAD FONT
-    BSR SETUP_FONT
-
-
-CHKDRV    
+    BSR SETUP_FONT  
     
     ;CHECK SD CARD
     BSR CHECK_DRIVE
     
+    LEA.L SDADDRESS.L,A1
+    MOVE.l #00, (a1) 
     BSR READDRV
     
+    LEA.L SDADDRESS.L,A1
+    MOVE.l #2048, (a1) 
+    BSR READDRV
     
 **************************************************
    
@@ -148,53 +150,56 @@ BUSY        LEA.L SDSTATUS.L,A4
             CMP.b #$c0,D1
             BEQ RDEN               ; busy 0
             
-            
             LEA.L BUSYSTR.L,A3     ; print START MESSAGE
             BSR PSTR 
             
             BRA.S BUSY
             
-            
-
-            
-RDEN        for d5 = #1 to #10 do.s
-            LEA.L READING.L,A3     ; print START MESSAGE
-            BSR PSTR
-            
-            LEA.L SDADDRESS.L,A1
-            LEA.L SDCONTROL.L,A2
+RDEN        LEA.L SDCONTROL.L,A2
+            BSET.b #02, (a2)
+ 
+            for d5 = #1 to #512 do.s
             
             LEA.L CHECKING.L,A3     ; print START MESSAGE
             BSR PSTR
             
-            MOVE.l #00, (a1)
-            BSET.b #02, (a2)  
-
 DOUT        MOVE.b (A4), D1
-            CMP.B #$f0,D1
-            BEQ READ
-            BRA.S DOUT                ; IT'S 0 SO NO DATA YET
+            BTST #4,D1
+            BEQ DOUT
 
-READ        LEA.L RECVD.L,A3     ; print START MESSAGE
-            BSR PSTR 
+READ        LEA.l SDDATA.L,A5   
             
-            LEA.l SDDATA.L,A5
             MOVE.b (A5), D0
             BSET.b   #01, (a2)  ;ACK
+            BSR OUT2X
+DAVAIL      MOVE.b (A4), D1
+            BTST #4,D1
+            BNE DAVAIL
             
+            BCLR.b   #01, (a2)  ;ACK
             
-            BSR COUT
-            
-            BCLR.b  #01, (a2)
-            BSR CIN
             endf
 
-            
             BCLR.b  #02, (a2)  ; REMOVE RDEN
             
             RTS
 
+OUT1X        MOVE.B D0,-(SP)    ;SAVE D0
+             AND.B #$F,D0
+             ADD.B #'0',D0
+             CMP.B #'9',D0
+             BLS.S   OUT1X1
+             ADD.B #7,D0
+OUT1X1       BSR COUT
+             MOVE.B (SP)+,D0    ;RESTORE D0
+             RTS
 
+OUT2X        ROR.B #4,D0
+             BSR.S OUT1X
+             ROL.B #4,D0
+             BRA OUT1X
+
+        RTS
 **************************************************   
    ; INIT ACIA
 
@@ -297,6 +302,7 @@ FONT    dc.b $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $18,  $18,  $18,  $
 
 
        END	MAIN
+
 
 
 
