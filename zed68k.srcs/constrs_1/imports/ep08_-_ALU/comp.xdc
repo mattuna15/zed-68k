@@ -48,6 +48,21 @@ set_property -dict {PACKAGE_PIN D2 IOSTANDARD LVCMOS33} [get_ports SD_DAT3]
 set_property -dict {PACKAGE_PIN C17 IOSTANDARD LVCMOS33} [get_ports ps2k_dat_in]
 set_property -dict {PACKAGE_PIN E18 IOSTANDARD LVCMOS33} [get_ports ps2k_clk_in]
 
+##Pmod Header JB
+#Pin 1 RTS / SS
+#Pin 2 RXD / MOSI
+#Pin 3 TXD / MISO
+#Pin 4 CTS / SCK
+#set_property -dict { PACKAGE_PIN D14   IOSTANDARD LVCMOS33 } [get_ports { JB[1] }]; #IO_L1P_T0_AD0P_15 Sch=jb[1]
+set_property -dict { PACKAGE_PIN F16   IOSTANDARD LVCMOS33 } [get_ports { esp_tx }]; #IO_L14N_T2_SRCC_15 Sch=jb[2]
+set_property -dict { PACKAGE_PIN G16   IOSTANDARD LVCMOS33 } [get_ports { esp_rx }]; #IO_L13N_T2_MRCC_15 Sch=jb[3]
+#set_property -dict { PACKAGE_PIN H14   IOSTANDARD LVCMOS33 } [get_ports { SDA }]; #IO_L15P_T2_DQS_15 Sch=jb[4]
+#set_property -dict { PACKAGE_PIN E16   IOSTANDARD LVCMOS33 } [get_ports { JB[7] }]; #IO_L11N_T1_SRCC_15 Sch=jb[7]
+#set_property -dict { PACKAGE_PIN F13   IOSTANDARD LVCMOS33 } [get_ports { JB[8] }]; #IO_L5P_T0_AD9P_15 Sch=jb[8]
+#set_property -dict { PACKAGE_PIN G13   IOSTANDARD LVCMOS33 } [get_ports { JB[9] }]; #IO_0_15 Sch=jb[9]
+#set_property -dict { PACKAGE_PIN H16   IOSTANDARD LVCMOS33 } [get_ports { JB[10] }]; #IO_L13P_T2_MRCC_15 Sch=jb[10]
+
+
 ##Pmod Header JD
 
 set_property -dict {PACKAGE_PIN G1 IOSTANDARD LVCMOS33} [get_ports rxd2]
@@ -136,22 +151,17 @@ set_property -dict {PACKAGE_PIN V11 IOSTANDARD LVCMOS33} [get_ports {LED[15]}]
 #set_property -dict { PACKAGE_PIN F18   IOSTANDARD LVCMOS33 } [get_ports { JA[9] }]; #IO_L22N_T3_A16_15 Sch=ja[9]
 #set_property -dict { PACKAGE_PIN G18   IOSTANDARD LVCMOS33 } [get_ports { JA[10] }]; #IO_L22P_T3_A17_15 Sch=ja[10]
 
+##Pmod Header JC 
 
-##Pmod Header JB (RTC)
+#1	D/A MCLK	I2S Line Out Converter Master Clock		7	A/D MCLK	I2S Line In Converter Master Clock
+#2	D/A LRCK	I2S Line Out Converter Word Select	8	A/D LRCK	I2S Line In Converter Word Select
+#3	D/A SCLK	I2S Line Out Converter Serial Clock	9	A/D SCLK	I2S Line In Converter Serial Clock
+#4	D/A SDIN	I2S Line Out Converter Serial Data Input	10	A/D SDOUT	I2S Line In Converter Serial Data Output
 
-
-
-##Pmod Header JC (esp)
-
-#1	RTS / SS	UART Request to Send / SPI Slave Select
-#2	RXD / MOSI	UART Receive Data / SPI Master Out Slave In
-#3	TXD / MISO	UART Transmit Data / SPI Master In Slave Out
-#4	CTS / SCK	UART Clear to Send / SPI Serial Clock
-
-#set_property -dict { PACKAGE_PIN K1    IOSTANDARD LVCMOS33 } [get_ports { JC[1] }]; #IO_L23N_T3_35 Sch=jc[1]
-set_property -dict {PACKAGE_PIN F6 IOSTANDARD LVCMOS33} [get_ports uart_txd]
-set_property -dict {PACKAGE_PIN J2 IOSTANDARD LVCMOS33} [get_ports uart_rxd]
-#set_property -dict { PACKAGE_PIN G6    IOSTANDARD LVCMOS33 } [get_ports { JC[4] }]; #IO_L19P_T3_35 Sch=jc[4]
+set_property -dict { PACKAGE_PIN K1    IOSTANDARD LVCMOS33 } [get_ports { I2S_MCLK }]; #IO_L23N_T3_35 Sch=jc[1]
+set_property -dict {PACKAGE_PIN F6 IOSTANDARD LVCMOS33} [get_ports I2S_LRCLK]
+set_property -dict {PACKAGE_PIN J2 IOSTANDARD LVCMOS33} [get_ports I2S_SCLK]
+set_property -dict { PACKAGE_PIN G6    IOSTANDARD LVCMOS33 } [get_ports { I2S_DATA }]; #IO_L19P_T3_35 Sch=jc[4]
 #set_property -dict { PACKAGE_PIN E7    IOSTANDARD LVCMOS33 } [get_ports { JC[7] }]; #IO_L6P_T0_35 Sch=jc[7]
 #set_property -dict { PACKAGE_PIN J3    IOSTANDARD LVCMOS33 } [get_ports { JC[8] }]; #IO_L22P_T3_35 Sch=jc[8]
 #set_property -dict { PACKAGE_PIN J4    IOSTANDARD LVCMOS33 } [get_ports { JC[9] }]; #IO_L21P_T3_DQS_35 Sch=jc[9]

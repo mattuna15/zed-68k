@@ -47,6 +47,12 @@ port(
 
 		ps2k_clk_in		: inout std_logic;
 		ps2k_dat_in		: inout std_logic;
+				--ps2
+		ps2m_clk_in : inout std_logic;
+		ps2m_dat_in : inout std_logic;
+		
+		SCL : inout std_logic;
+		SDA : inout std_logic;
 
          SD_RESET: inout std_logic; -- #IO_L14P_T2_SRCC_35 Sch=sd_reset
          SD_CD : in std_logic;  --#IO_L9N_T1_DQS_AD7N_35 Sch=sd_cd
@@ -68,12 +74,19 @@ port(
 -- // SD_RESET should be held LOW.
 
     LED : out STD_LOGIC_VECTOR ( 15 downto 0 );
+    
+    --serial
     rxd1 : in STD_LOGIC;
     txd1 : out STD_LOGIC;
     cts1 : in STD_LOGIC;
     rts1 : out STD_LOGIC;
     
         rxd2 : in STD_LOGIC;
+        
+    esp_rx : in STD_LOGIC;
+	esp_tx : out STD_LOGIC;
+        
+        --memory
     
       ddr2_addr            : out   std_logic_vector(12 downto 0);
       ddr2_ba              : out   std_logic_vector(2 downto 0);
@@ -90,16 +103,16 @@ port(
       ddr2_dqs_p           : inout std_logic_vector(1 downto 0);
       ddr2_dqs_n           : inout std_logic_vector(1 downto 0);
       
+      
+      -- audio
       AUD_PWM              : inout std_logic;
       AUD_SD               : out std_logic;
-     
-     	-- UART(esp)
-		uart_rxd : in std_logic;
-		uart_txd : out std_logic;
-		
-		--ps2
-		ps2m_clk_in : in std_logic;
-		ps2m_dat_in : in std_logic;
+      
+      I2S_MCLK : out std_logic;
+      I2S_LRCLK : out std_logic;
+      I2S_SCLK :  out std_logic;
+      I2S_DATA : out std_logic;
+
 		
 		-- ethernet
 
@@ -132,6 +145,7 @@ end; -- function reverse_any_vector
 
     signal clk50 : std_logic := '0';
     signal clk25 : std_logic := '0';
+    signal clk48 : std_logic := '0';
     signal start_up  : std_logic := '0';
     --serial term
     signal serialTermStatus: std_logic_vector(7 downto 0) := x"00"; 
@@ -154,7 +168,17 @@ end; -- function reverse_any_vector
     signal clk_locked: std_logic := '0';
 
 
+    -- esp
     
+    signal esp_tx_act : std_logic := '0';
+    signal esp_rx_act: std_logic := '0';
+    signal esp_sts: std_logic_vector(7 downto 0) := x"00"; 
+    signal esp_rxd: std_logic_vector(7 downto 0) := x"00";
+    signal esp_txd: std_logic_vector(7 downto 0) := x"00";
+    signal esp_rden: std_logic := '0';
+    signal esp_wren: std_logic := '0';
+    signal esp_rx_count: std_logic_vector( 7 downto 0) := x"00";
+
           -- RAM interface
 
         signal mem_clock: std_logic := '0';
@@ -195,7 +219,13 @@ end; -- function reverse_any_vector
       
       signal pwm_audio_o : std_logic;
       
-
+      signal audio_l : std_logic_vector(15 downto 0);
+      signal audio_r : std_logic_vector(15 downto 0);
+      
+      signal clock_357 : std_logic;
+      signal clock_148 : std_logic;
+      
+-- clocks 
 
     component pll
     port ( 
@@ -205,7 +235,7 @@ end; -- function reverse_any_vector
         clk100  : out std_logic;
         clk200  : out std_logic;
         clk50  : out std_logic;
-        clk25  : out std_logic
+        clk48  : out std_logic
     );
     end component;
     
@@ -237,9 +267,16 @@ begin
         clk100 => sys_clock100,
         clk200 => mem_clock,
         clk50 =>  clk50,
-        clk25 => clk25
+        clk48 => clk48
     );
-
+    
+    jt51_clock: entity work.jtframe_cen3p57
+    port map (
+        clk => clk48,       -- 48 MHz
+        cen_3p57 => clock_357,
+        cen_1p78 => clock_148
+    );
+    
         memory_control: entity work.mem_control 
         Port map (
 
@@ -304,7 +341,7 @@ begin
 		sdMOSI => SD_CMD,
 		sdMISO => SD_DAT0,
 		sdSCLK => SD_SCK,
-		driveLED => LED(0),
+		driveLED => open , -- LED(0),
 		
 		--srec
 	    serialRead_en => serialRead_en,
@@ -338,23 +375,31 @@ begin
         vga_wr_data => vga_wr_data,
         vga_rd_data => vga_rd_data,
        vga_irq => vga_irq,
-
-             	-- UART(esp)
-		uart_rxd => uart_rxd,
-		uart_txd => uart_txd,
 		
 		--ps2
-		ps2k_clk_in => ps2k_clk_in,
-		ps2k_dat_in => ps2k_dat_in,
-		ps2m_clk_in => ps2m_clk_in,
-		ps2m_dat_in => ps2m_dat_in
+		ps2k_clk => ps2k_clk_in,
+		ps2k_dat => ps2k_dat_in,
+		ps2m_clk => ps2m_clk_in,
+		ps2m_dat => ps2m_dat_in,
+		
+		
+		esp_sts => esp_sts, 
+        esp_rxd => esp_rxd,
+        esp_txd => esp_txd,
+        esp_rden => esp_rden,
+        esp_wren => esp_wren
+		
+		
     );
     
     --only using spi do drive dat1&2 high & reset is low.
     SD_RESET <= '0';
     SD_DAT1 <= '1';
     SD_DAT2 <= '1';
-    LED(1) <= not SD_CD;
+    --LED(1) <= not SD_CD;
+    
+    LED(15 downto 8) <= esp_txd;
+    LED(7 downto 0) <= esp_rxd;
     
     --serial
     
@@ -380,6 +425,41 @@ begin
       rxd1 => rxd1,
       rd_data_cnt(8 downto 1) => rx_count,
       rd_data_cnt(0) => rx_data_trigger,
+      clk100_i => sys_clock100,
+      cts => open,
+      rts => open
+    );  
+    
+    
+    -- esp
+--    		esp_sts => esp_sts, 
+--        esp_rxd => esp_rxd,
+--        esp_txd => esp_txd,
+--        esp_rden => esp_rden,
+--        esp_wren => esp_wren
+    
+    esp_serial_term_tx: entity work.serial_wrapper 
+        port map (
+        sys_clk => sys_clock100,
+        tx_data => esp_txd,
+        tx_wr_en => esp_wren,
+        cts => open,
+        rts => open,
+        reset_n => resetn and mem_ready and clk_locked,
+        txd => esp_tx,
+        tx_send_active => esp_tx_act
+  );
+  
+  esp_serial_term_rx : serial_rx
+    port map (
+      LED => open,
+      rd_en => esp_rden,
+      m68_rxd => esp_rxd,
+      rd_clk => sys_clock100,
+      reset_n => resetn and mem_ready and clk_locked,
+      rxd1 => esp_rx,
+      rd_data_cnt(8 downto 1) => esp_rx_count,
+      rd_data_cnt(0) => esp_rx_act,
       clk100_i => sys_clock100,
       cts => open,
       rts => open
@@ -427,6 +507,9 @@ vga: entity work.gameduino_main
       AUDIOL => pwm_audio_o,
       AUDIOR => open,
       audio_trigger => audio_playing,
+      
+      audio_l => audio_l,
+      audio_r => audio_r,
     
       pin2f => open,
       pin2j => open,
@@ -435,6 +518,63 @@ vga: entity work.gameduino_main
       j1_flashSSEL  => open,
       flashMISO => std_logic_vector(to_unsigned(0, 1))
   );
+  
+--  left_mixer: entity work.jtframe_mixer 
+--  generic map (W0=16,W1=16,W2=16,W3=16,WOUT=16)
+--  port map(
+--    input                    clk,
+--    input                    cen,
+--    // input signals
+--    input  signed [W0-1:0]   ch0,
+--    input  signed [W1-1:0]   ch1,
+--    input  signed [W2-1:0]   ch2,
+--    input  signed [W3-1:0]   ch3,
+--    // gain for each channel in 4.4 fixed point format
+--    input  [7:0]             gain0,
+--    input  [7:0]             gain1,
+--    input  [7:0]             gain2,
+--    input  [7:0]             gain3,
+--    output     signed [WOUT-1:0] mixed
+--);
+
+--module jt51(
+--    input               rst,    // reset
+--    input               clk,    // main clock
+--    input               cen,    // clock enable
+--    input               cen_p1, // clock enable at half the speed
+--    input               cs_n,   // chip select
+--    input               wr_n,   // write
+--    input               a0,
+--    input       [7:0]   din, // data in
+--    output      [7:0]   dout, // data out
+--    // peripheral control
+--    output              ct1,
+--    output              ct2,
+--    output              irq_n,  // I do not synchronize this signal
+--    // Low resolution output (same as real chip)
+--    output              sample, // marks new output sample
+--    output  signed  [15:0] left,
+--    output  signed  [15:0] right,
+--    // Full resolution output
+--    output  signed  [15:0] xleft,
+--    output  signed  [15:0] xright,
+--    // unsigned outputs for sigma delta converters, full resolution
+--    output  [15:0] dacleft,
+--    output  [15:0] dacright
+--);
+
+
+--i2s: entity  work.i2s 
+-- generic map (DAC_OUTPUT_WIDTH=16)
+-- port map (
+--    clk => clk, 
+--    input wire sample_clk_en,
+--    input wire [DAC_OUTPUT_WIDTH-1:0] left_channel,
+--    input wire [DAC_OUTPUT_WIDTH-1:0] right_channel,
+--    output logic i2s_sclk = 0,
+--    output logic i2s_ws = 0,
+--    output logic i2s_sd = 0
+--);
     
 --ethernet: entity work.eth_mac
 --    port map (
@@ -505,5 +645,8 @@ vga: entity work.gameduino_main
    serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
    serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
    serialStatus(0) <= '1' when count > x"00" else '0';
+   
+   esp_sts(0) <= '1' when esp_rx_count > x"00" else '0';
+   esp_sts(1) <= '1' when esp_tx_act = '0' else '0';
 
 end Behavioral;

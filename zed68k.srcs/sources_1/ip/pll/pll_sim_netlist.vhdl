@@ -1,7 +1,7 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Sat Aug  1 17:37:35 2020
+-- Date        : Thu Oct 22 13:08:20 2020
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim d:/code/zed-68k/zed68k.srcs/sources_1/ip/pll/pll_sim_netlist.vhdl
 -- Design      : pll
@@ -17,7 +17,7 @@ entity pll_pll_clk_wiz is
   port (
     clk200 : out STD_LOGIC;
     clk50 : out STD_LOGIC;
-    clk25 : out STD_LOGIC;
+    clk48 : out STD_LOGIC;
     clk100 : out STD_LOGIC;
     resetn : in STD_LOGIC;
     locked : out STD_LOGIC;
@@ -30,7 +30,7 @@ end pll_pll_clk_wiz;
 architecture STRUCTURE of pll_pll_clk_wiz is
   signal clk100_pll : STD_LOGIC;
   signal clk200_pll : STD_LOGIC;
-  signal clk25_pll : STD_LOGIC;
+  signal clk48_pll : STD_LOGIC;
   signal clk50_pll : STD_LOGIC;
   signal clk_in_pll : STD_LOGIC;
   signal clkfbout_buf_pll : STD_LOGIC;
@@ -80,8 +80,8 @@ clkout2_buf: unisim.vcomponents.BUFG
     );
 clkout3_buf: unisim.vcomponents.BUFG
      port map (
-      I => clk25_pll,
-      O => clk25
+      I => clk48_pll,
+      O => clk48
     );
 clkout4_buf: unisim.vcomponents.BUFG
      port map (
@@ -91,20 +91,20 @@ clkout4_buf: unisim.vcomponents.BUFG
 plle2_adv_inst: unisim.vcomponents.PLLE2_ADV
     generic map(
       BANDWIDTH => "OPTIMIZED",
-      CLKFBOUT_MULT => 10,
+      CLKFBOUT_MULT => 12,
       CLKFBOUT_PHASE => 0.000000,
       CLKIN1_PERIOD => 10.000000,
       CLKIN2_PERIOD => 0.000000,
-      CLKOUT0_DIVIDE => 5,
+      CLKOUT0_DIVIDE => 6,
       CLKOUT0_DUTY_CYCLE => 0.500000,
       CLKOUT0_PHASE => 0.000000,
-      CLKOUT1_DIVIDE => 20,
+      CLKOUT1_DIVIDE => 24,
       CLKOUT1_DUTY_CYCLE => 0.500000,
       CLKOUT1_PHASE => 0.000000,
-      CLKOUT2_DIVIDE => 40,
+      CLKOUT2_DIVIDE => 25,
       CLKOUT2_DUTY_CYCLE => 0.500000,
       CLKOUT2_PHASE => 0.000000,
-      CLKOUT3_DIVIDE => 10,
+      CLKOUT3_DIVIDE => 12,
       CLKOUT3_DUTY_CYCLE => 0.500000,
       CLKOUT3_PHASE => 0.000000,
       CLKOUT4_DIVIDE => 1,
@@ -130,7 +130,7 @@ plle2_adv_inst: unisim.vcomponents.PLLE2_ADV
       CLKINSEL => '1',
       CLKOUT0 => clk200_pll,
       CLKOUT1 => clk50_pll,
-      CLKOUT2 => clk25_pll,
+      CLKOUT2 => clk48_pll,
       CLKOUT3 => clk100_pll,
       CLKOUT4 => NLW_plle2_adv_inst_CLKOUT4_UNCONNECTED,
       CLKOUT5 => NLW_plle2_adv_inst_CLKOUT5_UNCONNECTED,
@@ -162,7 +162,7 @@ entity pll is
   port (
     clk200 : out STD_LOGIC;
     clk50 : out STD_LOGIC;
-    clk25 : out STD_LOGIC;
+    clk48 : out STD_LOGIC;
     clk100 : out STD_LOGIC;
     resetn : in STD_LOGIC;
     locked : out STD_LOGIC;
@@ -178,7 +178,7 @@ inst: entity work.pll_pll_clk_wiz
      port map (
       clk100 => clk100,
       clk200 => clk200,
-      clk25 => clk25,
+      clk48 => clk48,
       clk50 => clk50,
       clk_in => clk_in,
       locked => locked,

@@ -4,6 +4,9 @@ ACIAD    EQU ACIAC+2
 ACIA2C    EQU $F20009
 ACIA2D    EQU ACIA2C+2
 
+ACIA3C    EQU $F30009
+ACIA3D    EQU ACIA3C+2
+
 INT_ON   EQU  $2000    ; BOTH, SET SUPERVISOR MODE, S=1
 INT_OFF  EQU  $2700
 
@@ -71,14 +74,17 @@ MAIN
     
     ;CHECK SD CARD
     BSR CHECK_DRIVE
+
+    lea AT.l,a3
+    bsr wstr
     
-    LEA.L SDADDRESS.L,A1
-    MOVE.l #00, (a1) 
-    BSR READDRV
+LOOP
+    BSR WIN
+   
+    BSR WCIN
     
-    LEA.L SDADDRESS.L,A1
-    MOVE.l #2048, (a1) 
-    BSR READDRV
+    BRA LOOP
+    
     
 **************************************************
    
@@ -227,6 +233,23 @@ CIN      BTST.B #RDRF,ACIAC.L
          BSR COUT
          RTS
          
+WOUT      BTST.B #TDRE,ACIA3C.L
+          BEQ.S  WRTS1
+          MOVE.B D0,ACIA3D.L
+WRTS1     RTS
+          
+WIN      BTST.B #RDRF,ACIA3C.L
+         BEQ.S  WRTS2
+         MOVE.B ACIA3D.L,D0
+         BSR COUT
+WRTS2    RTS
+
+WCIN     BTST.B #RDRF,ACIAC.L
+         BEQ.S  WRTS3
+         MOVE.B ACIAD.L,D0
+         BSR WOUT
+WRTS3    RTS
+         
 ; A3 POINTED TO FIRST BYTE
 ; END WITH 0
 
@@ -238,7 +261,17 @@ PSTR     MOVE.B (A3)+,D0
 
 PSTR1    RTS
 
+WSTR     MOVE.B (A3)+,D0
+         CMP.B  #0,D0
+         BEQ.S WSTR1
+WOT      BTST.B #TDRE,ACIA3C.L
+         BEQ.S  WOT
+         MOVE.B D0,ACIA3D.L
+         BRA.S WSTR
 
+WSTR1    RTS
+
+AT DC.B 13,10,'AT',13,10,0
 TITLE1 DC.B 13,10,'Font Loader',13,10,0
 WAITING DC.B 13,10,'Loading',13,10,0
 RECVD DC.B 13,10,'Byte Received',13,10,0
@@ -302,6 +335,7 @@ FONT    dc.b $00,  $00,  $00,  $00,  $00,  $00,  $00,  $00,  $18,  $18,  $18,  $
 
 
        END	MAIN
+
 
 
 
