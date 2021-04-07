@@ -17,11 +17,9 @@
 -endlib
 -makelib xcelium_lib/xil_defaultlib \
   "../../../bd/design_1/ip/design_1_fifo_generator_0_0/sim/design_1_fifo_generator_0_0.v" \
--endlib
--makelib xcelium_lib/xil_defaultlib \
-  "../../../bd/design_1/ip/design_1_UART_RX_0_0/sim/design_1_UART_RX_0_0.vhd" \
-  "../../../bd/design_1/ip/design_1_UART_FIFO_IO_cntl_pr_0_0/sim/design_1_UART_FIFO_IO_cntl_pr_0_0.vhd" \
-  "../../../bd/design_1/sim/design_1.vhd" \
+  "../../../bd/design_1/ip/design_1_UART_RX_0_0/sim/design_1_UART_RX_0_0.v" \
+  "../../../bd/design_1/ip/design_1_UART_FIFO_IO_cntl_pr_0_0/sim/design_1_UART_FIFO_IO_cntl_pr_0_0.v" \
+  "../../../bd/design_1/sim/design_1.v" \
 -endlib
 -makelib xcelium_lib/xil_defaultlib \
   glbl.v

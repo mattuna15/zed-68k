@@ -1,19 +1,19 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Wed Sep  2 16:23:59 2020
+// Date        : Mon Apr  5 21:25:22 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/serial/ip/serial_UART_TX_0_0/serial_UART_TX_0_0_sim_netlist.v
 // Design      : serial_UART_TX_0_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
-// Device      : xc7a100tcsg324-1
+// Device      : xc7a35ticsg324-1L
 // --------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CHECK_LICENSE_TYPE = "serial_UART_TX_0_0,UART_TX,{}" *) (* downgradeipidentifiedwarnings = "yes" *) (* ip_definition_source = "module_ref" *) 
-(* x_core_info = "UART_TX,Vivado 2020.1" *) 
+(* CHECK_LICENSE_TYPE = "serial_UART_TX_0_0,UART_TX,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* IP_DEFINITION_SOURCE = "module_ref" *) 
+(* X_CORE_INFO = "UART_TX,Vivado 2020.1" *) 
 (* NotValidForBitStream *)
 module serial_UART_TX_0_0
    (i_Clk,
@@ -22,7 +22,7 @@ module serial_UART_TX_0_0
     o_TX_Active,
     o_TX_Serial,
     o_TX_Done);
-  (* x_interface_info = "xilinx.com:signal:clock:1.0 i_Clk CLK" *) (* x_interface_parameter = "XIL_INTERFACENAME i_Clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN serial_sys_clk, INSERT_VIP 0" *) input i_Clk;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 i_Clk CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME i_Clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN serial_sys_clk, INSERT_VIP 0" *) input i_Clk;
   input i_TX_DV;
   input [7:0]i_TX_Byte;
   output o_TX_Active;
@@ -36,7 +36,7 @@ module serial_UART_TX_0_0
   wire o_TX_Done;
   wire o_TX_Serial;
 
-  serial_UART_TX_0_0_UART_TX U0
+  serial_UART_TX_0_0_UART_TX inst
        (.i_Clk(i_Clk),
         .i_TX_Byte(i_TX_Byte),
         .i_TX_DV(i_TX_DV),

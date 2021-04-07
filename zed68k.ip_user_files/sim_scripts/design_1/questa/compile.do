@@ -28,11 +28,9 @@ vlog -work fifo_generator_v13_2_5  \
 
 vlog -work xil_defaultlib  \
 "../../../bd/design_1/ip/design_1_fifo_generator_0_0/sim/design_1_fifo_generator_0_0.v" \
-
-vcom -work xil_defaultlib  -93 \
-"../../../bd/design_1/ip/design_1_UART_RX_0_0/sim/design_1_UART_RX_0_0.vhd" \
-"../../../bd/design_1/ip/design_1_UART_FIFO_IO_cntl_pr_0_0/sim/design_1_UART_FIFO_IO_cntl_pr_0_0.vhd" \
-"../../../bd/design_1/sim/design_1.vhd" \
+"../../../bd/design_1/ip/design_1_UART_RX_0_0/sim/design_1_UART_RX_0_0.v" \
+"../../../bd/design_1/ip/design_1_UART_FIFO_IO_cntl_pr_0_0/sim/design_1_UART_FIFO_IO_cntl_pr_0_0.v" \
+"../../../bd/design_1/sim/design_1.v" \
 
 vlog -work xil_defaultlib \
 "glbl.v"

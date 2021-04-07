@@ -1,13 +1,13 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Sat Aug  1 21:12:24 2020
+-- Date        : Sun Mar 28 21:35:23 2021
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode synth_stub -rename_top design_1_fifo_generator_0_0 -prefix
---               design_1_fifo_generator_0_0_ design_1_fifo_generator_0_0_stub.vhdl
+-- Command     : write_vhdl -force -mode synth_stub
+--               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0_stub.vhdl
 -- Design      : design_1_fifo_generator_0_0
 -- Purpose     : Stub declaration of top-level module interface
--- Device      : xc7a100tcsg324-1
+-- Device      : xc7a35ticsg324-1L
 -- --------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;

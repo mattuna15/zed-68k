@@ -1,4 +1,0 @@
-vhdl xil_defaultlib  \
-"../../../bd/write_fifo/sim/write_fifo.vhd" \
-
-nosort

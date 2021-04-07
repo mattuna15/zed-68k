@@ -1,3 +1,0 @@
-write_fifo_fifo_generator_0_0.v,verilog,xil_defaultlib,../../../bd/write_fifo/ip/write_fifo_fifo_generator_0_0/sim/write_fifo_fifo_generator_0_0.v,
-write_fifo.vhd,vhdl,xil_defaultlib,../../../bd/write_fifo/sim/write_fifo.vhd,
-glbl.v,Verilog,xil_defaultlib,glbl.v

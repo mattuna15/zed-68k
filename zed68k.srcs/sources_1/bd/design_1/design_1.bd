@@ -2,7 +2,7 @@
   "design": {
     "design_info": {
       "boundary_crc": "0x8680ADDCE707CBC2",
-      "device": "xc7a100tcsg324-1",
+      "device": "xc7a35ticsg324-1L",
       "name": "design_1",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
@@ -180,10 +180,6 @@
             "parameters": {
               "CLK_DOMAIN": {
                 "value": "design_1_clk100_i",
-                "value_src": "default_prop"
-              },
-              "PHASE": {
-                "value": "0.000",
                 "value_src": "default_prop"
               }
             }

@@ -1,26 +1,26 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sat Aug 15 12:49:05 2020
+// Date        : Mon Apr  5 21:25:22 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0_sim_netlist.v
 // Design      : design_1_UART_RX_0_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
-// Device      : xc7a100tcsg324-1
+// Device      : xc7a35ticsg324-1L
 // --------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CHECK_LICENSE_TYPE = "design_1_UART_RX_0_0,UART_RX,{}" *) (* downgradeipidentifiedwarnings = "yes" *) (* ip_definition_source = "module_ref" *) 
-(* x_core_info = "UART_RX,Vivado 2020.1" *) 
+(* CHECK_LICENSE_TYPE = "design_1_UART_RX_0_0,UART_RX,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* IP_DEFINITION_SOURCE = "module_ref" *) 
+(* X_CORE_INFO = "UART_RX,Vivado 2020.1" *) 
 (* NotValidForBitStream *)
 module design_1_UART_RX_0_0
    (i_Clk,
     i_RX_Serial,
     o_RX_DV,
     o_RX_Byte);
-  (* x_interface_info = "xilinx.com:signal:clock:1.0 i_Clk CLK" *) (* x_interface_parameter = "XIL_INTERFACENAME i_Clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_clk100_i, INSERT_VIP 0" *) input i_Clk;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 i_Clk CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME i_Clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_clk100_i, INSERT_VIP 0" *) input i_Clk;
   input i_RX_Serial;
   output o_RX_DV;
   output [7:0]o_RX_Byte;
@@ -30,7 +30,7 @@ module design_1_UART_RX_0_0
   wire [7:0]o_RX_Byte;
   wire o_RX_DV;
 
-  design_1_UART_RX_0_0_UART_RX U0
+  design_1_UART_RX_0_0_UART_RX inst
        (.i_Clk(i_Clk),
         .i_RX_Serial(i_RX_Serial),
         .o_RX_Byte(o_RX_Byte),

@@ -1,19 +1,19 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Wed Sep  2 16:24:02 2020
+// Date        : Mon Apr  5 21:27:18 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0_sim_netlist.v
 // Design      : design_1_UART_FIFO_IO_cntl_pr_0_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
-// Device      : xc7a100tcsg324-1
+// Device      : xc7a35ticsg324-1L
 // --------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CHECK_LICENSE_TYPE = "design_1_UART_FIFO_IO_cntl_pr_0_0,UART_FIFO_IO_cntl_proc,{}" *) (* downgradeipidentifiedwarnings = "yes" *) (* ip_definition_source = "module_ref" *) 
-(* x_core_info = "UART_FIFO_IO_cntl_proc,Vivado 2020.1" *) 
+(* CHECK_LICENSE_TYPE = "design_1_UART_FIFO_IO_cntl_pr_0_0,UART_FIFO_IO_cntl_proc,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* IP_DEFINITION_SOURCE = "module_ref" *) 
+(* X_CORE_INFO = "UART_FIFO_IO_cntl_proc,Vivado 2020.1" *) 
 (* NotValidForBitStream *)
 module design_1_UART_FIFO_IO_cntl_pr_0_0
    (clk,
@@ -27,8 +27,8 @@ module design_1_UART_FIFO_IO_cntl_pr_0_0
     uart_tx_wr_en,
     fifoM_wr_en,
     fifoM_rd_en);
-  (* x_interface_info = "xilinx.com:signal:clock:1.0 clk CLK" *) (* x_interface_parameter = "XIL_INTERFACENAME clk, ASSOCIATED_RESET rst, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_clk100_i, INSERT_VIP 0" *) input clk;
-  (* x_interface_info = "xilinx.com:signal:reset:1.0 rst RST" *) (* x_interface_parameter = "XIL_INTERFACENAME rst, POLARITY ACTIVE_LOW, INSERT_VIP 0" *) input rst;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 clk CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME clk, ASSOCIATED_RESET rst, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_clk100_i, INSERT_VIP 0" *) input clk;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 rst RST" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME rst, POLARITY ACTIVE_LOW, INSERT_VIP 0" *) input rst;
   input uart_rx_dv;
   input uart_tx_rfd;
   input fifoM_full;
@@ -51,7 +51,9 @@ module design_1_UART_FIFO_IO_cntl_pr_0_0
   wire uart_tx_wr_en;
 
   assign fifoM_rd_en = \<const1> ;
-  design_1_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc U0
+  VCC VCC
+       (.P(\<const1> ));
+  design_1_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc inst
        (.clk(clk),
         .fifoM_empty(fifoM_empty),
         .fifoM_full(fifoM_full),
@@ -61,8 +63,6 @@ module design_1_UART_FIFO_IO_cntl_pr_0_0
         .uart_rx_rd_en(uart_rx_rd_en),
         .uart_tx_rfd(uart_tx_rfd),
         .uart_tx_wr_en(uart_tx_wr_en));
-  VCC VCC
-       (.P(\<const1> ));
 endmodule
 
 (* ORIG_REF_NAME = "UART_FIFO_IO_cntl_proc" *) 

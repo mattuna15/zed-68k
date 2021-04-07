@@ -38,30 +38,6 @@ entity multicomp_wrapper is
 port(
         sys_clock   : in std_logic;
         resetn      : in STD_LOGIC;
-
-        VGA_R       : out std_logic_vector(3 downto 0);
-        VGA_G       : out std_logic_vector(3 downto 0);
-        VGA_B       : out std_logic_vector(3 downto 0);
-		hSync			: buffer std_logic;
-		vSync			: buffer std_logic;
-
-		ps2k_clk_in		: inout std_logic;
-		ps2k_dat_in		: inout std_logic;
-				--ps2
-		ps2m_clk_in : inout std_logic;
-		ps2m_dat_in : inout std_logic;
-		
-		SCL : inout std_logic;
-		SDA : inout std_logic;
-
-         SD_RESET: inout std_logic; -- #IO_L14P_T2_SRCC_35 Sch=sd_reset
-         SD_CD : in std_logic;  --#IO_L9N_T1_DQS_AD7N_35 Sch=sd_cd
-         SD_SCK : out std_logic; --
-         SD_CMD : out std_logic; -- #IO_L16N_T2_35 Sch=sd_cmd
-         SD_DAT0 : in std_logic; -- #IO_L16P_T2_35 Sch=sd_dat[0]
-         SD_DAT1 : inout std_logic;-- #IO_L18N_T2_35 Sch=sd_dat[1]
-         SD_DAT2: inout std_logic;-- #IO_L18P_T2_35 Sch=sd_dat[2]
-         SD_DAT3 : inout std_logic;--
             
 --                 input reset, // Resets controller on assertion.
 --input clk, // 25Mhz clock.
@@ -73,80 +49,45 @@ port(
 --// HIGH.
 -- // SD_RESET should be held LOW.
 
-    LED : out STD_LOGIC_VECTOR ( 15 downto 0 );
+    led : out STD_LOGIC_VECTOR ( 3 downto 0 );
     
     --serial
-    rxd1 : in STD_LOGIC;
-    txd1 : out STD_LOGIC;
-    cts1 : in STD_LOGIC;
-    rts1 : out STD_LOGIC;
-    
-        rxd2 : in STD_LOGIC;
+    uart_rxd_out : out STD_LOGIC;
+    uart_txd_in : in STD_LOGIC;
+    gd_uart_txd_out :out STD_LOGIC;
+    rxd2 : in STD_LOGIC;
         
-    esp_rx : in STD_LOGIC;
-	esp_tx : out STD_LOGIC;
-        
-        --memory
+    txd3 : out STD_LOGIC;
+	rxd3 : in STD_LOGIC;
+      
+      --ram
     
-      ddr2_addr            : out   std_logic_vector(12 downto 0);
-      ddr2_ba              : out   std_logic_vector(2 downto 0);
-      ddr2_ras_n           : out   std_logic;
-      ddr2_cas_n           : out   std_logic;
-      ddr2_we_n            : out   std_logic;
-      ddr2_ck_p            : out   std_logic_vector(0 downto 0);
-      ddr2_ck_n            : out   std_logic_vector(0 downto 0);
-      ddr2_cke             : out   std_logic_vector(0 downto 0);
-      ddr2_cs_n            : out   std_logic_vector(0 downto 0);
-      ddr2_dm              : out   std_logic_vector(1 downto 0);
-      ddr2_odt             : out   std_logic_vector(0 downto 0);
-      ddr2_dq              : inout std_logic_vector(15 downto 0);
-      ddr2_dqs_p           : inout std_logic_vector(1 downto 0);
-      ddr2_dqs_n           : inout std_logic_vector(1 downto 0);
+      ddr3_addr            : out   std_logic_vector(13 downto 0);
+      ddr3_ba              : out   std_logic_vector(2 downto 0);
+      ddr3_ras_n           : out   std_logic;
+      ddr3_cas_n           : out   std_logic;
+      ddr3_we_n            : out   std_logic;
+      ddr3_ck_p            : out   std_logic_vector(0 downto 0);
+      ddr3_ck_n            : out   std_logic_vector(0 downto 0);
+      ddr3_cke             : out   std_logic_vector(0 downto 0);
+      ddr3_cs_n             : out   std_logic;
+      ddr3_dm              : out   std_logic_vector(1 downto 0);
+      ddr3_odt             : out   std_logic_vector(0 downto 0);
+      ddr3_dq              : inout std_logic_vector(15 downto 0);
+      ddr3_dqs_p           : inout std_logic_vector(1 downto 0);
+      ddr3_dqs_n           : inout std_logic_vector(1 downto 0);
       
+      ddr3_reset_n :out std_logic
       
-      -- audio
-      AUD_PWM              : inout std_logic;
-      AUD_SD               : out std_logic;
-      
-      I2S_MCLK : out std_logic;
-      I2S_LRCLK : out std_logic;
-      I2S_SCLK :  out std_logic;
-      I2S_DATA : out std_logic;
-
-		
-		-- ethernet
-
-                ETH_MDC : OUT STD_LOGIC; --	output        eth_mdc,
-                ETH_MDIO : INOUT STD_LOGIC; --	inout         eth_mdio, 
-                ETH_RSTN : OUT STD_LOGIC; --	output        eth_rstn,
-                ETH_CRSDV :  INOUT STD_LOGIC; --	inout         eth_crsdv,
-                ETH_RXERR : INOUT STD_LOGIC; --	inout         eth_rxerr,
-                ETH_RXD : INOUT STD_LOGIC_VECTOR(1 DOWNTO 0); --	inout  [1:0]  eth_rxd,
-                ETH_TXEN : OUT STD_LOGIC; --	output        eth_txen,
-                ETH_TXD : INOUT STD_LOGIC_VECTOR(1 DOWNTO 0); --	output [1:0]  eth_txd,
-                ETH_REFCLK : OUT STD_LOGIC; --	output        eth_clkin,
-                ETH_INTN :  INOUT STD_LOGIC --	inout         eth_intn,
 	);
 end multicomp_wrapper;
 
 
 architecture Behavioral of multicomp_wrapper is
 
-function reverse_any_vector (a: in std_logic_vector)
-return std_logic_vector is
-  variable result: std_logic_vector(a'RANGE);
-  alias aa: std_logic_vector(a'REVERSE_RANGE) is a;
-begin
-  for i in aa'RANGE loop
-    result(i) := aa(i);
-  end loop;
-  return result;
-end; -- function reverse_any_vector
-
-    signal clk50 : std_logic := '0';
-    signal clk25 : std_logic := '0';
-    signal clk48 : std_logic := '0';
-    signal start_up  : std_logic := '0';
+    signal boot_rom : std_logic := '1';
+    
+    signal i_valid_count: integer := 0;
     --serial term
     signal serialTermStatus: std_logic_vector(7 downto 0) := x"00"; 
     signal serialTermRxData: std_logic_vector(7 downto 0) := x"00";
@@ -164,7 +105,7 @@ end; -- function reverse_any_vector
     signal count: std_logic_vector( 7 downto 0) := x"00";
     signal data_trigger: std_logic := '0';
     
-    signal reset: std_logic := '1' ;
+    signal reset: std_logic;
     signal clk_locked: std_logic := '0';
 
 
@@ -178,15 +119,14 @@ end; -- function reverse_any_vector
     signal esp_rden: std_logic := '0';
     signal esp_wren: std_logic := '0';
     signal esp_rx_count: std_logic_vector( 7 downto 0) := x"00";
+    signal mem_resetn :std_logic;
 
           -- RAM interface
 
-        signal mem_clock: std_logic := '0';
-        signal ram_access_delay: integer := 0;
+        signal clk200: std_logic := '0';
         signal ram_ack: std_logic := '1';
         
       signal cpuAddress                :    std_logic_vector(26 downto 0) := (others => '0');
-      signal oldAddress                :    std_logic_vector(26 downto 0) := (others => '0');
       signal cpuDataOut             :     std_logic_vector(15 downto 0) := (others => '0');
       signal cpuDataIn             :    std_logic_vector(15 downto 0) := (others => '0');
       signal cpuCS              :    std_logic;
@@ -199,32 +139,16 @@ end; -- function reverse_any_vector
       
       signal sys_resetn : std_logic;
       signal sys_clock100 : STD_LOGIC;
-      
-          
-            -- vga
-      signal vga_irq               :    std_logic;
-      signal vga_addr              :    std_logic_vector(15 downto 0);
-      signal vga_wr_en             :    std_logic;
-      signal vga_rd_en             :    std_logic;
-      signal vga_wr_data           :    std_logic_vector(7 downto 0);
-      signal vga_rd_data           :    std_logic_vector(7 downto 0);
-      
-      --audio 
-      signal audio_data_wr         : std_logic_vector(15 downto 0);
-      signal audio_wr_ack          : std_logic;
-      signal audio_playing         : std_logic;
-      signal audio_wr_en           : std_logic;
-      signal audio_enable          : std_logic;
-      signal audio_regsel          : std_logic;
-      
-      signal pwm_audio_o : std_logic;
-      
-      signal audio_l : std_logic_vector(15 downto 0);
-      signal audio_r : std_logic_vector(15 downto 0);
-      
-      signal clock_357 : std_logic;
-      signal clock_148 : std_logic;
-      
+    signal clk166 : std_logic;
+    signal clk100 : std_logic;
+    
+    signal ddr_cke : std_logic_vector(0 downto 0);
+    signal ddr_rstn : std_logic;
+    signal rstn_flag : std_logic := '0';
+    signal cke_flag :std_logic :='0';
+    
+    signal mem_i_valid : std_logic;
+    signal mem_i_valid_p : std_logic;
 -- clocks 
 
     component pll
@@ -232,14 +156,52 @@ end; -- function reverse_any_vector
         resetn  : in std_logic;
         clk_in : in std_logic;
         locked : out std_logic;
-        clk100  : out std_logic;
         clk200  : out std_logic;
-        clk50  : out std_logic;
-        clk48  : out std_logic
+        clk166 : out std_logic
     );
     end component;
     
-  component serial_rx
+    component main_memory_control 
+    port (
+    sys_clock : in std_logic;
+    clock166 : in std_logic;
+    clock200 : in std_logic;
+    sys_resetn : in std_logic;
+    --// SRAM like interface ////
+    -- cpu (Fast memory)
+    address: in std_logic_vector(27 downto 0);   -- // Address bus (Upper part not used)
+    i_cen : in std_logic;  --     // Chip select 
+    i_valid_p : in std_logic;
+    wr_byte_mask : in std_logic_vector(1 downto 0);
+    i_wren : in std_logic;  --     // Write enable
+    wr_data : in std_logic_vector(15 downto 0); --     // Data to write
+    rd_data : out std_logic_vector(15 downto 0); --     // Data to read
+    o_ready_p : out std_logic; --  // idel ready
+    o_valid_p : out std_logic; --  // Transaction ready
+    wr_ack_p : out std_logic; --  // Transaction ready
+    --//// SDRAM DDR3 ////
+    --// DDR3 Inouts
+      ddr3_sdram_addr            : out   std_logic_vector(13 downto 0);
+      ddr3_sdram_reset_n            : out   std_logic;
+      ddr3_sdram_ba              : out   std_logic_vector(2 downto 0);
+      ddr3_sdram_ras_n           : out   std_logic;
+      ddr3_sdram_cas_n           : out   std_logic;
+      ddr3_sdram_we_n            : out   std_logic;
+      ddr3_sdram_ck_p            : out   std_logic_vector(0 downto 0);
+      ddr3_sdram_ck_n            : out   std_logic_vector(0 downto 0);
+      ddr3_sdram_cke             : out   std_logic_vector(0 downto 0);
+      ddr3_sdram_dm              : out   std_logic_vector(1 downto 0);
+      ddr3_sdram_odt             : out   std_logic_vector(0 downto 0);
+      ddr3_sdram_dq              : inout std_logic_vector(15 downto 0);
+      ddr3_sdram_dqs_p           : inout std_logic_vector(1 downto 0);
+      ddr3_sdram_dqs_n           : inout std_logic_vector(1 downto 0);
+      ddr3_sdram_cs_n : out   std_logic;
+
+      init_calib_complete :out std_logic
+    );
+    end component;
+    
+  component design_1_wrapper
   port (
     LED : out STD_LOGIC_VECTOR ( 7 downto 0 );
     clk100_i : in STD_LOGIC;
@@ -254,6 +216,36 @@ end; -- function reverse_any_vector
   );
 end component;
     
+    
+component serial_wrapper is
+  port (
+    cts : out STD_LOGIC;
+    reset_n : in STD_LOGIC;
+    rts : out STD_LOGIC;
+    sys_clk : in STD_LOGIC;
+    tx_data : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    tx_send_active : out STD_LOGIC;
+    tx_wr_en : in STD_LOGIC;
+    txd : out STD_LOGIC
+  );
+end component;
+
+attribute dont_touch : string;
+
+attribute dont_touch of memory : label is "true";
+attribute dont_touch of reset_proc : label is "true";
+attribute dont_touch of valid_flag : label is "true";
+attribute dont_touch of mem_i_valid : signal is "true";
+attribute dont_touch of mem_i_valid_p : signal is "true";
+
+      signal ramDataOut: std_logic_vector(15 downto 0);
+      signal initial_stack: std_logic_vector(31 downto 0) := x"0000E000";
+      signal initial_pc: std_logic_vector(31 downto 0) := x"00A00BB4";
+      
+      signal memDataOut: std_logic_vector(15 downto 0);
+      signal mem_ack:std_logic;
+      signal mem_wr_ack : std_logic;
+
 begin
    --------------------------------------------------
    -- Instantiate Clock generation
@@ -264,84 +256,68 @@ begin
         clk_in => sys_clock,
         resetn  => resetn,
         locked => clk_locked,
-        clk100 => sys_clock100,
-        clk200 => mem_clock,
-        clk50 =>  clk50,
-        clk48 => clk48
+        clk200 => clk200,
+        clk166 => clk166
     );
-    
-    jt51_clock: entity work.jtframe_cen3p57
-    port map (
-        clk => clk48,       -- 48 MHz
-        cen_3p57 => clock_357,
-        cen_1p78 => clock_148
-    );
-    
-        memory_control: entity work.mem_control 
-        Port map (
+     
+reset_proc : process
+begin   
 
-        mem_clock => mem_clock, 
-        resetn => resetn,
-        clk_locked => clk_locked, 
-        sys_clock => sys_clock100,
-    
-    -- ram
-    cpuAddress => cpuAddress,
-    cpuDataOut   => cpuDataOut,
-    ramDataOut => cpuDataIn,
-    mem_cen => cpuCS ,
-    mem_oen => cpuReadEn,
-    mem_wen => cpuWriteEn, -- chip enables
-    mem_ubs => cpuUpper,
-    mem_lbs => cpuLower,
-    mem_data_valid => ram_ack,
-    mem_ready => mem_ready,
-    
-    -- DDR2 interface
+    sys_resetn <= resetn and mem_ready and clk_locked;
 
-      ddr2_addr            => ddr2_addr,
-      ddr2_ba              => ddr2_ba,
-      ddr2_ras_n           => ddr2_ras_n,
-      ddr2_cas_n           => ddr2_cas_n,
-      ddr2_we_n            => ddr2_we_n,
-      ddr2_ck_p            => ddr2_ck_p,
-      ddr2_ck_n            => ddr2_ck_n,
-      ddr2_cke             => ddr2_cke,
-      ddr2_cs_n            => ddr2_cs_n,
-      ddr2_dm              => ddr2_dm,
-      ddr2_dq             => ddr2_dq,
-      ddr2_odt             => ddr2_odt,
-      ddr2_dqs_p           => ddr2_dqs_p,
-      ddr2_dqs_n           => ddr2_dqs_n
+    rstn_flag <= '0', '1' after 220us; -- 200 & 750
+    cke_flag <= '0', '1' after 750us; 
 
- );
+    ddr3_reset_n <= '0' when rstn_flag = '0' else ddr_rstn;
+    ddr3_cke <= "0" when cke_flag = '0' else ddr_cke;
 
-    reset_proc : process
-    begin
     
-        if resetn = '1' and mem_ready = '1' and clk_locked = '1' then 
-            sys_resetn <= '1'; 
-        else 
-            sys_resetn <= '0';
-        end if;
-        
-        wait for 3us;
-        
-    end process;
+    wait for 3us;
+end process;
+
+boot_proc : process (sys_clock)
+begin
+
+    if rising_edge(sys_clock) and cpuCS = '0' then
+    if boot_rom = '1'  then
+            
+            -- setup boot details
+            
+            if cpuAddress = x"0000" then
+                  cpuDataIn <= initial_stack(31 downto 16);
+	        elsif cpuAddress = x"0002" then
+	              cpuDataIn <= initial_stack(15 downto 0); 
+	        elsif cpuAddress = x"0004" then
+	              cpuDataIn <= initial_pc(31 downto 16);
+	        elsif cpuAddress = x"0006" then
+                  cpuDataIn <= initial_pc(15 downto 0);
+            end if;
+
+	           
+            if cpuAddress > x"0008" then 
+                boot_rom <= '0';
+            elsif resetn = '0' then
+                boot_rom <= '1';
+            end if;
+            
+            ram_ack <= '1';
+
+    else
+            cpuDataIn <= memDataOut;
+            ram_ack <= mem_ack or mem_wr_ack;
+    end if;
+
+    end if;
+
+end process;
+
+ gd_uart_txd_out <= uart_rxd_out;
  
  computer: entity work.Microcomputer 
     port map (
         
-        sys_clk => sys_clock100,
+        sys_clk => sys_clock,
         n_reset	=> sys_resetn,
-        clk50 => clk50,
-		
-		sdCD => SD_CD,
-		sdCS => SD_DAT3,
-		sdMOSI => SD_CMD,
-		sdMISO => SD_DAT0,
-		sdSCLK => SD_SCK,
-		driveLED => open , -- LED(0),
 		
 		--srec
 	    serialRead_en => serialRead_en,
@@ -366,66 +342,41 @@ begin
       ram_ub               => cpuUpper,
       ram_lb               => cpuLower,
       ram_ack              => ram_ack,
-      
       cpu_as                => cpuAS,
-      
-        vga_addr => vga_addr,
-        vga_wr_en =>  vga_wr_en,
-        vga_rd_en => vga_rd_en,
-        vga_wr_data => vga_wr_data,
-        vga_rd_data => vga_rd_data,
-       vga_irq => vga_irq,
-		
-		--ps2
-		ps2k_clk => ps2k_clk_in,
-		ps2k_dat => ps2k_dat_in,
-		ps2m_clk => ps2m_clk_in,
-		ps2m_dat => ps2m_dat_in,
-		
 		
 		esp_sts => esp_sts, 
         esp_rxd => esp_rxd,
         esp_txd => esp_txd,
         esp_rden => esp_rden,
         esp_wren => esp_wren
-		
-		
+
     );
-    
-    --only using spi do drive dat1&2 high & reset is low.
-    SD_RESET <= '0';
-    SD_DAT1 <= '1';
-    SD_DAT2 <= '1';
-    --LED(1) <= not SD_CD;
-    
-    LED(15 downto 8) <= esp_txd;
-    LED(7 downto 0) <= esp_rxd;
     
     --serial
     
-    io_serial_term_tx: entity work.serial_wrapper 
+    io_serial_term_tx: serial_wrapper 
         port map (
-        sys_clk => sys_clock100,
+        sys_clk => sys_clock,
         tx_data => serialTermTxData,
         tx_wr_en => serialTermTxWrite_en,
         cts => open,
         rts => open,
-        reset_n => resetn and mem_ready and clk_locked,
-        txd => txd1,
+        reset_n => sys_resetn,
+        txd => uart_rxd_out,
         tx_send_active => serialTermTxActive
   );
   
-  io_serial_term_rx : serial_rx
+  io_serial_term_rx : entity work.design_1_wrapper
     port map (
       LED => open,
       rd_en => serialTermRead_en,
       m68_rxd => serialTermRxData,
-      rd_clk => sys_clock100,
-      reset_n => resetn and mem_ready and clk_locked,
-      rxd1 => rxd1,
+      rd_clk => sys_clock,
+      reset_n => sys_resetn,
+      rxd1 => uart_txd_in,
       rd_data_cnt(8 downto 1) => rx_count,
       rd_data_cnt(0) => rx_data_trigger,
-      clk100_i => sys_clock100,
+      clk100_i => sys_clock,
       cts => open,
       rts => open
     );  
@@ -438,210 +389,112 @@ begin
 --        esp_rden => esp_rden,
 --        esp_wren => esp_wren
     
-    esp_serial_term_tx: entity work.serial_wrapper 
+    esp_serial_term_tx: serial_wrapper 
         port map (
-        sys_clk => sys_clock100,
+        sys_clk => sys_clock,
         tx_data => esp_txd,
         tx_wr_en => esp_wren,
         cts => open,
         rts => open,
-        reset_n => resetn and mem_ready and clk_locked,
-        txd => esp_tx,
+        reset_n => sys_resetn,
+        txd => txd3,
         tx_send_active => esp_tx_act
   );
   
-  esp_serial_term_rx : serial_rx
+  esp_serial_term_rx : design_1_wrapper
     port map (
       LED => open,
       rd_en => esp_rden,
       m68_rxd => esp_rxd,
-      rd_clk => sys_clock100,
-      reset_n => resetn and mem_ready and clk_locked,
-      rxd1 => esp_rx,
+      rd_clk => sys_clock,
+      reset_n => sys_resetn,
+      rxd1 => rxd3,
       rd_data_cnt(8 downto 1) => esp_rx_count,
       rd_data_cnt(0) => esp_rx_act,
-      clk100_i => sys_clock100,
+      clk100_i => sys_clock,
       cts => open,
       rts => open
     );  
     
     
-    io_serial_load : serial_rx
+    io_serial_load : design_1_wrapper
     port map (
       LED => open,
       rd_en => serialRead_en,
       m68_rxd => serialData,
-      rd_clk => sys_clock100,
-      reset_n => resetn and mem_ready and clk_locked,
+      rd_clk => sys_clock,
+      reset_n => sys_resetn,
       rxd1 => rxd2,
       rd_data_cnt(8 downto 1) => count,
       rd_data_cnt(0) => data_trigger,
-      clk100_i => sys_clock100,
+      clk100_i => sys_clock,
       cts => open,
       rts => open
     );  
-
-vga: entity work.gameduino_main
-    port map (
-      vga_clk => clk50, -- Twice the frequency of the original clka board clock
-      vga_red => VGA_R(3 downto 1),
-      vga_green => VGA_G(3 downto 1),
-      vga_blue => VGA_B(3 downto 1),
-      vga_hsync => hSync,
-      vga_vsync => vSync,
-      vga_active => open,
-      --coll_rd => vga_irq,
     
-      mem_clk => sys_clock100, -- Should probably be same as vga_clk
-      host_mem_wr => vga_wr_en,             -- set to zero if not used
-      host_mem_w_addr => vga_addr(14 downto 0),  -- set to zero if not used
-      host_mem_data_wr => vga_wr_data,  -- set to zero if not used
-      host_mem_rd => vga_rd_en,            -- set to zero if not used
-      host_mem_r_addr => vga_addr(14 downto 0),  -- set to zero if not used
-      host_mem_data_rd => vga_rd_data,
+    mem_i_valid <= ((not cpuCS) and (not ( cpuLower and CpuUpper))) and (not boot_rom) and (not cpuAS);
     
-      AUX_in => std_logic_vector(to_unsigned(0, 1)), -- set to zero if not used
-      AUX_out => open,
-      AUX_tristate => open,
+    valid_flag: process (sys_clock)
+    begin
+
+    if rising_edge(sys_clock) then
+        if (i_valid_count = 0) and (mem_i_valid = '1') then
+            mem_i_valid_p <= '1';
+            i_valid_count <= i_valid_count+1;
+        elsif (i_valid_count = 1) then
+            mem_i_valid_p <= '1';
+            i_valid_count <= 2;
+        else 
+            mem_i_valid_p <= '0';
+            i_valid_count <= 0;
+        end if;
+    end if;
+
+    end process;
     
-      AUDIOL => pwm_audio_o,
-      AUDIOR => open,
-      audio_trigger => audio_playing,
-      
-      audio_l => audio_l,
-      audio_r => audio_r,
+ memory:  main_memory_control
+    port map(
+    sys_clock => sys_clock,      
+    sys_resetn => resetn and clk_locked,    
+    clock166 => clk166,
+    clock200 => clk200,    
+     --// SRAM like interface ////
+    -- cpu (Fast memory)
+    address(27) => '0',  -- // Address bus (Upper part not used)
+    address(26 downto 4) => cpuAddress(23 downto 1), --ignore last digit. always 0
+    address(3 downto 0) => "0000",
+    i_cen =>  cpuCS or boot_rom, --     // Chip select active low
+    i_valid_p => mem_i_valid_p, --//valid input active high
+    wr_byte_mask(1) => not cpuUpper, --     // Low byte [0:7]
+    wr_byte_mask(0) => not cpuLower,
+    i_wren => cpuWriteEn, --     // Write enable
+    wr_data => cpuDataOut, --     // Data to write
+    rd_data => memDataOut, --     // Data to read
+    o_valid_p => mem_ack ,--  // Transaction ready
+    wr_ack_p => mem_wr_ack, 
+      o_ready_p => open,
+    --//// SDRAM DDR3 ////
+    --// DDR3 Inouts
+      ddr3_sdram_addr   => ddr3_addr,
+      ddr3_sdram_ba  => ddr3_ba,
+      ddr3_sdram_ras_n => ddr3_ras_n,
+      ddr3_sdram_cas_n  => ddr3_cas_n,
+      ddr3_sdram_we_n  => ddr3_we_n,
+      ddr3_sdram_ck_p => ddr3_ck_p,
+      ddr3_sdram_ck_n => ddr3_ck_n,
+      ddr3_sdram_cke  => ddr_cke,
+      ddr3_sdram_dm => ddr3_dm,
+      ddr3_sdram_odt => ddr3_odt,--            : out   std_logic_vector(0 downto 0);
+      ddr3_sdram_dq => ddr3_dq,--             : inout std_logic_vector(15 downto 0);
+      ddr3_sdram_dqs_p  => ddr3_dqs_p,--         : inout std_logic_vector(1 downto 0);
+      ddr3_sdram_dqs_n  => ddr3_dqs_n ,--       : inout std_logic_vector(1 downto 0)
+      ddr3_sdram_cs_n => ddr3_cs_n,
+      ddr3_sdram_reset_n => ddr_rstn,
+        
+      init_calib_complete => mem_ready
+    );
     
-      pin2f => open,
-      pin2j => open,
-      j1_flashMOSI  => open,
-      j1_flashSCK  => open,
-      j1_flashSSEL  => open,
-      flashMISO => std_logic_vector(to_unsigned(0, 1))
-  );
-  
---  left_mixer: entity work.jtframe_mixer 
---  generic map (W0=16,W1=16,W2=16,W3=16,WOUT=16)
---  port map(
---    input                    clk,
---    input                    cen,
---    // input signals
---    input  signed [W0-1:0]   ch0,
---    input  signed [W1-1:0]   ch1,
---    input  signed [W2-1:0]   ch2,
---    input  signed [W3-1:0]   ch3,
---    // gain for each channel in 4.4 fixed point format
---    input  [7:0]             gain0,
---    input  [7:0]             gain1,
---    input  [7:0]             gain2,
---    input  [7:0]             gain3,
---    output     signed [WOUT-1:0] mixed
---);
-
---module jt51(
---    input               rst,    // reset
---    input               clk,    // main clock
---    input               cen,    // clock enable
---    input               cen_p1, // clock enable at half the speed
---    input               cs_n,   // chip select
---    input               wr_n,   // write
---    input               a0,
---    input       [7:0]   din, // data in
---    output      [7:0]   dout, // data out
---    // peripheral control
---    output              ct1,
---    output              ct2,
---    output              irq_n,  // I do not synchronize this signal
---    // Low resolution output (same as real chip)
---    output              sample, // marks new output sample
---    output  signed  [15:0] left,
---    output  signed  [15:0] right,
---    // Full resolution output
---    output  signed  [15:0] xleft,
---    output  signed  [15:0] xright,
---    // unsigned outputs for sigma delta converters, full resolution
---    output  [15:0] dacleft,
---    output  [15:0] dacright
---);
-
-
---i2s: entity  work.i2s 
--- generic map (DAC_OUTPUT_WIDTH=16)
--- port map (
---    clk => clk, 
---    input wire sample_clk_en,
---    input wire [DAC_OUTPUT_WIDTH-1:0] left_channel,
---    input wire [DAC_OUTPUT_WIDTH-1:0] right_channel,
---    output logic i2s_sclk = 0,
---    output logic i2s_ws = 0,
---    output logic i2s_sd = 0
---);
-    
---ethernet: entity work.eth_mac
---    port map (
---	input         clk_mac,
---	input         clk_phy,
---	input         rst_n,
---	input [2:0]   mode_straps,
-	
-	
---	--board
---	eth_mdc =>  ETH_MDC, 
---	eth_mdio => ETH_MDIO,  --	inout         eth_mdio, 
---    eth_rstn => ETH_RSTN , --	output        eth_rstn,
---    eth_crsdv => ETH_CRSDV, -- :  INOUT STD_LOGIC; --	inout         eth_crsdv,
---    eth_rxerr => ETH_RXERR, -- : INOUT STD_LOGIC; --	inout         eth_rxerr,
---    eth_rxd => ETH_RXD, --	inout  [1:0]  eth_rxd,
---    eth_txen => ETH_TXEN, --	output        eth_txen,
---    eth_txd => ETH_TXD,  --	output [1:0]  eth_txd,
---    eth_clkin =>  ETH_REFCLK, --	output        eth_clkin,
---    eth_intn =>  ETH_INTN, -- :  INOUT STD_LOGIC --	inout         eth_intn,
-
-
---	inout         eth_intn,
-	
---	--rx
---	output        rx_vld,
---	output [7:0]  rx_dat,
---	output        rx_sof,
---	output        rx_eof,
---	output        rx_err,
-	
---	output [7:0]  rx_axis_mac_tdata,
---	output        rx_axis_mac_tvalid,
---	output        rx_axis_mac_tlast,
---	output        rx_axis_mac_tuser,
-	
---	--tx
---	input         tx_vld,
---	input [7:0]   tx_dat,
---	input         tx_sof,
---	input         tx_eof,
---	output        tx_ack,
-	
---	input  [7:0]  tx_axis_mac_tdata,
---	input         tx_axis_mac_tvalid,
---	input         tx_axis_mac_tlast,
---	output        tx_axis_mac_tready,
-	
---	--status
---	input         reg_vld,
---	input  [4:0]  reg_addr,
---	input         reg_write,
---	input  [15:0] reg_wval,
---	output [15:0] reg_rval,
---	output        reg_ack,
-	
---	output        speed_100,
---	output        full_duplex,
---	output        link_up,
---	output        remote_fault,
---	output        auto_neg_done
---);
-
-
-   AUD_SD  <= '1';
-   AUD_PWM <= '0' when pwm_audio_o = '0' else 'Z';
-    
+   led(0) <= mem_ready;
    serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
    serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
    serialStatus(0) <= '1' when count > x"00" else '0';

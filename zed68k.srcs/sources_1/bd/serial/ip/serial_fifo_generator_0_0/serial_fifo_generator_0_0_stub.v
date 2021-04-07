@@ -1,13 +1,13 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Wed Sep  2 16:27:18 2020
+// Date        : Sun Mar 28 21:38:25 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/serial/ip/serial_fifo_generator_0_0/serial_fifo_generator_0_0_stub.v
 // Design      : serial_fifo_generator_0_0
 // Purpose     : Stub declaration of top-level module interface
-// Device      : xc7a100tcsg324-1
+// Device      : xc7a35ticsg324-1L
 // --------------------------------------------------------------------------------
 
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.

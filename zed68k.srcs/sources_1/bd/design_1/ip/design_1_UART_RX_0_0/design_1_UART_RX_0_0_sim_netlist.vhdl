@@ -1,14 +1,14 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Sat Aug 15 12:49:05 2020
+-- Date        : Mon Apr  5 21:25:22 2021
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0_sim_netlist.vhdl
 -- Design      : design_1_UART_RX_0_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
--- Device      : xc7a100tcsg324-1
+-- Device      : xc7a35ticsg324-1L
 -- --------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -888,21 +888,21 @@ entity design_1_UART_RX_0_0 is
   attribute NotValidForBitStream of design_1_UART_RX_0_0 : entity is true;
   attribute CHECK_LICENSE_TYPE : string;
   attribute CHECK_LICENSE_TYPE of design_1_UART_RX_0_0 : entity is "design_1_UART_RX_0_0,UART_RX,{}";
-  attribute downgradeipidentifiedwarnings : string;
-  attribute downgradeipidentifiedwarnings of design_1_UART_RX_0_0 : entity is "yes";
-  attribute ip_definition_source : string;
-  attribute ip_definition_source of design_1_UART_RX_0_0 : entity is "module_ref";
-  attribute x_core_info : string;
-  attribute x_core_info of design_1_UART_RX_0_0 : entity is "UART_RX,Vivado 2020.1";
+  attribute DowngradeIPIdentifiedWarnings : string;
+  attribute DowngradeIPIdentifiedWarnings of design_1_UART_RX_0_0 : entity is "yes";
+  attribute IP_DEFINITION_SOURCE : string;
+  attribute IP_DEFINITION_SOURCE of design_1_UART_RX_0_0 : entity is "module_ref";
+  attribute X_CORE_INFO : string;
+  attribute X_CORE_INFO of design_1_UART_RX_0_0 : entity is "UART_RX,Vivado 2020.1";
 end design_1_UART_RX_0_0;
 
 architecture STRUCTURE of design_1_UART_RX_0_0 is
-  attribute x_interface_info : string;
-  attribute x_interface_info of i_Clk : signal is "xilinx.com:signal:clock:1.0 i_Clk CLK";
-  attribute x_interface_parameter : string;
-  attribute x_interface_parameter of i_Clk : signal is "XIL_INTERFACENAME i_Clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_clk100_i, INSERT_VIP 0";
+  attribute X_INTERFACE_INFO : string;
+  attribute X_INTERFACE_INFO of i_Clk : signal is "xilinx.com:signal:clock:1.0 i_Clk CLK";
+  attribute X_INTERFACE_PARAMETER : string;
+  attribute X_INTERFACE_PARAMETER of i_Clk : signal is "XIL_INTERFACENAME i_Clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_clk100_i, INSERT_VIP 0";
 begin
-U0: entity work.design_1_UART_RX_0_0_UART_RX
+inst: entity work.design_1_UART_RX_0_0_UART_RX
      port map (
       i_Clk => i_Clk,
       i_RX_Serial => i_RX_Serial,

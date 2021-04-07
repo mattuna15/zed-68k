@@ -2,7 +2,7 @@
   "design": {
     "design_info": {
       "boundary_crc": "0x1F046E037D68DDB9",
-      "device": "xc7a100tcsg324-1",
+      "device": "xc7a35ticsg324-1L",
       "name": "serial",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
@@ -10,8 +10,8 @@
       "validated": "true"
     },
     "design_tree": {
-      "UART_TX_0": "",
       "fifo_generator_0": "",
+      "UART_TX_0": "",
       "UART_FIFO_IO_cntl_pr_0": ""
     },
     "ports": {
@@ -81,6 +81,36 @@
       }
     },
     "components": {
+      "fifo_generator_0": {
+        "vlnv": "xilinx.com:ip:fifo_generator:13.2",
+        "xci_name": "serial_fifo_generator_0_0",
+        "parameters": {
+          "Data_Count": {
+            "value": "true"
+          },
+          "Data_Count_Width": {
+            "value": "5"
+          },
+          "Input_Data_Width": {
+            "value": "8"
+          },
+          "Input_Depth": {
+            "value": "32"
+          },
+          "Output_Data_Width": {
+            "value": "8"
+          },
+          "Reset_Pin": {
+            "value": "false"
+          },
+          "Valid_Flag": {
+            "value": "true"
+          },
+          "Write_Acknowledge_Flag": {
+            "value": "true"
+          }
+        }
+      },
       "UART_TX_0": {
         "vlnv": "xilinx.com:module_ref:UART_TX:1.0",
         "xci_name": "serial_UART_TX_0_0",
@@ -121,36 +151,6 @@
           },
           "o_TX_Done": {
             "direction": "O"
-          }
-        }
-      },
-      "fifo_generator_0": {
-        "vlnv": "xilinx.com:ip:fifo_generator:13.2",
-        "xci_name": "serial_fifo_generator_0_0",
-        "parameters": {
-          "Data_Count": {
-            "value": "true"
-          },
-          "Data_Count_Width": {
-            "value": "5"
-          },
-          "Input_Data_Width": {
-            "value": "8"
-          },
-          "Input_Depth": {
-            "value": "32"
-          },
-          "Output_Data_Width": {
-            "value": "8"
-          },
-          "Reset_Pin": {
-            "value": "false"
-          },
-          "Valid_Flag": {
-            "value": "true"
-          },
-          "Write_Acknowledge_Flag": {
-            "value": "true"
           }
         }
       },

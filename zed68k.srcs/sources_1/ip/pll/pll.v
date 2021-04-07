@@ -56,10 +56,8 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// __clk200__200.00000______0.000______50.0______102.086_____87.180
-// ___clk50__50.00000______0.000______50.0______132.683_____87.180
-// ___clk48__48.00000______0.000______50.0______133.812_____87.180
-// __clk100__100.00000______0.000______50.0______115.831_____87.180
+// __clk200__200.00000______0.000______50.0______114.829_____98.575
+// __clk166__166.66667______0.000______50.0______118.758_____98.575
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -68,15 +66,13 @@
 
 `timescale 1ps/1ps
 
-(* CORE_GENERATION_INFO = "pll,clk_wiz_v6_0_5_0_0,{component_name=pll,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=PLL,num_out_clk=4,clkin1_period=10.000,clkin2_period=10.000,use_power_down=false,use_reset=true,use_locked=true,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}" *)
+(* CORE_GENERATION_INFO = "pll,clk_wiz_v6_0_5_0_0,{component_name=pll,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=PLL,num_out_clk=2,clkin1_period=10.000,clkin2_period=10.000,use_power_down=false,use_reset=true,use_locked=true,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}" *)
 
 module pll 
  (
   // Clock out ports
   output        clk200,
-  output        clk50,
-  output        clk48,
-  output        clk100,
+  output        clk166,
   // Status and control signals
   input         resetn,
   output        locked,
@@ -88,9 +84,7 @@ module pll
   (
   // Clock out ports  
   .clk200(clk200),
-  .clk50(clk50),
-  .clk48(clk48),
-  .clk100(clk100),
+  .clk166(clk166),
   // Status and control signals               
   .resetn(resetn), 
   .locked(locked),

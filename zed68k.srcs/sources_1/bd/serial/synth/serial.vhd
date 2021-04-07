@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
---Date        : Wed Sep  2 16:21:22 2020
+--Date        : Sat Mar 27 20:41:45 2021
 --Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 --Command     : generate_target serial.bd
 --Design      : serial
@@ -29,16 +29,6 @@ entity serial is
 end serial;
 
 architecture STRUCTURE of serial is
-  component serial_UART_TX_0_0 is
-  port (
-    i_Clk : in STD_LOGIC;
-    i_TX_DV : in STD_LOGIC;
-    i_TX_Byte : in STD_LOGIC_VECTOR ( 7 downto 0 );
-    o_TX_Active : out STD_LOGIC;
-    o_TX_Serial : out STD_LOGIC;
-    o_TX_Done : out STD_LOGIC
-  );
-  end component serial_UART_TX_0_0;
   component serial_fifo_generator_0_0 is
   port (
     clk : in STD_LOGIC;
@@ -53,6 +43,16 @@ architecture STRUCTURE of serial is
     data_count : out STD_LOGIC_VECTOR ( 4 downto 0 )
   );
   end component serial_fifo_generator_0_0;
+  component serial_UART_TX_0_0 is
+  port (
+    i_Clk : in STD_LOGIC;
+    i_TX_DV : in STD_LOGIC;
+    i_TX_Byte : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    o_TX_Active : out STD_LOGIC;
+    o_TX_Serial : out STD_LOGIC;
+    o_TX_Done : out STD_LOGIC
+  );
+  end component serial_UART_TX_0_0;
   component serial_UART_FIFO_IO_cntl_pr_0_0 is
   port (
     clk : in STD_LOGIC;

@@ -10,45 +10,33 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1025fs"></ZoomEndTime>
-      <Cursor1Time time="2046fs"></Cursor1Time>
+      <ZoomEndTime time="7fs"></ZoomEndTime>
+      <Cursor1Time time="3402fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="273"></NameColumnWidth>
-      <ValueColumnWidth column_width="117"></ValueColumnWidth>
+      <NameColumnWidth column_width="234"></NameColumnWidth>
+      <ValueColumnWidth column_width="80"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="4" />
-   <wave_markers>
-   </wave_markers>
-   <wvobject fp_name="computer/sdCardDataOut" type="array">
+   <WVObjectSize size="3" />
+   <wvobject fp_name="cpuAddress" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">computer/sdCardDataOut[7:3]</obj_property>
-      <obj_property name="ObjectShortName">sdCardDataOut[7:3]</obj_property>
+      <obj_property name="ElementShortName">cpuAddress[26:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuAddress[26:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="computer/sdCardDataOut_1" type="array">
+   <wvobject fp_name="memory/clk" type="logic">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">computer/sdCardDataOut_1[1:0]</obj_property>
-      <obj_property name="ObjectShortName">sdCardDataOut_1[1:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="ElementShortName">memory/clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="computer/sdStatus" type="array">
+   <wvobject fp_name="memory/clock200" type="logic">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">computer/sdStatus[7:6]</obj_property>
-      <obj_property name="ObjectShortName">sdStatus[7:6]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-      <obj_property name="LABELRADIX">true</obj_property>
-      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
-   </wvobject>
-   <wvobject fp_name="computer/sdStatus_1" type="array">
-      <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">computer/sdStatus_1[4:0]</obj_property>
-      <obj_property name="ObjectShortName">sdStatus_1[4:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="ElementShortName">memory/clock200</obj_property>
+      <obj_property name="ObjectShortName">clock200</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>

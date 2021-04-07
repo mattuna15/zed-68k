@@ -23,15 +23,8 @@ entity Microcomputer is
 	port(
 	    sys_clk     : in std_logic;
 		n_reset		: in std_logic;
-        clk50       : in std_logic;
 		cpu_as      : out std_logic; -- Address strobe
 		
-        sdCD		: in std_logic;
-		sdCS			: out std_logic;
-		sdMOSI		: out std_logic;
-		sdMISO		: in std_logic;
-		sdSCLK		: out std_logic;
-		driveLED    : out std_logic;
 -- terminal
 
         serialTerminalStatus: in std_logic_vector(7 downto 0);
@@ -58,20 +51,6 @@ entity Microcomputer is
       ram_ub               : out    std_logic;
       ram_lb               : out    std_logic;
       ram_ack              : in     std_logic;
-      
-      -- vga
-      vga_addr              : out   std_logic_vector(15 downto 0);
-      vga_wr_en             : out   std_logic;
-      vga_rd_en             : out   std_logic;
-      vga_wr_data           : out   std_logic_vector(7 downto 0);
-      vga_rd_data           : in    std_logic_vector(7 downto 0);
-      vga_irq               : in    std_logic;
-		
-		--ps2
-		ps2k_clk : inout std_logic;
-		ps2k_dat : inout std_logic;
-		ps2m_clk : inout std_logic;
-		ps2m_dat : inout std_logic;
 		
 		-- esp
 	    esp_sts : in std_logic_vector(7 downto 0);
@@ -152,43 +131,43 @@ architecture struct of Microcomputer is
 begin
 --interrupts
 
-interrupts: entity work.interrupt_controller
-	port map (
-		clk => sys_clk,
-		reset => n_reset,
-		int1 => vga_irq,
-		int2 => ps2_int,
-		int3 => timer_int,
-		int4 => mouse_int,
-		int5 => '0', --spi_int,
-	    int6 => '0',
-		int7 => '0',
-		int_out => int_out,
-		ack => int_ack
-		);
+--interrupts: entity work.interrupt_controller
+--	port map (
+--		clk => sys_clk,
+--		reset => n_reset,
+--		int1 => '0',
+--		int2 => ps2_int,
+--		int3 => timer_int,
+--		int4 => mouse_int,
+--		int5 => '0', --spi_int,
+--	    int6 => '0',
+--		int7 => '0',
+--		int_out => int_out,
+--		ack => int_ack
+--		);
 		
 		
---f30000/1 keyboard
-keyboard: entity work.ps2_keyboard_to_ascii 
-    port map(
-      clk => sys_clk,                     --system clock input
-      ps2_clk => ps2k_clk,                     --clock signal from PS2 keyboard
-      ps2_data  => ps2k_dat,                     --data signal from PS2 keyboard
-      ascii_new  => ps2_int,                     --output flag indicating new ASCII value
-      ascii_code => key_pressed_ascii(6 downto 0)
-      ); --ASCII value
+----f30000/1 keyboard
+--keyboard: entity work.ps2_keyboard_to_ascii 
+--    port map(
+--      clk => sys_clk,                     --system clock input
+--      ps2_clk => ps2k_clk,                     --clock signal from PS2 keyboard
+--      ps2_data  => ps2k_dat,                     --data signal from PS2 keyboard
+--      ascii_new  => ps2_int,                     --output flag indicating new ASCII value
+--      ascii_code => key_pressed_ascii(6 downto 0)
+--      ); --ASCII value
 
-key_pressed_ascii(7) <= ps2_int;
+--key_pressed_ascii(7) <= ps2_int;
 
---f30002-26
-mouse: entity work.ps2_mouse 
-	PORT map (
-			clk	=> sys_clk,								--system clock input
-			reset_n	=> n_reset,								--active low asynchronous reset
-			ps2_clk	=> ps2m_clk,							--clock signal from PS2 mouse
-			ps2_data => ps2m_dat,								--data signal from PS2 mouse
-			mouse_data => mouse_data,	--data received from mouse
-			mouse_data_new	=> mouse_int );								--new data packet available flag
+----f30002-26
+--mouse: entity work.ps2_mouse 
+--	PORT map (
+--			clk	=> sys_clk,								--system clock input
+--			reset_n	=> n_reset,								--active low asynchronous reset
+--			ps2_clk	=> ps2m_clk,							--clock signal from PS2 mouse
+--			ps2_data => ps2m_dat,								--data signal from PS2 mouse
+--			mouse_data => mouse_data,	--data received from mouse
+--			mouse_data_new	=> mouse_int );								--new data packet available flag
 
 --f30030 16 bit millisecond timer
 
@@ -204,44 +183,7 @@ timer: entity work.timer
 	 count_up_millis => milliseconds,
 	 irq        => timer_int
   ); 
-  
-sdcard: entity work.sd_controller 
-    port map   (
-	cs => sdCS,			-- To SD card
-	mosi => sdMOSI,			-- To SD card
-	miso => sdMISO,			-- From SD card
-	sclk => sdSCLK,			-- To SD card
-	card_present => not sdCD,	-- From socket - can be fixed to '1' if no switch is present
-	card_write_prot => '0',	-- From socket - can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
-
-	rd => sd_rden,				-- Trigger single block read
-	rd_multiple => '0',		-- Trigger multiple block read
-	dout => sdCardDataOut,	-- Data from SD card
-	dout_avail => sdStatus(4),		-- Set when dout is valid
-	dout_taken => sdControl(1),		-- Acknowledgement for dout
-	
-	wr => sd_wren,				-- Trigger single block write
-	wr_multiple => '0',		-- Trigger multiple block write
-	din => cpuDataOut(7 downto 0),	-- Data to SD card
-	din_valid => sdControl(0),		-- Set when din is valid
-	din_taken => sd_ack,		-- Ackowledgement for din
-	
-	addr => sdAddress,	-- Block address
-	erase_count => x"00", -- For wr_multiple only
-
-	sd_error => sdStatus(0),		-- '1' if an error occurs, reset on next RD or WR (just check for error code)
-	sd_busy => sdStatus(5),		-- '0' if a RD or WR can be accepted
-	sd_error_code => sdStatus (3 downto 1), -- See above, 000=No error
-	
-	
-	reset => not n_reset,	-- System reset
-	clk => clk50,		-- twice the SPI clk (max 50MHz)
-	
-	-- Optional debug outputs
-	sd_type => sdStatus(7 downto 6),	-- Card status (see above)
-	sd_fsm => open -- FSM state (see block at end of file)
-);
-
+ 
 -- ____________________________________________________________________________________
 -- CPU CHOICE GOES HERE
     
@@ -322,54 +264,54 @@ cpu1 : entity work.TG68
 -- ____________________________________________________________________________________
 -- RAM GOES HERE
 
-ram1 : entity work.ram --64k
-    generic map (
-    G_INIT_FILE => "D:/code/zed-68k/roms/empty_1.hex",
-      -- Number of bits in the address bus. The size of the memory will
-      -- be 2**G_ADDR_BITS bytes.
-      G_ADDR_BITS => 16
-    )
-   port map (
-      clk_i => sys_clk,
+--ram1 : entity work.ram --64k
+--    generic map (
+--    G_INIT_FILE => "D:/code/zed-68k/roms/empty_1.hex",
+--      -- Number of bits in the address bus. The size of the memory will
+--      -- be 2**G_ADDR_BITS bytes.
+--      G_ADDR_BITS => 16
+--    )
+--   port map (
+--      clk_i => sys_clk,
 
-      -- Current address selected.
-      addr_i => memAddress,
+--      -- Current address selected.
+--      addr_i => memAddress,
 
-      -- Data contents at the selected address.
-      -- Valid in same clock cycle.
-      data_o  => internalRam1DataOut,
+--      -- Data contents at the selected address.
+--      -- Valid in same clock cycle.
+--      data_o  => internalRam1DataOut,
 
-      -- New data to (optionally) be written to the selected address.
-      data_i => cpuDataOut(15 downto 8),
+--      -- New data to (optionally) be written to the selected address.
+--      data_i => cpuDataOut(15 downto 8),
 
-      -- '1' indicates we wish to perform a write at the selected address.
-      wren_i => not(cpu_r_w or n_internalRam1CS)
-   );
+--      -- '1' indicates we wish to perform a write at the selected address.
+--      wren_i => not(cpu_r_w or n_internalRam1CS)
+--   );
 
    
-   ram2 : entity work.ram --64k
-    generic map (
-    G_INIT_FILE => "D:/code/zed-68k/roms/empty_2.hex",
-      -- Number of bits in the address bus. The size of the memory will
-      -- be 2**G_ADDR_BITS bytes.
-      G_ADDR_BITS => 16
-    )
-   port map (
-      clk_i => sys_clk,
+--   ram2 : entity work.ram --64k
+--    generic map (
+--    G_INIT_FILE => "D:/code/zed-68k/roms/empty_2.hex",
+--      -- Number of bits in the address bus. The size of the memory will
+--      -- be 2**G_ADDR_BITS bytes.
+--      G_ADDR_BITS => 16
+--    )
+--   port map (
+--      clk_i => sys_clk,
 
-      -- Current address selected.
-      addr_i => memAddress,
+--      -- Current address selected.
+--      addr_i => memAddress,
 
-      -- Data contents at the selected address.
-      -- Valid in same clock cycle.
-      data_o  => internalRam2DataOut,
+--      -- Data contents at the selected address.
+--      -- Valid in same clock cycle.
+--      data_o  => internalRam2DataOut,
 
-      -- New data to (optionally) be written to the selected address.
-      data_i => cpuDataOut(7 downto 0),
+--      -- New data to (optionally) be written to the selected address.
+--      data_i => cpuDataOut(7 downto 0),
 
-      -- '1' indicates we wish to perform a write at the selected address.
-      wren_i => not(cpu_r_w or n_internalRam2CS)
-   );
+--      -- '1' indicates we wish to perform a write at the selected address.
+--      wren_i => not(cpu_r_w or n_internalRam2CS)
+--   );
 
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
@@ -395,15 +337,15 @@ esp_rden <= '1' when cpuAddress = X"f3000b" and cpu_r_w = '1' and cpu_lds = '0' 
 timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" else '0';
 
 -- block ram
-n_internalRam1CS <= '0' when  cpuAddress <= X"FFFF" 
-                    and cpu_uds = '0' else '1' ; --4k at bottom
-n_internalRam2CS <= '0' when  cpuAddress <= X"FFFF" 
-                    and cpu_lds = '0' else '1' ; --4k at bottom
+n_internalRam1CS <= '1'; -- '0' when  cpuAddress <= X"FFFF" 
+                  -- and cpu_uds = '0' else '1' ; --4k at bottom
+n_internalRam2CS <= '1'; -- '0' when  cpuAddress <= X"FFFF" 
+                   --and cpu_lds = '0' else '1' ; --4k at bottom
                     
                
 
 -- RAM
-ram_cen <= '0' when cpuAddress > X"FFFF"  and cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
+ram_cen <= '0' when  cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
 ram_a <= cpuAddress(26 downto 0) when ram_cen ='0' else (others => '0'); -- address
@@ -411,11 +353,11 @@ ram_ub <= cpu_uds;
 ram_lb <= cpu_lds;
 ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
 
--- VGA
-vga_addr <= vgaAddress when n_interface2CS = '0';
-vga_wr_en <= not cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
-vga_rd_en <= cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
-vga_wr_data <= cpuDataOut(7 downto 0) when n_interface2CS = '0' and vga_wr_en = '1' ;
+---- VGA
+--vga_addr <= vgaAddress when n_interface2CS = '0';
+--vga_wr_en <= not cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
+--vga_rd_en <= cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
+--vga_wr_data <= cpuDataOut(7 downto 0) when n_interface2CS = '0' and vga_wr_en = '1' ;
 
 --terminal
 serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
@@ -423,13 +365,13 @@ esp_txd <= cpuDataOut(7 downto 0) when esp_wren = '1';
 
 -- sd card
 
-n_sdCardCS <= '0' when cpuAddress >= x"f40000" and cpuAddress <= x"f4ffff" else '1';
-sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40000" and cpu_r_w = '0';
-sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40002" and cpu_r_w = '0';
-sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f4000b" or cpuAddress = x"f4000a") and cpu_r_w = '0' and cpu_lds = '0';
-sd_rden <= sdControl(2);
-sd_wren <= sdControl(3);
-driveLED <= sdStatus(5);
+--n_sdCardCS <= '0' when cpuAddress >= x"f40000" and cpuAddress <= x"f4ffff" else '1';
+--sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40000" and cpu_r_w = '0';
+--sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40002" and cpu_r_w = '0';
+--sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f4000b" or cpuAddress = x"f4000a") and cpu_r_w = '0' and cpu_lds = '0';
+--sd_rden <= sdControl(2);
+--sd_wren <= sdControl(3);
+--driveLED <= sdStatus(5);
 
 -- timer
 timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
@@ -439,8 +381,8 @@ timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0'
  
 cpuDataIn(15 downto 8) 
 <= 
-X"00"
-when n_interface2CS = '0' and vga_rd_en = '1' else
+--X"00"
+--when n_interface2CS = '0' and vga_rd_en = '1' else
 X"00" 
 when cpuAddress = X"f30000" and cpu_uds = '0' else
 r_Vec(vecAddress)(15 downto 8)
@@ -469,8 +411,8 @@ X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
 <= 
-vga_rd_data 
-when n_interface2CS = '0' and vga_rd_en = '1' else
+--vga_rd_data 
+--when n_interface2CS = '0' and vga_rd_en = '1' else
 monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 basRomData(7 downto 0)
@@ -515,10 +457,10 @@ X"00" when cpu_lds = '1' ;
 
 
 cpu_dtack <= 
-not ram_ack when ram_cen = '0' else
-sd_ack when
-(cpuAddress = x"f4000c" or cpuAddress = x"f4000d") and cpu_r_w = '0'
-else '0';
+not ram_ack when ram_cen = '0' else '0';
+--sd_ack when
+--(cpuAddress = x"f4000c" or cpuAddress = x"f4000d") and cpu_r_w = '0'
+--else '0';
 
     
 end;
