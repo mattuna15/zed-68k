@@ -243,7 +243,7 @@ attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
 
       signal ramDataOut: std_logic_vector(15 downto 0);
-      signal initial_stack: std_logic_vector(31 downto 0) := x"0000E000";
+      signal initial_stack: std_logic_vector(31 downto 0) := x"009F0000";
       signal initial_pc: std_logic_vector(31 downto 0) := x"00A00BB4";
       
       signal memDataOut: std_logic_vector(15 downto 0);

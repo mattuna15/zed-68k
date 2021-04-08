@@ -47,7 +47,7 @@
     <Option Name="DSADesignIntentExternalHost" Val="false"/>
     <Option Name="DSADesignIntentEmbedded" Val="true"/>
     <Option Name="DSADesignIntentDatacenter" Val="false"/>
-    <Option Name="WTXSimLaunchSim" Val="909"/>
+    <Option Name="WTXSimLaunchSim" Val="910"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -298,6 +298,14 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="ScopedToCell" Val="mig_7series_0"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/bios/bios.bd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <Config>
