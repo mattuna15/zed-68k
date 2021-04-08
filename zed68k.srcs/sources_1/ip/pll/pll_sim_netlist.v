@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Tue Apr  6 16:52:10 2021
+// Date        : Thu Apr  8 07:15:11 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim d:/code/zed-68k/zed68k.srcs/sources_1/ip/pll/pll_sim_netlist.v
 // Design      : pll
@@ -26,7 +26,7 @@ module pll
 
   wire clk166;
   wire clk200;
-  (* IBUF_LOW_PWR *) wire clk_in;
+  wire clk_in;
   wire locked;
   wire resetn;
 
@@ -53,10 +53,8 @@ module pll_pll_clk_wiz
 
   wire clk166;
   wire clk166_pll;
-  wire clk166_pll_en_clk;
   wire clk200;
   wire clk200_pll;
-  wire clk200_pll_en_clk;
   wire clk_in;
   wire clk_in_pll;
   wire clkfbout_buf_pll;
@@ -64,8 +62,6 @@ module pll_pll_clk_wiz
   wire locked;
   wire reset_high;
   wire resetn;
-  (* RTL_KEEP = "true" *) (* async_reg = "true" *) wire [7:0]seq_reg1;
-  (* RTL_KEEP = "true" *) (* async_reg = "true" *) wire [7:0]seq_reg2;
   wire NLW_plle2_adv_inst_CLKOUT2_UNCONNECTED;
   wire NLW_plle2_adv_inst_CLKOUT3_UNCONNECTED;
   wire NLW_plle2_adv_inst_CLKOUT4_UNCONNECTED;
@@ -78,58 +74,17 @@ module pll_pll_clk_wiz
        (.I(clkfbout_pll),
         .O(clkfbout_buf_pll));
   (* BOX_TYPE = "PRIMITIVE" *) 
-  (* CAPACITANCE = "DONT_CARE" *) 
-  (* IBUF_DELAY_VALUE = "0" *) 
-  (* IFD_DELAY_VALUE = "AUTO" *) 
-  IBUF #(
-    .IOSTANDARD("DEFAULT")) 
-    clkin1_ibufg
+  BUFG clkin1_bufg
        (.I(clk_in),
         .O(clk_in_pll));
   (* BOX_TYPE = "PRIMITIVE" *) 
-  (* XILINX_LEGACY_PRIM = "BUFGCE" *) 
-  (* XILINX_TRANSFORM_PINMAP = "CE:CE0 I:I0" *) 
-  BUFGCTRL #(
-    .INIT_OUT(0),
-    .PRESELECT_I0("TRUE"),
-    .PRESELECT_I1("FALSE"),
-    .SIM_DEVICE("7SERIES")) 
-    clkout1_buf
-       (.CE0(seq_reg1[7]),
-        .CE1(1'b0),
-        .I0(clk200_pll),
-        .I1(1'b1),
-        .IGNORE0(1'b0),
-        .IGNORE1(1'b1),
-        .O(clk200),
-        .S0(1'b1),
-        .S1(1'b0));
-  (* BOX_TYPE = "PRIMITIVE" *) 
-  BUFH clkout1_buf_en
+  BUFG clkout1_buf
        (.I(clk200_pll),
-        .O(clk200_pll_en_clk));
+        .O(clk200));
   (* BOX_TYPE = "PRIMITIVE" *) 
-  (* XILINX_LEGACY_PRIM = "BUFGCE" *) 
-  (* XILINX_TRANSFORM_PINMAP = "CE:CE0 I:I0" *) 
-  BUFGCTRL #(
-    .INIT_OUT(0),
-    .PRESELECT_I0("TRUE"),
-    .PRESELECT_I1("FALSE"),
-    .SIM_DEVICE("7SERIES")) 
-    clkout2_buf
-       (.CE0(seq_reg2[7]),
-        .CE1(1'b0),
-        .I0(clk166_pll),
-        .I1(1'b1),
-        .IGNORE0(1'b0),
-        .IGNORE1(1'b1),
-        .O(clk166),
-        .S0(1'b1),
-        .S1(1'b0));
-  (* BOX_TYPE = "PRIMITIVE" *) 
-  BUFH clkout2_buf_en
+  BUFG clkout2_buf
        (.I(clk166_pll),
-        .O(clk166_pll_en_clk));
+        .O(clk166));
   (* BOX_TYPE = "PRIMITIVE" *) 
   PLLE2_ADV #(
     .BANDWIDTH("OPTIMIZED"),
@@ -155,7 +110,7 @@ module pll_pll_clk_wiz
     .CLKOUT5_DIVIDE(1),
     .CLKOUT5_DUTY_CYCLE(0.500000),
     .CLKOUT5_PHASE(0.000000),
-    .COMPENSATION("ZHOLD"),
+    .COMPENSATION("BUF_IN"),
     .DIVCLK_DIVIDE(1),
     .IS_CLKINSEL_INVERTED(1'b0),
     .IS_PWRDWN_INVERTED(1'b0),
@@ -190,166 +145,6 @@ module pll_pll_clk_wiz
     plle2_adv_inst_i_1
        (.I0(resetn),
         .O(reset_high));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[0] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(locked),
-        .Q(seq_reg1[0]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[1] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg1[0]),
-        .Q(seq_reg1[1]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[2] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg1[1]),
-        .Q(seq_reg1[2]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[3] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg1[2]),
-        .Q(seq_reg1[3]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[4] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg1[3]),
-        .Q(seq_reg1[4]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[5] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg1[4]),
-        .Q(seq_reg1[5]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[6] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg1[5]),
-        .Q(seq_reg1[6]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg1_reg[7] 
-       (.C(clk200_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg1[6]),
-        .Q(seq_reg1[7]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[0] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(locked),
-        .Q(seq_reg2[0]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[1] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg2[0]),
-        .Q(seq_reg2[1]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[2] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg2[1]),
-        .Q(seq_reg2[2]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[3] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg2[2]),
-        .Q(seq_reg2[3]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[4] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg2[3]),
-        .Q(seq_reg2[4]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[5] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg2[4]),
-        .Q(seq_reg2[5]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[6] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg2[5]),
-        .Q(seq_reg2[6]));
-  (* ASYNC_REG *) 
-  (* KEEP = "yes" *) 
-  FDCE #(
-    .INIT(1'b0)) 
-    \seq_reg2_reg[7] 
-       (.C(clk166_pll_en_clk),
-        .CE(1'b1),
-        .CLR(reset_high),
-        .D(seq_reg2[6]),
-        .Q(seq_reg2[7]));
 endmodule
 `ifndef GLBL
 `define GLBL

@@ -57,7 +57,10 @@ entity Microcomputer is
         esp_rxd : in std_logic_vector(7 downto 0);
         esp_txd : out std_logic_vector(7 downto 0);
         esp_rden : out std_logic;
-        esp_wren : out std_logic
+        esp_wren : out std_logic;
+        
+        ps2clk :inout std_logic;
+        ps2data :inout std_logic
 		
 
 	);
@@ -112,7 +115,6 @@ architecture struct of Microcomputer is
     signal int_out: std_logic_vector(2 downto 0) := "111";
     signal int_ack: std_logic := '0';
     
-    signal uart_int :  std_logic;
 	signal	timer_int :  std_logic;
 	signal	ps2_int :  std_logic;
 	signal	spi_int :  std_logic;
@@ -126,6 +128,8 @@ architecture struct of Microcomputer is
 	signal timer_reg_sel : std_logic;
 	signal milliseconds: std_logic_vector(31 downto 0);
 	
+	signal keyboardCS : std_logic;
+	
 	    
 	
 begin
@@ -135,11 +139,11 @@ begin
 --	port map (
 --		clk => sys_clk,
 --		reset => n_reset,
---		int1 => '0',
+--		int1 => serialTerminalStatus(0),
 --		int2 => ps2_int,
---		int3 => timer_int,
---		int4 => mouse_int,
---		int5 => '0', --spi_int,
+--		int3 => '0',
+--		int4 => '0',
+--		int5 => '0',
 --	    int6 => '0',
 --		int7 => '0',
 --		int_out => int_out,
@@ -148,16 +152,26 @@ begin
 		
 		
 ----f30000/1 keyboard
---keyboard: entity work.ps2_keyboard_to_ascii 
---    port map(
---      clk => sys_clk,                     --system clock input
---      ps2_clk => ps2k_clk,                     --clock signal from PS2 keyboard
---      ps2_data  => ps2k_dat,                     --data signal from PS2 keyboard
---      ascii_new  => ps2_int,                     --output flag indicating new ASCII value
---      ascii_code => key_pressed_ascii(6 downto 0)
---      ); --ASCII value
+keyboard: entity work.KeyboardMC 
 
---key_pressed_ascii(7) <= ps2_int;
+	port map (
+		n_reset	=> n_reset,
+		clk    	=> sys_clk,
+		n_wr	=> '1',
+		n_rd	=> not cpu_r_w and not keyboardCS,
+		regSel	=> '1',
+		--dataIn	: in  std_logic_vector(7 downto 0);
+		dataOut	=>  key_pressed_ascii,
+		n_int		=> ps2_int, 
+		n_rts		=> open,
+		
+		-- Keyboard signals
+		ps2Clk	=> ps2clk,
+		ps2Data	=> ps2data,
+ 
+		-- FN keys passed out as general signals (momentary and toggled versions)
+		FNkeys =>open,
+		FNtoggledKeys	=> open);
 
 ----f30002-26
 --mouse: entity work.ps2_mouse 
@@ -194,7 +208,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => int_out,	-- For this simple demo we'll ignore interrupts
+		IPL => "111", --int_out,	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
@@ -376,6 +390,8 @@ esp_txd <= cpuDataOut(7 downto 0) when esp_wren = '1';
 -- timer
 timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
 
+-- keyboard
+keyboardCS <= '0' when cpuAddress = x"f30000" else '1';
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
  
@@ -452,7 +468,7 @@ when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cp
 milliseconds(7 downto 0)
 when timerCS = '1' and (cpuAddress = X"f30032" or cpuAddress = X"f30033") and cpu_r_w ='1' and cpu_lds = '0' else
 key_pressed_ascii 
-when (cpuAddress = X"f30000" or cpuAddress = X"f30001") and cpu_r_w ='1' and cpu_lds = '0' else
+when cpuAddress = X"f30000" and cpu_r_w ='1' and cpu_lds = '0' else
 X"00" when cpu_lds = '1' ;
 
 

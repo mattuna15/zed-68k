@@ -81,7 +81,7 @@ module pll_clk_wiz
   //------------------------------------
 wire clk_in_pll;
 wire clk_in2_pll;
-  IBUF clkin1_ibufg
+  BUFG clkin1_bufg
    (.O (clk_in_pll),
     .I (clk_in));
 
@@ -118,12 +118,6 @@ wire clk_in2_pll;
   wire        clkfbstopped_unused;
   wire        clkinstopped_unused;
   wire        reset_high;
-  (* KEEP = "TRUE" *) 
-  (* ASYNC_REG = "TRUE" *)
-  reg  [7 :0] seq_reg1 = 0;
-  (* KEEP = "TRUE" *) 
-  (* ASYNC_REG = "TRUE" *)
-  reg  [7 :0] seq_reg2 = 0;
 
   PLLE2_ADV
   #(.BANDWIDTH            ("OPTIMIZED"),
@@ -184,46 +178,14 @@ wire clk_in2_pll;
 
 
 
-
-  BUFGCE clkout1_buf
+  BUFG clkout1_buf
    (.O   (clk200),
-    .CE  (seq_reg1[7]),
     .I   (clk200_pll));
 
-  BUFH clkout1_buf_en
-   (.O   (clk200_pll_en_clk),
-    .I   (clk200_pll));
-  always @(posedge clk200_pll_en_clk or posedge reset_high) begin
-    if(reset_high == 1'b1) begin
-	    seq_reg1 <= 8'h00;
-    end
-    else begin
-        seq_reg1 <= {seq_reg1[6:0],locked_int};
-  
-    end
-  end
 
-
-  BUFGCE clkout2_buf
+  BUFG clkout2_buf
    (.O   (clk166),
-    .CE  (seq_reg2[7]),
     .I   (clk166_pll));
- 
-  BUFH clkout2_buf_en
-   (.O   (clk166_pll_en_clk),
-    .I   (clk166_pll));
- 
-  always @(posedge clk166_pll_en_clk or posedge reset_high) begin
-    if(reset_high == 1'b1) begin
-	  seq_reg2 <= 8'h00;
-    end
-    else begin
-        seq_reg2 <= {seq_reg2[6:0],locked_int};
-  
-    end
-  end
-
-
 
 
 

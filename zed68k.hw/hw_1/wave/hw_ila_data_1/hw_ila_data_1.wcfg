@@ -10,33 +10,77 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="7fs"></ZoomEndTime>
-      <Cursor1Time time="3402fs"></Cursor1Time>
+      <ZoomEndTime time="4097fs"></ZoomEndTime>
+      <Cursor1Time time="2131fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="234"></NameColumnWidth>
-      <ValueColumnWidth column_width="80"></ValueColumnWidth>
+      <ValueColumnWidth column_width="72"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="3" />
-   <wvobject fp_name="cpuAddress" type="array">
+   <WVObjectSize size="8" />
+   <wave_markers>
+   </wave_markers>
+   <wvobject fp_name="computer/int_out" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">cpuAddress[26:0]</obj_property>
-      <obj_property name="ObjectShortName">cpuAddress[26:0]</obj_property>
+      <obj_property name="ElementShortName">computer/int_out[1:0]</obj_property>
+      <obj_property name="ObjectShortName">int_out[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="computer/key_pressed_ascii" type="array">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">computer/key_pressed_ascii[6:0]</obj_property>
+      <obj_property name="ObjectShortName">key_pressed_ascii[6:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="memory/clk" type="logic">
+   <wvobject fp_name="cpuAddress_0" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">memory/clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
+      <obj_property name="ElementShortName">cpuAddress_0[23:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuAddress_0[23:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>
-   <wvobject fp_name="memory/clock200" type="logic">
+   <wvobject fp_name="cpuDataIn" type="array">
       <obj_property name="DisplayName">FullPathName</obj_property>
-      <obj_property name="ElementShortName">memory/clock200</obj_property>
-      <obj_property name="ObjectShortName">clock200</obj_property>
+      <obj_property name="ElementShortName">cpuDataIn[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuDataIn[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject fp_name="cpuDataOut" type="array">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">cpuDataOut[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuDataOut[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject fp_name="ram_ack" type="logic">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">ram_ack</obj_property>
+      <obj_property name="ObjectShortName">ram_ack</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject fp_name="rd_data" type="array">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">rd_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_data[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject fp_name="serialTermStatus" type="array">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">serialTermStatus[0:0]</obj_property>
+      <obj_property name="ObjectShortName">serialTermStatus[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
       <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
    </wvobject>

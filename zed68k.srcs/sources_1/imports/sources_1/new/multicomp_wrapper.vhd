@@ -77,7 +77,10 @@ port(
       ddr3_dqs_p           : inout std_logic_vector(1 downto 0);
       ddr3_dqs_n           : inout std_logic_vector(1 downto 0);
       
-      ddr3_reset_n :out std_logic
+      ddr3_reset_n :out std_logic;
+      
+      ps2clk :inout std_logic;
+      ps2data :inout std_logic
       
 	);
 end multicomp_wrapper;
@@ -348,7 +351,10 @@ end process;
         esp_rxd => esp_rxd,
         esp_txd => esp_txd,
         esp_rden => esp_rden,
-        esp_wren => esp_wren
+        esp_wren => esp_wren,
+        
+        ps2clk => ps2clk,
+        ps2data => ps2data
 
     );
     
