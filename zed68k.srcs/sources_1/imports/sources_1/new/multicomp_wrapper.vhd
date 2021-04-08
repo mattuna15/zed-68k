@@ -38,23 +38,13 @@ entity multicomp_wrapper is
 port(
         sys_clock   : in std_logic;
         resetn      : in STD_LOGIC;
-            
---                 input reset, // Resets controller on assertion.
---input clk, // 25Mhz clock.
--- output reg cs, // Connect to SD_DAT[3].
--- output mosi, // Connect to SD_CMD.
--- input miso, // Connect to SD_DAT[0].
--- output sclk, // Connect to SD_SCK.
--- // For SPI mode, SD_DAT[2] and SD_DAT[1] should be held
---// HIGH.
--- // SD_RESET should be held LOW.
 
     led : out STD_LOGIC_VECTOR ( 3 downto 0 );
     
     --serial
     uart_rxd_out : out STD_LOGIC;
     uart_txd_in : in STD_LOGIC;
-    gd_uart_txd_out :out STD_LOGIC;
+
     rxd2 : in STD_LOGIC;
         
     txd3 : out STD_LOGIC;
@@ -80,7 +70,19 @@ port(
       ddr3_reset_n :out std_logic;
       
       ps2clk :inout std_logic;
-      ps2data :inout std_logic
+      ps2data :inout std_logic;
+      
+      --dazzler
+      
+        gd_uart_txd_out : out   std_logic;                  -- gd uart out
+        gd_gpu_sel : out std_logic;
+        gd_sd_sel : out std_logic;
+        gd_daz_sel : out std_logic;
+        gd_mosi : out std_logic;
+        gd_miso : in std_logic;
+        gd_sclk  : out std_logic;
+        
+        sw : in std_logic_vector(3 downto 0)
       
 	);
 end multicomp_wrapper;
@@ -235,7 +237,6 @@ end component;
 
 attribute dont_touch : string;
 
-attribute dont_touch of memory : label is "true";
 attribute dont_touch of reset_proc : label is "true";
 attribute dont_touch of valid_flag : label is "true";
 attribute dont_touch of mem_i_valid : signal is "true";
@@ -354,7 +355,14 @@ end process;
         esp_wren => esp_wren,
         
         ps2clk => ps2clk,
-        ps2data => ps2data
+        ps2data => ps2data,
+        
+        gd_gpu_sel => gd_gpu_sel,
+        gd_sd_sel => gd_sd_sel,
+        gd_daz_sel => gd_daz_sel,
+        gd_mosi => gd_mosi,
+        gd_miso => gd_miso,
+        gd_sclk => gd_sclk
 
     );
     
@@ -371,6 +379,8 @@ end process;
         txd => uart_rxd_out,
         tx_send_active => serialTermTxActive
   );
+  
+  gd_uart_txd_out <= uart_rxd_out;
   
   io_serial_term_rx : entity work.design_1_wrapper
     port map (

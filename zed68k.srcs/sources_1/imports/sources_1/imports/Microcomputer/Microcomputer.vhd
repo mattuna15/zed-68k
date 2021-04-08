@@ -60,7 +60,14 @@ entity Microcomputer is
         esp_wren : out std_logic;
         
         ps2clk :inout std_logic;
-        ps2data :inout std_logic
+        ps2data :inout std_logic;
+        
+        gd_gpu_sel : out std_logic;
+        gd_sd_sel : out std_logic;
+        gd_daz_sel : out std_logic;
+        gd_mosi : out std_logic;
+        gd_miso : in std_logic;
+        gd_sclk  : out std_logic
 		
 
 	);
@@ -71,29 +78,18 @@ architecture struct of Microcomputer is
 
 	signal basRomData					: std_logic_vector(15 downto 0);
     signal monRomData					: std_logic_vector(15 downto 0);
-	signal internalRam1DataOut		: std_logic_vector(7 downto 0);
-	signal internalRam2DataOut		: std_logic_vector(7 downto 0);
 
-	signal n_interface2CS			: std_logic :='1';
+    signal n_interface2CS			: std_logic :='1';
 	signal n_externalRamCS			: std_logic :='1';
-	signal n_internalRam1CS			: std_logic :='1';
-	signal n_internalRam2CS			: std_logic :='1';
+
 	signal n_basRom1CS					: std_logic :='1';
     signal n_basRom2CS					: std_logic :='1';
     signal n_basRom3CS					: std_logic :='1';
     signal n_basRom4CS					: std_logic :='1';
 
-	signal n_sdCardCS					: std_logic :='1';
-    signal sdCardDataOut				: std_logic_vector(7 downto 0);
-    signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f30009
-    signal sdControl: std_logic_vector(7 downto 0); --f3000a
-    
-    signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000-2
-    signal sd_rden : std_logic;
-    signal sd_wren : std_logic;
-    signal sd_ack  : std_logic;
-
-	signal topAddress               : std_logic_vector(7 downto 0);
+    signal spi_ctrl : std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+    signal spi_DataIn :  std_logic_vector(7 downto 0);
+    signal spi_DataOut :  std_logic_vector(7 downto 0);
     
     signal    cpuAddress	    :  std_logic_vector(31 downto 0);
 	signal	  cpuDataOut		:  std_logic_vector(15 downto 0);
@@ -198,6 +194,26 @@ timer: entity work.timer
 	 irq        => timer_int
   ); 
  
+ 
+spi1: entity work.spi_master 
+  PORT map (
+      clk_i      => sys_clk,
+      rst_i      => not n_reset, 
+
+      -- CPU interface
+      valid_i    => spi_ctrl(3),
+      ready_o    => spi_ctrl(5),
+      data_i     => spi_DataOut,
+      data_o     => spi_DataIn,
+
+      -- Connect to SD card
+      spi_sclk_o => gd_sclk,       -- sd_sck_io
+      spi_mosi_o => gd_mosi,       -- sd_cmd_io
+      spi_miso_i => gd_miso        -- sd_dat_io(0)
+   );
+
+
+ 
 -- ____________________________________________________________________________________
 -- CPU CHOICE GOES HERE
     
@@ -275,58 +291,7 @@ cpu1 : entity work.TG68
         clk_i => sys_clk,
         data_o => basRomData(7 downto 0)
     );
--- ____________________________________________________________________________________
--- RAM GOES HERE
-
---ram1 : entity work.ram --64k
---    generic map (
---    G_INIT_FILE => "D:/code/zed-68k/roms/empty_1.hex",
---      -- Number of bits in the address bus. The size of the memory will
---      -- be 2**G_ADDR_BITS bytes.
---      G_ADDR_BITS => 16
---    )
---   port map (
---      clk_i => sys_clk,
-
---      -- Current address selected.
---      addr_i => memAddress,
-
---      -- Data contents at the selected address.
---      -- Valid in same clock cycle.
---      data_o  => internalRam1DataOut,
-
---      -- New data to (optionally) be written to the selected address.
---      data_i => cpuDataOut(15 downto 8),
-
---      -- '1' indicates we wish to perform a write at the selected address.
---      wren_i => not(cpu_r_w or n_internalRam1CS)
---   );
-
-   
---   ram2 : entity work.ram --64k
---    generic map (
---    G_INIT_FILE => "D:/code/zed-68k/roms/empty_2.hex",
---      -- Number of bits in the address bus. The size of the memory will
---      -- be 2**G_ADDR_BITS bytes.
---      G_ADDR_BITS => 16
---    )
---   port map (
---      clk_i => sys_clk,
-
---      -- Current address selected.
---      addr_i => memAddress,
-
---      -- Data contents at the selected address.
---      -- Valid in same clock cycle.
---      data_o  => internalRam2DataOut,
-
---      -- New data to (optionally) be written to the selected address.
---      data_i => cpuDataOut(7 downto 0),
-
---      -- '1' indicates we wish to perform a write at the selected address.
---      wren_i => not(cpu_r_w or n_internalRam2CS)
---   );
-
+    
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
   
@@ -348,15 +313,7 @@ esp_wren <= '1' when cpuAddress = X"f3000b"  and cpu_r_w = '0' and cpu_lds = '0'
 esp_rden <= '1' when cpuAddress = X"f3000b" and cpu_r_w = '1' and cpu_lds = '0'  else '0';
 
 --periph
-timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" else '0';
-
--- block ram
-n_internalRam1CS <= '1'; -- '0' when  cpuAddress <= X"FFFF" 
-                  -- and cpu_uds = '0' else '1' ; --4k at bottom
-n_internalRam2CS <= '1'; -- '0' when  cpuAddress <= X"FFFF" 
-                   --and cpu_lds = '0' else '1' ; --4k at bottom
-                    
-               
+timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" else '0';           
 
 -- RAM
 ram_cen <= '0' when  cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
@@ -367,25 +324,19 @@ ram_ub <= cpu_uds;
 ram_lb <= cpu_lds;
 ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
 
----- VGA
---vga_addr <= vgaAddress when n_interface2CS = '0';
---vga_wr_en <= not cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
---vga_rd_en <= cpu_r_w when n_interface2CS = '0' and cpu_lds='0' else '0';
---vga_wr_data <= cpuDataOut(7 downto 0) when n_interface2CS = '0' and vga_wr_en = '1' ;
-
 --terminal
 serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
 esp_txd <= cpuDataOut(7 downto 0) when esp_wren = '1';
 
--- sd card
+-- spi
 
---n_sdCardCS <= '0' when cpuAddress >= x"f40000" and cpuAddress <= x"f4ffff" else '1';
---sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40000" and cpu_r_w = '0';
---sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40002" and cpu_r_w = '0';
---sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f4000b" or cpuAddress = x"f4000a") and cpu_r_w = '0' and cpu_lds = '0';
---sd_rden <= sdControl(2);
---sd_wren <= sdControl(3);
---driveLED <= sdStatus(5);
+spi_ctrl(4)     <= cpuDataOut(4) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0';  --cont                  
+spi_ctrl(3)     <= cpuDataOut(3) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0'; -- enable
+spi_ctrl(2 downto 0) <= cpuDataOut(2 downto 0) when (cpuAddress = X"f40008" or cpuAddress = X"f40009") and cpu_lds = '0' and cpu_r_w = '0';                   
+spi_dataOut <= cpuDataOut(7 downto 0) when (cpuAddress = X"f4000A" or cpuAddress = X"f4000B") and cpu_lds = '0' and cpu_r_w = '0'; 
+gd_gpu_sel <= not spi_ctrl(0);
+gd_sd_sel <= not spi_ctrl(1);
+gd_daz_sel <= not spi_ctrl(2);
 
 -- timer
 timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
@@ -397,8 +348,6 @@ keyboardCS <= '0' when cpuAddress = x"f30000" else '1';
  
 cpuDataIn(15 downto 8) 
 <= 
---X"00"
---when n_interface2CS = '0' and vga_rd_en = '1' else
 X"00" 
 when cpuAddress = X"f30000" and cpu_uds = '0' else
 r_Vec(vecAddress)(15 downto 8)
@@ -409,14 +358,8 @@ monRomData(15 downto 8)
 when n_basRom1CS = '0' else
 basRomData(15 downto 8)
 when n_basRom3CS = '0' else
-internalRam1DataOut
-when n_internalRam1CS= '0' else
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
-sdAddress(31 downto 24)
-when cpuAddress = x"f40000" and cpu_r_w = '1' and cpu_uds = '0' else 
-sdAddress(15 downto 8)
-when cpuAddress = x"f40002" and cpu_r_w = '1' and cpu_uds = '0' else 
 x"00"
 when cpuAddress >= x"f40008" and cpuAddress <= x"f4000d" and cpu_r_w = '1' and cpu_uds = '0' else
 milliseconds(31 downto 24)
@@ -433,8 +376,6 @@ monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 basRomData(7 downto 0)
 when n_basRom4CS = '0' else 
-internalRam2DataOut
-when n_internalRam2CS = '0' else
 "00000" & cpuAddress(3 downto 1)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
 r_Vec(vecAddress)(7 downto 0)
@@ -453,30 +394,22 @@ serialRxData
 when rx_serialRead_en = '1' else 
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"A00000" else
-sdCardDataOut
-when (cpuAddress = x"f4000c" or cpuAddress = x"f4000d") and cpu_r_w = '1' and cpu_lds = '0' else
-sdControl
-when (cpuAddress = x"f4000a" or cpuAddress = x"f4000b") and cpu_r_w = '1' and cpu_lds = '0' else
-sdStatus
-when (cpuAddress = x"f40008" or cpuAddress = x"f40009") and cpu_r_w = '1' and cpu_lds = '0' else
-sdAddress(23 downto 16)
-when cpuAddress = x"f40000" and cpu_r_w = '1' and cpu_lds = '0' else 
-sdAddress(7 downto 0)
-when cpuAddress = x"f40002" and cpu_r_w = '1' and cpu_lds = '0' else 
 milliseconds(23 downto 16)
 when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
 milliseconds(7 downto 0)
 when timerCS = '1' and (cpuAddress = X"f30032" or cpuAddress = X"f30033") and cpu_r_w ='1' and cpu_lds = '0' else
 key_pressed_ascii 
 when cpuAddress = X"f30000" and cpu_r_w ='1' and cpu_lds = '0' else
+spi_DataIn
+when (cpuAddress = X"F4000C" or cpuAddress = X"F4000D") and cpu_r_w = '1' and cpu_lds = '0' else
+spi_DataOut
+when (cpuAddress = X"F4000A" or cpuAddress = X"F4000B") and cpu_r_w = '1' and cpu_lds = '0' else
+spi_ctrl
+when (cpuAddress = X"F40008" or cpuAddress = X"F40009") and cpu_r_w = '1' and cpu_lds = '0' else
 X"00" when cpu_lds = '1' ;
 
 
 cpu_dtack <= 
 not ram_ack when ram_cen = '0' else '0';
---sd_ack when
---(cpuAddress = x"f4000c" or cpuAddress = x"f4000d") and cpu_r_w = '0'
---else '0';
-
     
 end;

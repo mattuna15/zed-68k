@@ -108,7 +108,7 @@ TG68_inst: entity work.TG68KdotC_Kernel
 		clkena_in => clkena, 	-- : in std_logic;
 		data_in => data_in, 	-- : in std_logic_vector(15 downto 0);
 		IPL => IPL, 			-- : in std_logic_vector(2 downto 0);
-		IPL_autovector => '0', 		-- : in std_logic;
+		IPL_autovector => '1', 		-- : in std_logic;
 		addr_out => addr, 		-- : out std_logic_vector(31 downto 0);
 		data_write => data_out, -- : out std_logic_vector(15 downto 0);
 		busstate => state, 	-- : out std_logic_vector(1 downto 0);
