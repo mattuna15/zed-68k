@@ -67,7 +67,11 @@ entity Microcomputer is
         gd_daz_sel : out std_logic;
         gd_mosi : out std_logic;
         gd_miso : in std_logic;
-        gd_sclk  : out std_logic
+        gd_sclk  : out std_logic;
+        
+        clk25 : in std_logic;
+        sda :inout std_logic; --        // I2C Serial data line, pulled high at board level
+        scl : inout std_logic -- 
 		
 
 	);
@@ -126,6 +130,13 @@ architecture struct of Microcomputer is
 	
 	signal keyboardCS : std_logic;
 	
+	signal rtcCS: std_logic;
+	signal rtc_ack :std_logic;
+	signal rtc_data : std_logic_vector(55 downto 0);
+	
+	attribute dont_touch : string;
+    attribute dont_touch of rtc : label is "true";
+	
 	    
 	
 begin
@@ -145,7 +156,53 @@ begin
 --		int_out => int_out,
 --		ack => int_ack
 --		);
-		
+
+
+    -- rtc
+    
+--    rtc :  mcp7940n
+--        port map (
+--        clk => clk25, --      // System clock, wr_ctrl should be synchronous to this
+--        reset => not n_reset,  --    // 1:reset - puts I2C bus into idle state
+--        wr => '0',  --       // write enable
+--        addr => "111",   --   // 0-6:writing, 7:circular reading111
+--        data => X"00", --       // data to write at addr
+--        tick => rtc_tick,    --   // ticks every second -> 1: datetime_o is valid
+--        datetime_o => rtc_data, -- // BCD {YY,MM,DD, WD, HH,MM,SS}
+--        sda => sda, --        // I2C Serial data line, pulled high at board level
+--        scl => scl --        // I2C Serial clock line, pulled high at board level
+--    );
+    
+  rtc : ENTITY work.pmod_real_time_clock 
+  GENERIC map (
+    sys_clk_freq => 100_000_000)              --input clock speed from user logic in Hz
+  PORT map (
+    clk           => sys_clk,                    --system clock
+    reset_n      => n_reset,                     --asynchronous active-low reset also only when we need it.
+    scl           => scl,                     --I2C serial clock
+    sda          => sda,                --I2C serial data
+    read_en      => rtcCS,
+    i2c_ack_err   => rtc_data(42),                     --I2C slave acknowledge error flag
+    set_clk_ena   => '0',                    --set clock enable
+    set_seconds   => (others => '0'),  --seconds to set clock to
+    set_minutes   => (others => '0'),   --minutes to set clock to
+    set_hours     => (others => '0'),   --hours to set clock to
+    set_am_pm     => '0',                  --am/pm to set clock to, am = '0', pm = '1'
+    set_weekday   => (others => '0'),  --weekday to set clock to
+    set_day       => (others => '0'),   --day of month to set clock to
+    set_month     => (others => '0'),  --month to set clock to
+    set_year      => (others => '0'),   --year to set clock to
+    set_leapyear  => '0',                      --specify if setting is a leapyear ('1') or not ('0')
+    seconds       => rtc_data(6 DOWNTO 0),  --clock output time: seconds
+    minutes       => rtc_data(13 DOWNTO 7),  --clock output time: minutes
+    hours         => rtc_data(18 DOWNTO 14),  --clock output time: hours
+    am_pm         => rtc_data(19),                    --clock output time: am/pm (am = '0', pm = '1')
+    weekday       => rtc_data(22 DOWNTO 20),  --clock output time: weekday
+    day           => rtc_data(28 DOWNTO 23),  --clock output time: day of month
+    month         => rtc_data(33 DOWNTO 29),  --clock output time: month
+    year          => rtc_data(41 DOWNTO 34), --clock output time: year
+    valid_o       => rtc_ack
+);
 		
 ----f30000/1 keyboard
 keyboard: entity work.KeyboardMC 
@@ -313,7 +370,7 @@ esp_wren <= '1' when cpuAddress = X"f3000b"  and cpu_r_w = '0' and cpu_lds = '0'
 esp_rden <= '1' when cpuAddress = X"f3000b" and cpu_r_w = '1' and cpu_lds = '0'  else '0';
 
 --periph
-timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress <= x"f3ffff" else '0';           
+timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress < x"f30040" else '0';           
 
 -- RAM
 ram_cen <= '0' when  cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
@@ -340,7 +397,7 @@ gd_daz_sel <= not spi_ctrl(2);
 
 -- timer
 timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
-
+rtcCS <= '1' when cpuAddress >= x"f30040" and cpuAddress < x"f30048" else '0';
 -- keyboard
 keyboardCS <= '0' when cpuAddress = x"f30000" else '1';
 -- ____________________________________________________________________________________
@@ -366,6 +423,14 @@ milliseconds(31 downto 24)
 when timerCS = '1' and cpuAddress = X"f30030" and cpu_r_w ='1' and cpu_uds = '0' else
 milliseconds(15 downto 8)
 when timerCS = '1' and cpuAddress = X"f30032" and cpu_r_w ='1' and cpu_uds = '0' else
+x"00"
+when rtcCS = '1' and cpuAddress = X"f30046" and cpu_r_w ='1' and cpu_uds = '0' else
+rtc_data(47 downto 40)
+when rtcCS = '1' and cpuAddress = X"f30044" and cpu_r_w ='1' and cpu_uds = '0' else
+rtc_data(31 downto 24)
+when rtcCS = '1' and cpuAddress = X"f30042" and cpu_r_w ='1' and cpu_uds = '0' else
+rtc_data(15 downto 8)
+when rtcCS = '1' and cpuAddress = X"f30040" and cpu_r_w ='1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
@@ -406,10 +471,20 @@ spi_DataOut
 when (cpuAddress = X"F4000A" or cpuAddress = X"F4000B") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_ctrl
 when (cpuAddress = X"F40008" or cpuAddress = X"F40009") and cpu_r_w = '1' and cpu_lds = '0' else
+rtc_data(55 downto 48)
+when rtcCS = '1' and (cpuAddress = X"f30046" or cpuAddress = X"F30047") and cpu_r_w ='1' and cpu_lds = '0' else
+rtc_data(39 downto 32)
+when rtcCS = '1' and (cpuAddress = X"f30044" or cpuAddress = X"F30045") and cpu_r_w ='1' and cpu_lds = '0' else
+rtc_data(23 downto 16)
+when rtcCS = '1' and (cpuAddress = X"f30042" or cpuAddress = X"F30043") and cpu_r_w ='1' and cpu_lds = '0' else
+rtc_data(7 downto 0)
+when rtcCS = '1' and (cpuAddress = X"f30040" or cpuAddress = X"F30041") and cpu_r_w ='1' and cpu_lds = '0' else
 X"00" when cpu_lds = '1' ;
 
 
 cpu_dtack <= 
-not ram_ack when ram_cen = '0' else '0';
+not ram_ack when ram_cen = '0' else 
+not rtc_ack when rtcCS = '1' else
+'0';
     
 end;

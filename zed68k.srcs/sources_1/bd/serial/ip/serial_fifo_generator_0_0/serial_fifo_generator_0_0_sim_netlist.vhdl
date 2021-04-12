@@ -3,8 +3,8 @@
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
 -- Date        : Sun Mar 28 21:38:25 2021
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim
---               d:/code/zed-68k/zed68k.srcs/sources_1/bd/serial/ip/serial_fifo_generator_0_0/serial_fifo_generator_0_0_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top serial_fifo_generator_0_0 -prefix
+--               serial_fifo_generator_0_0_ serial_fifo_generator_0_0_sim_netlist.vhdl
 -- Design      : serial_fifo_generator_0_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -24,8 +24,6 @@ entity serial_fifo_generator_0_0_blk_mem_gen_prim_wrapper is
     Q : in STD_LOGIC_VECTOR ( 4 downto 0 );
     din : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_blk_mem_gen_prim_wrapper : entity is "blk_mem_gen_prim_wrapper";
 end serial_fifo_generator_0_0_blk_mem_gen_prim_wrapper;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_blk_mem_gen_prim_wrapper is
@@ -239,8 +237,6 @@ entity serial_fifo_generator_0_0_rd_bin_cntr is
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_rd_bin_cntr : entity is "rd_bin_cntr";
 end serial_fifo_generator_0_0_rd_bin_cntr;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_rd_bin_cntr is
@@ -424,8 +420,6 @@ entity serial_fifo_generator_0_0_rd_handshaking_flags is
     ram_valid_i : in STD_LOGIC;
     clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_rd_handshaking_flags : entity is "rd_handshaking_flags";
 end serial_fifo_generator_0_0_rd_handshaking_flags;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_rd_handshaking_flags is
@@ -456,8 +450,6 @@ entity serial_fifo_generator_0_0_rd_status_flags_ss is
     clk : in STD_LOGIC;
     rd_en : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_rd_status_flags_ss : entity is "rd_status_flags_ss";
 end serial_fifo_generator_0_0_rd_status_flags_ss;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_rd_status_flags_ss is
@@ -523,8 +515,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity serial_fifo_generator_0_0_reset_blk_ramfifo is
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_reset_blk_ramfifo : entity is "reset_blk_ramfifo";
 end serial_fifo_generator_0_0_reset_blk_ramfifo;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_reset_blk_ramfifo is
@@ -556,8 +546,6 @@ entity serial_fifo_generator_0_0_updn_cntr is
     \count_reg[4]_0\ : in STD_LOGIC_VECTOR ( 0 to 0 );
     clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_updn_cntr : entity is "updn_cntr";
 end serial_fifo_generator_0_0_updn_cntr;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_updn_cntr is
@@ -703,8 +691,6 @@ entity serial_fifo_generator_0_0_wr_bin_cntr is
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_wr_bin_cntr : entity is "wr_bin_cntr";
 end serial_fifo_generator_0_0_wr_bin_cntr;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_wr_bin_cntr is
@@ -998,8 +984,6 @@ entity serial_fifo_generator_0_0_wr_handshaking_flags is
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_wr_handshaking_flags : entity is "wr_handshaking_flags";
 end serial_fifo_generator_0_0_wr_handshaking_flags;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_wr_handshaking_flags is
@@ -1029,8 +1013,6 @@ entity serial_fifo_generator_0_0_wr_status_flags_ss is
     \count_reg[4]\ : in STD_LOGIC;
     rd_en : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_wr_status_flags_ss : entity is "wr_status_flags_ss";
 end serial_fifo_generator_0_0_wr_status_flags_ss;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_wr_status_flags_ss is
@@ -1127,8 +1109,6 @@ entity serial_fifo_generator_0_0_blk_mem_gen_prim_width is
     Q : in STD_LOGIC_VECTOR ( 4 downto 0 );
     din : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_blk_mem_gen_prim_width : entity is "blk_mem_gen_prim_width";
 end serial_fifo_generator_0_0_blk_mem_gen_prim_width;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_blk_mem_gen_prim_width is
@@ -1157,8 +1137,6 @@ entity serial_fifo_generator_0_0_dc_ss is
     \count_reg[4]\ : in STD_LOGIC_VECTOR ( 0 to 0 );
     clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_dc_ss : entity is "dc_ss";
 end serial_fifo_generator_0_0_dc_ss;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_dc_ss is
@@ -1192,8 +1170,6 @@ entity serial_fifo_generator_0_0_wr_logic is
     ram_empty_fb_i_i_3 : in STD_LOGIC_VECTOR ( 4 downto 0 );
     ram_empty_fb_i_i_2 : in STD_LOGIC_VECTOR ( 4 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_wr_logic : entity is "wr_logic";
 end serial_fifo_generator_0_0_wr_logic;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_wr_logic is
@@ -1249,8 +1225,6 @@ entity serial_fifo_generator_0_0_blk_mem_gen_generic_cstr is
     Q : in STD_LOGIC_VECTOR ( 4 downto 0 );
     din : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_blk_mem_gen_generic_cstr : entity is "blk_mem_gen_generic_cstr";
 end serial_fifo_generator_0_0_blk_mem_gen_generic_cstr;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_blk_mem_gen_generic_cstr is
@@ -1284,8 +1258,6 @@ entity serial_fifo_generator_0_0_rd_logic is
     rd_en : in STD_LOGIC;
     \count_reg[4]\ : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_rd_logic : entity is "rd_logic";
 end serial_fifo_generator_0_0_rd_logic;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_rd_logic is
@@ -1342,8 +1314,6 @@ entity serial_fifo_generator_0_0_blk_mem_gen_top is
     Q : in STD_LOGIC_VECTOR ( 4 downto 0 );
     din : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_blk_mem_gen_top : entity is "blk_mem_gen_top";
 end serial_fifo_generator_0_0_blk_mem_gen_top;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_blk_mem_gen_top is
@@ -1373,8 +1343,6 @@ entity serial_fifo_generator_0_0_blk_mem_gen_v8_4_4_synth is
     Q : in STD_LOGIC_VECTOR ( 4 downto 0 );
     din : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_blk_mem_gen_v8_4_4_synth : entity is "blk_mem_gen_v8_4_4_synth";
 end serial_fifo_generator_0_0_blk_mem_gen_v8_4_4_synth;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_blk_mem_gen_v8_4_4_synth is
@@ -1404,8 +1372,6 @@ entity serial_fifo_generator_0_0_blk_mem_gen_v8_4_4 is
     Q : in STD_LOGIC_VECTOR ( 4 downto 0 );
     din : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_blk_mem_gen_v8_4_4 : entity is "blk_mem_gen_v8_4_4";
 end serial_fifo_generator_0_0_blk_mem_gen_v8_4_4;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_blk_mem_gen_v8_4_4 is
@@ -1435,8 +1401,6 @@ entity serial_fifo_generator_0_0_memory is
     Q : in STD_LOGIC_VECTOR ( 4 downto 0 );
     din : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_memory : entity is "memory";
 end serial_fifo_generator_0_0_memory;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_memory is
@@ -1469,8 +1433,6 @@ entity serial_fifo_generator_0_0_fifo_generator_ramfifo is
     din : in STD_LOGIC_VECTOR ( 7 downto 0 );
     wr_en : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_fifo_generator_ramfifo : entity is "fifo_generator_ramfifo";
 end serial_fifo_generator_0_0_fifo_generator_ramfifo;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_fifo_generator_ramfifo is
@@ -1540,8 +1502,6 @@ entity serial_fifo_generator_0_0_fifo_generator_top is
     din : in STD_LOGIC_VECTOR ( 7 downto 0 );
     wr_en : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_fifo_generator_top : entity is "fifo_generator_top";
 end serial_fifo_generator_0_0_fifo_generator_top;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_fifo_generator_top is
@@ -1577,8 +1537,6 @@ entity serial_fifo_generator_0_0_fifo_generator_v13_2_5_synth is
     din : in STD_LOGIC_VECTOR ( 7 downto 0 );
     wr_en : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_fifo_generator_v13_2_5_synth : entity is "fifo_generator_v13_2_5_synth";
 end serial_fifo_generator_0_0_fifo_generator_v13_2_5_synth;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_fifo_generator_v13_2_5_synth is
@@ -2239,8 +2197,6 @@ entity serial_fifo_generator_0_0_fifo_generator_v13_2_5 is
   attribute C_WR_PNTR_WIDTH_WRCH of serial_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 4;
   attribute C_WR_RESPONSE_LATENCY : integer;
   attribute C_WR_RESPONSE_LATENCY of serial_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is 1;
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of serial_fifo_generator_0_0_fifo_generator_v13_2_5 : entity is "fifo_generator_v13_2_5";
 end serial_fifo_generator_0_0_fifo_generator_v13_2_5;
 
 architecture STRUCTURE of serial_fifo_generator_0_0_fifo_generator_v13_2_5 is

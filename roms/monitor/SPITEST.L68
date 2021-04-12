@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 08/04/2021 21:12:03
+Created On: 12/04/2021 12:38:37
 
 00000000  =00F00009                  1  ACIAC    EQU $F00009
 00000000  =00F0000B                  2  ACIAD    EQU ACIAC+2
@@ -35,114 +35,168 @@ Created On: 08/04/2021 21:12:03
 00002000                            31  MAIN 
 00002000                            32  
 00002000  46FC 2700                 33      MOVE.W #INT_OFF,SR 
-00002004  6100 004E                 34      BSR INIT_ACIA
+00002004  6100 00F6                 34      BSR INIT_ACIA
 00002008                            35     
-00002008  47F9 0000210A             36      LEA.L TITLE1.L,A3     ; print START MESSAGE
-0000200E  6100 00D0                 37      BSR PSTR
+00002008  47F9 000021B2             36      LEA.L TITLE1.L,A3     ; print START MESSAGE
+0000200E  6100 0178                 37      BSR PSTR
 00002012                            38      
 00002012                            39      
-00002012  08F9 0000 00F40008        40      BSET.B #0,$F40008
-0000201A  08F9 0001 00F40008        41      BSET.B #1,$F40008
-00002022  08F9 0002 00F40008        42      BSET.B #2,$F40008
+00002012  08B9 0000 00F40008        40      BCLR.B #0,$F40008
+0000201A  08B9 0001 00F40008        41      BCLR.B #1,$F40008
+00002022  08B9 0002 00F40008        42      BCLR.B #2,$F40008
 0000202A                            43      
-0000202A  4EF9 00A00BB4             44      JMP $A00BB4
-00002030                            45      
-00002030                            46  *****************
-00002030                            47  
-00002030  1F00                      48  OUT1X        MOVE.B D0,-(SP)    ;SAVE D0
-00002032  C03C 000F                 49               AND.B #$F,D0
-00002036  0600 0030                 50               ADD.B #'0',D0
-0000203A  B03C 0039                 51               CMP.B #'9',D0
-0000203E  6302                      52               BLS.S   OUT1X1
-00002040  5E00                      53               ADD.B #7,D0
-00002042  6100 002A                 54  OUT1X1       BSR COUT
-00002046  101F                      55               MOVE.B (SP)+,D0    ;RESTORE D0
-00002048  4E75                      56               RTS
-0000204A                            57  
-0000204A  E818                      58  OUT2X        ROR.B #4,D0
-0000204C  61E2                      59               BSR.S OUT1X
-0000204E  E918                      60               ROL.B #4,D0
-00002050  60DE                      61               BRA OUT1X
-00002052                            62  
-00002052  4E75                      63          RTS
-00002054                            64  **************************************************   
-00002054                            65     ; INIT ACIA
-00002054                            66  
-00002054  13FC 0003 00F00009        67  INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
-0000205C  303C 0064                 68             MOVE.W #100,D0
-00002060  51C8 FFFE                 69             DBRA  D0,*
-00002064  13FC 0015 00F00009        70             MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
-0000206C  4E75                      71             RTS
-0000206E                            72  
-0000206E  0839 0001 00F00009        73  COUT      BTST.B #TDRE,ACIAC.L
-00002076  67F6                      74            BEQ.S  COUT
-00002078  13C0 00F0000B             75            MOVE.B D0,ACIAD.L
-0000207E  4E75                      76            RTS
-00002080                            77  
-00002080                            78  
-00002080  0839 0000 00F20009        79  CINS      BTST.B #RDRF,ACIA2C.L
-00002088  67F6                      80            BEQ.S  CINS
-0000208A  1039 00F2000B             81            MOVE.B ACIA2D.L,D0
-00002090  4E75                      82            RTS
-00002092                            83  
-00002092                            84  
-00002092  0839 0000 00F00009        85  CIN      BTST.B #RDRF,ACIAC.L
-0000209A  67F6                      86           BEQ.S  CIN
-0000209C  1039 00F0000B             87           MOVE.B ACIAD.L,D0
-000020A2  61CA                      88           BSR COUT
-000020A4  4E75                      89           RTS
-000020A6                            90           
-000020A6  0839 0001 00F30009        91  WOUT      BTST.B #TDRE,ACIA3C.L
-000020AE  6706                      92            BEQ.S  WRTS1
-000020B0  13C0 00F3000B             93            MOVE.B D0,ACIA3D.L
-000020B6  4E75                      94  WRTS1     RTS
-000020B8                            95            
-000020B8  0839 0000 00F30009        96  WIN      BTST.B #RDRF,ACIA3C.L
-000020C0  6708                      97           BEQ.S  WRTS2
-000020C2  1039 00F3000B             98           MOVE.B ACIA3D.L,D0
-000020C8  61A4                      99           BSR COUT
-000020CA  4E75                     100  WRTS2    RTS
-000020CC                           101  
-000020CC  0839 0000 00F00009       102  WCIN     BTST.B #RDRF,ACIAC.L
-000020D4  6708                     103           BEQ.S  WRTS3
-000020D6  1039 00F0000B            104           MOVE.B ACIAD.L,D0
-000020DC  61C8                     105           BSR WOUT
-000020DE  4E75                     106  WRTS3    RTS
-000020E0                           107           
-000020E0                           108  ; A3 POINTED TO FIRST BYTE
-000020E0                           109  ; END WITH 0
-000020E0                           110  
-000020E0  101B                     111  PSTR     MOVE.B (A3)+,D0
-000020E2  B03C 0000                112           CMP.B  #0,D0
-000020E6  6704                     113           BEQ.S PSTR1
-000020E8  6184                     114           BSR COUT
-000020EA  60F4                     115           BRA.S PSTR
-000020EC                           116  
-000020EC  4E75                     117  PSTR1    RTS
-000020EE                           118  
-000020EE  101B                     119  WSTR     MOVE.B (A3)+,D0
-000020F0  B03C 0000                120           CMP.B  #0,D0
-000020F4  6712                     121           BEQ.S WSTR1
-000020F6  0839 0001 00F30009       122  WOT      BTST.B #TDRE,ACIA3C.L
-000020FE  67F6                     123           BEQ.S  WOT
-00002100  13C0 00F3000B            124           MOVE.B D0,ACIA3D.L
-00002106  60E6                     125           BRA.S WSTR
-00002108                           126  
-00002108  4E75                     127  WSTR1    RTS
-0000210A                           128  
-0000210A= 0D 0A 53 50 49 20 4C     129  TITLE1 DC.B 13,10,'SPI Loader',13,10,0
+0000202A  0839 0005 00F40009        44  WAIT    BTST.B #5,$F40009
+00002032  67F6                      45          BEQ.S WAIT
+00002034                            46          
+00002034  47F9 000021F5             47          LEA.L READYSTR.L,A3 
+0000203A  6100 014C                 48          BSR PSTR
+0000203E                            49          
+0000203E  08F9 0002 00F40009        50          BSET.B #2,$F40009
+00002046  47F9 0000220B             51          LEA.L LOSTR.L,A3 
+0000204C  6100 013A                 52          BSR PSTR
+00002050                            53          
+00002050  13FC 0041 00F4000B        54          MOVE.B #$41,$F4000b
+00002058  08F9 0003 00F40008        55          BSET.B #3,$F40008 ; VALID
+00002060                            56          
+00002060  47F9 000021EC             57          LEA.L BUSYSTR.L,A3 
+00002066  6100 0120                 58          BSR PSTR
+0000206A                            59  
+0000206A  0839 0005 00F40009        60  WAIT2   BTST.B #5,$F40009 ; NOT READY
+00002072  66F6                      61          BNE.S WAIT2
+00002074                            62  
+00002074  08B9 0003 00F40009        63          Bclr.B #3,$F40009 ; NOT VALID
+0000207C                            64          
+0000207C  0839 0005 00F40009        65  WAIT3   BTST.B #5,$F40009 ; READY
+00002084  67F6                      66          BEQ.S WAIT3
+00002086                            67                  
+00002086  13FC 0001 00F4000B        68          MOVE.B #$01,$F4000b
+0000208E  08F9 0003 00F40009        69          BSET.B #3,$F40009 ; VALID
+00002096                            70          
+00002096  0839 0005 00F40009        71  WAIT4   BTST.B #5,$F40009 ; NOT READY
+0000209E  66F6                      72          BNE.S WAIT4
+000020A0                            73  
+000020A0  08B9 0003 00F40009        74          Bclr.B #3,$F40009 ; NOT VALID
+000020A8                            75   
+000020A8  0839 0005 00F40009        76  WAIT5   BTST.B #5,$F40009 ; READY
+000020B0  67F6                      77          BEQ.S WAIT5     
+000020B2                            78  
+000020B2  08B9 0002 00F40009        79          Bclr.B #2,$F40009
+000020BA  47F9 000021FF             80          LEA.L HISTR.L,A3 
+000020C0  6100 00C6                 81          BSR PSTR
+000020C4                            82    
+000020C4                            83          
+000020C4  43F9 00F4000C             84          LEA.L $F4000C, A1
+000020CA  3011                      85          MOVE.w (A1), d0
+000020CC                            86          
+000020CC  4EB9 000020D8             87          JSR OUT1X
+000020D2                            88          
+000020D2                            89      
+000020D2  4EF9 00A00BB4             90      JMP $A00BB4
+000020D8                            91      
+000020D8                            92  *****************
+000020D8                            93  
+000020D8  1F00                      94  OUT1X        MOVE.B D0,-(SP)    ;SAVE D0
+000020DA  C03C 000F                 95               AND.B #$F,D0
+000020DE  0600 0030                 96               ADD.B #'0',D0
+000020E2  B03C 0039                 97               CMP.B #'9',D0
+000020E6  6302                      98               BLS.S   OUT1X1
+000020E8  5E00                      99               ADD.B #7,D0
+000020EA  6100 002A                100  OUT1X1       BSR COUT
+000020EE  101F                     101               MOVE.B (SP)+,D0    ;RESTORE D0
+000020F0  4E75                     102               RTS
+000020F2                           103  
+000020F2  E818                     104  OUT2X        ROR.B #4,D0
+000020F4  61E2                     105               BSR.S OUT1X
+000020F6  E918                     106               ROL.B #4,D0
+000020F8  60DE                     107               BRA OUT1X
+000020FA                           108  
+000020FA  4E75                     109          RTS
+000020FC                           110  **************************************************   
+000020FC                           111     ; INIT ACIA
+000020FC                           112  
+000020FC  13FC 0003 00F00009       113  INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
+00002104  303C 0064                114             MOVE.W #100,D0
+00002108  51C8 FFFE                115             DBRA  D0,*
+0000210C  13FC 0015 00F00009       116             MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
+00002114  4E75                     117             RTS
+00002116                           118  
+00002116  0839 0001 00F00009       119  COUT      BTST.B #TDRE,ACIAC.L
+0000211E  67F6                     120            BEQ.S  COUT
+00002120  13C0 00F0000B            121            MOVE.B D0,ACIAD.L
+00002126  4E75                     122            RTS
+00002128                           123  
+00002128                           124  
+00002128  0839 0000 00F20009       125  CINS      BTST.B #RDRF,ACIA2C.L
+00002130  67F6                     126            BEQ.S  CINS
+00002132  1039 00F2000B            127            MOVE.B ACIA2D.L,D0
+00002138  4E75                     128            RTS
+0000213A                           129  
+0000213A                           130  
+0000213A  0839 0000 00F00009       131  CIN      BTST.B #RDRF,ACIAC.L
+00002142  67F6                     132           BEQ.S  CIN
+00002144  1039 00F0000B            133           MOVE.B ACIAD.L,D0
+0000214A  61CA                     134           BSR COUT
+0000214C  4E75                     135           RTS
+0000214E                           136           
+0000214E  0839 0001 00F30009       137  WOUT      BTST.B #TDRE,ACIA3C.L
+00002156  6706                     138            BEQ.S  WRTS1
+00002158  13C0 00F3000B            139            MOVE.B D0,ACIA3D.L
+0000215E  4E75                     140  WRTS1     RTS
+00002160                           141            
+00002160  0839 0000 00F30009       142  WIN      BTST.B #RDRF,ACIA3C.L
+00002168  6708                     143           BEQ.S  WRTS2
+0000216A  1039 00F3000B            144           MOVE.B ACIA3D.L,D0
+00002170  61A4                     145           BSR COUT
+00002172  4E75                     146  WRTS2    RTS
+00002174                           147  
+00002174  0839 0000 00F00009       148  WCIN     BTST.B #RDRF,ACIAC.L
+0000217C  6708                     149           BEQ.S  WRTS3
+0000217E  1039 00F0000B            150           MOVE.B ACIAD.L,D0
+00002184  61C8                     151           BSR WOUT
+00002186  4E75                     152  WRTS3    RTS
+00002188                           153           
+00002188                           154  ; A3 POINTED TO FIRST BYTE
+00002188                           155  ; END WITH 0
+00002188                           156  
+00002188  101B                     157  PSTR     MOVE.B (A3)+,D0
+0000218A  B03C 0000                158           CMP.B  #0,D0
+0000218E  6704                     159           BEQ.S PSTR1
+00002190  6184                     160           BSR COUT
+00002192  60F4                     161           BRA.S PSTR
+00002194                           162  
+00002194  4E75                     163  PSTR1    RTS
+00002196                           164  
+00002196  101B                     165  WSTR     MOVE.B (A3)+,D0
+00002198  B03C 0000                166           CMP.B  #0,D0
+0000219C  6712                     167           BEQ.S WSTR1
+0000219E  0839 0001 00F30009       168  WOT      BTST.B #TDRE,ACIA3C.L
+000021A6  67F6                     169           BEQ.S  WOT
+000021A8  13C0 00F3000B            170           MOVE.B D0,ACIA3D.L
+000021AE  60E6                     171           BRA.S WSTR
+000021B0                           172  
+000021B0  4E75                     173  WSTR1    RTS
+000021B2                           174  
+000021B2= 0D 0A 53 50 49 20 4C     175  TITLE1 DC.B 13,10,'SPI Loader',13,10,0
           6F 61 64 65 72 0D 0A  
           00                    
-00002119= 0D 0A 4C 6F 61 64 69     132  WAITING DC.B 13,10,'Loading',13,10,0
+000021C1= 0D 0A 4C 6F 61 64 69     178  WAITING DC.B 13,10,'Loading',13,10,0
           6E 67 0D 0A 00        
-00002125= 0D 0A 42 79 74 65 20     134  RECVD DC.B 13,10,'Byte Received',13,10,0
+000021CD= 0D 0A 42 79 74 65 20     180  RECVD DC.B 13,10,'Byte Received',13,10,0
           52 65 63 65 69 76 65  
           64 0D 0A 00           
-00002137= 0D 0A 43 68 65 63 6B     137  CHECKING DC.B 13,10,'Checking',13,10,0
+000021DF= 0D 0A 43 68 65 63 6B     183  CHECKING DC.B 13,10,'Checking',13,10,0
           69 6E 67 0D 0A 00     
-00002144= 0D 0A 42 75 73 79 0D     139  BUSYSTR DC.B 13,10,'Busy',13,10,0
+000021EC= 0D 0A 42 75 73 79 0D     185  BUSYSTR DC.B 13,10,'Busy',13,10,0
           0A 00                 
-0000214D                           141              END MAIN
+000021F5= 0D 0A 52 65 61 64 79     187  READYSTR DC.B 13,10,'Ready',13,10,0
+          0D 0A 00              
+000021FF= 0D 0A 43 53 20 48 69     189  HISTR DC.B 13,10,'CS High',13,10,0
+          67 68 0D 0A 00        
+0000220B= 0D 0A 43 53 20 6C 6F     191  LOSTR DC.B 13,10,'CS lo',13,10,0
+          0D 0A 00              
+00002215                           193  
+00002215                           194  
+00002215                           195              END MAIN
 
 No errors detected
 No warnings generated
@@ -158,38 +212,46 @@ ACIA3D              F3000B
 ACIAC               F00009
 ACIAD               F0000B
 BS                  8
-BUSYSTR             2144
-CHECKING            2137
-CIN                 2092
-CINS                2080
-COUT                206E
+BUSYSTR             21EC
+CHECKING            21DF
+CIN                 213A
+CINS                2128
+COUT                2116
 CR                  D
 ESC                 1B
-INIT_ACIA           2054
+HISTR               21FF
+INIT_ACIA           20FC
 INT_OFF             2700
 INT_ON              2000
 LF                  A
+LOSTR               220B
 MAIN                2000
-OUT1X               2030
-OUT1X1              2042
-OUT2X               204A
-PSTR                20E0
-PSTR1               20EC
+OUT1X               20D8
+OUT1X1              20EA
+OUT2X               20F2
+PSTR                2188
+PSTR1               2194
 RDRF                0
-RECVD               2125
+READYSTR            21F5
+RECVD               21CD
 RS                  1E
 SP                  20
 SUPERVISOR_BIT      5
 TDRE                1
-TITLE1              210A
+TITLE1              21B2
 TRACE_BIT           7
-WAITING             2119
-WCIN                20CC
-WIN                 20B8
-WOT                 20F6
-WOUT                20A6
-WRTS1               20B6
-WRTS2               20CA
-WRTS3               20DE
-WSTR                20EE
-WSTR1               2108
+WAIT                202A
+WAIT2               206A
+WAIT3               207C
+WAIT4               2096
+WAIT5               20A8
+WAITING             21C1
+WCIN                2174
+WIN                 2160
+WOT                 219E
+WOUT                214E
+WRTS1               215E
+WRTS2               2172
+WRTS3               2186
+WSTR                2196
+WSTR1               21B0

@@ -1,7 +1,7 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Thu Apr  8 07:15:11 2021
+-- Date        : Fri Apr  9 21:31:47 2021
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim d:/code/zed-68k/zed68k.srcs/sources_1/ip/pll/pll_sim_netlist.vhdl
 -- Design      : pll
@@ -17,6 +17,7 @@ entity pll_pll_clk_wiz is
   port (
     clk200 : out STD_LOGIC;
     clk166 : out STD_LOGIC;
+    clk25 : out STD_LOGIC;
     resetn : in STD_LOGIC;
     locked : out STD_LOGIC;
     clk_in : in STD_LOGIC
@@ -28,11 +29,11 @@ end pll_pll_clk_wiz;
 architecture STRUCTURE of pll_pll_clk_wiz is
   signal clk166_pll : STD_LOGIC;
   signal clk200_pll : STD_LOGIC;
+  signal clk25_pll : STD_LOGIC;
   signal clk_in_pll : STD_LOGIC;
   signal clkfbout_buf_pll : STD_LOGIC;
   signal clkfbout_pll : STD_LOGIC;
   signal reset_high : STD_LOGIC;
-  signal NLW_plle2_adv_inst_CLKOUT2_UNCONNECTED : STD_LOGIC;
   signal NLW_plle2_adv_inst_CLKOUT3_UNCONNECTED : STD_LOGIC;
   signal NLW_plle2_adv_inst_CLKOUT4_UNCONNECTED : STD_LOGIC;
   signal NLW_plle2_adv_inst_CLKOUT5_UNCONNECTED : STD_LOGIC;
@@ -43,6 +44,7 @@ architecture STRUCTURE of pll_pll_clk_wiz is
   attribute BOX_TYPE of clkin1_bufg : label is "PRIMITIVE";
   attribute BOX_TYPE of clkout1_buf : label is "PRIMITIVE";
   attribute BOX_TYPE of clkout2_buf : label is "PRIMITIVE";
+  attribute BOX_TYPE of clkout3_buf : label is "PRIMITIVE";
   attribute BOX_TYPE of plle2_adv_inst : label is "PRIMITIVE";
 begin
 clkf_buf: unisim.vcomponents.BUFG
@@ -65,6 +67,11 @@ clkout2_buf: unisim.vcomponents.BUFG
       I => clk166_pll,
       O => clk166
     );
+clkout3_buf: unisim.vcomponents.BUFG
+     port map (
+      I => clk25_pll,
+      O => clk25
+    );
 plle2_adv_inst: unisim.vcomponents.PLLE2_ADV
     generic map(
       BANDWIDTH => "OPTIMIZED",
@@ -78,7 +85,7 @@ plle2_adv_inst: unisim.vcomponents.PLLE2_ADV
       CLKOUT1_DIVIDE => 6,
       CLKOUT1_DUTY_CYCLE => 0.500000,
       CLKOUT1_PHASE => 0.000000,
-      CLKOUT2_DIVIDE => 1,
+      CLKOUT2_DIVIDE => 40,
       CLKOUT2_DUTY_CYCLE => 0.500000,
       CLKOUT2_PHASE => 0.000000,
       CLKOUT3_DIVIDE => 1,
@@ -107,7 +114,7 @@ plle2_adv_inst: unisim.vcomponents.PLLE2_ADV
       CLKINSEL => '1',
       CLKOUT0 => clk200_pll,
       CLKOUT1 => clk166_pll,
-      CLKOUT2 => NLW_plle2_adv_inst_CLKOUT2_UNCONNECTED,
+      CLKOUT2 => clk25_pll,
       CLKOUT3 => NLW_plle2_adv_inst_CLKOUT3_UNCONNECTED,
       CLKOUT4 => NLW_plle2_adv_inst_CLKOUT4_UNCONNECTED,
       CLKOUT5 => NLW_plle2_adv_inst_CLKOUT5_UNCONNECTED,
@@ -139,6 +146,7 @@ entity pll is
   port (
     clk200 : out STD_LOGIC;
     clk166 : out STD_LOGIC;
+    clk25 : out STD_LOGIC;
     resetn : in STD_LOGIC;
     locked : out STD_LOGIC;
     clk_in : in STD_LOGIC
@@ -153,6 +161,7 @@ inst: entity work.pll_pll_clk_wiz
      port map (
       clk166 => clk166,
       clk200 => clk200,
+      clk25 => clk25,
       clk_in => clk_in,
       locked => locked,
       resetn => resetn

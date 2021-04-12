@@ -82,11 +82,29 @@ port(
         gd_miso : in std_logic;
         gd_sclk  : out std_logic;
         
-        sw : in std_logic_vector(3 downto 0)
+        sw : in std_logic_vector(3 downto 0);
+        
+
+    scl_pup : out STD_LOGIC;
+    sda_pup : out STD_LOGIC;
+    ck_scl : inout STD_LOGIC;
+    ck_sda : inout STD_LOGIC
+    
+--    eth_mdio_mdc_mdc : out STD_LOGIC;
+--    eth_mdio_mdc_mdio_io : inout STD_LOGIC;
+--    eth_mii_col : in STD_LOGIC;
+--    eth_mii_crs : in STD_LOGIC;
+--    eth_mii_rst_n : out STD_LOGIC;
+--    eth_mii_rx_clk : in STD_LOGIC;
+--    eth_mii_rx_dv : in STD_LOGIC;
+--    eth_mii_rx_er : in STD_LOGIC;
+--    eth_mii_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
+--    eth_mii_tx_clk : in STD_LOGIC;
+--    eth_mii_tx_en : out STD_LOGIC;
+--    eth_mii_txd : out STD_LOGIC_VECTOR ( 3 downto 0 )
       
 	);
 end multicomp_wrapper;
-
 
 architecture Behavioral of multicomp_wrapper is
 
@@ -154,7 +172,11 @@ architecture Behavioral of multicomp_wrapper is
     
     signal mem_i_valid : std_logic;
     signal mem_i_valid_p : std_logic;
+    
 -- clocks 
+
+    signal clk25 : std_logic;
+    
 
     component pll
     port ( 
@@ -162,7 +184,8 @@ architecture Behavioral of multicomp_wrapper is
         clk_in : in std_logic;
         locked : out std_logic;
         clk200  : out std_logic;
-        clk166 : out std_logic
+        clk166 : out std_logic;
+        clk25: out std_logic
     );
     end component;
     
@@ -261,7 +284,8 @@ begin
         resetn  => resetn,
         locked => clk_locked,
         clk200 => clk200,
-        clk166 => clk166
+        clk166 => clk166,
+        clk25 => clk25
     );
      
 reset_proc : process
@@ -362,10 +386,17 @@ end process;
         gd_daz_sel => gd_daz_sel,
         gd_mosi => gd_mosi,
         gd_miso => gd_miso,
-        gd_sclk => gd_sclk
+        gd_sclk => gd_sclk,
+        
+        clk25 => clk25,
+        sda => ck_sda, --        // I2C Serial data line, pulled high at board level
+        scl => ck_scl
 
     );
     
+    sda_pup <= '1';
+    scl_pup <= '1';
+
     --serial
     
     io_serial_term_tx: serial_wrapper 

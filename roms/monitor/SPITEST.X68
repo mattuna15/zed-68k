@@ -37,9 +37,55 @@ MAIN
     BSR PSTR
     
     
-    BSET.B #0,$F40008
-    BSET.B #1,$F40008
-    BSET.B #2,$F40008
+    BCLR.B #0,$F40008
+    BCLR.B #1,$F40008
+    BCLR.B #2,$F40008
+    
+WAIT    BTST.B #5,$F40009
+        BEQ.S WAIT
+        
+        LEA.L READYSTR.L,A3 
+        BSR PSTR
+        
+        BSET.B #2,$F40009
+        LEA.L LOSTR.L,A3 
+        BSR PSTR
+        
+        MOVE.B #$41,$F4000b
+        BSET.B #3,$F40008 ; VALID
+        
+        LEA.L BUSYSTR.L,A3 
+        BSR PSTR
+
+WAIT2   BTST.B #5,$F40009 ; NOT READY
+        BNE.S WAIT2
+
+        Bclr.B #3,$F40009 ; NOT VALID
+        
+WAIT3   BTST.B #5,$F40009 ; READY
+        BEQ.S WAIT3
+                
+        MOVE.B #$01,$F4000b
+        BSET.B #3,$F40009 ; VALID
+        
+WAIT4   BTST.B #5,$F40009 ; NOT READY
+        BNE.S WAIT4
+
+        Bclr.B #3,$F40009 ; NOT VALID
+ 
+WAIT5   BTST.B #5,$F40009 ; READY
+        BEQ.S WAIT5     
+
+        Bclr.B #2,$F40009
+        LEA.L HISTR.L,A3 
+        BSR PSTR
+  
+        
+        LEA.L $F4000C, A1
+        MOVE.w (A1), d0
+        
+        JSR OUT1X
+        
     
     JMP $A00BB4
     
@@ -131,6 +177,11 @@ WAITING DC.B 13,10,'Loading',13,10,0
 RECVD DC.B 13,10,'Byte Received',13,10,0
 CHECKING DC.B 13,10,'Checking',13,10,0
 BUSYSTR DC.B 13,10,'Busy',13,10,0
+READYSTR DC.B 13,10,'Ready',13,10,0
+HISTR DC.B 13,10,'CS High',13,10,0
+LOSTR DC.B 13,10,'CS lo',13,10,0
+
+
             END MAIN
 
 *~Font name~Courier New~
