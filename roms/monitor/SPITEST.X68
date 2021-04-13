@@ -37,41 +37,38 @@ MAIN
     BSR PSTR
     
     
-    BCLR.B #0,$F40008
-    BCLR.B #1,$F40008
-    BCLR.B #2,$F40008
-    
-WAIT    BTST.B #5,$F40009
-        BEQ.S WAIT
+        BCLR.B #0,$F40009
+        BCLR.B #1,$F40009
+        BCLR.B #2,$F40009
+        
+        LEA.L $F4000C, A1
         
         LEA.L READYSTR.L,A3 
         BSR PSTR
+    
+WAIT    BTST.B #5,$F40009
+        BEQ.S WAIT
         
         BSET.B #2,$F40009
         LEA.L LOSTR.L,A3 
         BSR PSTR
         
         MOVE.B #$41,$F4000b
-        BSET.B #3,$F40008 ; VALID
-        
-        LEA.L BUSYSTR.L,A3 
-        BSR PSTR
-
-WAIT2   BTST.B #5,$F40009 ; NOT READY
-        BNE.S WAIT2
+        BSET.B #3,$F40009 ; VALID
 
         Bclr.B #3,$F40009 ; NOT VALID
-        
+
 WAIT3   BTST.B #5,$F40009 ; READY
         BEQ.S WAIT3
+        
+        LEA.L $F4000C, A1
+        MOVE.b (A1), d0
                 
         MOVE.B #$01,$F4000b
         BSET.B #3,$F40009 ; VALID
         
-WAIT4   BTST.B #5,$F40009 ; NOT READY
-        BNE.S WAIT4
-
         Bclr.B #3,$F40009 ; NOT VALID
+       
  
 WAIT5   BTST.B #5,$F40009 ; READY
         BEQ.S WAIT5     
@@ -81,13 +78,15 @@ WAIT5   BTST.B #5,$F40009 ; READY
         BSR PSTR
   
         
-        LEA.L $F4000C, A1
-        MOVE.w (A1), d0
+        JSR OUT2X
+        MOVE.b (A1), d0
+        JSR OUT2X
         
-        JSR OUT1X
+        MOVE.L #$9F0000,$000000
+        MOVE.L #$9F0000,SP
         
     
-    JMP $A00BB4
+        JMP $A00BB4
     
 *****************
 

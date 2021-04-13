@@ -42,7 +42,7 @@ end spi_master;
 
 architecture structural of spi_master is
 
-   constant CLK_PERIOD_CYCLES : integer := 21;            -- 400 kHz
+   constant CLK_PERIOD_CYCLES : integer := 50;            -- 400 kHz
 
    signal timer      : std_logic_vector(6 downto 0);   -- Free running timer up to 128.
    signal timer_next : std_logic_vector(6 downto 0);   -- Time for next event
@@ -70,7 +70,13 @@ architecture structural of spi_master is
    attribute mark_debug of counter    : signal is DEBUG_MODE;
    attribute mark_debug of timer      : signal is DEBUG_MODE;
    attribute mark_debug of timer_next : signal is DEBUG_MODE;
+   
+   attribute dont_touch : string;
 
+    attribute dont_touch of state : signal is "true";
+    attribute dont_touch of valid_i : signal is "true";
+    attribute dont_touch of ready_o : signal is "true";
+    
 begin
 
    -- Debug
@@ -79,7 +85,7 @@ begin
    spi_miso_s <= spi_miso_i;
 
 
-   ready_o <= '1' when state = IDLE_ST else '0';
+   
 
    data_o <= data_r;
 
@@ -92,7 +98,8 @@ begin
       if rising_edge(clk_i) then
          case state is
             when IDLE_ST =>
-               if valid_i = '1' and ready_o = '1' then
+               ready_o <= '1';
+               if valid_i = '1' then
                   data_r     <= data_i;
                   counter    <= 7;
                   spi_mosi_o <= data_i(7);
@@ -101,6 +108,7 @@ begin
                end if;
 
             when LOW_ST =>
+               ready_o <= '0';
                if timer = timer_next then
                   -- input data is captured on rising edge of SCLK.
                   data_r     <= data_r(6 downto 0) & spi_miso_i;

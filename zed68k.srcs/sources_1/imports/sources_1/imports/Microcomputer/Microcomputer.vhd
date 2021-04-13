@@ -65,15 +65,15 @@ entity Microcomputer is
         gd_gpu_sel : out std_logic;
         gd_sd_sel : out std_logic;
         gd_daz_sel : out std_logic;
-        gd_mosi : out std_logic;
-        gd_miso : in std_logic;
-        gd_sclk  : out std_logic;
         
         clk25 : in std_logic;
         sda :inout std_logic; --        // I2C Serial data line, pulled high at board level
-        scl : inout std_logic -- 
+        scl : inout std_logic; -- 
 		
-
+		spi_ctrl : inout std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+        spi_DataIn :  inout std_logic_vector(7 downto 0);
+        spi_DataOut : inout std_logic_vector(7 downto 0)
+    
 	);
 	
 end Microcomputer;
@@ -91,10 +91,7 @@ architecture struct of Microcomputer is
     signal n_basRom3CS					: std_logic :='1';
     signal n_basRom4CS					: std_logic :='1';
 
-    signal spi_ctrl : std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
-    signal spi_DataIn :  std_logic_vector(7 downto 0);
-    signal spi_DataOut :  std_logic_vector(7 downto 0);
-    
+
     signal    cpuAddress	    :  std_logic_vector(31 downto 0);
 	signal	  cpuDataOut		:  std_logic_vector(15 downto 0);
 	signal    cpuDataIn		:  std_logic_vector(15 downto 0);
@@ -158,21 +155,7 @@ begin
 --		);
 
 
-    -- rtc
-    
---    rtc :  mcp7940n
---        port map (
---        clk => clk25, --      // System clock, wr_ctrl should be synchronous to this
---        reset => not n_reset,  --    // 1:reset - puts I2C bus into idle state
---        wr => '0',  --       // write enable
---        addr => "111",   --   // 0-6:writing, 7:circular reading111
---        data => X"00", --       // data to write at addr
---        tick => rtc_tick,    --   // ticks every second -> 1: datetime_o is valid
---        datetime_o => rtc_data, -- // BCD {YY,MM,DD, WD, HH,MM,SS}
---        sda => sda, --        // I2C Serial data line, pulled high at board level
---        scl => scl --        // I2C Serial clock line, pulled high at board level
---    );
-    
+--rtc
   rtc : ENTITY work.pmod_real_time_clock 
   GENERIC map (
     sys_clk_freq => 100_000_000)              --input clock speed from user logic in Hz
@@ -250,25 +233,6 @@ timer: entity work.timer
 	 count_up_millis => milliseconds,
 	 irq        => timer_int
   ); 
- 
- 
-spi1: entity work.spi_master 
-  PORT map (
-      clk_i      => sys_clk,
-      rst_i      => not n_reset, 
-
-      -- CPU interface
-      valid_i    => spi_ctrl(3),
-      ready_o    => spi_ctrl(5),
-      data_i     => spi_DataOut,
-      data_o     => spi_DataIn,
-
-      -- Connect to SD card
-      spi_sclk_o => gd_sclk,       -- sd_sck_io
-      spi_mosi_o => gd_mosi,       -- sd_cmd_io
-      spi_miso_i => gd_miso        -- sd_dat_io(0)
-   );
-
 
  
 -- ____________________________________________________________________________________

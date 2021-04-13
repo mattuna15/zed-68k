@@ -264,6 +264,7 @@ attribute dont_touch of reset_proc : label is "true";
 attribute dont_touch of valid_flag : label is "true";
 attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
+attribute dont_touch of spi1 : label is "true";
 
       signal ramDataOut: std_logic_vector(15 downto 0);
       signal initial_stack: std_logic_vector(31 downto 0) := x"009F0000";
@@ -272,6 +273,11 @@ attribute dont_touch of mem_i_valid_p : signal is "true";
       signal memDataOut: std_logic_vector(15 downto 0);
       signal mem_ack:std_logic;
       signal mem_wr_ack : std_logic;
+      
+    signal spi_ctrl : std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+    signal spi_DataIn :  std_logic_vector(7 downto 0);
+    signal spi_DataOut :  std_logic_vector(7 downto 0);
+    
 
 begin
    --------------------------------------------------
@@ -384,13 +390,14 @@ end process;
         gd_gpu_sel => gd_gpu_sel,
         gd_sd_sel => gd_sd_sel,
         gd_daz_sel => gd_daz_sel,
-        gd_mosi => gd_mosi,
-        gd_miso => gd_miso,
-        gd_sclk => gd_sclk,
         
         clk25 => clk25,
         sda => ck_sda, --        // I2C Serial data line, pulled high at board level
-        scl => ck_scl
+        scl => ck_scl,
+        
+        spi_ctrl => spi_ctrl, -- 0-2 address - 3 enable - 4 busy/ready
+        spi_DataIn => spi_DataIn,
+        spi_DataOut => spi_DataOut
 
     );
     
@@ -398,6 +405,24 @@ end process;
     scl_pup <= '1';
 
     --serial
+    
+    spi1: entity work.spi_master 
+  PORT map (
+      clk_i      => sys_clock,
+      rst_i      => not sys_resetn, 
+
+      -- CPU interface
+      valid_i    => spi_ctrl(3),
+      ready_o    => spi_ctrl(5),
+      data_i     => spi_DataOut,
+      data_o     => spi_DataIn,
+
+      -- Connect to SD card
+      spi_sclk_o => gd_sclk,       -- sd_sck_io
+      spi_mosi_o => gd_mosi,       -- sd_cmd_io
+      spi_miso_i => gd_miso        -- sd_dat_io(0)
+   );
+
     
     io_serial_term_tx: serial_wrapper 
         port map (
