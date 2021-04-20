@@ -1,5 +1,4 @@
 
-// file: pll.v
 // 
 // (c) Copyright 2008 - 2013 Xilinx, Inc. All rights reserved.
 // 
@@ -65,34 +64,22 @@
 //----------------------------------------------------------------------------
 // __primary_________100.000____________0.010
 
-`timescale 1ps/1ps
+// The following must be inserted into your Verilog file for this
+// core to be instantiated. Change the instance name and port connections
+// (in parentheses) to your own signal names.
 
-(* CORE_GENERATION_INFO = "pll,clk_wiz_v6_0_5_0_0,{component_name=pll,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=PLL,num_out_clk=3,clkin1_period=10.000,clkin2_period=10.000,use_power_down=false,use_reset=true,use_locked=true,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}" *)
+//----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG
 
-module pll 
- (
-  // Clock out ports
-  output        clk200,
-  output        clk166,
-  output        clk50,
-  // Status and control signals
-  input         resetn,
-  output        locked,
- // Clock in ports
-  input         clk_in
- );
+  pll instance_name
+   (
+    // Clock out ports
+    .clk200(clk200),     // output clk200
+    .clk166(clk166),     // output clk166
+    .clk50(clk50),     // output clk50
+    // Status and control signals
+    .resetn(resetn), // input resetn
+    .locked(locked),       // output locked
+   // Clock in ports
+    .clk_in(clk_in));      // input clk_in
 
-  pll_clk_wiz inst
-  (
-  // Clock out ports  
-  .clk200(clk200),
-  .clk166(clk166),
-  .clk50(clk50),
-  // Status and control signals               
-  .resetn(resetn), 
-  .locked(locked),
- // Clock in ports
-  .clk_in(clk_in)
-  );
-
-endmodule
+// INST_TAG_END ------ End INSTANTIATION Template ---------

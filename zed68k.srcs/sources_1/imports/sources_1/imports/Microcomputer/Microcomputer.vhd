@@ -58,9 +58,7 @@ entity Microcomputer is
         esp_txd : out std_logic_vector(7 downto 0);
         esp_rden : out std_logic;
         esp_wren : out std_logic;
-        
-        ps2clk :inout std_logic;
-        ps2data :inout std_logic;
+       
         
         gd_gpu_sel : out std_logic;
         gd_sd_sel : out std_logic;
@@ -72,7 +70,13 @@ entity Microcomputer is
 		
 		spi_ctrl : inout std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
         spi_DataIn :  inout std_logic_vector(7 downto 0);
-        spi_DataOut : inout std_logic_vector(7 downto 0)
+        spi_DataOut : inout std_logic_vector(7 downto 0);
+        
+        sdCardDataOut				: in std_logic_vector(7 downto 0);
+        sdStatus: inout std_logic_vector(7 downto 0) := (others => '0'); --f30009
+        sdControl: inout std_logic_vector(7 downto 0); --f3000a
+    
+        sdAddress: out std_logic_vector(31 downto 0) --f30000-2
     
 	);
 	
@@ -133,7 +137,11 @@ architecture struct of Microcomputer is
 	
 	attribute dont_touch : string;
     attribute dont_touch of rtc : label is "true";
-	
+    
+    signal sd_rden : std_logic;
+    signal sd_wren : std_logic;
+    signal sd_ack  : std_logic;
+	signal n_sdCardCS : std_logic;
 	    
 	
 begin
@@ -188,26 +196,26 @@ begin
 );
 		
 ----f30000/1 keyboard
-keyboard: entity work.KeyboardMC 
+--keyboard: entity work.KeyboardMC 
 
-	port map (
-		n_reset	=> n_reset,
-		clk    	=> sys_clk,
-		n_wr	=> '1',
-		n_rd	=> not cpu_r_w and not keyboardCS,
-		regSel	=> '1',
-		--dataIn	: in  std_logic_vector(7 downto 0);
-		dataOut	=>  key_pressed_ascii,
-		n_int		=> ps2_int, 
-		n_rts		=> open,
+--	port map (
+--		n_reset	=> n_reset,
+--		clk    	=> sys_clk,
+--		n_wr	=> '1',
+--		n_rd	=> not cpu_r_w and not keyboardCS,
+--		regSel	=> '1',
+--		--dataIn	: in  std_logic_vector(7 downto 0);
+--		dataOut	=>  key_pressed_ascii,
+--		n_int		=> ps2_int, 
+--		n_rts		=> open,
 		
-		-- Keyboard signals
-		ps2Clk	=> ps2clk,
-		ps2Data	=> ps2data,
+--		-- Keyboard signals
+--		ps2Clk	=> ps2clk,
+--		ps2Data	=> ps2data,
  
-		-- FN keys passed out as general signals (momentary and toggled versions)
-		FNkeys =>open,
-		FNtoggledKeys	=> open);
+--		-- FN keys passed out as general signals (momentary and toggled versions)
+--		FNkeys =>open,
+--		FNtoggledKeys	=> open);
 
 ----f30002-26
 --mouse: entity work.ps2_mouse 
@@ -364,6 +372,16 @@ timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0'
 rtcCS <= '1' when cpuAddress >= x"f30040" and cpuAddress < x"f30048" else '0';
 -- keyboard
 keyboardCS <= '0' when cpuAddress = x"f30000" else '1';
+
+-- sd 
+n_sdCardCS <= '0' when cpuAddress >= x"f40020" and cpuAddress <= x"f40030" else '1';
+sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40022" and cpu_r_w = '0';
+sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40024" and cpu_r_w = '0';
+sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40020" or cpuAddress = x"f40021") and cpu_r_w = '0' and cpu_lds = '0';
+sd_rden <= sdControl(2);
+sd_wren <= sdControl(3);
+
+
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
  
@@ -395,6 +413,12 @@ rtc_data(31 downto 24)
 when rtcCS = '1' and cpuAddress = X"f30042" and cpu_r_w ='1' and cpu_uds = '0' else
 rtc_data(15 downto 8)
 when rtcCS = '1' and cpuAddress = X"f30040" and cpu_r_w ='1' and cpu_uds = '0' else
+sdAddress(31 downto 24)
+when cpuAddress = x"f40022" and cpu_r_w = '1' and cpu_uds = '0' else 
+sdAddress(15 downto 8)
+when cpuAddress = x"f40024" and cpu_r_w = '1' and cpu_uds = '0' else 
+sdStatus
+when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
@@ -443,12 +467,22 @@ rtc_data(23 downto 16)
 when rtcCS = '1' and (cpuAddress = X"f30042" or cpuAddress = X"F30043") and cpu_r_w ='1' and cpu_lds = '0' else
 rtc_data(7 downto 0)
 when rtcCS = '1' and (cpuAddress = X"f30040" or cpuAddress = X"F30041") and cpu_r_w ='1' and cpu_lds = '0' else
+sdCardDataOut
+when (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '1' and cpu_lds = '0' else
+sdControl
+when (cpuAddress = x"f40020" or cpuAddress = x"f40021") and cpu_r_w = '1' and cpu_lds = '0' else
+sdAddress(23 downto 16)
+when (cpuAddress = x"f40022" or cpuAddress = x"f40023")  and cpu_r_w = '1' and cpu_lds = '0' else 
+sdAddress(7 downto 0)
+when (cpuAddress = x"f40024" or cpuAddress = x"f40025") and cpu_r_w = '1' and cpu_lds = '0' else 
 X"00" when cpu_lds = '1' ;
 
 
 cpu_dtack <= 
 not ram_ack when ram_cen = '0' else 
 not rtc_ack when rtcCS = '1' else
+sd_ack when
+(cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' else
 '0';
     
 end;

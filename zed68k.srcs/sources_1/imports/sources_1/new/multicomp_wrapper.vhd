@@ -69,8 +69,8 @@ port(
       
       ddr3_reset_n :out std_logic;
       
-      ps2clk :inout std_logic;
-      ps2data :inout std_logic;
+--      ps2clk :inout std_logic;
+--      ps2data :inout std_logic;
       
       --dazzler
       
@@ -81,6 +81,15 @@ port(
         gd_mosi : out std_logic;
         gd_miso : in std_logic;
         gd_sclk  : out std_logic;
+        
+         SD_CSn: inout std_logic; -- #IO_L14P_T2_SRCC_35 Sch=sd_reset or DAT3
+         SD_CD : in std_logic;  --#IO_L9N_T1_DQS_AD7N_35 Sch=sd_cd
+         SD_SCK : out std_logic; --
+         SD_CMD : out std_logic; -- #IO_L16N_T2_35 Sch=sd_cmd
+         SD_DAT0 : in std_logic; -- #IO_L16P_T2_35 Sch=sd_dat[0]
+         SD_DAT1 : inout std_logic;-- #IO_L18N_T2_35 Sch=sd_dat[1]
+         SD_DAT2: inout std_logic;-- #IO_L18P_T2_35 Sch=sd_dat[2]
+         SD_WP : inout std_logic;--
         
         sw : in std_logic_vector(3 downto 0);
         
@@ -175,7 +184,7 @@ architecture Behavioral of multicomp_wrapper is
     
 -- clocks 
 
-    signal clk25 : std_logic;
+    signal clk50 : std_logic;
     
 
     component pll
@@ -185,7 +194,7 @@ architecture Behavioral of multicomp_wrapper is
         locked : out std_logic;
         clk200  : out std_logic;
         clk166 : out std_logic;
-        clk25: out std_logic
+        clk50: out std_logic
     );
     end component;
     
@@ -278,6 +287,19 @@ attribute dont_touch of spi1 : label is "true";
     signal spi_DataIn :  std_logic_vector(7 downto 0);
     signal spi_DataOut :  std_logic_vector(7 downto 0);
     
+    
+    
+    -- sd
+    
+    signal sdCardDataOut				: std_logic_vector(7 downto 0);
+    signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f30009
+    signal sdControl: std_logic_vector(7 downto 0); --f3000a
+    signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000-2
+    signal sd_rden : std_logic;
+    signal sd_wren : std_logic;
+    signal sd_ack  : std_logic;
+
+
 
 begin
    --------------------------------------------------
@@ -291,7 +313,7 @@ begin
         locked => clk_locked,
         clk200 => clk200,
         clk166 => clk166,
-        clk25 => clk25
+        clk50 => clk50
     );
      
 reset_proc : process
@@ -384,21 +406,23 @@ end process;
         esp_rden => esp_rden,
         esp_wren => esp_wren,
         
-        ps2clk => ps2clk,
-        ps2data => ps2data,
-        
         gd_gpu_sel => gd_gpu_sel,
-        gd_sd_sel => gd_sd_sel,
+        gd_sd_sel => open,
         gd_daz_sel => gd_daz_sel,
         
-        clk25 => clk25,
+        clk25 => '0',
         sda => ck_sda, --        // I2C Serial data line, pulled high at board level
         scl => ck_scl,
         
         spi_ctrl => spi_ctrl, -- 0-2 address - 3 enable - 4 busy/ready
         spi_DataIn => spi_DataIn,
-        spi_DataOut => spi_DataOut
-
+        spi_DataOut => spi_DataOut,
+        
+        --
+        sdCardDataOut => sdCardDataOut,
+        sdAddress => sdAddress,
+        sdStatus => sdStatus,
+        sdControl => sdControl
     );
     
     sda_pup <= '1';
@@ -422,6 +446,57 @@ end process;
       spi_mosi_o => gd_mosi,       -- sd_cmd_io
       spi_miso_i => gd_miso        -- sd_dat_io(0)
    );
+   
+   
+   -- sd
+      
+      sd_rden <= sdControl(2);
+      sd_wren <= sdControl(3);
+      led(2) <= sdStatus(5); -- drive led
+       
+       --spi mode please.
+         
+       SD_DAT1 <= '1';
+       SD_DAT2 <= '1';
+       LED(1) <= not SD_CD; -- disk light
+
+
+sdcard: entity work.sd_controller 
+    port map   (
+	cs =>   SD_CSn ,			-- To SD card
+	mosi => SD_CMD,			-- To SD card
+	miso => SD_DAT0,			-- From SD card 
+	sclk => SD_SCK,			-- To SD card
+	card_present => not SD_CD,	-- From socket - can be fixed to '1' if no switch is present
+	card_write_prot => SD_WP,	-- From socket - can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
+
+	rd => sd_rden,				-- Trigger single block read
+	rd_multiple => '0',		-- Trigger multiple block read
+	dout => sdCardDataOut,	-- Data from SD card
+	dout_avail => sdStatus(4),		-- Set when dout is valid
+	dout_taken => sdControl(1),		-- Acknowledgement for dout
+	
+	wr => sd_wren,				-- Trigger single block write
+	wr_multiple => '0',		-- Trigger multiple block write
+	din => cpuDataOut(7 downto 0),	-- Data to SD card
+	din_valid => sdControl(0),		-- Set when din is valid
+	din_taken => sd_ack,		-- Ackowledgement for din
+	
+	addr => sdAddress,	-- Block address
+	erase_count => x"00", -- For wr_multiple only
+
+	sd_error => sdStatus(0),		-- '1' if an error occurs, reset on next RD or WR (just check for error code)
+	sd_busy => sdStatus(5),		-- '0' if a RD or WR can be accepted
+	sd_error_code => sdStatus (3 downto 1), -- See above, 000=No error
+
+	reset => not sys_resetn,	-- System reset
+	clk => clk50,		-- twice the SPI clk (max 50MHz)
+	
+	-- Optional debug outputs
+	sd_type => sdStatus(7 downto 6),	-- Card status (see above)
+	sd_fsm => open -- FSM state (see block at end of file)
+);
+
 
     
     io_serial_term_tx: serial_wrapper 

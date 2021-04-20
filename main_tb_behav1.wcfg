@@ -3,325 +3,153 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="RTC_TB_behav.wdb" id="1">
+      <db_ref path="testbench_sd_spi_behav.wdb" id="1">
          <top_modules>
-            <top_module name="RTC_TB" />
             <top_module name="glbl" />
+            <top_module name="testbench_sd_spi" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="100296630000fs"></ZoomStartTime>
-      <ZoomEndTime time="100342230001fs"></ZoomEndTime>
-      <Cursor1Time time="100324130000fs"></Cursor1Time>
+      <ZoomStartTime time="36581669002fs"></ZoomStartTime>
+      <ZoomEndTime time="36643182200fs"></ZoomEndTime>
+      <Cursor1Time time="36632930000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="176"></NameColumnWidth>
-      <ValueColumnWidth column_width="141"></ValueColumnWidth>
+      <ValueColumnWidth column_width="137"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="76" />
-   <wvobject fp_name="/RTC_TB/main_clk" type="logic">
-      <obj_property name="ElementShortName">main_clk</obj_property>
-      <obj_property name="ObjectShortName">main_clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/resetn" type="logic">
-      <obj_property name="ElementShortName">resetn</obj_property>
-      <obj_property name="ObjectShortName">resetn</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/scl" type="logic">
-      <obj_property name="ElementShortName">scl</obj_property>
-      <obj_property name="ObjectShortName">scl</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/sda" type="logic">
-      <obj_property name="ElementShortName">sda</obj_property>
-      <obj_property name="ObjectShortName">sda</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/Clk1Hz" type="logic">
-      <obj_property name="ElementShortName">Clk1Hz</obj_property>
-      <obj_property name="ObjectShortName">Clk1Hz</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/Clk4096Hz" type="logic">
-      <obj_property name="ElementShortName">Clk4096Hz</obj_property>
-      <obj_property name="ObjectShortName">Clk4096Hz</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/Clk8192Hz" type="logic">
-      <obj_property name="ElementShortName">Clk8192Hz</obj_property>
-      <obj_property name="ObjectShortName">Clk8192Hz</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/Clk32768Hz" type="logic">
-      <obj_property name="ElementShortName">Clk32768Hz</obj_property>
-      <obj_property name="ObjectShortName">Clk32768Hz</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/osc32k" type="logic">
-      <obj_property name="ElementShortName">osc32k</obj_property>
-      <obj_property name="ObjectShortName">osc32k</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/seconds" type="array">
-      <obj_property name="ElementShortName">seconds[6:0]</obj_property>
-      <obj_property name="ObjectShortName">seconds[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/minutes" type="array">
-      <obj_property name="ElementShortName">minutes[6:0]</obj_property>
-      <obj_property name="ObjectShortName">minutes[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/hours" type="array">
-      <obj_property name="ElementShortName">hours[4:0]</obj_property>
-      <obj_property name="ObjectShortName">hours[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/am_pm" type="logic">
-      <obj_property name="ElementShortName">am_pm</obj_property>
-      <obj_property name="ObjectShortName">am_pm</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/weekday" type="array">
-      <obj_property name="ElementShortName">weekday[2:0]</obj_property>
-      <obj_property name="ObjectShortName">weekday[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/day" type="array">
-      <obj_property name="ElementShortName">day[5:0]</obj_property>
-      <obj_property name="ObjectShortName">day[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/month" type="array">
-      <obj_property name="ElementShortName">month[4:0]</obj_property>
-      <obj_property name="ObjectShortName">month[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/year" type="array">
-      <obj_property name="ElementShortName">year[7:0]</obj_property>
-      <obj_property name="ObjectShortName">year[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/valid_o" type="logic">
-      <obj_property name="ElementShortName">valid_o</obj_property>
-      <obj_property name="ObjectShortName">valid_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/counter" type="array">
-      <obj_property name="ElementShortName">counter[31:0]</obj_property>
-      <obj_property name="ObjectShortName">counter[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/state" type="other">
-      <obj_property name="ElementShortName">state</obj_property>
-      <obj_property name="ObjectShortName">state</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/set_clk_ena" type="logic">
-      <obj_property name="ElementShortName">set_clk_ena</obj_property>
-      <obj_property name="ObjectShortName">set_clk_ena</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/read_en" type="logic">
-      <obj_property name="ElementShortName">read_en</obj_property>
-      <obj_property name="ObjectShortName">read_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_ena" type="logic">
-      <obj_property name="ElementShortName">i2c_ena</obj_property>
-      <obj_property name="ObjectShortName">i2c_ena</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_addr" type="array">
-      <obj_property name="ElementShortName">i2c_addr[6:0]</obj_property>
-      <obj_property name="ObjectShortName">i2c_addr[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_rw" type="logic">
-      <obj_property name="ElementShortName">i2c_rw</obj_property>
-      <obj_property name="ObjectShortName">i2c_rw</obj_property>
+   <WVObjectSize size="33" />
+   <wvobject fp_name="/testbench_sd_spi/miso" type="logic">
+      <obj_property name="ElementShortName">miso</obj_property>
+      <obj_property name="ObjectShortName">miso</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/rd" type="logic">
+      <obj_property name="ElementShortName">rd</obj_property>
+      <obj_property name="ObjectShortName">rd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/rd_multiple" type="logic">
+      <obj_property name="ElementShortName">rd_multiple</obj_property>
+      <obj_property name="ObjectShortName">rd_multiple</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/wr" type="logic">
+      <obj_property name="ElementShortName">wr</obj_property>
+      <obj_property name="ObjectShortName">wr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/wr_multiple" type="logic">
+      <obj_property name="ElementShortName">wr_multiple</obj_property>
+      <obj_property name="ObjectShortName">wr_multiple</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/addr" type="array">
+      <obj_property name="ElementShortName">addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/din" type="array">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/din_valid" type="logic">
+      <obj_property name="ElementShortName">din_valid</obj_property>
+      <obj_property name="ObjectShortName">din_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/dout_taken" type="logic">
+      <obj_property name="ElementShortName">dout_taken</obj_property>
+      <obj_property name="ObjectShortName">dout_taken</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/cs" type="logic">
+      <obj_property name="ElementShortName">cs</obj_property>
+      <obj_property name="ObjectShortName">cs</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/mosi" type="logic">
+      <obj_property name="ElementShortName">mosi</obj_property>
+      <obj_property name="ObjectShortName">mosi</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/sclk" type="logic">
+      <obj_property name="ElementShortName">sclk</obj_property>
+      <obj_property name="ObjectShortName">sclk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/sd_state" type="array">
+      <obj_property name="ElementShortName">sd_state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sd_state[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/sd_fsm" type="array">
+      <obj_property name="ElementShortName">sd_fsm[7:0]</obj_property>
+      <obj_property name="ObjectShortName">sd_fsm[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/sd_error" type="logic">
+      <obj_property name="ElementShortName">sd_error</obj_property>
+      <obj_property name="ObjectShortName">sd_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/sd_error_code" type="array">
+      <obj_property name="ElementShortName">sd_error_code[2:0]</obj_property>
+      <obj_property name="ObjectShortName">sd_error_code[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/sd_busy" type="logic">
+      <obj_property name="ElementShortName">sd_busy</obj_property>
+      <obj_property name="ObjectShortName">sd_busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/din_taken" type="logic">
+      <obj_property name="ElementShortName">din_taken</obj_property>
+      <obj_property name="ObjectShortName">din_taken</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/dout" type="array">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/dout_avail" type="logic">
+      <obj_property name="ElementShortName">dout_avail</obj_property>
+      <obj_property name="ObjectShortName">dout_avail</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/clocks" type="other">
+      <obj_property name="ElementShortName">clocks</obj_property>
+      <obj_property name="ObjectShortName">clocks</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/clk_pol" type="logic">
+      <obj_property name="ElementShortName">clk_pol</obj_property>
+      <obj_property name="ObjectShortName">clk_pol</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/rx_byte" type="array">
+      <obj_property name="ElementShortName">rx_byte[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_byte[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/rx_bit_counter" type="other">
+      <obj_property name="ElementShortName">rx_bit_counter</obj_property>
+      <obj_property name="ObjectShortName">rx_bit_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/wr_ack" type="logic">
-      <obj_property name="ElementShortName">wr_ack</obj_property>
-      <obj_property name="ObjectShortName">wr_ack</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/rx_byte_counter" type="other">
+      <obj_property name="ElementShortName">rx_byte_counter</obj_property>
+      <obj_property name="ObjectShortName">rx_byte_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/valid_o" type="logic">
-      <obj_property name="ElementShortName">valid_o</obj_property>
-      <obj_property name="ObjectShortName">valid_o</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/tx_byte" type="array">
+      <obj_property name="ElementShortName">tx_byte[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tx_byte[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/data_rd" type="array">
-      <obj_property name="ElementShortName">data_rd[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_rd[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/tx_bit_counter" type="other">
+      <obj_property name="ElementShortName">tx_bit_counter</obj_property>
+      <obj_property name="ObjectShortName">tx_bit_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/data_wr" type="array">
-      <obj_property name="ElementShortName">data_wr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_wr[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/tx_byte_counter" type="other">
+      <obj_property name="ElementShortName">tx_byte_counter</obj_property>
+      <obj_property name="ObjectShortName">tx_byte_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_data_wr" type="array">
-      <obj_property name="ElementShortName">i2c_data_wr[7:0]</obj_property>
-      <obj_property name="ObjectShortName">i2c_data_wr[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/clk_period" type="other">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
    </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_data_rd" type="array">
-      <obj_property name="ElementShortName">i2c_data_rd[7:0]</obj_property>
-      <obj_property name="ObjectShortName">i2c_data_rd[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/CPOL" type="logic">
+      <obj_property name="ElementShortName">CPOL</obj_property>
+      <obj_property name="ObjectShortName">CPOL</obj_property>
    </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/ena" type="logic">
-      <obj_property name="ElementShortName">ena</obj_property>
-      <obj_property name="ObjectShortName">ena</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/addr" type="array">
-      <obj_property name="ElementShortName">addr[6:0]</obj_property>
-      <obj_property name="ObjectShortName">addr[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_busy" type="logic">
-      <obj_property name="ElementShortName">i2c_busy</obj_property>
-      <obj_property name="ObjectShortName">i2c_busy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/busy" type="logic">
-      <obj_property name="ElementShortName">busy</obj_property>
-      <obj_property name="ObjectShortName">busy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/set_clk_req" type="logic">
-      <obj_property name="ElementShortName">set_clk_req</obj_property>
-      <obj_property name="ObjectShortName">set_clk_req</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/wr_buffer" type="array">
-      <obj_property name="ElementShortName">wr_buffer[55:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_buffer[55:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/rd_buffer" type="array">
-      <obj_property name="ElementShortName">rd_buffer[55:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_buffer[55:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/counter" type="array">
-      <obj_property name="ElementShortName">counter[31:0]</obj_property>
-      <obj_property name="ObjectShortName">counter[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/busy_cnt" type="array">
-      <obj_property name="ElementShortName">busy_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">busy_cnt[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/addr_rw" type="array">
-      <obj_property name="ElementShortName">addr_rw[7:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_rw[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/data_tx" type="array">
-      <obj_property name="ElementShortName">data_tx[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_tx[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/data_rx" type="array">
-      <obj_property name="ElementShortName">data_rx[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_rx[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/i2c_master_0/bit_cnt" type="other">
-      <obj_property name="ElementShortName">bit_cnt</obj_property>
-      <obj_property name="ObjectShortName">bit_cnt</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/rtc/busy_cnt" type="array">
-      <obj_property name="ElementShortName">busy_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">busy_cnt[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_00" type="array">
-      <obj_property name="ElementShortName">RTCC_00[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_00[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_01" type="array">
-      <obj_property name="ElementShortName">RTCC_01[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_01[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_02" type="array">
-      <obj_property name="ElementShortName">RTCC_02[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_02[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_03" type="array">
-      <obj_property name="ElementShortName">RTCC_03[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_03[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_04" type="array">
-      <obj_property name="ElementShortName">RTCC_04[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_04[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_05" type="array">
-      <obj_property name="ElementShortName">RTCC_05[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_05[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_06" type="array">
-      <obj_property name="ElementShortName">RTCC_06[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_06[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_07" type="array">
-      <obj_property name="ElementShortName">RTCC_07[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_07[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_08" type="array">
-      <obj_property name="ElementShortName">RTCC_08[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_08[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_09" type="array">
-      <obj_property name="ElementShortName">RTCC_09[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_09[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_0A" type="array">
-      <obj_property name="ElementShortName">RTCC_0A[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_0A[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_0B" type="array">
-      <obj_property name="ElementShortName">RTCC_0B[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_0B[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_0C" type="array">
-      <obj_property name="ElementShortName">RTCC_0C[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_0C[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_0D" type="array">
-      <obj_property name="ElementShortName">RTCC_0D[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_0D[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_0E" type="array">
-      <obj_property name="ElementShortName">RTCC_0E[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_0E[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_0F" type="array">
-      <obj_property name="ElementShortName">RTCC_0F[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_0F[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_11" type="array">
-      <obj_property name="ElementShortName">RTCC_11[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_11[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_12" type="array">
-      <obj_property name="ElementShortName">RTCC_12[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_12[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_13" type="array">
-      <obj_property name="ElementShortName">RTCC_13[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_13[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_14" type="array">
-      <obj_property name="ElementShortName">RTCC_14[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_14[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_15" type="array">
-      <obj_property name="ElementShortName">RTCC_15[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_15[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_16" type="array">
-      <obj_property name="ElementShortName">RTCC_16[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_16[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_18" type="array">
-      <obj_property name="ElementShortName">RTCC_18[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_18[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_19" type="array">
-      <obj_property name="ElementShortName">RTCC_19[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_19[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_1A" type="array">
-      <obj_property name="ElementShortName">RTCC_1A[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_1A[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_1B" type="array">
-      <obj_property name="ElementShortName">RTCC_1B[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_1B[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_1C" type="array">
-      <obj_property name="ElementShortName">RTCC_1C[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_1C[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_1D" type="array">
-      <obj_property name="ElementShortName">RTCC_1D[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_1D[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_1E" type="array">
-      <obj_property name="ElementShortName">RTCC_1E[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_1E[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/RTC_TB/fake_rtc/RTCC_1F" type="array">
-      <obj_property name="ElementShortName">RTCC_1F[7:0]</obj_property>
-      <obj_property name="ObjectShortName">RTCC_1F[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/byteArraySize" type="other">
+      <obj_property name="ElementShortName">byteArraySize</obj_property>
+      <obj_property name="ObjectShortName">byteArraySize</obj_property>
    </wvobject>
 </wave_config>

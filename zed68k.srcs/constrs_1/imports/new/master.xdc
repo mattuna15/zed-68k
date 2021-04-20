@@ -326,14 +326,14 @@ set_property IOSTANDARD SSTL135 [get_ports ddr3_we_n]
 #set_property INTERNAL_VREF 0.675 [get_iobanks 34]
 
 ## Pmod Header JC
-#set_property -dict {PACKAGE_PIN U12 IOSTANDARD LVCMOS33} [get_ports jc_pin1_io]
-#set_property -dict {PACKAGE_PIN V12 IOSTANDARD LVCMOS33} [get_ports jc_pin2_io]
-#set_property -dict { PACKAGE_PIN V10   IOSTANDARD LVCMOS33 } [get_ports { jc[2] }]; #IO_L21P_T3_DQS_14 Sch=jc_p[2]
-#set_property -dict { PACKAGE_PIN V11   IOSTANDARD LVCMOS33 } [get_ports { jc[3] }]; #IO_L21N_T3_DQS_A06_D22_14 Sch=jc_n[2]
-#set_property -dict { PACKAGE_PIN U14   IOSTANDARD LVCMOS33 } [get_ports { jc[4] }]; #IO_L22P_T3_A05_D21_14 Sch=jc_p[3]
-#set_property -dict { PACKAGE_PIN V14   IOSTANDARD LVCMOS33 } [get_ports { jc[5] }]; #IO_L22N_T3_A04_D20_14 Sch=jc_n[3]
-#set_property -dict { PACKAGE_PIN T13   IOSTANDARD LVCMOS33 } [get_ports { jc[6] }]; #IO_L23P_T3_A03_D19_14 Sch=jc_p[4]
-#set_property -dict { PACKAGE_PIN U13   IOSTANDARD LVCMOS33 } [get_ports { jc[7] }]; #IO_L23N_T3_A02_D18_14 Sch=jc_n[4]
+set_property -dict {PACKAGE_PIN U12 IOSTANDARD LVCMOS33} [get_ports SD_CSn]
+set_property -dict {PACKAGE_PIN V12 IOSTANDARD LVCMOS33} [get_ports SD_CMD]
+set_property -dict {PACKAGE_PIN V10 IOSTANDARD LVCMOS33} [get_ports SD_DAT0]
+set_property -dict {PACKAGE_PIN V11 IOSTANDARD LVCMOS33} [get_ports SD_SCK]
+set_property -dict {PACKAGE_PIN U14 IOSTANDARD LVCMOS33} [get_ports SD_DAT1]
+set_property -dict {PACKAGE_PIN V14 IOSTANDARD LVCMOS33} [get_ports SD_DAT2]
+set_property -dict {PACKAGE_PIN T13 IOSTANDARD LVCMOS33} [get_ports SD_CD]
+set_property -dict {PACKAGE_PIN U13 IOSTANDARD LVCMOS33} [get_ports SD_WP]
 
 #set_property PULLUP TRUE [get_ports jc_pin1_io]
 #set_property PULLUP true [get_ports jc_pin2_io]
@@ -341,16 +341,40 @@ set_property IOSTANDARD SSTL135 [get_ports ddr3_we_n]
 ##Pmod Header JD
 
 ## Pmod Header JD
-set_property -dict {PACKAGE_PIN D4 IOSTANDARD LVCMOS33} [get_ports ps2clk]
-#set_property -dict { PACKAGE_PIN D3    IOSTANDARD LVCMOS33 } [get_ports { jd[1] }]; #IO_L12N_T1_MRCC_35 Sch=jd[2]
-set_property -dict {PACKAGE_PIN F4 IOSTANDARD LVCMOS33} [get_ports ps2data]
-#set_property -dict { PACKAGE_PIN F3    IOSTANDARD LVCMOS33 } [get_ports { jd[3] }]; #IO_L13N_T2_MRCC_35 Sch=jd[4]
-#set_property -dict { PACKAGE_PIN E2    IOSTANDARD LVCMOS33 } [get_ports { jd[4] }]; #IO_L14P_T2_SRCC_35 Sch=jd[7]
-#set_property -dict { PACKAGE_PIN D2    IOSTANDARD LVCMOS33 } [get_ports { jd[5] }]; #IO_L14N_T2_SRCC_35 Sch=jd[8]
-#set_property -dict { PACKAGE_PIN H2    IOSTANDARD LVCMOS33 } [get_ports { jd[6] }]; #IO_L15P_T2_DQS_35 Sch=jd[9]
-#set_property -dict { PACKAGE_PIN G2    IOSTANDARD LVCMOS33 } [get_ports { jd[7] }]; #IO_L15N_T2_DQS_35 Sch=jd[10]
-set_property PULLUP true [get_ports ps2clk]
-set_property PULLUP true [get_ports ps2data]
+#set_property -dict {PACKAGE_PIN D4 IOSTANDARD LVCMOS33} [get_ports SD_CSn]
+#set_property -dict {PACKAGE_PIN D3 IOSTANDARD LVCMOS33} [get_ports SD_CMD]
+#set_property -dict {PACKAGE_PIN F4 IOSTANDARD LVCMOS33} [get_ports SD_DAT0]
+#set_property -dict {PACKAGE_PIN F3 IOSTANDARD LVCMOS33} [get_ports SD_SCK]
+#set_property -dict {PACKAGE_PIN E2 IOSTANDARD LVCMOS33} [get_ports SD_DAT1]
+#set_property -dict {PACKAGE_PIN D2 IOSTANDARD LVCMOS33} [get_ports SD_DAT2]
+#set_property -dict {PACKAGE_PIN H2 IOSTANDARD LVCMOS33} [get_ports SD_CD]
+#set_property -dict {PACKAGE_PIN G2 IOSTANDARD LVCMOS33} [get_ports SD_WP]
+
+#         SD_RESET: inout std_logic; -- #IO_L14P_T2_SRCC_35 Sch=sd_reset
+#         SD_CD : in std_logic;  --#IO_L9N_T1_DQS_AD7N_35 Sch=sd_cd
+#         SD_SCK : out std_logic; --
+#         SD_CMD : out std_logic; -- #IO_L16N_T2_35 Sch=sd_cmd
+#         SD_DAT0 : in std_logic; -- #IO_L16P_T2_35 Sch=sd_dat[0]
+#         SD_DAT1 : inout std_logic;-- #IO_L18N_T2_35 Sch=sd_dat[1]
+#         SD_DAT2: inout std_logic;-- #IO_L18P_T2_35 Sch=sd_dat[2]
+#         SD_DAT3 : inout std_logic;--
+#         SD_WP : inout std_logic;--
+#Pin 1 ~CS also dat3
+#Pin 2 MOSI
+#Pin 3 MISO
+#Pin 4 SCK
+#Pin 5 GND
+#Pin 6 VCC
+#Pin 7 DAT1
+#Pin 8 DAT2
+#Pin 9 CD
+#Pin 10 WP
+#Pin 11 GND
+#Pin 12 VCC
+
+
+
+
 
 set_property BITSTREAM.GENERAL.COMPRESS True [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
@@ -365,4 +389,15 @@ set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 connect_debug_port u_ila_0/probe9 [get_nets [list computer/rtc/i2c_master_0/valid_o]]
 connect_debug_port u_ila_0/probe10 [get_nets [list computer/rtc/i2c_master_0/busy]]
 
+
+
+connect_debug_port u_ila_0/probe10 [get_nets [list {computer/sdControl_reg[7]_i_2_n_0}]]
+connect_debug_port u_ila_1/probe3 [get_nets [list gd_sd_sel_OBUF]]
+connect_debug_port u_ila_1/probe4 [get_nets [list sd_mosi]]
+connect_debug_port u_ila_1/probe5 [get_nets [list sd_sclk]]
+
+
+
+connect_debug_port u_ila_0/probe1 [get_nets [list computer/SD_CD]]
+connect_debug_port u_ila_1/probe11 [get_nets [list sdcard/sd_busy_i_4_n_0]]
 
