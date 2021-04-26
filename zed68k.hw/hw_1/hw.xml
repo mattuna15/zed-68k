@@ -12,7 +12,7 @@
       <Properties Property="PROGRAM.CFG_PROGRAM" value="1"/>
       <Properties Property="PROGRAM.CHECKSUM" value="0"/>
       <Properties Property="PROGRAM.ERASE" value="1"/>
-      <Properties Property="PROGRAM.FILES" value="roms/monitor/monitor.mcs"/>
+      <Properties Property="PROGRAM.FILES" value="m68.bin"/>
       <Properties Property="PROGRAM.PRM_FILE" value="roms/monitor/monitor.prm"/>
       <Properties Property="PROGRAM.UNUSED_PIN_TERMINATION" value="pull-none"/>
       <Properties Property="PROGRAM.VERIFY" value="1"/>

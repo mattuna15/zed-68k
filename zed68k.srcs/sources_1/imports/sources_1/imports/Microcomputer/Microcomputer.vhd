@@ -481,7 +481,7 @@ X"00" when cpu_lds = '1' ;
 cpu_dtack <= 
 not ram_ack when ram_cen = '0' else 
 not rtc_ack when rtcCS = '1' else
-sd_ack when
+NOT sd_ack when
 (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' else
 '0';
     
