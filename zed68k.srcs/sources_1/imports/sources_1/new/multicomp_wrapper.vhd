@@ -17,12 +17,10 @@
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
-library ieee;
-use ieee.std_logic_1164.all;
-use  IEEE.STD_LOGIC_ARITH.all;
-use  IEEE.STD_LOGIC_UNSIGNED.all;
-use IEEE.numeric_std.all;
-use work.fun_pkg.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+use IEEE.NUMERIC_STD.ALL;
 
 
 -- Uncomment the following library declaration if using
@@ -97,20 +95,30 @@ port(
     scl_pup : out STD_LOGIC;
     sda_pup : out STD_LOGIC;
     ck_scl : inout STD_LOGIC;
-    ck_sda : inout STD_LOGIC
+    ck_sda : inout STD_LOGIC;
     
---    eth_mdio_mdc_mdc : out STD_LOGIC;
---    eth_mdio_mdc_mdio_io : inout STD_LOGIC;
---    eth_mii_col : in STD_LOGIC;
---    eth_mii_crs : in STD_LOGIC;
---    eth_mii_rst_n : out STD_LOGIC;
---    eth_mii_rx_clk : in STD_LOGIC;
---    eth_mii_rx_dv : in STD_LOGIC;
---    eth_mii_rx_er : in STD_LOGIC;
---    eth_mii_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
---    eth_mii_tx_clk : in STD_LOGIC;
---    eth_mii_tx_en : out STD_LOGIC;
---    eth_mii_txd : out STD_LOGIC_VECTOR ( 3 downto 0 )
+        eth_ref_clk     : out std_logic;                    -- Reference Clock X1
+            
+        eth_mdc         : out std_logic;
+        eth_mdio        : inout std_logic;
+        eth_rstn        : out std_logic;                    -- Reset Phy
+    
+        eth_rx_clk      : in  std_logic;                     -- Rx Clock
+        eth_rx_dv       : in  std_logic;                     -- Rx Data Valid
+        eth_rxd         : in  std_logic_vector(3 downto 0);  -- RxData
+            
+        eth_rxerr       : in  std_logic;                     -- Receive Error
+        eth_col         : in  std_logic;                     -- Ethernet Collision
+        eth_crs         : in  std_logic;                     -- Ethernet Carrier Sense
+                    
+        eth_tx_clk      : in  std_logic;                     -- Tx Clock
+        eth_tx_en       : out std_logic;                     -- Transmit Enable
+        eth_txd         : out std_logic_vector(3 downto 0);  -- Transmit Data
+        
+                
+        -- SPI Flash Mem
+        qspi_cs         : out std_logic;        
+        qspi_dq         : inout std_logic_vector(3 downto 0)   -- dg(0) is MOSI, dq(1) MISO
       
 	);
 end multicomp_wrapper;
@@ -298,7 +306,101 @@ attribute dont_touch of spi1 : label is "true";
     signal sd_rden : std_logic;
     signal sd_wren : std_logic;
     signal sd_ack  : std_logic;
+    
+    --ethernet
+ component FC1002_MII is    
+    port (
+        Clk             : in  std_logic;    -- 100MHz
+        Reset           : in  std_logic;    -- Active high
 
+        ----------------------------------------------------------------
+        -- System Setup
+        ----------------------------------------------------------------
+        UseDHCP         : in  std_logic;
+        IP_Addr         : in  std_logic_vector(8*4-1 downto 0); -- If UseDHCP = '0'
+        
+        ----------------------------------------------------------------
+        -- System Status
+        ----------------------------------------------------------------
+        IP_Ok           : out std_logic;
+        
+        ----------------------------------------------------------------
+        -- SPI Flash Boot Control
+        ----------------------------------------------------------------
+        SPI_CSn         : out std_logic;
+        SPI_SCK         : out std_logic;
+        SPI_MOSI        : out std_logic;
+        SPI_MISO        : in  std_logic;
+        
+        ----------------------------------------------------------------
+        -- TCP0 Basic Server With Service Exposer
+        ----------------------------------------------------------------
+        -- Setup 
+        TCP0_Service    : in  std_logic_vector(15 downto 0);        
+        TCP0_ServerPort : in  std_logic_vector(15 downto 0);
+        
+        -- Status
+        TCP0_Connected  : out std_logic;
+        TCP0_AllAcked   : out std_logic;
+        TCP0_nTxFree    : out unsigned(15 downto 0);
+        TCP0_nRxData    : out unsigned(15 downto 0);
+        
+        -- AXI4 Stream Slave
+        TCP0_TxData     : in  std_logic_vector(7 downto 0);
+        TCP0_TxValid    : in  std_logic;
+        TCP0_TxReady    : out std_logic;
+        
+        -- AXI4 Stream Master        
+        TCP0_RxData     : out std_logic_vector(7 downto 0);
+        TCP0_RxValid    : out std_logic;
+        TCP0_RxReady    : in  std_logic;
+        
+        ----------------------------------------------------------------
+        -- Logic Analyzer
+        ----------------------------------------------------------------
+        LA0_TrigIn      : in  std_logic;
+        LA0_Clk         : in  std_logic;
+        LA0_TrigOut     : out std_logic;
+        LA0_Signals     : in  std_logic_vector(31 downto 0);
+        LA0_SampleEn    : in  std_logic;
+        
+        ----------------------------
+        -- MII Interface
+        ----------------------------
+        MII_REF_CLK_25M : out std_logic;    -- 25MHz 
+        MII_RST_N       : out std_logic;     
+        MII_COL         : in  std_logic;    -- Ethernet Collision
+        MII_CRS         : in  std_logic;    -- Ethernet Carrier Sense        
+        MII_RX_CLK      : in  std_logic;     -- 25MHz or 2.5MHz
+        MII_CRS_DV      : in  std_logic; 
+        MII_RXD         : in  std_logic_vector(3 downto 0); 
+        MII_RXERR       : in  std_logic;     
+        MII_TX_CLK      : in  std_logic;     -- 25MHz or 2.5MHz
+        MII_TXEN        : out std_logic; 
+        MII_TXD         : out std_logic_vector(3 downto 0)
+                
+    );
+    end component;
+    
+    
+    signal IP_Ok            : std_logic := '0';
+     
+    signal TCP0_Connected   : std_logic;
+    signal TCP0_AllAcked    : std_logic;
+            
+    signal TCP0_TxData      : std_logic_vector(7 downto 0);  
+    signal TCP0_TxValid     : std_logic;
+    signal TCP0_TxReady     : std_logic;
+        
+    signal TCP0_RxData      : std_logic_vector(7 downto 0);
+    signal TCP0_RxValid     : std_logic;
+    signal TCP0_RxReady     : std_logic;
+        
+    signal LA0_TrigIn       : std_logic;
+    signal LA0_Clk          : std_logic;
+    signal LA0_TrigOut      : std_logic;
+    signal LA0_Signals      : std_logic_vector(31 downto 0);
+    signal LA0_SampleEn     : std_logic;
 
 
 begin
@@ -536,48 +638,40 @@ sdcard: entity work.sd_controller
 --        esp_rden => esp_rden,
 --        esp_wren => esp_wren
     
-    esp_serial_term_tx: serial_wrapper 
-        port map (
-        sys_clk => sys_clock,
-        tx_data => esp_txd,
-        tx_wr_en => esp_wren,
-        cts => open,
-        rts => open,
-        reset_n => sys_resetn,
-        txd => txd3,
-        tx_send_active => esp_tx_act
-  );
+--    esp_serial_term_tx: serial_wrapper 
+--        port map (
+--        sys_clk => sys_clock,
+--        tx_data => esp_txd,
+--        tx_wr_en => esp_wren,
+--        cts => open,
+--        rts => open,
+--        reset_n => sys_resetn,
+--        txd => txd3,
+--        tx_send_active => esp_tx_act
+--  );
   
-  esp_serial_term_rx : design_1_wrapper
-    port map (
-      LED => open,
-      rd_en => esp_rden,
-      m68_rxd => esp_rxd,
-      rd_clk => sys_clock,
-      reset_n => sys_resetn,
-      rxd1 => rxd3,
-      rd_data_cnt(8 downto 1) => esp_rx_count,
-      rd_data_cnt(0) => esp_rx_act,
-      clk100_i => sys_clock,
-      cts => open,
-      rts => open
-    );  
+--  esp_serial_term_rx : design_1_wrapper
+--    port map (
+--      LED => open,
+--      rd_en => esp_rden,
+--      m68_rxd => esp_rxd,
+--      rd_clk => sys_clock,
+--      reset_n => sys_resetn,
+--      rxd1 => rxd3,
+--      rd_data_cnt(8 downto 1) => esp_rx_count,
+--      rd_data_cnt(0) => esp_rx_act,
+--      clk100_i => sys_clock,
+--      cts => open,
+--      rts => open
+--    );  
+
+
+
+
+    esp_rx_act <= '1';
+    esp_tx_act <= '0';
     
     
-    io_serial_load : design_1_wrapper
-    port map (
-      LED => open,
-      rd_en => serialRead_en,
-      m68_rxd => serialData,
-      rd_clk => sys_clock,
-      reset_n => sys_resetn,
-      rxd1 => rxd2,
-      rd_data_cnt(8 downto 1) => count,
-      rd_data_cnt(0) => data_trigger,
-      clk100_i => sys_clock,
-      cts => open,
-      rts => open
-    );  
     
     mem_i_valid <= ((not cpuCS) and (not ( cpuLower and CpuUpper))) and (not boot_rom) and (not cpuAS);
     
@@ -648,5 +742,88 @@ sdcard: entity work.sd_controller
    
    esp_sts(0) <= '1' when esp_rx_count > x"00" else '0';
    esp_sts(1) <= '1' when esp_tx_act = '0' else '0';
+   
+   --ethernet
+ 
+    -- Loopback TCP 
+    TCP0_TxData     <= TCP0_RxData;
+    TCP0_TxValid    <= TCP0_RxValid;
+    TCP0_RxReady    <= TCP0_TxReady;
+    
+    led(3) <= IP_Ok;
+    
+    i_FC_1002_MII : FC1002_MII
+    port map (
+        Clk             => sys_clock,       -- 100 MHz
+        Reset           => '0',             -- Active high
+
+        ----------------------------------------------------------------
+        -- System Setup
+        ----------------------------------------------------------------
+        UseDHCP         => '1',
+        IP_Addr         => (others=>'0'),
+        
+        ----------------------------------------------------------------
+        -- System Status
+        ----------------------------------------------------------------
+        IP_Ok           => IP_Ok,           -- '1' when DHCP has solved IP
+        
+        ----------------------------------------------------------------
+        -- SPI Flash Boot Control
+        ----------------------------------------------------------------
+        SPI_CSn         => qspi_cs,
+        SPI_SCK         => open, --??qspi_sck,
+        SPI_MOSI        => qspi_dq(0),
+        SPI_MISO        => qspi_dq(1),
+        
+        ----------------------------------------------------------------
+        -- TCP0 Basic Server With Service Exposer
+        ----------------------------------------------------------------
+        -- Setup 
+        TCP0_Service    => x"0112",
+        TCP0_ServerPort => x"E001",
+        
+        -- Status
+        TCP0_Connected  => TCP0_Connected,
+        TCP0_AllAcked   => TCP0_AllAcked, 
+        TCP0_nTxFree    => open,
+        TCP0_nRxData    => open,
+        
+        -- AXI4 Stream Slave
+        TCP0_TxData     => TCP0_TxData,  
+        TCP0_TxValid    => TCP0_TxValid, 
+        TCP0_TxReady    => TCP0_TxReady, 
+        
+        -- AXI4 Stream Master        
+        TCP0_RxData     => TCP0_RxData, 
+        TCP0_RxValid    => TCP0_RxValid,
+        TCP0_RxReady    => TCP0_RxReady,
+        
+        ----------------------------------------------------------------
+        -- Logic Analyzer
+        ----------------------------------------------------------------
+        LA0_TrigIn      => '0',   
+        LA0_Clk         => '0',      
+        LA0_TrigOut     => open,  
+        LA0_Signals     => (others => '0'),  
+        LA0_SampleEn    => '0', 
+        
+        ----------------------------
+        -- MII Interface
+        ----------------------------
+        MII_REF_CLK_25M => eth_ref_clk,
+        MII_RST_N       => eth_rstn,
+        MII_COL         => eth_col,
+        MII_CRS         => eth_crs, 
+        MII_RX_CLK      => eth_rx_clk,
+        MII_CRS_DV      => eth_rx_dv,
+        MII_RXD         => eth_rxd,
+        MII_RXERR       => eth_rxerr,   
+        MII_TX_CLK      => eth_tx_clk,
+        MII_TXEN        => eth_tx_en,
+        MII_TXD         => eth_txd         
+    );
+    
+    --LA0_Clk <= sys_clock;
 
 end Behavioral;
