@@ -3,188 +3,153 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="UDP_complete_nomac_tb_behav.wdb" id="1">
+      <db_ref path="testbench_sd_spi_behav.wdb" id="1">
          <top_modules>
-            <top_module name="UDP_complete_nomac_tb" />
-            <top_module name="arp_types" />
-            <top_module name="axi" />
             <top_module name="glbl" />
-            <top_module name="ipv4_types" />
+            <top_module name="testbench_sd_spi" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="610000fs"></ZoomStartTime>
-      <ZoomEndTime time="2930001fs"></ZoomEndTime>
-      <Cursor1Time time="1000000fs"></Cursor1Time>
+      <ZoomStartTime time="36581669002fs"></ZoomStartTime>
+      <ZoomEndTime time="36643182200fs"></ZoomEndTime>
+      <Cursor1Time time="36632930000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="176"></NameColumnWidth>
-      <ValueColumnWidth column_width="133"></ValueColumnWidth>
+      <ValueColumnWidth column_width="137"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="41" />
-   <wvobject fp_name="/UDP_complete_nomac_tb/udp_tx_start_int" type="logic">
-      <obj_property name="ElementShortName">udp_tx_start_int</obj_property>
-      <obj_property name="ObjectShortName">udp_tx_start_int</obj_property>
+   <WVObjectSize size="33" />
+   <wvobject fp_name="/testbench_sd_spi/miso" type="logic">
+      <obj_property name="ElementShortName">miso</obj_property>
+      <obj_property name="ObjectShortName">miso</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/udp_tx_int" type="array">
-      <obj_property name="ElementShortName">udp_tx_int</obj_property>
-      <obj_property name="ObjectShortName">udp_tx_int</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/rd" type="logic">
+      <obj_property name="ElementShortName">rd</obj_property>
+      <obj_property name="ObjectShortName">rd</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/clk_int" type="logic">
-      <obj_property name="ElementShortName">clk_int</obj_property>
-      <obj_property name="ObjectShortName">clk_int</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/rd_multiple" type="logic">
+      <obj_property name="ElementShortName">rd_multiple</obj_property>
+      <obj_property name="ObjectShortName">rd_multiple</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/reset" type="logic">
+   <wvobject fp_name="/testbench_sd_spi/wr" type="logic">
+      <obj_property name="ElementShortName">wr</obj_property>
+      <obj_property name="ObjectShortName">wr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/wr_multiple" type="logic">
+      <obj_property name="ElementShortName">wr_multiple</obj_property>
+      <obj_property name="ObjectShortName">wr_multiple</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/addr" type="array">
+      <obj_property name="ElementShortName">addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/reset" type="logic">
       <obj_property name="ElementShortName">reset</obj_property>
       <obj_property name="ObjectShortName">reset</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/our_ip_address" type="array">
-      <obj_property name="ElementShortName">our_ip_address[31:0]</obj_property>
-      <obj_property name="ObjectShortName">our_ip_address[31:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/din" type="array">
+      <obj_property name="ElementShortName">din[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/our_mac_address" type="array">
-      <obj_property name="ElementShortName">our_mac_address[47:0]</obj_property>
-      <obj_property name="ObjectShortName">our_mac_address[47:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/din_valid" type="logic">
+      <obj_property name="ElementShortName">din_valid</obj_property>
+      <obj_property name="ObjectShortName">din_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_tx_tready" type="logic">
-      <obj_property name="ElementShortName">mac_tx_tready</obj_property>
-      <obj_property name="ObjectShortName">mac_tx_tready</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/dout_taken" type="logic">
+      <obj_property name="ElementShortName">dout_taken</obj_property>
+      <obj_property name="ObjectShortName">dout_taken</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_rx_tdata" type="array">
-      <obj_property name="ElementShortName">mac_rx_tdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">mac_rx_tdata[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_rx_tvalid" type="logic">
-      <obj_property name="ElementShortName">mac_rx_tvalid</obj_property>
-      <obj_property name="ObjectShortName">mac_rx_tvalid</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/cs" type="logic">
+      <obj_property name="ElementShortName">cs</obj_property>
+      <obj_property name="ObjectShortName">cs</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_rx_tlast" type="logic">
-      <obj_property name="ElementShortName">mac_rx_tlast</obj_property>
-      <obj_property name="ObjectShortName">mac_rx_tlast</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/mosi" type="logic">
+      <obj_property name="ElementShortName">mosi</obj_property>
+      <obj_property name="ObjectShortName">mosi</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/control" type="array">
-      <obj_property name="ElementShortName">control</obj_property>
-      <obj_property name="ObjectShortName">control</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/sclk" type="logic">
+      <obj_property name="ElementShortName">sclk</obj_property>
+      <obj_property name="ObjectShortName">sclk</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/udp_rx_start_int" type="logic">
-      <obj_property name="ElementShortName">udp_rx_start_int</obj_property>
-      <obj_property name="ObjectShortName">udp_rx_start_int</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/sd_state" type="array">
+      <obj_property name="ElementShortName">sd_state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sd_state[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/udp_rx_int" type="array">
-      <obj_property name="ElementShortName">udp_rx_int</obj_property>
-      <obj_property name="ObjectShortName">udp_rx_int</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/sd_fsm" type="array">
+      <obj_property name="ElementShortName">sd_fsm[7:0]</obj_property>
+      <obj_property name="ObjectShortName">sd_fsm[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/ip_rx_hdr" type="array">
-      <obj_property name="ElementShortName">ip_rx_hdr</obj_property>
-      <obj_property name="ObjectShortName">ip_rx_hdr</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/sd_error" type="logic">
+      <obj_property name="ElementShortName">sd_error</obj_property>
+      <obj_property name="ObjectShortName">sd_error</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/udp_tx_result" type="array">
-      <obj_property name="ElementShortName">udp_tx_result[1:0]</obj_property>
-      <obj_property name="ObjectShortName">udp_tx_result[1:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/sd_error_code" type="array">
+      <obj_property name="ElementShortName">sd_error_code[2:0]</obj_property>
+      <obj_property name="ObjectShortName">sd_error_code[2:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/udp_tx_data_out_ready_int" type="logic">
-      <obj_property name="ElementShortName">udp_tx_data_out_ready_int</obj_property>
-      <obj_property name="ObjectShortName">udp_tx_data_out_ready_int</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/sd_busy" type="logic">
+      <obj_property name="ElementShortName">sd_busy</obj_property>
+      <obj_property name="ObjectShortName">sd_busy</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/arp_pkt_count" type="array">
-      <obj_property name="ElementShortName">arp_pkt_count[7:0]</obj_property>
-      <obj_property name="ObjectShortName">arp_pkt_count[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/din_taken" type="logic">
+      <obj_property name="ElementShortName">din_taken</obj_property>
+      <obj_property name="ObjectShortName">din_taken</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/ip_pkt_count" type="array">
-      <obj_property name="ElementShortName">ip_pkt_count[7:0]</obj_property>
-      <obj_property name="ObjectShortName">ip_pkt_count[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/dout" type="array">
+      <obj_property name="ElementShortName">dout[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_tx_tdata" type="array">
-      <obj_property name="ElementShortName">mac_tx_tdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">mac_tx_tdata[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/dout_avail" type="logic">
+      <obj_property name="ElementShortName">dout_avail</obj_property>
+      <obj_property name="ObjectShortName">dout_avail</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_tx_tvalid" type="logic">
-      <obj_property name="ElementShortName">mac_tx_tvalid</obj_property>
-      <obj_property name="ObjectShortName">mac_tx_tvalid</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/clocks" type="other">
+      <obj_property name="ElementShortName">clocks</obj_property>
+      <obj_property name="ObjectShortName">clocks</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_tx_tfirst" type="logic">
-      <obj_property name="ElementShortName">mac_tx_tfirst</obj_property>
-      <obj_property name="ObjectShortName">mac_tx_tfirst</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/clk_pol" type="logic">
+      <obj_property name="ElementShortName">clk_pol</obj_property>
+      <obj_property name="ObjectShortName">clk_pol</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_tx_tlast" type="logic">
-      <obj_property name="ElementShortName">mac_tx_tlast</obj_property>
-      <obj_property name="ObjectShortName">mac_tx_tlast</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/rx_byte" type="array">
+      <obj_property name="ElementShortName">rx_byte[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_byte[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/mac_rx_tready" type="logic">
-      <obj_property name="ElementShortName">mac_rx_tready</obj_property>
-      <obj_property name="ObjectShortName">mac_rx_tready</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/rx_bit_counter" type="other">
+      <obj_property name="ElementShortName">rx_bit_counter</obj_property>
+      <obj_property name="ObjectShortName">rx_bit_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/pbtx_led" type="logic">
-      <obj_property name="ElementShortName">pbtx_led</obj_property>
-      <obj_property name="ObjectShortName">pbtx_led</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/rx_byte_counter" type="other">
+      <obj_property name="ElementShortName">rx_byte_counter</obj_property>
+      <obj_property name="ObjectShortName">rx_byte_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/pbtx" type="logic">
-      <obj_property name="ElementShortName">pbtx</obj_property>
-      <obj_property name="ObjectShortName">pbtx</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/tx_byte" type="array">
+      <obj_property name="ElementShortName">tx_byte[7:0]</obj_property>
+      <obj_property name="ObjectShortName">tx_byte[7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/state" type="other">
-      <obj_property name="ElementShortName">state</obj_property>
-      <obj_property name="ObjectShortName">state</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/tx_bit_counter" type="other">
+      <obj_property name="ElementShortName">tx_bit_counter</obj_property>
+      <obj_property name="ObjectShortName">tx_bit_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/count" type="array">
-      <obj_property name="ElementShortName">count[7:0]</obj_property>
-      <obj_property name="ObjectShortName">count[7:0]</obj_property>
+   <wvobject fp_name="/testbench_sd_spi/tx_byte_counter" type="other">
+      <obj_property name="ElementShortName">tx_byte_counter</obj_property>
+      <obj_property name="ObjectShortName">tx_byte_counter</obj_property>
    </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/tx_hdr" type="array">
-      <obj_property name="ElementShortName">tx_hdr</obj_property>
-      <obj_property name="ObjectShortName">tx_hdr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/tx_start_reg" type="logic">
-      <obj_property name="ElementShortName">tx_start_reg</obj_property>
-      <obj_property name="ObjectShortName">tx_start_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/tx_started_reg" type="logic">
-      <obj_property name="ElementShortName">tx_started_reg</obj_property>
-      <obj_property name="ObjectShortName">tx_started_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/tx_fin_reg" type="logic">
-      <obj_property name="ElementShortName">tx_fin_reg</obj_property>
-      <obj_property name="ObjectShortName">tx_fin_reg</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/next_state" type="other">
-      <obj_property name="ElementShortName">next_state</obj_property>
-      <obj_property name="ObjectShortName">next_state</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/set_state" type="logic">
-      <obj_property name="ElementShortName">set_state</obj_property>
-      <obj_property name="ObjectShortName">set_state</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/set_count" type="other">
-      <obj_property name="ElementShortName">set_count</obj_property>
-      <obj_property name="ObjectShortName">set_count</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/set_hdr" type="logic">
-      <obj_property name="ElementShortName">set_hdr</obj_property>
-      <obj_property name="ObjectShortName">set_hdr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/set_tx_start" type="other">
-      <obj_property name="ElementShortName">set_tx_start</obj_property>
-      <obj_property name="ObjectShortName">set_tx_start</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/set_last" type="logic">
-      <obj_property name="ElementShortName">set_last</obj_property>
-      <obj_property name="ObjectShortName">set_last</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/set_tx_started" type="other">
-      <obj_property name="ElementShortName">set_tx_started</obj_property>
-      <obj_property name="ObjectShortName">set_tx_started</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/set_tx_fin" type="other">
-      <obj_property name="ElementShortName">set_tx_fin</obj_property>
-      <obj_property name="ObjectShortName">set_tx_fin</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/first_byte_rx" type="array">
-      <obj_property name="ElementShortName">first_byte_rx[7:0]</obj_property>
-      <obj_property name="ObjectShortName">first_byte_rx[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/UDP_complete_nomac_tb/clk_period" type="other">
+   <wvobject fp_name="/testbench_sd_spi/clk_period" type="other">
       <obj_property name="ElementShortName">clk_period</obj_property>
       <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/CPOL" type="logic">
+      <obj_property name="ElementShortName">CPOL</obj_property>
+      <obj_property name="ObjectShortName">CPOL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testbench_sd_spi/byteArraySize" type="other">
+      <obj_property name="ElementShortName">byteArraySize</obj_property>
+      <obj_property name="ObjectShortName">byteArraySize</obj_property>
    </wvobject>
 </wave_config>

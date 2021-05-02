@@ -3,447 +3,320 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="tb_fakernet_behav.wdb" id="1">
+      <db_ref path="main_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="fnet_records" />
-            <top_module name="fnet_util_pkg" />
+            <top_module name="fun_pkg" />
             <top_module name="glbl" />
-            <top_module name="tb_fakernet" />
+            <top_module name="main_tb" />
+            <top_module name="tg68k_pack" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="165410810813fs"></ZoomEndTime>
-      <Cursor1Time time="131000fs"></Cursor1Time>
+      <ZoomStartTime time="122471574458fs"></ZoomStartTime>
+      <ZoomEndTime time="236071574459fs"></ZoomEndTime>
+      <Cursor1Time time="217138241125fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="235"></NameColumnWidth>
-      <ValueColumnWidth column_width="121"></ValueColumnWidth>
+      <ValueColumnWidth column_width="125"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="106" />
-   <wvobject fp_name="/tb_fakernet/fakernet/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/cfg_macaddr" type="array">
-      <obj_property name="ElementShortName">cfg_macaddr[47:0]</obj_property>
-      <obj_property name="ObjectShortName">cfg_macaddr[47:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/cfg_ipaddr" type="array">
-      <obj_property name="ElementShortName">cfg_ipaddr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">cfg_ipaddr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/in_word" type="array">
-      <obj_property name="ElementShortName">in_word[15:0]</obj_property>
-      <obj_property name="ObjectShortName">in_word[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/in_got_word" type="logic">
-      <obj_property name="ElementShortName">in_got_word</obj_property>
-      <obj_property name="ObjectShortName">in_got_word</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/in_new_packet" type="logic">
-      <obj_property name="ElementShortName">in_new_packet</obj_property>
-      <obj_property name="ObjectShortName">in_new_packet</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_word" type="array">
-      <obj_property name="ElementShortName">out_word[15:0]</obj_property>
-      <obj_property name="ObjectShortName">out_word[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_ena" type="logic">
-      <obj_property name="ElementShortName">out_ena</obj_property>
-      <obj_property name="ObjectShortName">out_ena</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_payload" type="logic">
-      <obj_property name="ElementShortName">out_payload</obj_property>
-      <obj_property name="ObjectShortName">out_payload</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_taken" type="logic">
-      <obj_property name="ElementShortName">out_taken</obj_property>
-      <obj_property name="ObjectShortName">out_taken</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_addr" type="array">
-      <obj_property name="ElementShortName">reg_addr[24:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_addr[24:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_data_wr" type="array">
-      <obj_property name="ElementShortName">reg_data_wr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_data_wr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_data_rd" type="array">
-      <obj_property name="ElementShortName">reg_data_rd[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_data_rd[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_write" type="logic">
-      <obj_property name="ElementShortName">reg_write</obj_property>
-      <obj_property name="ObjectShortName">reg_write</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_read" type="logic">
-      <obj_property name="ElementShortName">reg_read</obj_property>
-      <obj_property name="ObjectShortName">reg_read</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_done" type="logic">
-      <obj_property name="ElementShortName">reg_done</obj_property>
-      <obj_property name="ObjectShortName">reg_done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_cnt" type="array">
-      <obj_property name="ElementShortName">reg_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_cnt[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_word" type="array">
-      <obj_property name="ElementShortName">data_word[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_word[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_offset" type="array">
-      <obj_property name="ElementShortName">data_offset[7:0]</obj_property>
-      <obj_property name="ObjectShortName">data_offset[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_write" type="logic">
-      <obj_property name="ElementShortName">data_write</obj_property>
-      <obj_property name="ObjectShortName">data_write</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_commit_len" type="array">
-      <obj_property name="ElementShortName">data_commit_len[5:0]</obj_property>
-      <obj_property name="ObjectShortName">data_commit_len[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_commit" type="logic">
-      <obj_property name="ElementShortName">data_commit</obj_property>
-      <obj_property name="ObjectShortName">data_commit</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_free" type="logic">
-      <obj_property name="ElementShortName">data_free</obj_property>
-      <obj_property name="ObjectShortName">data_free</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tcp_reset" type="logic">
-      <obj_property name="ElementShortName">tcp_reset</obj_property>
-      <obj_property name="ObjectShortName">tcp_reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/slow_clock_tick" type="logic">
-      <obj_property name="ElementShortName">slow_clock_tick</obj_property>
-      <obj_property name="ObjectShortName">slow_clock_tick</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/timeout_tick" type="logic">
-      <obj_property name="ElementShortName">timeout_tick</obj_property>
-      <obj_property name="ObjectShortName">timeout_tick</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/max_packet_payload" type="other">
-      <obj_property name="ElementShortName">max_packet_payload</obj_property>
-      <obj_property name="ObjectShortName">max_packet_payload</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/debug_state_in" type="array">
-      <obj_property name="ElementShortName">debug_state_in[6:0]</obj_property>
-      <obj_property name="ObjectShortName">debug_state_in[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/debug_state_out" type="array">
-      <obj_property name="ElementShortName">debug_state_out[3:0]</obj_property>
-      <obj_property name="ObjectShortName">debug_state_out[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/debug_state_regacc" type="array">
-      <obj_property name="ElementShortName">debug_state_regacc[4:0]</obj_property>
-      <obj_property name="ObjectShortName">debug_state_regacc[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/debug_state_preptcp" type="array">
-      <obj_property name="ElementShortName">debug_state_preptcp[5:0]</obj_property>
-      <obj_property name="ObjectShortName">debug_state_preptcp[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_arp_icmp" type="array">
-      <obj_property name="ElementShortName">ram_arp_icmp</obj_property>
-      <obj_property name="ObjectShortName">ram_arp_icmp</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_udp_regacc" type="array">
-      <obj_property name="ElementShortName">ram_udp_regacc</obj_property>
-      <obj_property name="ObjectShortName">ram_udp_regacc</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_udp_regidp" type="array">
-      <obj_property name="ElementShortName">ram_udp_regidp</obj_property>
-      <obj_property name="ObjectShortName">ram_udp_regidp</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_udp_regres" type="array">
-      <obj_property name="ElementShortName">ram_udp_regres[0:1]</obj_property>
-      <obj_property name="ObjectShortName">ram_udp_regres[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_tcp_template" type="array">
-      <obj_property name="ElementShortName">ram_tcp_template</obj_property>
-      <obj_property name="ObjectShortName">ram_tcp_template</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_tcp_prep2" type="array">
-      <obj_property name="ElementShortName">ram_tcp_prep2[0:1]</obj_property>
-      <obj_property name="ObjectShortName">ram_tcp_prep2[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_udp_regres_stat_tmp" type="array">
-      <obj_property name="ElementShortName">ram_udp_regres_stat_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">ram_udp_regres_stat_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_udp_regres_cons_tmp" type="array">
-      <obj_property name="ElementShortName">ram_udp_regres_cons_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">ram_udp_regres_cons_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_udp_regres_prod_tmp" type="array">
-      <obj_property name="ElementShortName">ram_udp_regres_prod_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">ram_udp_regres_prod_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ram_udp_regres_prod2_tmp" type="array">
-      <obj_property name="ElementShortName">ram_udp_regres_prod2_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">ram_udp_regres_prod2_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_arp_icmp" type="array">
-      <obj_property name="ElementShortName">dp_ram_arp_icmp</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_arp_icmp</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_udp_regacc" type="array">
-      <obj_property name="ElementShortName">dp_ram_udp_regacc</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_udp_regacc</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_udp_regidp" type="array">
-      <obj_property name="ElementShortName">dp_ram_udp_regidp</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_udp_regidp</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_udp_regres" type="array">
-      <obj_property name="ElementShortName">dp_ram_udp_regres[0:1]</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_udp_regres[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_tcp_template" type="array">
-      <obj_property name="ElementShortName">dp_ram_tcp_template</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_tcp_template</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_tcp_prep2" type="array">
-      <obj_property name="ElementShortName">dp_ram_tcp_prep2[0:1]</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_tcp_prep2[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_udp_regres_port_a_i_tmp" type="array">
-      <obj_property name="ElementShortName">dp_ram_udp_regres_port_a_i_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_udp_regres_port_a_i_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_udp_regres_port_a_o_tmp" type="array">
-      <obj_property name="ElementShortName">dp_ram_udp_regres_port_a_o_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_udp_regres_port_a_o_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_udp_regres_port_b_i_tmp" type="array">
-      <obj_property name="ElementShortName">dp_ram_udp_regres_port_b_i_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_udp_regres_port_b_i_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/dp_ram_udp_regres_port_b_o_tmp" type="array">
-      <obj_property name="ElementShortName">dp_ram_udp_regres_port_b_o_tmp[0:1]</obj_property>
-      <obj_property name="ObjectShortName">dp_ram_udp_regres_port_b_o_tmp[0:1]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/osm_ram_stat_array" type="array">
-      <obj_property name="ElementShortName">osm_ram_stat_array[0:5]</obj_property>
-      <obj_property name="ObjectShortName">osm_ram_stat_array[0:5]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/osm_ram_cons_array" type="array">
-      <obj_property name="ElementShortName">osm_ram_cons_array[0:5]</obj_property>
-      <obj_property name="ObjectShortName">osm_ram_cons_array[0:5]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/osm_dp_ram_array_porti" type="array">
-      <obj_property name="ElementShortName">osm_dp_ram_array_porti[0:5]</obj_property>
-      <obj_property name="ObjectShortName">osm_dp_ram_array_porti[0:5]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/osm_dp_ram_array_porto" type="array">
-      <obj_property name="ElementShortName">osm_dp_ram_array_porto[0:5]</obj_property>
-      <obj_property name="ObjectShortName">osm_dp_ram_array_porto[0:5]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/in_info_counts" type="array">
-      <obj_property name="ElementShortName">in_info_counts</obj_property>
-      <obj_property name="ObjectShortName">in_info_counts</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_info_counts" type="array">
-      <obj_property name="ElementShortName">out_info_counts</obj_property>
-      <obj_property name="ObjectShortName">out_info_counts</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/ts_info_counts" type="array">
-      <obj_property name="ElementShortName">ts_info_counts</obj_property>
-      <obj_property name="ObjectShortName">ts_info_counts</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/regacc_aux_info" type="array">
-      <obj_property name="ElementShortName">regacc_aux_info</obj_property>
-      <obj_property name="ObjectShortName">regacc_aux_info</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_int_addr" type="array">
-      <obj_property name="ElementShortName">reg_int_addr[24:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_int_addr[24:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_int_data_wr" type="array">
-      <obj_property name="ElementShortName">reg_int_data_wr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_int_data_wr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_int_data_rd" type="array">
-      <obj_property name="ElementShortName">reg_int_data_rd[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_int_data_rd[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_int_write" type="logic">
-      <obj_property name="ElementShortName">reg_int_write</obj_property>
-      <obj_property name="ObjectShortName">reg_int_write</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_int_read" type="logic">
-      <obj_property name="ElementShortName">reg_int_read</obj_property>
-      <obj_property name="ObjectShortName">reg_int_read</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_int_done" type="logic">
-      <obj_property name="ElementShortName">reg_int_done</obj_property>
-      <obj_property name="ObjectShortName">reg_int_done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/reg_int_cnt" type="array">
-      <obj_property name="ElementShortName">reg_int_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_int_cnt[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tcp_ctrl_recv" type="array">
-      <obj_property name="ElementShortName">tcp_ctrl_recv</obj_property>
-      <obj_property name="ObjectShortName">tcp_ctrl_recv</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tcp_ctrl_stat" type="array">
-      <obj_property name="ElementShortName">tcp_ctrl_stat</obj_property>
-      <obj_property name="ObjectShortName">tcp_ctrl_stat</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tcp_buf_stat" type="array">
-      <obj_property name="ElementShortName">tcp_buf_stat</obj_property>
-      <obj_property name="ObjectShortName">tcp_buf_stat</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tcp_state_stat" type="array">
-      <obj_property name="ElementShortName">tcp_state_stat</obj_property>
-      <obj_property name="ObjectShortName">tcp_state_stat</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/packet_req" type="array">
-      <obj_property name="ElementShortName">packet_req</obj_property>
-      <obj_property name="ObjectShortName">packet_req</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/packet_done" type="array">
-      <obj_property name="ElementShortName">packet_done</obj_property>
-      <obj_property name="ObjectShortName">packet_done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/int_tcp_reset" type="logic">
-      <obj_property name="ElementShortName">int_tcp_reset</obj_property>
-      <obj_property name="ObjectShortName">int_tcp_reset</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_a_addr" type="array">
-      <obj_property name="ElementShortName">data_port_a_addr[10:0]</obj_property>
-      <obj_property name="ObjectShortName">data_port_a_addr[10:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_a_rd" type="logic">
-      <obj_property name="ElementShortName">data_port_a_rd</obj_property>
-      <obj_property name="ObjectShortName">data_port_a_rd</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_a_wr" type="logic">
-      <obj_property name="ElementShortName">data_port_a_wr</obj_property>
-      <obj_property name="ObjectShortName">data_port_a_wr</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_a_wdata" type="array">
-      <obj_property name="ElementShortName">data_port_a_wdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_port_a_wdata[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_a_rdata" type="array">
-      <obj_property name="ElementShortName">data_port_a_rdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_port_a_rdata[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_b_addr" type="array">
-      <obj_property name="ElementShortName">data_port_b_addr[10:0]</obj_property>
-      <obj_property name="ObjectShortName">data_port_b_addr[10:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_b_rd" type="logic">
-      <obj_property name="ElementShortName">data_port_b_rd</obj_property>
-      <obj_property name="ObjectShortName">data_port_b_rd</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_port_b_rdata" type="array">
-      <obj_property name="ElementShortName">data_port_b_rdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_port_b_rdata[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_r_word" type="array">
-      <obj_property name="ElementShortName">out_r_word[15:0]</obj_property>
-      <obj_property name="ObjectShortName">out_r_word[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_r_ena" type="logic">
-      <obj_property name="ElementShortName">out_r_ena</obj_property>
-      <obj_property name="ObjectShortName">out_r_ena</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_r_payload" type="logic">
-      <obj_property name="ElementShortName">out_r_payload</obj_property>
-      <obj_property name="ObjectShortName">out_r_payload</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/out_r_taken" type="logic">
-      <obj_property name="ElementShortName">out_r_taken</obj_property>
-      <obj_property name="ObjectShortName">out_r_taken</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tc_limit_tcp_payload" type="array">
-      <obj_property name="ElementShortName">tc_limit_tcp_payload[10:0]</obj_property>
-      <obj_property name="ObjectShortName">tc_limit_tcp_payload[10:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tc_limit_tcp_window" type="array">
-      <obj_property name="ElementShortName">tc_limit_tcp_window[15:0]</obj_property>
-      <obj_property name="ObjectShortName">tc_limit_tcp_window[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tc_do_lcl_datagen" type="logic">
-      <obj_property name="ElementShortName">tc_do_lcl_datagen</obj_property>
-      <obj_property name="ObjectShortName">tc_do_lcl_datagen</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tc_lcl_datagen_chance" type="array">
-      <obj_property name="ElementShortName">tc_lcl_datagen_chance[31:0]</obj_property>
-      <obj_property name="ObjectShortName">tc_lcl_datagen_chance[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tc_lcl_datagen_len_mask" type="array">
-      <obj_property name="ElementShortName">tc_lcl_datagen_len_mask[15:0]</obj_property>
-      <obj_property name="ObjectShortName">tc_lcl_datagen_len_mask[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/tc_lcl_datagen_mark" type="array">
-      <obj_property name="ElementShortName">tc_lcl_datagen_mark[3:0]</obj_property>
-      <obj_property name="ObjectShortName">tc_lcl_datagen_mark[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/lcl_datagen_write" type="logic">
-      <obj_property name="ElementShortName">lcl_datagen_write</obj_property>
-      <obj_property name="ObjectShortName">lcl_datagen_write</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/lcl_datagen_word" type="array">
-      <obj_property name="ElementShortName">lcl_datagen_word[31:0]</obj_property>
-      <obj_property name="ObjectShortName">lcl_datagen_word[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/lcl_datagen_offset" type="array">
-      <obj_property name="ElementShortName">lcl_datagen_offset[7:0]</obj_property>
-      <obj_property name="ObjectShortName">lcl_datagen_offset[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/lcl_datagen_commit" type="logic">
-      <obj_property name="ElementShortName">lcl_datagen_commit</obj_property>
-      <obj_property name="ObjectShortName">lcl_datagen_commit</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/lcl_datagen_commit_len" type="array">
-      <obj_property name="ElementShortName">lcl_datagen_commit_len[5:0]</obj_property>
-      <obj_property name="ObjectShortName">lcl_datagen_commit_len[5:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/lcl_datagen_free" type="logic">
-      <obj_property name="ElementShortName">lcl_datagen_free</obj_property>
-      <obj_property name="ObjectShortName">lcl_datagen_free</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/data_bufsize_addrbits" type="other">
-      <obj_property name="ElementShortName">data_bufsize_addrbits</obj_property>
-      <obj_property name="ObjectShortName">data_bufsize_addrbits</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/test_regs" type="other">
-      <obj_property name="ElementShortName">test_regs</obj_property>
-      <obj_property name="ObjectShortName">test_regs</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/lcl_data_gen" type="other">
-      <obj_property name="ElementShortName">lcl_data_gen</obj_property>
-      <obj_property name="ObjectShortName">lcl_data_gen</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/limit_payload_window" type="other">
-      <obj_property name="ElementShortName">limit_payload_window</obj_property>
-      <obj_property name="ObjectShortName">limit_payload_window</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/debug_regs" type="other">
-      <obj_property name="ElementShortName">debug_regs</obj_property>
-      <obj_property name="ObjectShortName">debug_regs</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/debug_counters" type="other">
-      <obj_property name="ElementShortName">debug_counters</obj_property>
-      <obj_property name="ObjectShortName">debug_counters</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/compiletime" type="other">
-      <obj_property name="ElementShortName">compiletime</obj_property>
-      <obj_property name="ObjectShortName">compiletime</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/addrbits" type="other">
-      <obj_property name="ElementShortName">addrbits</obj_property>
-      <obj_property name="ObjectShortName">addrbits</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fakernet/fakernet/databits" type="other">
-      <obj_property name="ElementShortName">databits</obj_property>
-      <obj_property name="ObjectShortName">databits</obj_property>
+   <WVObjectSize size="74" />
+   <wvobject fp_name="/main_tb/resetn" type="logic">
+      <obj_property name="ElementShortName">resetn</obj_property>
+      <obj_property name="ObjectShortName">resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/LED" type="array">
+      <obj_property name="ElementShortName">LED[15:0]</obj_property>
+      <obj_property name="ObjectShortName">LED[15:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/usb_uart_rxd" type="logic">
+      <obj_property name="ElementShortName">usb_uart_rxd</obj_property>
+      <obj_property name="ObjectShortName">usb_uart_rxd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/usb_uart_txd" type="logic">
+      <obj_property name="ElementShortName">usb_uart_txd</obj_property>
+      <obj_property name="ObjectShortName">usb_uart_txd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_addr" type="array">
+      <obj_property name="ElementShortName">ddr3_addr[13:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_addr[13:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_ba" type="array">
+      <obj_property name="ElementShortName">ddr3_ba[2:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_ba[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_ras_n" type="logic">
+      <obj_property name="ElementShortName">ddr3_ras_n</obj_property>
+      <obj_property name="ObjectShortName">ddr3_ras_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_we_n" type="logic">
+      <obj_property name="ElementShortName">ddr3_we_n</obj_property>
+      <obj_property name="ObjectShortName">ddr3_we_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_cke" type="array">
+      <obj_property name="ElementShortName">ddr3_cke[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_cke[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_dm" type="array">
+      <obj_property name="ElementShortName">ddr3_dm[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_dm[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_odt" type="array">
+      <obj_property name="ElementShortName">ddr3_odt[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_odt[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_dq" type="array">
+      <obj_property name="ElementShortName">ddr3_dq[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_dq[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_dqs_p" type="array">
+      <obj_property name="ElementShortName">ddr3_dqs_p[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_dqs_p[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/ddr3_dqs_n" type="array">
+      <obj_property name="ElementShortName">ddr3_dqs_n[1:0]</obj_property>
+      <obj_property name="ObjectShortName">ddr3_dqs_n[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/serialTermStatus" type="array">
+      <obj_property name="ElementShortName">serialTermStatus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">serialTermStatus[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/serialTermRxData" type="array">
+      <obj_property name="ElementShortName">serialTermRxData[7:0]</obj_property>
+      <obj_property name="ObjectShortName">serialTermRxData[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/serialTermTxData" type="array">
+      <obj_property name="ElementShortName">serialTermTxData[7:0]</obj_property>
+      <obj_property name="ObjectShortName">serialTermTxData[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/cpuAddress" type="array">
+      <obj_property name="ElementShortName">cpuAddress[26:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuAddress[26:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/cpuDataOut" type="array">
+      <obj_property name="ElementShortName">cpuDataOut[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuDataOut[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/cpuDataIn" type="array">
+      <obj_property name="ElementShortName">cpuDataIn[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuDataIn[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/mem_resetn" type="logic">
+      <obj_property name="ElementShortName">mem_resetn</obj_property>
+      <obj_property name="ObjectShortName">mem_resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/mem_ready" type="logic">
+      <obj_property name="ElementShortName">mem_ready</obj_property>
+      <obj_property name="ObjectShortName">mem_ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/fake_ddr3/rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/sys_resetn" type="logic">
+      <obj_property name="ElementShortName">sys_resetn</obj_property>
+      <obj_property name="ObjectShortName">sys_resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/ram_cen" type="logic">
+      <obj_property name="ElementShortName">ram_cen</obj_property>
+      <obj_property name="ObjectShortName">ram_cen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/ram_oen" type="logic">
+      <obj_property name="ElementShortName">ram_oen</obj_property>
+      <obj_property name="ObjectShortName">ram_oen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/ram_wen" type="logic">
+      <obj_property name="ElementShortName">ram_wen</obj_property>
+      <obj_property name="ObjectShortName">ram_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/ram_ub" type="logic">
+      <obj_property name="ElementShortName">ram_ub</obj_property>
+      <obj_property name="ObjectShortName">ram_ub</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/ram_lb" type="logic">
+      <obj_property name="ElementShortName">ram_lb</obj_property>
+      <obj_property name="ObjectShortName">ram_lb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/ram_ack" type="logic">
+      <obj_property name="ElementShortName">ram_ack</obj_property>
+      <obj_property name="ObjectShortName">ram_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpuAddress" type="array">
+      <obj_property name="ElementShortName">cpuAddress[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuAddress[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpuDataOut" type="array">
+      <obj_property name="ElementShortName">cpuDataOut[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuDataOut[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpuDataIn" type="array">
+      <obj_property name="ElementShortName">cpuDataIn[15:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuDataIn[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/memAddress" type="array">
+      <obj_property name="ElementShortName">memAddress[15:0]</obj_property>
+      <obj_property name="ObjectShortName">memAddress[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpu_uds" type="logic">
+      <obj_property name="ElementShortName">cpu_uds</obj_property>
+      <obj_property name="ObjectShortName">cpu_uds</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpu_lds" type="logic">
+      <obj_property name="ElementShortName">cpu_lds</obj_property>
+      <obj_property name="ObjectShortName">cpu_lds</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpu_r_w" type="logic">
+      <obj_property name="ElementShortName">cpu_r_w</obj_property>
+      <obj_property name="ObjectShortName">cpu_r_w</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/computer/cpu_dtack" type="logic">
+      <obj_property name="ElementShortName">cpu_dtack</obj_property>
+      <obj_property name="ObjectShortName">cpu_dtack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/ddr3_reset_n" type="logic">
+      <obj_property name="ElementShortName">ddr3_reset_n</obj_property>
+      <obj_property name="ObjectShortName">ddr3_reset_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/sys_resetn" type="logic">
+      <obj_property name="ElementShortName">sys_resetn</obj_property>
+      <obj_property name="ObjectShortName">sys_resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/sys_clock100" type="logic">
+      <obj_property name="ElementShortName">sys_clock100</obj_property>
+      <obj_property name="ObjectShortName">sys_clock100</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/clk_locked" type="logic">
+      <obj_property name="ElementShortName">clk_locked</obj_property>
+      <obj_property name="ObjectShortName">clk_locked</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/mem_ack" type="logic">
+      <obj_property name="ElementShortName">mem_ack</obj_property>
+      <obj_property name="ObjectShortName">mem_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/mem_wr_ack" type="logic">
+      <obj_property name="ElementShortName">mem_wr_ack</obj_property>
+      <obj_property name="ObjectShortName">mem_wr_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/state" type="array">
+      <obj_property name="ElementShortName">state[31:0]</obj_property>
+      <obj_property name="ObjectShortName">state[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_awaddr" type="array">
+      <obj_property name="ElementShortName">s_axi_awaddr[27:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awaddr[27:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_awvalid" type="logic">
+      <obj_property name="ElementShortName">s_axi_awvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_awready" type="logic">
+      <obj_property name="ElementShortName">s_axi_awready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_awready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_wdata" type="array">
+      <obj_property name="ElementShortName">s_axi_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_wvalid" type="logic">
+      <obj_property name="ElementShortName">s_axi_wvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_wready" type="logic">
+      <obj_property name="ElementShortName">s_axi_wready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_wready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_araddr" type="array">
+      <obj_property name="ElementShortName">s_axi_araddr[27:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_araddr[27:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_arvalid" type="logic">
+      <obj_property name="ElementShortName">s_axi_arvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_arvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_arready" type="logic">
+      <obj_property name="ElementShortName">s_axi_arready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_arready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_rready" type="logic">
+      <obj_property name="ElementShortName">s_axi_rready</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_rvalid" type="logic">
+      <obj_property name="ElementShortName">s_axi_rvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/s_axi_rdata" type="array">
+      <obj_property name="ElementShortName">s_axi_rdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axi_rdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/address" type="array">
+      <obj_property name="ElementShortName">address[27:0]</obj_property>
+      <obj_property name="ObjectShortName">address[27:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/wr_data" type="array">
+      <obj_property name="ElementShortName">wr_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/wr_byte_mask" type="array">
+      <obj_property name="ElementShortName">wr_byte_mask[1:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_byte_mask[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/i_cen" type="logic">
+      <obj_property name="ElementShortName">i_cen</obj_property>
+      <obj_property name="ObjectShortName">i_cen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/i_wren" type="logic">
+      <obj_property name="ElementShortName">i_wren</obj_property>
+      <obj_property name="ObjectShortName">i_wren</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/i_valid" type="logic">
+      <obj_property name="ElementShortName">i_valid</obj_property>
+      <obj_property name="ObjectShortName">i_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/rd_data" type="array">
+      <obj_property name="ElementShortName">rd_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/o_ready_p" type="logic">
+      <obj_property name="ElementShortName">o_ready_p</obj_property>
+      <obj_property name="ObjectShortName">o_ready_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/wr_ack_p" type="logic">
+      <obj_property name="ElementShortName">wr_ack_p</obj_property>
+      <obj_property name="ObjectShortName">wr_ack_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/o_valid_p" type="logic">
+      <obj_property name="ElementShortName">o_valid_p</obj_property>
+      <obj_property name="ObjectShortName">o_valid_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/cpuWriteEn" type="logic">
+      <obj_property name="ElementShortName">cpuWriteEn</obj_property>
+      <obj_property name="ObjectShortName">cpuWriteEn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/memory/inst/i_valid_p" type="logic">
+      <obj_property name="ElementShortName">i_valid_p</obj_property>
+      <obj_property name="ObjectShortName">i_valid_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/mem_i_valid" type="logic">
+      <obj_property name="ElementShortName">mem_i_valid</obj_property>
+      <obj_property name="ObjectShortName">mem_i_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/mem_i_valid_p" type="logic">
+      <obj_property name="ElementShortName">mem_i_valid_p</obj_property>
+      <obj_property name="ObjectShortName">mem_i_valid_p</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/uart_rxd_out" type="logic">
+      <obj_property name="ElementShortName">uart_rxd_out</obj_property>
+      <obj_property name="ObjectShortName">uart_rxd_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main_tb/main_inst/uart_txd_in" type="logic">
+      <obj_property name="ElementShortName">uart_txd_in</obj_property>
+      <obj_property name="ObjectShortName">uart_txd_in</obj_property>
    </wvobject>
 </wave_config>
