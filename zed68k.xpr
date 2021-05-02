@@ -100,14 +100,14 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
-          <Proxy FileSetName="design_1_UART_RX_0_0"/>
+        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0.xci">
+          <Proxy FileSetName="design_1_fifo_generator_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0.xci">
           <Proxy FileSetName="design_1_UART_FIFO_IO_cntl_pr_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0.xci">
-          <Proxy FileSetName="design_1_fifo_generator_0_0"/>
+        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
+          <Proxy FileSetName="design_1_UART_RX_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/serial/serial.bd">
@@ -116,14 +116,14 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
+        <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_UART_TX_0_0/serial_UART_TX_0_0.xci">
+          <Proxy FileSetName="serial_UART_TX_0_0"/>
+        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_UART_FIFO_IO_cntl_pr_0_0/serial_UART_FIFO_IO_cntl_pr_0_0.xci">
           <Proxy FileSetName="serial_UART_FIFO_IO_cntl_pr_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_fifo_generator_0_0/serial_fifo_generator_0_0.xci">
           <Proxy FileSetName="serial_fifo_generator_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="serial.bd" FileRelPathName="ip/serial_UART_TX_0_0/serial_UART_TX_0_0.xci">
-          <Proxy FileSetName="serial_UART_TX_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/ddr3/main.v">
@@ -145,12 +145,6 @@
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/i2c_master.vhd"/>
           <Attr Name="ImportTime" Val="1618056806"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/new/sd_spi.vhdl">
-        <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -244,20 +238,6 @@
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../multicomp/zedmulti/zedmulti.srcs/sources_1/imports/TERMINAL/SBCTextDisplayRGB.vhd"/>
           <Attr Name="ImportTime" Val="1592474220"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/new/byte_bram.vhdl">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/new/sdcard.vhdl">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -622,12 +602,11 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pll_synth_1" Type="Ft3:Synth" SrcSet="pll" Part="xc7a35ticsg324-1L" ConstrsSet="pll" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pll_synth_1" IncludeInArchive="true">
+    <Run Id="pll_synth_1" Type="Ft3:Synth" SrcSet="pll" Part="xc7a35ticsg324-1L" ConstrsSet="pll" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
       </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
