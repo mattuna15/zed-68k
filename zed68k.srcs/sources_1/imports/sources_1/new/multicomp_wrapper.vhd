@@ -69,9 +69,6 @@ port(
       
       ddr3_reset_n :out std_logic;
       
---      ps2clk :inout std_logic;
---      ps2data :inout std_logic;
-      
       --dazzler
       
         gd_uart_txd_out : out   std_logic;                  -- gd uart out
@@ -163,8 +160,8 @@ architecture Behavioral of multicomp_wrapper is
     signal mem_i_valid_p : std_logic;
 
       signal ramDataOut: std_logic_vector(15 downto 0);
-      signal initial_stack: std_logic_vector(31 downto 0) := x"009F0000";
-      signal initial_pc: std_logic_vector(31 downto 0) := x"00A00BB4";
+      signal initial_stack: std_logic_vector(31 downto 0) := x"00DF0000";
+      signal initial_pc: std_logic_vector(31 downto 0) := x"00E00BB4";
       
       signal memDataOut: std_logic_vector(15 downto 0);
       signal mem_ack:std_logic;

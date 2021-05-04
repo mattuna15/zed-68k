@@ -81,18 +81,13 @@ end Microcomputer;
 
 architecture struct of Microcomputer is
 
-	signal basRomData					: std_logic_vector(15 downto 0);
     signal monRomData					: std_logic_vector(15 downto 0);
 
-    signal n_interface2CS			: std_logic :='1';
 	signal n_externalRamCS			: std_logic :='1';
 
 	signal n_basRom1CS					: std_logic :='1';
     signal n_basRom2CS					: std_logic :='1';
-    signal n_basRom3CS					: std_logic :='1';
-    signal n_basRom4CS					: std_logic :='1';
-
-
+    
     signal    cpuAddress	    :  std_logic_vector(31 downto 0);
 	signal	  cpuDataOut		:  std_logic_vector(15 downto 0);
 	signal    cpuDataIn		:  std_logic_vector(15 downto 0);
@@ -102,7 +97,6 @@ architecture struct of Microcomputer is
     signal    cpu_lds :  std_logic; -- lower data strobe
     signal    cpu_r_w :   std_logic; -- read(high)/write(low)
     signal    cpu_dtack :  std_logic; -- data transfer acknowledge
-    
     
     type t_Vector is array (0 to 10) of std_logic_vector(15 downto 0);
     signal r_vec : t_Vector;
@@ -253,37 +247,12 @@ cpu1 : entity work.TG68
         data_o => monRomData(7 downto 0)
     );
     
-    rom3 : entity work.rom -- 8 
-	generic map (
-	   G_ADDR_BITS => 13,
-	   G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_0.hex"
-	)
-    port map(
-        addr_i => memAddress(12 downto 0),
-        clk_i => sys_clk,
-        data_o => basRomData(15 downto 8)
-    );
-    
-    rom4 : entity work.rom -- 8 
-	generic map (
-	   G_ADDR_BITS => 13,
-	   G_INIT_FILE => "D:/code/zed-68k/roms/ehbasic/basic_1.hex"
-	)
-    port map(
-        addr_i => memAddress(12 downto 0),
-        clk_i => sys_clk,
-        data_o => basRomData(7 downto 0)
-    );
-    
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
   
 
-n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; --A00000-A0FFFF
-n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1010" else '1'; 
-n_basRom3CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; --B00000-B0FFFF
-n_basRom4CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1011" else '1'; 
-n_interface2CS <= '0' when cpuAddress >= X"C00000" and cpuAddress <= X"CFFFFF" else '1'; --VGA
+n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; --E00000-E0FFFF
+n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; 
 
 --terminal
 tx_serialWrite_en <= '1' when cpuAddress = X"f0000b"  and cpu_r_w = '0' and cpu_lds = '0' else '0';
@@ -296,7 +265,7 @@ serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
 timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress < x"f30040" else '0';           
 
 -- RAM
-ram_cen <= '0' when  cpuAddress < X"A00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
+ram_cen <= '0' when  cpuAddress < X"E00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
 ram_a <= cpuAddress(26 downto 0) when ram_cen ='0' else (others => '0'); -- address
@@ -349,8 +318,6 @@ X"00"
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0'  else
 monRomData(15 downto 8)
 when n_basRom1CS = '0' else
-basRomData(15 downto 8)
-when n_basRom3CS = '0' else
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
 x"00"
@@ -391,8 +358,6 @@ cpuDataIn(7 downto 0)
 <= 
 monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
-basRomData(7 downto 0)
-when n_basRom4CS = '0' else 
 "00000" & cpuAddress(3 downto 1)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
 r_Vec(vecAddress)(7 downto 0)
@@ -406,7 +371,7 @@ when cpuAddress = x"f00009" else
 serialRxData 
 when rx_serialRead_en = '1' else 
 ram_dq_o(7 downto 0)
-when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"A00000" else
+when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"E00000" else
 milliseconds(23 downto 16)
 when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
 milliseconds(7 downto 0)

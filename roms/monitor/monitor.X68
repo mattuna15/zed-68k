@@ -24,42 +24,31 @@
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ; GNU General Public License for more details.
 ;
-;
-;
 
-;   CPU     "68000.TBL"      ; CPU TABLE
-;   HOF     "BIN16"          ; HEX OUTPUT FORMAT
-;   HOF     "MOT16"          ; OUTPUT MOTOROLA S-RECORD
+* MACROS
 
-;
-; MIC68K MEMORY MAP
-;
-; 000000-00FFFF RAM 32Kx2
-; 010000-9FFFFF -
-; A00000-A0FFFF ROM 32Kx2
-; A10000-DFFFFF -
-; F00009-0B     ACIA1 63B50 (IC6)
-; F20009-0B     ACIA2 63B50 (IC7)
-; F40009-0F     PIA (IC1)
-; F60009-1F     PTM (IC2)
-;
+
+ADDR2MEM MACRO
+      PEA     \1(PC)         MOVE ADDRESS TO MEMORY; POSITION
+      MOVE.L  (A7)+,\2       INDEPENDANT = TO "MOVE.L #\1,\2"
+      ENDM
+
+
+SAVEREGS MACRO
+      MOVE.L  A7,REGA7       SAVE STACK POINTER
+      LEA     SV\@(PC),A7    A7 = RETURN ADDRESS (FOR CALL TO SAVE)
+      MOVE.L  A7,TEMP        TEMP = RETURN ADDRESS
+      BRA     SAVE           BSR WITHOUT USING STACK
+SV\@  DS      0
+      ENDM
 
 ; Use EASy68k Simulator
-EASY68K_SIM	EQU 0		; set 0 to use ACIA1
-;EASY68K_SIM	EQU 1		; set 1 to use EASy68K Sim68K I/O  
+;EASY68K_SIM	EQU 0		; set 0 to use ACIA1
+EASY68K_SIM	EQU 1		; set 1 to use EASy68K Sim68K I/O  
 
 BIT_ESC      EQU 0              ; ESC BIT POSITION
 RAM      EQU $000000            ; RAM START ADDRESS
 
-;
-; MONITOR MEMORY MAP
-; $000000-$0003FF M68000 Exception Vector Table
-; $00E000         SUPER_STACK/RAMBASE
-; $00FFFF         RAM END
-;
-; $A00000         RESET Vector
-; $A00008         MAIN(Monitor start)
-;
 
 ACIAC    EQU $F00009
 ACIAD    EQU ACIAC+2
@@ -87,8 +76,8 @@ BS      EQU 8
 RS      EQU $1E
 ESC     EQU $1B
 
-SUPER_STACK   EQU $9F0000   ; SUPER STACK TOP Address
-RAMBASE_INIT  EQU $9F0000   
+SUPER_STACK   EQU $DF0000   ; SUPER STACK TOP Address
+RAMBASE_INIT  EQU $DF0000   
 
 ;
 ; EXCEPTION VECTOR address
@@ -120,7 +109,7 @@ RAMBASE  DS.L   1          ; RAM BASE ADDRESS
 ;
 ; ROM START
 ;
-    ORG $A00000
+    ORG $E00000
    ; Reset start vector
    DC.L SUPER_STACK        ; TOP OF SUPERVISOR STACK $130000
    DC.L MAIN               ; MONITOR START
@@ -2885,6 +2874,108 @@ SKIP_PRINT_BLANK
 BOOT_RAM      MOVEA.L RAM.L,SP
               MOVEA.L 4+RAM.L,A0
               JMP     (A0)
+              
+              
+              
+
+***************************************
+ * STRLEN - RETURNS LENGTH OP NULL TERMINATED STRING IN D0
+ * A0 -> STRING
+STRLEN:   MOVE.L A0,-(SP) SAVE REG
+          CLR.L  D0       INITIALIZE
+STRLENI:  TST.B  (A0)+    NULL?
+          BEQ    STRLENR  YES, RETURN
+          ADDQ.L #1, D0   BUMP COUNT
+          BRA    STRLENI  LOOP
+STRLENR:  MOVE.L (SP)+,A0 RESTORE REG
+          RTS
+  
+  * STRCPY - COPY A NULL TERMINATED STRING
+  * A0 -> SOURCE STRING
+  * A1 -> DESTINATION STRING
+STRCPY:   MOVEM.L A0-A1,-(SP) SAVE REGS
+STRCPY1:  MOVE.B  (A0)+,(A1)+ MOVE A BYTE
+          BNE     STRCPY1     GET ANOTHER IF NOT NULL
+          MOVEM.L (SP)+,A0-A1 RESTORE REGS
+          RTS
+
+  
+  * STRCMP - COMPARE TWO NULL TERMINATED STRINGS
+  * A0 -> STRING 1
+  * A1 -> STRING 2
+STRCMP:   MOVEM.L A0-A1,-(SP)  SAVE REGS
+          CLR.L  D0       INITIALIZE
+          CLR.L  D1
+STRCMP1:  CMPM.B  (A0)+,(A1)+  COMPARE BYTES
+          BNE     STRRET       RETURN IF DIFFERENT
+          ADD     #1, D1
+          
+          CMP.L   #11, D1
+          BNE     STRCMP1      NOW MORE BYTES LEFT
+          
+          MOVE.B  #1, D0
+          
+STRRET:   MOVEM.L (SP)+,A0-A1  RESTORE REGS
+          RTS
+***************************************
+
+SWAPNUM     ROL.W #8,D0
+            SWAP     D0
+            ROL.W #8,D0
+            
+            RTS
+    
+********
+* memory copy
+******** 
+MOVE_b  
+        MOVE.B  (A0)+,(A1)+ ; do the long moves
+        DBRA    D0,MOVE_b
+        RTS
+        
+MOVE_w  
+        MOVE.W  (A0)+,(A1)+ ; do the long moves
+        DBRA    D0,MOVE_w
+        RTS  
+
+MOVE_l  
+        MOVE.l  (A0)+,(A1)+ ; do the long moves
+        DBRA    D0,MOVE_l
+        RTS   
+     
+*****************************************************
+
+*-------------------------------------------------------------------------
+* File X         COMMON I/O                                       05/17/82
+
+
+*
+*    OUTPUT BUFFER TO PORT1
+*
+OUTPUT   MOVEM.L D0-D3/A0-A1,-(A7) | GET SOME WORKING ROOM
+         CLR.L   D3            | D3 = NO OFFSET INTO NULL CHARACTERS
+         BRA    OUTP2
+         
+*
+*   SEND BUFFER TO PORT
+*
+OUTP2    CMP.L   A6,A5        | SEE IF AT OR BEYOND END OF LINE
+         BCS.S   OUTP3          | NO... KEEP GOING, ELSE
+         MOVEM.L (A7)+,D0-D3/A0-A1 | RESTORE REGISTERS
+         RTS                    | END OF ROUTINE
+
+OUTP3    MOVE.B  (A5)+,D0     | GRAB BYTE TO OUTPUT
+         BSR    COUT         | GO PRINT IT
+         BRA    OUTP2          | GO DO ANOTHER
+         
+         RTS
+         
+OUT1CR   MOVE.B  #CR,(A6)+
+         MOVE.B  #LF,(A6)+
+         BSR OUTPUT
+         RTS  
+
+*****************************************************
 
 ; SERVICE BUS ERROR
 SERVICE_BUSERROR MOVEA.L BUSERROR_MSG.L,A3
@@ -3071,6 +3162,8 @@ USER_STACK  EQU  STACK_AREA+$FF00    ; TOP OF STACK
 
 
        END	MAIN
+
+
 
 
 

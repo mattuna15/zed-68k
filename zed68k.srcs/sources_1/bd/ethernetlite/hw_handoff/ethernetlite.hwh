@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Mon May  3 21:52:49 2021" VIVADOVERSION="2020.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue May  4 10:54:01 2021" VIVADOVERSION="2020.1">
 
   <SYSTEMINFO ARCH="artix7" BOARD="digilentinc.com:arty-a7-35:part0:1.0" DEVICE="7a35ti" NAME="ethernetlite" PACKAGE="csg324" SPEEDGRADE="-1L"/>
 
@@ -76,17 +76,17 @@
     </PORT>
     <PORT DIR="I" NAME="sys_resetn" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="External_Ports_sys_resetn">
       <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aresetn"/>
         <CONNECTION INSTANCE="axi_ethernet_0" PORT="sys_resetn"/>
         <CONNECTION INSTANCE="axi_ethernet_0" PORT="ui_clk_sync_rst"/>
         <CONNECTION INSTANCE="axi_ethernet_0" PORT="init_calib_complete"/>
-        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aresetn"/>
       </CONNECTIONS>
     </PORT>
     <PORT CLKFREQUENCY="100000000" DIR="I" NAME="sys_clock" SIGIS="clk" SIGNAME="External_Ports_sys_clock">
       <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aclk"/>
         <CONNECTION INSTANCE="axi_ethernet_0" PORT="sys_clock"/>
         <CONNECTION INSTANCE="axi_ethernet_0" PORT="ui_clk"/>
-        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aclk"/>
       </CONNECTIONS>
     </PORT>
     <PORT DIR="I" LEFT="31" NAME="address" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_address">

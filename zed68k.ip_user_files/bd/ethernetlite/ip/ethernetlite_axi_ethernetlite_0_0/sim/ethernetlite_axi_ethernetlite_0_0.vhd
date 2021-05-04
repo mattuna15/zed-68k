@@ -252,8 +252,8 @@ BEGIN
       C_INCLUDE_INTERNAL_LOOPBACK => 0,
       C_INCLUDE_GLOBAL_BUFFERS => 1,
       C_DUPLEX => 1,
-      C_TX_PING_PONG => 1,
-      C_RX_PING_PONG => 1
+      C_TX_PING_PONG => 0,
+      C_RX_PING_PONG => 0
     )
     PORT MAP (
       s_axi_aclk => s_axi_aclk,

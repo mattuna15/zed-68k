@@ -540,18 +540,18 @@
       "sys_resetn_0_1": {
         "ports": [
           "sys_resetn",
+          "axi_ethernetlite_0/s_axi_aresetn",
           "axi_ethernet_0/sys_resetn",
           "axi_ethernet_0/ui_clk_sync_rst",
-          "axi_ethernet_0/init_calib_complete",
-          "axi_ethernetlite_0/s_axi_aresetn"
+          "axi_ethernet_0/init_calib_complete"
         ]
       },
       "sys_clock_0_1": {
         "ports": [
           "sys_clock",
+          "axi_ethernetlite_0/s_axi_aclk",
           "axi_ethernet_0/sys_clock",
-          "axi_ethernet_0/ui_clk",
-          "axi_ethernetlite_0/s_axi_aclk"
+          "axi_ethernet_0/ui_clk"
         ]
       },
       "address_0_1": {

@@ -179,7 +179,48 @@ begin
       ddr3_dq             => ddr3_dq,
       ddr3_odt             => ddr3_odt,
       ddr3_dqs_p           => ddr3_dqs_p,
-      ddr3_dqs_n           => ddr3_dqs_n
+      ddr3_dqs_n           => ddr3_dqs_n,
+      
+        
+      --dazzler
+      
+        gd_uart_txd_out => OPEN,                -- gd uart out
+        gd_gpu_sel => OPEN,  
+        gd_sd_sel => OPEN,  
+        gd_daz_sel => OPEN,  
+        gd_mosi => OPEN,  
+        gd_miso => '0',
+        gd_sclk  => OPEN,  
+        
+         SD_CSn => OPEN, -- #IO_L14P_T2_SRCC_35 Sch=sd_reset or DAT3
+         SD_CD => '0',  --#IO_L9N_T1_DQS_AD7N_35 Sch=sd_cd
+         SD_SCK => OPEN,  --
+         SD_CMD => OPEN,   -- #IO_L16N_T2_35 Sch=sd_cmd
+         SD_DAT0 => '0',-- #IO_L16P_T2_35 Sch=sd_dat[0]
+         SD_DAT1 => OPEN,  -- #IO_L18N_T2_35 Sch=sd_dat[1]
+         SD_DAT2 => OPEN,  -- #IO_L18P_T2_35 Sch=sd_dat[2]
+         SD_WP => OPEN,  
+        
+        sw => "0000",
+        
+
+    scl_pup => OPEN,  
+    sda_pup => OPEN,  
+    ck_scl => OPEN,  
+    ck_sda => OPEN,  
+    
+    eth_mdio_mdc_mdc => OPEN,  
+    eth_mdio_mdc_mdio_io => OPEN,  
+    eth_mii_col => '0',
+    eth_mii_crs  => '0',
+    eth_mii_rst_n => OPEN,  
+    eth_mii_rx_clk  => '0',
+    eth_mii_rx_dv  => '0',
+    eth_mii_rx_er  => '0',
+    eth_mii_rxd => "0000",
+    eth_mii_tx_clk => '0',
+    eth_mii_tx_en => OPEN,  
+    eth_mii_txd => OPEN
 
    ); -- main_inst
    
