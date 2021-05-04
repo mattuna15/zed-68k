@@ -3,16 +3,16 @@
 // Requires 166 clock, 200 ref clock and 100 system clock
 // Tested on Arty A7-35
 
-module main_axi_control(
+module axi_ethernet(
 
         //cpu bus
         input [31:0]    address, 
-        input [15:0]    wr_data,
-        input [1:0]     wr_byte_mask,
+        input [31:0]    wr_data,
+        input [3:0]     wr_byte_mask,
         input      i_cen, //active low -enable
         input      i_wren, //active low_write enable
         input      i_valid_p, //active high valid in
-        output reg [15:0]   rd_data,
+        output reg [31:0]   rd_data,
         output      o_ready_p, //active high ready signal
         output      wr_ack_p, // active high write complete
         output      o_valid_p, //active high valid read data ready
@@ -143,7 +143,7 @@ module main_axi_control(
 	        if (i_valid & !i_wren & !i_cen) begin
                 s_axi_awaddr <= address;
                 s_axi_wdata <= wr_data;
-                s_axi_wstrb <= {2'b0, wr_byte_mask};
+                s_axi_wstrb <= {wr_byte_mask};
                 state <= 1;             o_ready <= 0;
             end 
             else if (i_valid & i_wren & !i_cen) begin // read

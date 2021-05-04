@@ -1,0 +1,7 @@
+verilog xil_defaultlib  \
+"../../../bd/ethernetlite/ip/ethernetlite_axi_ethernet_0_0/sim/ethernetlite_axi_ethernet_0_0.v" \
+"../../../bd/ethernetlite/sim/ethernetlite.v" \
+
+verilog xil_defaultlib "glbl.v"
+
+nosort

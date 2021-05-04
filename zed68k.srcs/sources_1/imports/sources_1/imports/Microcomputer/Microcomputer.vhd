@@ -51,20 +51,11 @@ entity Microcomputer is
       ram_ub               : out    std_logic;
       ram_lb               : out    std_logic;
       ram_ack              : in     std_logic;
-		
-		-- esp
-	    esp_sts : in std_logic_vector(7 downto 0);
-        esp_rxd : in std_logic_vector(7 downto 0);
-        esp_txd : out std_logic_vector(7 downto 0);
-        esp_rden : out std_logic;
-        esp_wren : out std_logic;
-       
         
         gd_gpu_sel : out std_logic;
         gd_sd_sel : out std_logic;
         gd_daz_sel : out std_logic;
         
-        clk25 : in std_logic;
         sda :inout std_logic; --        // I2C Serial data line, pulled high at board level
         scl : inout std_logic; -- 
 		
@@ -76,8 +67,14 @@ entity Microcomputer is
         sdStatus: inout std_logic_vector(7 downto 0) := (others => '0'); --f30009
         sdControl: inout std_logic_vector(7 downto 0); --f3000a
     
-        sdAddress: out std_logic_vector(31 downto 0) --f30000-2
-    
+        sdAddress: out std_logic_vector(31 downto 0); --f30000-2
+        
+        -- ethernet
+        eth_address : inout std_logic_vector(31 downto 0);
+        ethCS : out std_logic;
+        eth_data_out : inout std_logic_vector(31 downto 0);
+        eth_data_in : inout std_logic_vector(31 downto 0);
+        eth_ack : in std_logic
 	);
 	
 end Microcomputer;
@@ -100,7 +97,6 @@ architecture struct of Microcomputer is
 	signal	  cpuDataOut		:  std_logic_vector(15 downto 0);
 	signal    cpuDataIn		:  std_logic_vector(15 downto 0);
 	signal    memAddress		:  std_logic_vector(15 downto 0);
-	signal    vgaAddress        : std_logic_vector(15 downto 0);
 	
     signal    cpu_uds :  std_logic; -- upper data strobe
     signal    cpu_lds :  std_logic; -- lower data strobe
@@ -119,30 +115,23 @@ architecture struct of Microcomputer is
 	signal	timer_int :  std_logic;
 	signal	ps2_int :  std_logic;
 	signal	spi_int :  std_logic;
-	signal mouse_int : std_logic;
 
-    signal key_pressed_ascii : std_logic_vector(7 downto 0);
-	signal mouse_data : std_logic_vector(23 downto 0);
-	
 	signal timerCS : std_logic;
 	signal timerDataOut : std_logic_vector(7 downto 0);
 	signal timer_reg_sel : std_logic;
 	signal milliseconds: std_logic_vector(31 downto 0);
 	
-	signal keyboardCS : std_logic;
-	
 	signal rtcCS: std_logic;
 	signal rtc_ack :std_logic;
 	signal rtc_data : std_logic_vector(55 downto 0);
-	
-	attribute dont_touch : string;
-    attribute dont_touch of rtc : label is "true";
-    
+
     signal sd_rden : std_logic;
     signal sd_wren : std_logic;
     signal sd_ack  : std_logic;
 	signal n_sdCardCS : std_logic;
-	    
+	
+		attribute dont_touch : string;
+    attribute dont_touch of rtc : label is "true";
 	
 begin
 --interrupts
@@ -194,39 +183,7 @@ begin
     year          => rtc_data(41 DOWNTO 34), --clock output time: year
     valid_o       => rtc_ack
 );
-		
-----f30000/1 keyboard
---keyboard: entity work.KeyboardMC 
-
---	port map (
---		n_reset	=> n_reset,
---		clk    	=> sys_clk,
---		n_wr	=> '1',
---		n_rd	=> not cpu_r_w and not keyboardCS,
---		regSel	=> '1',
---		--dataIn	: in  std_logic_vector(7 downto 0);
---		dataOut	=>  key_pressed_ascii,
---		n_int		=> ps2_int, 
---		n_rts		=> open,
-		
---		-- Keyboard signals
---		ps2Clk	=> ps2clk,
---		ps2Data	=> ps2data,
- 
---		-- FN keys passed out as general signals (momentary and toggled versions)
---		FNkeys =>open,
---		FNtoggledKeys	=> open);
-
-----f30002-26
---mouse: entity work.ps2_mouse 
---	PORT map (
---			clk	=> sys_clk,								--system clock input
---			reset_n	=> n_reset,								--active low asynchronous reset
---			ps2_clk	=> ps2m_clk,							--clock signal from PS2 mouse
---			ps2_data => ps2m_dat,								--data signal from PS2 mouse
---			mouse_data => mouse_data,	--data received from mouse
---			mouse_data_new	=> mouse_int );								--new data packet available flag
-
+	
 --f30030 16 bit millisecond timer
 
 timer: entity work.timer  
@@ -266,9 +223,6 @@ cpu1 : entity work.TG68
 	-- rom address
     memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
     
-    --gameduino address
-    vgaAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, vgaAddress'length)) ;
-   
     -- vector address storage
     vecAddress <= conv_integer(cpuAddress(3 downto 0)) / 2 ;
     r_Vec(vecAddress) <= cpuDataOut when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ;
@@ -334,12 +288,9 @@ n_interface2CS <= '0' when cpuAddress >= X"C00000" and cpuAddress <= X"CFFFFF" e
 --terminal
 tx_serialWrite_en <= '1' when cpuAddress = X"f0000b"  and cpu_r_w = '0' and cpu_lds = '0' else '0';
 rx_serialRead_en <= '1' when cpuAddress = X"f0000b" and cpu_r_w = '1' and cpu_lds = '0'  else '0';
+
 -- srec
 serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
-
---terminal
-esp_wren <= '1' when cpuAddress = X"f3000b"  and cpu_r_w = '0' and cpu_lds = '0' else '0';
-esp_rden <= '1' when cpuAddress = X"f3000b" and cpu_r_w = '1' and cpu_lds = '0'  else '0';
 
 --periph
 timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress < x"f30040" else '0';           
@@ -355,7 +306,6 @@ ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
 
 --terminal
 serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
-esp_txd <= cpuDataOut(7 downto 0) when esp_wren = '1';
 
 -- spi
 
@@ -370,8 +320,6 @@ gd_daz_sel <= not spi_ctrl(2);
 -- timer
 timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
 rtcCS <= '1' when cpuAddress >= x"f30040" and cpuAddress < x"f30048" else '0';
--- keyboard
-keyboardCS <= '0' when cpuAddress = x"f30000" else '1';
 
 -- sd 
 n_sdCardCS <= '0' when cpuAddress >= x"f40020" and cpuAddress <= x"f40030" else '1';
@@ -381,6 +329,12 @@ sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40020" or cpuAddress =
 sd_rden <= sdControl(2);
 sd_wren <= sdControl(3);
 
+--net 
+ethCS <= '0' when cpuAddress >= x"f40040" and cpuAddress <= x"f40051" else '1';
+eth_address(31 downto 16) <= cpuDataOut when cpuAddress = x"f40040" and cpu_r_w = '0';
+eth_address(15 downto 0) <= cpuDataOut when cpuAddress = x"f40042" and cpu_r_w = '0';
+eth_data_in(31 downto 16) <= cpuDataOut when cpuAddress = x"f40044" and cpu_r_w = '0';
+eth_data_in(15 downto 0) <= cpuDataOut when cpuAddress = x"f40046" and cpu_r_w = '0';
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
@@ -419,12 +373,22 @@ sdAddress(15 downto 8)
 when cpuAddress = x"f40024" and cpu_r_w = '1' and cpu_uds = '0' else 
 sdStatus
 when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
+eth_address(31 downto 24)
+when cpuAddress = x"f40040" and cpu_r_w = '1' and cpu_uds = '0' else 
+eth_address(15 downto 8)
+when cpuAddress = x"f40042" and cpu_r_w = '1' and cpu_uds = '0' else 
+eth_data_in(31 downto 24)
+when cpuAddress = x"f40044" and cpu_r_w = '1' and cpu_uds = '0' else 
+eth_data_in(15 downto 8)
+when cpuAddress = x"f40046" and cpu_r_w = '1' and cpu_uds = '0' else 
+eth_data_out(31 downto 24)
+when cpuAddress = x"f40048" and cpu_r_w = '1' and cpu_uds = '0' else 
+eth_data_out(15 downto 8)
+when cpuAddress = x"f40050" and cpu_r_w = '1' and cpu_uds = '0' else 
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
 <= 
---vga_rd_data 
---when n_interface2CS = '0' and vga_rd_en = '1' else
 monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 basRomData(7 downto 0)
@@ -439,10 +403,6 @@ serialData
 when serialRead_en = '1' else 
 serialTerminalStatus
 when cpuAddress = x"f00009" else
-esp_rxd 
-when esp_rden = '1' else 
-esp_sts
-when cpuAddress = x"f30009" else
 serialRxData 
 when rx_serialRead_en = '1' else 
 ram_dq_o(7 downto 0)
@@ -451,8 +411,6 @@ milliseconds(23 downto 16)
 when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
 milliseconds(7 downto 0)
 when timerCS = '1' and (cpuAddress = X"f30032" or cpuAddress = X"f30033") and cpu_r_w ='1' and cpu_lds = '0' else
-key_pressed_ascii 
-when cpuAddress = X"f30000" and cpu_r_w ='1' and cpu_lds = '0' else
 spi_DataIn
 when (cpuAddress = X"F4000C" or cpuAddress = X"F4000D") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_DataOut
@@ -475,6 +433,18 @@ sdAddress(23 downto 16)
 when (cpuAddress = x"f40022" or cpuAddress = x"f40023")  and cpu_r_w = '1' and cpu_lds = '0' else 
 sdAddress(7 downto 0)
 when (cpuAddress = x"f40024" or cpuAddress = x"f40025") and cpu_r_w = '1' and cpu_lds = '0' else 
+eth_address(23 downto 16)
+when (cpuAddress = x"f40040" or cpuAddress = x"f40041") and cpu_r_w = '1' and cpu_lds = '0' else 
+eth_address(7 downto 0)
+when (cpuAddress = x"f40042" or cpuAddress = x"f40043") and cpu_r_w = '1' and cpu_lds = '0' else 
+eth_data_in(23 downto 16)
+when (cpuAddress = x"f40044" or cpuAddress = x"f40045") and cpu_r_w = '1' and cpu_lds = '0' else 
+eth_data_in(7 downto 0)
+when (cpuAddress = x"f40046" or cpuAddress = x"f40047") and cpu_r_w = '1' and cpu_lds = '0' else 
+eth_data_out(23 downto 16)
+when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else 
+eth_data_out(7 downto 0)
+when (cpuAddress = x"f40050" or cpuAddress = x"f40051") and cpu_r_w = '1' and cpu_lds = '0' else 
 X"00" when cpu_lds = '1' ;
 
 
@@ -483,6 +453,8 @@ not ram_ack when ram_cen = '0' else
 not rtc_ack when rtcCS = '1' else
 NOT sd_ack when
 (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' else
+NOT eth_ack when
+ethCS = '0' and cpu_r_w = '0' else
 '0';
     
 end;

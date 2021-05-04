@@ -1,0 +1,4 @@
+vhdl xil_defaultlib  \
+"../../../bd/ethernetlite/ip/ethernetlite_axi_ethernetlite_0_0/sim/ethernetlite_axi_ethernetlite_0_0.vhd" \
+
+nosort

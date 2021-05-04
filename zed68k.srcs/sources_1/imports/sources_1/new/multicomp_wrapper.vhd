@@ -97,20 +97,20 @@ port(
     scl_pup : out STD_LOGIC;
     sda_pup : out STD_LOGIC;
     ck_scl : inout STD_LOGIC;
-    ck_sda : inout STD_LOGIC
+    ck_sda : inout STD_LOGIC;
     
---    eth_mdio_mdc_mdc : out STD_LOGIC;
---    eth_mdio_mdc_mdio_io : inout STD_LOGIC;
---    eth_mii_col : in STD_LOGIC;
---    eth_mii_crs : in STD_LOGIC;
---    eth_mii_rst_n : out STD_LOGIC;
---    eth_mii_rx_clk : in STD_LOGIC;
---    eth_mii_rx_dv : in STD_LOGIC;
---    eth_mii_rx_er : in STD_LOGIC;
---    eth_mii_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
---    eth_mii_tx_clk : in STD_LOGIC;
---    eth_mii_tx_en : out STD_LOGIC;
---    eth_mii_txd : out STD_LOGIC_VECTOR ( 3 downto 0 )
+    eth_mdio_mdc_mdc : out STD_LOGIC;
+    eth_mdio_mdc_mdio_io : inout STD_LOGIC;
+    eth_mii_col : in STD_LOGIC;
+    eth_mii_crs : in STD_LOGIC;
+    eth_mii_rst_n : out STD_LOGIC;
+    eth_mii_rx_clk : in STD_LOGIC;
+    eth_mii_rx_dv : in STD_LOGIC;
+    eth_mii_rx_er : in STD_LOGIC;
+    eth_mii_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    eth_mii_tx_clk : in STD_LOGIC;
+    eth_mii_tx_en : out STD_LOGIC;
+    eth_mii_txd : out STD_LOGIC_VECTOR ( 3 downto 0 )
       
 	);
 end multicomp_wrapper;
@@ -119,7 +119,7 @@ architecture Behavioral of multicomp_wrapper is
 
     signal boot_rom : std_logic := '1';
     
-    signal i_valid_count: integer := 0;
+   
     --serial term
     signal serialTermStatus: std_logic_vector(7 downto 0) := x"00"; 
     signal serialTermRxData: std_logic_vector(7 downto 0) := x"00";
@@ -136,26 +136,11 @@ architecture Behavioral of multicomp_wrapper is
     signal serialRead_en: std_logic := '0';
     signal count: std_logic_vector( 7 downto 0) := x"00";
     signal data_trigger: std_logic := '0';
-    
-    signal reset: std_logic;
-    signal clk_locked: std_logic := '0';
 
+   -- RAM interface
 
-    -- esp
-    
-    signal esp_tx_act : std_logic := '0';
-    signal esp_rx_act: std_logic := '0';
-    signal esp_sts: std_logic_vector(7 downto 0) := x"00"; 
-    signal esp_rxd: std_logic_vector(7 downto 0) := x"00";
-    signal esp_txd: std_logic_vector(7 downto 0) := x"00";
-    signal esp_rden: std_logic := '0';
-    signal esp_wren: std_logic := '0';
-    signal esp_rx_count: std_logic_vector( 7 downto 0) := x"00";
-    signal mem_resetn :std_logic;
-
-          -- RAM interface
-
-        signal clk200: std_logic := '0';
+     signal i_valid_count: integer := 0;
+     signal mem_resetn :std_logic;
         signal ram_ack: std_logic := '1';
         
       signal cpuAddress                :    std_logic_vector(26 downto 0) := (others => '0');
@@ -169,11 +154,6 @@ architecture Behavioral of multicomp_wrapper is
       signal cpuLower               :     std_logic;
       signal mem_ready              :     std_logic := '0';
       
-      signal sys_resetn : std_logic;
-      signal sys_clock100 : STD_LOGIC;
-    signal clk166 : std_logic;
-    signal clk100 : std_logic;
-    
     signal ddr_cke : std_logic_vector(0 downto 0);
     signal ddr_rstn : std_logic;
     signal rstn_flag : std_logic := '0';
@@ -181,12 +161,57 @@ architecture Behavioral of multicomp_wrapper is
     
     signal mem_i_valid : std_logic;
     signal mem_i_valid_p : std_logic;
+
+      signal ramDataOut: std_logic_vector(15 downto 0);
+      signal initial_stack: std_logic_vector(31 downto 0) := x"009F0000";
+      signal initial_pc: std_logic_vector(31 downto 0) := x"00A00BB4";
+      
+      signal memDataOut: std_logic_vector(15 downto 0);
+      signal mem_ack:std_logic;
+      signal mem_wr_ack : std_logic;
     
 -- clocks 
 
     signal clk50 : std_logic;
-    
+    signal reset: std_logic;
+    signal clk_locked: std_logic := '0';
+          signal sys_resetn : std_logic;
+      signal sys_clock100 : STD_LOGIC;
+    signal clk166 : std_logic;
+    signal clk200: std_logic := '0';
+      
+      --GD spi
+      
+    signal spi_ctrl : std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+    signal spi_DataIn :  std_logic_vector(7 downto 0);
+    signal spi_DataOut :  std_logic_vector(7 downto 0);
 
+    -- sd
+    
+    signal sdCardDataOut				: std_logic_vector(7 downto 0);
+    signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f30009
+    signal sdControl: std_logic_vector(7 downto 0); --f3000a
+    signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000-2
+    signal sd_rden : std_logic;
+    signal sd_wren : std_logic;
+    signal sd_ack  : std_logic;
+
+--net
+    signal ethCS : std_logic;
+    signal eth_i_valid : std_logic;
+    signal eth_i_valid_p : std_logic;
+    signal eth_i_valid_count: integer := 0;
+    
+    signal eth_address : std_logic_vector(31 downto 0);
+    signal eth_data_in : std_logic_vector(31 downto 0);
+    signal eth_data_out : std_logic_vector(31 downto 0);
+    
+    signal eth_ack_o :std_logic;
+    signal eth_wr_ack : std_logic;
+    signal eth_ack :std_logic;
+      
+      -- components
+    
     component pll
     port ( 
         resetn  : in std_logic;
@@ -267,6 +292,36 @@ component serial_wrapper is
   );
 end component;
 
+component ethernetlite_wrapper is
+    port  (
+        address : in std_logic_vector(31 downto 0);
+        eth_intr : out std_logic;
+        eth_mdio_mdc_mdc : out std_logic;
+        eth_mdio_mdc_mdio_io : inout std_logic;
+        eth_mii_col : in std_logic;
+        eth_mii_crs : in std_logic;
+        eth_mii_rst_n : out std_logic;
+        eth_mii_rx_clk : in std_logic;
+        eth_mii_rx_dv : in std_logic;
+        eth_mii_rx_er : in std_logic;
+        eth_mii_rxd : in std_logic_vector(3 downto 0);
+        eth_mii_tx_clk : in std_logic;
+        eth_mii_tx_en : out std_logic;
+        eth_mii_txd : out std_logic_vector(3 downto 0);
+        i_cen : in std_logic;
+        i_valid_p : in std_logic;
+        i_wren : in std_logic;
+        o_ready_p : out std_logic;
+        o_valid_p : out std_logic;
+        rd_data : out std_logic_vector(31 downto 0);
+        sys_clock  : in std_logic;
+        sys_resetn  : in std_logic;
+        wr_ack_p : out std_logic;
+        wr_byte_mask : in std_logic_vector(3 downto 0);
+        wr_data : out std_logic_vector(31 downto 0)
+    );
+end component;
+
 attribute dont_touch : string;
 
 attribute dont_touch of reset_proc : label is "true";
@@ -274,32 +329,9 @@ attribute dont_touch of valid_flag : label is "true";
 attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
 attribute dont_touch of spi1 : label is "true";
-
-      signal ramDataOut: std_logic_vector(15 downto 0);
-      signal initial_stack: std_logic_vector(31 downto 0) := x"009F0000";
-      signal initial_pc: std_logic_vector(31 downto 0) := x"00A00BB4";
-      
-      signal memDataOut: std_logic_vector(15 downto 0);
-      signal mem_ack:std_logic;
-      signal mem_wr_ack : std_logic;
-      
-    signal spi_ctrl : std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
-    signal spi_DataIn :  std_logic_vector(7 downto 0);
-    signal spi_DataOut :  std_logic_vector(7 downto 0);
-    
-    
-    
-    -- sd
-    
-    signal sdCardDataOut				: std_logic_vector(7 downto 0);
-    signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f30009
-    signal sdControl: std_logic_vector(7 downto 0); --f3000a
-    signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000-2
-    signal sd_rden : std_logic;
-    signal sd_wren : std_logic;
-    signal sd_ack  : std_logic;
-
-
+attribute dont_touch of eth_i_valid : signal is "true";
+attribute dont_touch of eth_i_valid_p : signal is "true";
+attribute dont_touch of eth_valid_flag : label is "true";
 
 begin
    --------------------------------------------------
@@ -400,17 +432,10 @@ end process;
       ram_ack              => ram_ack,
       cpu_as                => cpuAS,
 		
-		esp_sts => esp_sts, 
-        esp_rxd => esp_rxd,
-        esp_txd => esp_txd,
-        esp_rden => esp_rden,
-        esp_wren => esp_wren,
-        
         gd_gpu_sel => gd_gpu_sel,
         gd_sd_sel => open,
         gd_daz_sel => gd_daz_sel,
         
-        clk25 => '0',
         sda => ck_sda, --        // I2C Serial data line, pulled high at board level
         scl => ck_scl,
         
@@ -418,11 +443,18 @@ end process;
         spi_DataIn => spi_DataIn,
         spi_DataOut => spi_DataOut,
         
-        --
+        -- sd
         sdCardDataOut => sdCardDataOut,
         sdAddress => sdAddress,
         sdStatus => sdStatus,
-        sdControl => sdControl
+        sdControl => sdControl,
+        
+        --ethernet
+        eth_address => eth_address,
+        ethCS => ethCS,
+        eth_data_out => eth_data_out,
+        eth_data_in => eth_data_in,
+        eth_ack => eth_ack_o
     );
     
     sda_pup <= '1';
@@ -447,8 +479,7 @@ end process;
       spi_miso_i => gd_miso        -- sd_dat_io(0)
    );
    
-   
-   -- sd
+      -- sd
       
       sd_rden <= sdControl(2);
       sd_wren <= sdControl(3);
@@ -498,7 +529,7 @@ sdcard: entity work.sd_controller
 );
 
 
-    
+--uarts
     io_serial_term_tx: serial_wrapper 
         port map (
         sys_clk => sys_clock,
@@ -527,43 +558,8 @@ sdcard: entity work.sd_controller
       cts => open,
       rts => open
     );  
-    
-    
-    -- esp
---    		esp_sts => esp_sts, 
---        esp_rxd => esp_rxd,
---        esp_txd => esp_txd,
---        esp_rden => esp_rden,
---        esp_wren => esp_wren
-    
-    esp_serial_term_tx: serial_wrapper 
-        port map (
-        sys_clk => sys_clock,
-        tx_data => esp_txd,
-        tx_wr_en => esp_wren,
-        cts => open,
-        rts => open,
-        reset_n => sys_resetn,
-        txd => txd3,
-        tx_send_active => esp_tx_act
-  );
-  
-  esp_serial_term_rx : design_1_wrapper
-    port map (
-      LED => open,
-      rd_en => esp_rden,
-      m68_rxd => esp_rxd,
-      rd_clk => sys_clock,
-      reset_n => sys_resetn,
-      rxd1 => rxd3,
-      rd_data_cnt(8 downto 1) => esp_rx_count,
-      rd_data_cnt(0) => esp_rx_act,
-      clk100_i => sys_clock,
-      cts => open,
-      rts => open
-    );  
-    
-    
+
+
     io_serial_load : design_1_wrapper
     port map (
       LED => open,
@@ -578,6 +574,8 @@ sdcard: entity work.sd_controller
       cts => open,
       rts => open
     );  
+    
+    -- memory
     
     mem_i_valid <= ((not cpuCS) and (not ( cpuLower and CpuUpper))) and (not boot_rom) and (not cpuAS);
     
@@ -641,12 +639,63 @@ sdcard: entity work.sd_controller
       init_calib_complete => mem_ready
     );
     
+-- ethernet
+    
+    --net
+
+    eth_i_valid <= ((not ethCS) and (not ( cpuLower and CpuUpper))) and (not cpuAS);
+    
+    eth_valid_flag: process (sys_clock)
+    begin
+
+    if rising_edge(sys_clock) then
+        if (eth_i_valid_count = 0) and (eth_i_valid = '1') then
+            eth_i_valid_p <= '1';
+            eth_i_valid_count <= eth_i_valid_count+1;
+        elsif (eth_i_valid_count = 1) then
+            eth_i_valid_p <= '1';
+            eth_i_valid_count <= 2;
+        else 
+            eth_i_valid_p <= '0';
+            eth_i_valid_count <= 0;
+        end if;
+    end if;
+
+    end process;
+    
+    ethernet : ethernetlite_wrapper
+    port map (
+        address => eth_address,
+        eth_intr => open,
+        eth_mdio_mdc_mdc => eth_mdio_mdc_mdc,
+        eth_mdio_mdc_mdio_io => eth_mdio_mdc_mdio_io,
+        eth_mii_col => eth_mii_col,
+        eth_mii_crs => eth_mii_crs,
+        eth_mii_rst_n => eth_mii_rst_n,
+        eth_mii_rx_clk => eth_mii_rx_clk,
+        eth_mii_rx_dv => eth_mii_rx_dv,
+        eth_mii_rx_er => eth_mii_rx_er,
+        eth_mii_rxd => eth_mii_rxd,
+        eth_mii_tx_clk => eth_mii_tx_clk,
+        eth_mii_tx_en => eth_mii_tx_en,
+        eth_mii_txd => eth_mii_txd,
+        i_cen => ethCS,
+        i_valid_p => eth_i_valid_p,
+        i_wren => cpuWriteEn,
+        o_ready_p => open,
+        o_valid_p => eth_ack,
+        rd_data => eth_data_out,
+        sys_clock => sys_clock,
+        sys_resetn => sys_resetn,
+        wr_ack_p => eth_wr_ack,
+        wr_byte_mask => "1111",
+        wr_data => eth_data_in
+    );
+    
    led(0) <= mem_ready;
    serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
    serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
    serialStatus(0) <= '1' when count > x"00" else '0';
-   
-   esp_sts(0) <= '1' when esp_rx_count > x"00" else '0';
-   esp_sts(1) <= '1' when esp_tx_act = '0' else '0';
+   eth_ack_o <= '1' when eth_wr_ack = '1' or eth_ack = '1' else '0';
 
 end Behavioral;
