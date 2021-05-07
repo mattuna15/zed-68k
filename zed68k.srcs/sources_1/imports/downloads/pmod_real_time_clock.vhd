@@ -39,7 +39,7 @@ ENTITY pmod_real_time_clock IS
     read_en       : IN    STD_LOGIC;                     --active high for read
     set_seconds   : IN    STD_LOGIC_VECTOR(6 DOWNTO 0);  --seconds to set clock to
     set_minutes   : IN    STD_LOGIC_VECTOR(6 DOWNTO 0);  --minutes to set clock to
-    set_hours     : IN    STD_LOGIC_VECTOR(4 DOWNTO 0);  --hours to set clock to
+    set_hours     : IN    STD_LOGIC_VECTOR(5 DOWNTO 0);  --hours to set clock to (24HRS - 6)
     set_am_pm     : IN    STD_LOGIC;                     --am/pm to set clock to, am = '0', pm = '1'
     set_weekday   : IN    STD_LOGIC_VECTOR(2 DOWNTO 0);  --weekday to set clock to
     set_day       : IN    STD_LOGIC_VECTOR(5 DOWNTO 0);  --day of month to set clock to
@@ -48,7 +48,7 @@ ENTITY pmod_real_time_clock IS
     set_leapyear  : IN    STD_LOGIC;                     --specify if setting is a leapyear ('1') or not ('0')
     seconds       : OUT   STD_LOGIC_VECTOR(6 DOWNTO 0) := (others => '0');  --clock output time: seconds
     minutes       : OUT   STD_LOGIC_VECTOR(6 DOWNTO 0) := (others => '0');  --clock output time: minutes
-    hours         : OUT   STD_LOGIC_VECTOR(4 DOWNTO 0) := (others => '0');  --clock output time: hours
+    hours         : OUT   STD_LOGIC_VECTOR(5 DOWNTO 0) := (others => '0');  --clock output time: hours
     am_pm         : OUT   STD_LOGIC := '0';                     --clock output time: am/pm (am = '0', pm = '1')
     weekday       : OUT   STD_LOGIC_VECTOR(2 DOWNTO 0) := (others => '0');  --clock output time: weekday
     day           : OUT   STD_LOGIC_VECTOR(5 DOWNTO 0) := (others => '0');  --clock output time: day of month
@@ -61,7 +61,7 @@ END pmod_real_time_clock;
     
 
 ARCHITECTURE behavior OF pmod_real_time_clock IS
-  TYPE machine IS(start, route, set_clock, read_clock, output_result); --needed states
+  TYPE machine IS(start, route, set_clock, read_clock, output_result, restart); --needed states
   SIGNAL state       : machine;                        --state machine
   SIGNAL i2c_ena     : STD_LOGIC;                      --i2c enable signal
   SIGNAL i2c_addr    : STD_LOGIC_VECTOR(6 DOWNTO 0);   --i2c address signal
@@ -222,7 +222,7 @@ BEGIN
           
           IF(set_clk_req = '1' OR set_clk_ena = '1') THEN  --set clock requested
             wr_buffer <= set_year & "00" & set_leapyear & set_month & "00" & set_day & "00000" &            --latch in time and date to set
-                         set_weekday & "01" & set_am_pm & set_hours & '0' & set_minutes & '1' & set_seconds;
+                         set_weekday & "01" & set_hours & '0' & set_minutes & '1' & set_seconds;
             state <= set_clock;                              --execute the write transaction
           elsif read_en = '1' then                                             --set clock not requested
             state <= read_clock;                             --execute the read transaction
@@ -236,7 +236,7 @@ BEGIN
             busy_cnt <= busy_cnt + 1;                    --counts the times busy has gone from low to high during transaction
           END IF;
 
-          
+     
           CASE busy_cnt IS                             --busy_cnt keeps track of which command we are on
             WHEN "0000" =>                                    --no command latched in yet
               i2c_ena <= '1';                              --initiate the transaction
@@ -266,7 +266,30 @@ BEGIN
               END IF;
             WHEN OTHERS => NULL;
           END CASE;
-      
+          
+        when restart =>
+          busy_prev <= i2c_busy;   
+          IF(busy_prev = '0' AND i2c_busy = '1') THEN  --i2c busy just went high
+            busy_cnt <= busy_cnt + 1;                    --counts the times busy has gone from low to high during transaction
+          END IF;
+
+          CASE busy_cnt IS                             --busy_cnt keeps track of which command we are on
+            WHEN "0000" =>                                  --no command latched in yet
+              i2c_ena <= '1';                            --initiate the transaction
+              i2c_addr <= "1101111";                     --set the address of the slave
+              i2c_rw <= '0';                             --command 1 is a write
+              i2c_data_wr <= "00000000";                 --set register address to be read
+            WHEN "0001" =>  
+                i2c_data_wr <= '1' & rd_buffer(6 DOWNTO 0); 
+            WHEN "0010" =>                                   --8th busy high: command 8 latched
+              i2c_ena <= '0';                              --deassert enable to stop transaction after command 8
+              IF(i2c_busy = '0') THEN                      --transaction complete
+                busy_cnt <= "0000";                               --reset busy_cnt for next transaction
+                state <= read_clock;                              --return to ready state for further commands
+              END IF;
+            WHEN OTHERS => NULL;
+          END CASE;
+            
         --retrieve time and date
         WHEN read_clock =>
           IF(set_clk_ena = '1') THEN                   --request to set the clock received
@@ -277,7 +300,6 @@ BEGIN
             busy_cnt <= busy_cnt + 1;                    --counts the times busy has gone from low to high during transaction
           END IF;
 
-          
           CASE busy_cnt IS                             --busy_cnt keeps track of which command we are on
             WHEN "0000" =>                                  --no command latched in yet
               i2c_ena <= '1';                            --initiate the transaction
@@ -289,6 +311,12 @@ BEGIN
             WHEN "0010" =>                                  --2nd busy high: command 2 latched, okay to issue command 3
               IF(i2c_busy = '0') THEN                    --indicates data read in command 2 is ready
                 rd_buffer(7 DOWNTO 0) <= i2c_data_rd;      --retrieve data from command 2
+                
+                if rd_buffer(7) = '0' then 
+                    state <= restart;
+                    busy_cnt <= "0000"; 
+                end if;
+                
               END IF;
             WHEN "0011" =>                                  --3rd busy high: command 3 latched, okay to issue command 4
               IF(i2c_busy = '0') THEN                    --indicates data read in command 3 is ready
@@ -327,7 +355,7 @@ BEGIN
           END IF;
           seconds <= rd_buffer(6 DOWNTO 0);    --output seconds
           minutes <= rd_buffer(14 DOWNTO 8);   --output minutes
-          hours <= rd_buffer(20 DOWNTO 16);    --output hours
+          hours <= rd_buffer(21 DOWNTO 16);    --output hours
           am_pm <= rd_buffer(21);              --output am/pm
           weekday <= rd_buffer(26 DOWNTO 24);  --output weekday
           day <= rd_buffer(37 DOWNTO 32);      --output day of month

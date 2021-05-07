@@ -22,7 +22,6 @@ use ieee.std_logic_1164.all;
 use  IEEE.STD_LOGIC_ARITH.all;
 use  IEEE.STD_LOGIC_UNSIGNED.all;
 use IEEE.numeric_std.all;
-use work.fun_pkg.all;
 
 
 -- Uncomment the following library declaration if using

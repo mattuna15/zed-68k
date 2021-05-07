@@ -117,7 +117,7 @@ architecture struct of Microcomputer is
 	
 	signal rtcCS: std_logic;
 	signal rtc_ack :std_logic;
-	signal rtc_data : std_logic_vector(55 downto 0);
+	signal rtc_data : std_logic_vector(63 downto 0);
 
     signal sd_rden : std_logic;
     signal sd_wren : std_logic;
@@ -156,7 +156,7 @@ begin
     scl           => scl,                     --I2C serial clock
     sda          => sda,                --I2C serial data
     read_en      => rtcCS,
-    i2c_ack_err   => rtc_data(42),                     --I2C slave acknowledge error flag
+    i2c_ack_err   => rtc_data(57),                     --I2C slave acknowledge error flag
     set_clk_ena   => '0',                    --set clock enable
     set_seconds   => (others => '0'),  --seconds to set clock to
     set_minutes   => (others => '0'),   --minutes to set clock to
@@ -168,15 +168,16 @@ begin
     set_year      => (others => '0'),   --year to set clock to
     set_leapyear  => '0',                      --specify if setting is a leapyear ('1') or not ('0')
     seconds       => rtc_data(6 DOWNTO 0),  --clock output time: seconds
-    minutes       => rtc_data(13 DOWNTO 7),  --clock output time: minutes
-    hours         => rtc_data(18 DOWNTO 14),  --clock output time: hours
-    am_pm         => rtc_data(19),                    --clock output time: am/pm (am = '0', pm = '1')
-    weekday       => rtc_data(22 DOWNTO 20),  --clock output time: weekday
-    day           => rtc_data(28 DOWNTO 23),  --clock output time: day of month
-    month         => rtc_data(33 DOWNTO 29),  --clock output time: month
-    year          => rtc_data(41 DOWNTO 34), --clock output time: year
+    minutes       => rtc_data(14 DOWNTO 8),  --clock output time: minutes
+    hours         => rtc_data(21 DOWNTO 16),  --clock output time: hours
+    am_pm         => rtc_data(56),                    --clock output time: am/pm (am = '0', pm = '1')
+    weekday       => rtc_data(26 DOWNTO 24),  --clock output time: weekday
+    day           => rtc_data(37 DOWNTO 32),  --clock output time: day of month
+    month         => rtc_data(44 DOWNTO 40),  --clock output time: month
+    year          => rtc_data(55 DOWNTO 48), --clock output time: year
     valid_o       => rtc_ack
 );
+
 	
 --f30030 16 bit millisecond timer
 
