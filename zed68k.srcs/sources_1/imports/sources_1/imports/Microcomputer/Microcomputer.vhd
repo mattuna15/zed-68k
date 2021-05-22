@@ -74,7 +74,14 @@ entity Microcomputer is
         ethCS : out std_logic;
         eth_data_out : inout std_logic_vector(31 downto 0);
         eth_data_in : inout std_logic_vector(31 downto 0);
-        eth_ack : in std_logic
+        eth_ack : in std_logic;
+        eth_valid : out std_logic;
+        opl3_ctl : inout std_logic_vector(7 downto 0);
+        opl3_DataOut : inout std_logic_vector(7 downto 0);
+        ps2_clock : inout std_logic;
+        ps2_data : inout std_logic;
+        clk50 :in std_logic
+        
 	);
 	
 end Microcomputer;
@@ -84,6 +91,13 @@ architecture struct of Microcomputer is
     signal monRomData					: std_logic_vector(15 downto 0);
 
 	signal n_externalRamCS			: std_logic :='1';
+	
+    signal keybCS			: std_logic;
+    signal keybDataOut      : std_logic_vector(7 downto 0);
+    signal keyb_ctl         : std_logic_vector(7 downto 0);
+    signal new_key			: std_logic;
+    signal ps2_asc      : std_logic_vector(7 downto 0);
+
 
 	signal n_basRom1CS					: std_logic :='1';
     signal n_basRom2CS					: std_logic :='1';
@@ -126,6 +140,22 @@ architecture struct of Microcomputer is
 	
 		attribute dont_touch : string;
     attribute dont_touch of rtc : label is "true";
+    attribute dont_touch of keyboard : label is "true";
+    attribute dont_touch of key_fifo : label is "true";
+    
+    component ps2_fifo IS
+  PORT (
+    clk : IN STD_LOGIC;
+    rst : IN STD_LOGIC;
+    din : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    wr_en : IN STD_LOGIC;
+    rd_en : IN STD_LOGIC;
+    dout : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    full : OUT STD_LOGIC;
+    empty : OUT STD_LOGIC;
+    data_count : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+  );
+END component;
 	
 begin
 --interrupts
@@ -194,7 +224,42 @@ timer: entity work.timer
 	 irq        => timer_int
   ); 
 
+-- keyboard
+
+--    signal keybCS			: std_logic :='1';
+--    signal keybDataOut      : std_logic_vector(7 downto 0);
+--    signal new_key			: std_logic :='1';
+--    signal ps2_asc      : std_logic_vector(6 downto 0);
+    
+keyboard: entity work.keyboard 
+   port map (
+      clk_i      => sys_clk,
+
+      -- From keyboard
+      ps2_clk_i  => ps2_clock,
+      ps2_data_i => ps2_data,
+
+      -- To computer
+      data_o     => ps2_asc, 
+      irq_o      => new_key,
+
+      debug_o   => open
+   );
  
+ key_fifo: ps2_fifo 
+  PORT map (
+    clk => sys_clk,
+    rst => not n_reset,
+    din => ps2_asc,
+    wr_en => new_key,
+    rd_en => keybCS,
+    dout => keybDataOut,
+    full => open,
+    empty => open,
+    data_count => keyb_ctl(3 downto 0)
+  );
+
+
 -- ____________________________________________________________________________________
 -- CPU CHOICE GOES HERE
     
@@ -248,6 +313,8 @@ cpu1 : entity work.TG68
         data_o => monRomData(7 downto 0)
     );
     
+ 
+    
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
   
@@ -279,6 +346,7 @@ serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
 
 -- spi
 
+
 spi_ctrl(4)     <= cpuDataOut(4) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0';  --cont                  
 spi_ctrl(3)     <= cpuDataOut(3) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0'; -- enable
 spi_ctrl(2 downto 0) <= cpuDataOut(2 downto 0) when (cpuAddress = X"f40008" or cpuAddress = X"f40009") and cpu_lds = '0' and cpu_r_w = '0';                   
@@ -286,6 +354,9 @@ spi_dataOut <= cpuDataOut(7 downto 0) when (cpuAddress = X"f4000A" or cpuAddress
 gd_gpu_sel <= not spi_ctrl(0);
 gd_sd_sel <= not spi_ctrl(1);
 gd_daz_sel <= not spi_ctrl(2);
+
+opl3_ctl(5 downto 0) <= cpuDataout(5 downto 0) when (cpuAddress = X"f40010" or cpuAddress = X"f40011") and cpu_lds = '0' and cpu_r_w = '0'; 
+opl3_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f40012" or cpuAddress = X"f40013") and cpu_lds = '0' and cpu_r_w = '0'; 
 
 -- timer
 timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
@@ -300,12 +371,17 @@ sd_rden <= sdControl(2);
 sd_wren <= sdControl(3);
 
 --net 
-ethCS <= '0' when cpuAddress >= x"f40040" and cpuAddress <= x"f40051" else '1';
+ethCS <= '0' when cpuAddress >= x"f40040" and cpuAddress <= x"f40053" else '1';
 eth_address(31 downto 16) <= cpuDataOut when cpuAddress = x"f40040" and cpu_r_w = '0';
 eth_address(15 downto 0) <= cpuDataOut when cpuAddress = x"f40042" and cpu_r_w = '0';
 eth_data_in(31 downto 16) <= cpuDataOut when cpuAddress = x"f40044" and cpu_r_w = '0';
 eth_data_in(15 downto 0) <= cpuDataOut when cpuAddress = x"f40046" and cpu_r_w = '0';
+eth_valid <= cpuDataOut(0) when (cpuAddress = x"f40052" or cpuAddress = x"f40053")
+                            and cpu_r_w = '0' and cpu_lds = '0';
 
+-- keyboard
+
+keybCS <= '1' when (cpuAddress = X"f00018" or cpuAddress = X"f00019")  and cpu_lds = '0' and cpu_r_w = '1' else '0'; 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
  
@@ -353,6 +429,8 @@ eth_data_out(31 downto 24)
 when cpuAddress = x"f40048" and cpu_r_w = '1' and cpu_uds = '0' else 
 eth_data_out(15 downto 8)
 when cpuAddress = x"f40050" and cpu_r_w = '1' and cpu_uds = '0' else 
+x"00"
+when cpuAddress = x"f00018" and cpu_r_w = '1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
@@ -383,6 +461,10 @@ spi_DataOut
 when (cpuAddress = X"F4000A" or cpuAddress = X"F4000B") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_ctrl
 when (cpuAddress = X"F40008" or cpuAddress = X"F40009") and cpu_r_w = '1' and cpu_lds = '0' else
+opl3_DataOut
+when (cpuAddress = X"F40012" or cpuAddress = X"F40013") and cpu_r_w = '1' and cpu_lds = '0' else
+opl3_ctl
+when (cpuAddress = X"F40010" or cpuAddress = X"F40011") and cpu_r_w = '1' and cpu_lds = '0' else
 rtc_data(55 downto 48)
 when rtcCS = '1' and (cpuAddress = X"f30046" or cpuAddress = X"F30047") and cpu_r_w ='1' and cpu_lds = '0' else
 rtc_data(39 downto 32)
@@ -411,6 +493,10 @@ eth_data_out(23 downto 16)
 when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_data_out(7 downto 0)
 when (cpuAddress = x"f40050" or cpuAddress = x"f40051") and cpu_r_w = '1' and cpu_lds = '0' else 
+keybDataOut
+when (cpuAddress = x"f00018" or cpuAddress = x"f00019")  and cpu_r_w = '1' and cpu_lds = '0' else
+keyb_ctl
+when (cpuAddress = x"f0001a" or cpuAddress = x"f0001b")  and cpu_r_w = '1' and cpu_lds = '0' else 
 X"00" when cpu_lds = '1' ;
 
 

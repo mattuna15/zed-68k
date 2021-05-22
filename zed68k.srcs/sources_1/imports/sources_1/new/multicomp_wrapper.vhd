@@ -45,9 +45,6 @@ port(
     uart_txd_in : in STD_LOGIC;
 
     rxd2 : in STD_LOGIC;
-        
-    txd3 : out STD_LOGIC;
-	rxd3 : in STD_LOGIC;
       
       --ram
     
@@ -106,8 +103,19 @@ port(
     eth_mii_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
     eth_mii_tx_clk : in STD_LOGIC;
     eth_mii_tx_en : out STD_LOGIC;
-    eth_mii_txd : out STD_LOGIC_VECTOR ( 3 downto 0 )
-      
+    eth_mii_txd : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    
+    op_a0 : out std_logic;
+    op_a1 : out std_logic;
+    op_a2 : out std_logic;
+    op_wr : out std_logic;
+    op_ic : out std_logic;
+    op_mosi : out std_logic;
+    op_sck :out std_logic;
+    
+    ps2_data : inout std_logic;
+    ps2_clock : inout std_logic
+    
 	);
 end multicomp_wrapper;
 
@@ -178,7 +186,7 @@ architecture Behavioral of multicomp_wrapper is
       
       --GD spi
       
-    signal spi_ctrl : std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+    signal spi_ctrl : std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 5 busy/ready 4-opl
     signal spi_DataIn :  std_logic_vector(7 downto 0);
     signal spi_DataOut :  std_logic_vector(7 downto 0);
 
@@ -197,6 +205,7 @@ architecture Behavioral of multicomp_wrapper is
     signal eth_i_valid : std_logic;
     signal eth_i_valid_p : std_logic;
     signal eth_i_valid_count: integer := 0;
+    signal eth_valid :  std_logic;
     
     signal eth_address : std_logic_vector(31 downto 0);
     signal eth_data_in : std_logic_vector(31 downto 0);
@@ -205,7 +214,9 @@ architecture Behavioral of multicomp_wrapper is
     signal eth_ack_o :std_logic;
     signal eth_wr_ack : std_logic;
     signal eth_ack :std_logic;
-      
+    
+    signal opl3_ctl :std_logic_vector(7 downto 0);
+    signal opl3_DataOut : std_logic_vector(7 downto 0);
       -- components
     
     component pll
@@ -324,7 +335,8 @@ attribute dont_touch of reset_proc : label is "true";
 attribute dont_touch of valid_flag : label is "true";
 attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
-attribute dont_touch of spi1 : label is "true";
+attribute dont_touch of gameduino_spi : label is "true";
+attribute dont_touch of opl3_spi : label is "true";
 attribute dont_touch of eth_i_valid : signal is "true";
 attribute dont_touch of eth_i_valid_p : signal is "true";
 attribute dont_touch of eth_valid_flag : label is "true";
@@ -450,7 +462,15 @@ end process;
         ethCS => ethCS,
         eth_data_out => eth_data_out,
         eth_data_in => eth_data_in,
-        eth_ack => eth_ack_o
+        eth_ack => eth_ack_o,
+        eth_valid => eth_valid,
+        
+        opl3_ctl => opl3_ctl,
+        opl3_DataOut => opl3_DataOut,
+        ps2_clock => ps2_clock,
+        ps2_data => ps2_data,
+        clk50 => clk50
+        
     );
     
     sda_pup <= '1';
@@ -458,7 +478,7 @@ end process;
 
     --serial
     
-    spi1: entity work.spi_master 
+    gameduino_spi: entity work.spi_master 
   PORT map (
       clk_i      => sys_clock,
       rst_i      => not sys_resetn, 
@@ -474,6 +494,30 @@ end process;
       spi_mosi_o => gd_mosi,       -- sd_cmd_io
       spi_miso_i => gd_miso        -- sd_dat_io(0)
    );
+   
+    
+    opl3_spi: entity work.spi_master 
+  PORT map (
+      clk_i      => sys_clock,
+      rst_i      => not sys_resetn, 
+
+      -- CPU interface
+      valid_i    => opl3_ctl(5),
+      ready_o    => opl3_ctl(6),
+      data_i     => opl3_DataOut,
+      data_o     => open,
+
+      -- Connect to SD card
+      spi_sclk_o => op_sck,       -- sd_sck_io
+      spi_mosi_o => op_mosi,       -- sd_cmd_io
+      spi_miso_i => '0'       -- sd_dat_io(0)
+   );
+   
+   op_a0 <= opl3_ctl(0);
+   op_a1 <= opl3_ctl(1);
+   op_a2 <= opl3_ctl(2);
+   op_ic <= opl3_ctl(3);
+   op_wr <= opl3_ctl(4);
    
       -- sd
       
@@ -639,7 +683,7 @@ sdcard: entity work.sd_controller
     
     --net
 
-    eth_i_valid <= ((not ethCS) and (not ( cpuLower and CpuUpper))) and (not cpuAS);
+    eth_i_valid <= ((not ethCS) and eth_valid ) and (not cpuAS);
     
     eth_valid_flag: process (sys_clock)
     begin
@@ -687,6 +731,15 @@ sdcard: entity work.sd_controller
         wr_byte_mask => "1111",
         wr_data => eth_data_in
     );
+    
+    --opl
+    
+    op_a0 <= opl3_ctl(0);
+    op_a1 <= opl3_ctl(1);
+    op_a2 <= opl3_ctl(2);
+    op_ic <= opl3_ctl(3);
+    op_wr <= opl3_ctl(4);
+    
     
    led(0) <= mem_ready;
    serialTermStatus(0) <= '1' when rx_count > x"00" else '0';

@@ -42,7 +42,7 @@ end spi_master;
 
 architecture structural of spi_master is
 
-   constant CLK_PERIOD_CYCLES : integer := 50;            -- 400 kHz
+   constant CLK_PERIOD_CYCLES : integer := 100;           
 
    signal timer      : std_logic_vector(6 downto 0);   -- Free running timer up to 128.
    signal timer_next : std_logic_vector(6 downto 0);   -- Time for next event

@@ -58,11 +58,12 @@ set_property -dict {PACKAGE_PIN A11 IOSTANDARD LVCMOS33} [get_ports rxd2]
 #3	TXD / MISO	UART Transmit Data / SPI Master In Slave Out
 #4	CTS / SCK	UART Clear to Send / SPI Serial Clock
 # Pmod Header JB
-#set_property -dict {PACKAGE_PIN E15 IOSTANDARD LVCMOS33} [get_ports cts3]
-set_property -dict {PACKAGE_PIN E16 IOSTANDARD LVCMOS33} [get_ports txd3]
-set_property -dict {PACKAGE_PIN D15 IOSTANDARD LVCMOS33} [get_ports rxd3]
+set_property -dict {PACKAGE_PIN E15 IOSTANDARD LVCMOS33} [get_ports ps2_data]
+#set_property -dict {PACKAGE_PIN E16 IOSTANDARD LVCMOS33} [get_ports txd3]
+set_property -dict {PACKAGE_PIN D15 IOSTANDARD LVCMOS33} [get_ports ps2_clock]
 #set_property -dict {PACKAGE_PIN C15 IOSTANDARD LVCMOS33} [get_ports rts3]
-
+set_property PULLUP true [get_ports ps2_data]
+set_property PULLUP true [get_ports ps2_clock]
 
 
 ## USB-UART Interface
@@ -81,14 +82,14 @@ set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports uart_txd_in]
 #1 in SERIAL IN
 
 ## ChipKit Outer Digital Header
-#set_property -dict { PACKAGE_PIN V15   IOSTANDARD LVCMOS33 } [get_ports { ck_io0  }]; #IO_L16P_T2_CSI_B_14          Sch=ck_io[0]
+set_property -dict {PACKAGE_PIN V15 IOSTANDARD LVCMOS33} [get_ports op_sck]
 set_property -dict {PACKAGE_PIN U16 IOSTANDARD LVCMOS33} [get_ports gd_uart_txd_out]
-#set_property -dict { PACKAGE_PIN P14   IOSTANDARD LVCMOS33 } [get_ports { ck_io2  }]; #IO_L8N_T1_D12_14             Sch=ck_io[2]
-#set_property -dict { PACKAGE_PIN T11   IOSTANDARD LVCMOS33 } [get_ports { ck_io3  }]; #IO_L19P_T3_A10_D26_14        Sch=ck_io[3]
-#set_property -dict { PACKAGE_PIN R12   IOSTANDARD LVCMOS33 } [get_ports { ck_io4  }]; #IO_L5P_T0_D06_14             Sch=ck_io[4]
-#set_property -dict { PACKAGE_PIN T14   IOSTANDARD LVCMOS33 } [get_ports { ck_io5  }]; #IO_L14P_T2_SRCC_14           Sch=ck_io[5]
-#set_property -dict { PACKAGE_PIN T15   IOSTANDARD LVCMOS33 } [get_ports { ck_io6  }]; #IO_L14N_T2_SRCC_14           Sch=ck_io[6]
-#set_property -dict { PACKAGE_PIN T16   IOSTANDARD LVCMOS33 } [get_ports { ck_io7  }]; #IO_L15N_T2_DQS_DOUT_CSO_B_14 Sch=ck_io[7]
+set_property -dict {PACKAGE_PIN P14 IOSTANDARD LVCMOS33} [get_ports op_a0]
+set_property -dict {PACKAGE_PIN T11 IOSTANDARD LVCMOS33} [get_ports op_a1]
+set_property -dict {PACKAGE_PIN R12 IOSTANDARD LVCMOS33} [get_ports op_a2]
+set_property -dict {PACKAGE_PIN T14 IOSTANDARD LVCMOS33} [get_ports op_wr]
+set_property -dict {PACKAGE_PIN T15 IOSTANDARD LVCMOS33} [get_ports op_ic]
+set_property -dict {PACKAGE_PIN T16 IOSTANDARD LVCMOS33} [get_ports op_mosi]
 set_property -dict {PACKAGE_PIN N15 IOSTANDARD LVCMOS33} [get_ports gd_gpu_sel]
 set_property -dict {PACKAGE_PIN M16 IOSTANDARD LVCMOS33} [get_ports gd_sd_sel]
 set_property -dict {PACKAGE_PIN V17 IOSTANDARD LVCMOS33} [get_ports gd_daz_sel]
@@ -386,18 +387,24 @@ set_property PACKAGE_PIN K6 [get_ports ddr3_reset_n]
 set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 #Internal VREF
 
-connect_debug_port u_ila_0/probe9 [get_nets [list computer/rtc/i2c_master_0/valid_o]]
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/rtc/i2c_master_0/busy]]
+connect_debug_port u_ila_0/probe1 [get_nets [list ps2_clock_OBUF]]
+connect_debug_port u_ila_0/probe3 [get_nets [list ps2_data_OBUF]]
+connect_debug_port u_ila_1/probe4 [get_nets [list computer/keyboard/regsel]]
+
+connect_debug_port u_ila_0/probe0 [get_nets [list {computer/keybDataOut[0]} {computer/keybDataOut[1]} {computer/keybDataOut[2]} {computer/keybDataOut[3]} {computer/keybDataOut[4]} {computer/keybDataOut[5]} {computer/keybDataOut[6]} {computer/keybDataOut[7]}]]
 
 
 
-connect_debug_port u_ila_0/probe10 [get_nets [list {computer/sdControl_reg[7]_i_2_n_0}]]
-connect_debug_port u_ila_1/probe3 [get_nets [list gd_sd_sel_OBUF]]
-connect_debug_port u_ila_1/probe4 [get_nets [list sd_mosi]]
-connect_debug_port u_ila_1/probe5 [get_nets [list sd_sclk]]
+connect_debug_port u_ila_0/probe2 [get_nets [list {computer/keyboard/ps2_keyboard_0/ascii[0]} {computer/keyboard/ps2_keyboard_0/ascii[1]} {computer/keyboard/ps2_keyboard_0/ascii[2]} {computer/keyboard/ps2_keyboard_0/ascii[3]} {computer/keyboard/ps2_keyboard_0/ascii[4]} {computer/keyboard/ps2_keyboard_0/ascii[5]} {computer/keyboard/ps2_keyboard_0/ascii[6]}]]
+connect_debug_port u_ila_0/probe3 [get_nets [list {computer/keyboard/state[0]}]]
+connect_debug_port u_ila_0/probe4 [get_nets [list {computer/keyboard/ascii[0]} {computer/keyboard/ascii[1]} {computer/keyboard/ascii[2]} {computer/keyboard/ascii[3]} {computer/keyboard/ascii[4]} {computer/keyboard/ascii[5]} {computer/keyboard/ascii[6]}]]
+connect_debug_port u_ila_0/probe5 [get_nets [list {computer/keyboard/ascii_code[0]} {computer/keyboard/ascii_code[1]} {computer/keyboard/ascii_code[2]} {computer/keyboard/ascii_code[3]} {computer/keyboard/ascii_code[4]} {computer/keyboard/ascii_code[5]} {computer/keyboard/ascii_code[6]}]]
+connect_debug_port u_ila_0/probe6 [get_nets [list {computer/keyboard/state__0[0]} {computer/keyboard/state__0[1]}]]
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/keyboard/ascii_new]]
+connect_debug_port u_ila_0/probe11 [get_nets [list computer/keyboard/ps2_code_new]]
+connect_debug_port u_ila_0/probe12 [get_nets [list computer/keyboard/prev_ps2_code_new]]
+connect_debug_port u_ila_0/probe13 [get_nets [list computer/keyboard/ps2_keyboard_0/prev_ps2_code_new]]
+connect_debug_port u_ila_0/probe14 [get_nets [list computer/keyboard/ps2_keyboard_0/ps2_code_new]]
 
-
-
-connect_debug_port u_ila_0/probe1 [get_nets [list computer/SD_CD]]
-connect_debug_port u_ila_1/probe11 [get_nets [list sdcard/sd_busy_i_4_n_0]]
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/key_fifo/valid]]
 
