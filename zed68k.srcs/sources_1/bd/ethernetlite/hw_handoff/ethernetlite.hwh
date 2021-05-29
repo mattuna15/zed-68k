@@ -1,9 +1,74 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue May  4 10:54:01 2021" VIVADOVERSION="2020.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Fri May 28 10:38:26 2021" VIVADOVERSION="2020.1">
 
   <SYSTEMINFO ARCH="artix7" BOARD="digilentinc.com:arty-a7-35:part0:1.0" DEVICE="7a35ti" NAME="ethernetlite" PACKAGE="csg324" SPEEDGRADE="-1L"/>
 
   <EXTERNALPORTS>
+    <PORT DIR="I" NAME="sys_resetn" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="External_Ports_sys_resetn">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aresetn"/>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="sys_resetn"/>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="ui_clk_sync_rst"/>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="init_calib_complete"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT CLKFREQUENCY="100000000" DIR="I" NAME="sys_clock" SIGIS="clk" SIGNAME="External_Ports_sys_clock">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aclk"/>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="sys_clock"/>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="ui_clk"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="31" NAME="address" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_address">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="address"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="31" NAME="wr_data" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_wr_data">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="wr_data"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" LEFT="3" NAME="wr_byte_mask" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_wr_byte_mask">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="wr_byte_mask"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="i_cen" SIGIS="undef" SIGNAME="External_Ports_i_cen">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="i_cen"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="i_wren" SIGIS="undef" SIGNAME="External_Ports_i_wren">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="i_wren"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="i_valid_p" SIGIS="undef" SIGNAME="External_Ports_i_valid_p">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="i_valid_p"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="31" NAME="rd_data" RIGHT="0" SIGIS="undef" SIGNAME="axi_ethernet_0_rd_data">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="rd_data"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="o_ready_p" SIGIS="undef" SIGNAME="axi_ethernet_0_o_ready_p">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernet_0" PORT="o_ready_p"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="eth_intr" SENSITIVITY="EDGE_RISING" SIGIS="INTERRUPT" SIGNAME="axi_ethernetlite_0_ip2intc_irpt">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="ip2intc_irpt"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="0" NAME="ack" RIGHT="0" SIGIS="undef" SIGNAME="util_vector_logic_0_Res">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="util_vector_logic_0" PORT="Res"/>
+      </CONNECTIONS>
+    </PORT>
     <PORT DIR="I" NAME="eth_mii_col" SIGIS="undef" SIGNAME="axi_ethernetlite_0_phy_col">
       <CONNECTIONS>
         <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="phy_col"/>
@@ -72,76 +137,6 @@
     <PORT DIR="O" NAME="eth_mdio_mdc_mdio_t" SIGIS="undef" SIGNAME="axi_ethernetlite_0_phy_mdio_t">
       <CONNECTIONS>
         <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="phy_mdio_t"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="I" NAME="sys_resetn" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="External_Ports_sys_resetn">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aresetn"/>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="sys_resetn"/>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="ui_clk_sync_rst"/>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="init_calib_complete"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT CLKFREQUENCY="100000000" DIR="I" NAME="sys_clock" SIGIS="clk" SIGNAME="External_Ports_sys_clock">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="s_axi_aclk"/>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="sys_clock"/>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="ui_clk"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="I" LEFT="31" NAME="address" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_address">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="address"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="I" LEFT="31" NAME="wr_data" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_wr_data">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="wr_data"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="I" LEFT="3" NAME="wr_byte_mask" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_wr_byte_mask">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="wr_byte_mask"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="I" NAME="i_cen" SIGIS="undef" SIGNAME="External_Ports_i_cen">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="i_cen"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="I" NAME="i_wren" SIGIS="undef" SIGNAME="External_Ports_i_wren">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="i_wren"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="I" NAME="i_valid_p" SIGIS="undef" SIGNAME="External_Ports_i_valid_p">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="i_valid_p"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="O" LEFT="31" NAME="rd_data" RIGHT="0" SIGIS="undef" SIGNAME="axi_ethernet_0_rd_data">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="rd_data"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="O" NAME="o_ready_p" SIGIS="undef" SIGNAME="axi_ethernet_0_o_ready_p">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="o_ready_p"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="O" NAME="wr_ack_p" SIGIS="undef" SIGNAME="axi_ethernet_0_wr_ack_p">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="wr_ack_p"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="O" NAME="o_valid_p" SIGIS="undef" SIGNAME="axi_ethernet_0_o_valid_p">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernet_0" PORT="o_valid_p"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="O" NAME="eth_intr" SENSITIVITY="EDGE_RISING" SIGIS="INTERRUPT" SIGNAME="axi_ethernetlite_0_ip2intc_irpt">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="axi_ethernetlite_0" PORT="ip2intc_irpt"/>
       </CONNECTIONS>
     </PORT>
   </EXTERNALPORTS>
@@ -222,12 +217,12 @@
         </PORT>
         <PORT DIR="O" NAME="wr_ack_p" SIGIS="undef" SIGNAME="axi_ethernet_0_wr_ack_p">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="External_Ports" PORT="wr_ack_p"/>
+            <CONNECTION INSTANCE="util_vector_logic_0" PORT="Op1"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="o_valid_p" SIGIS="undef" SIGNAME="axi_ethernet_0_o_valid_p">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="External_Ports" PORT="o_valid_p"/>
+            <CONNECTION INSTANCE="util_vector_logic_0" PORT="Op2"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" NAME="sys_resetn" POLARITY="ACTIVE_LOW" SIGIS="rst" SIGNAME="External_Ports_sys_resetn">
@@ -741,7 +736,7 @@
           <PARAMETER NAME="NUM_WRITE_OUTSTANDING" VALUE="2"/>
           <PARAMETER NAME="MAX_BURST_LENGTH" VALUE="256"/>
           <PARAMETER NAME="PHASE" VALUE="0.000"/>
-          <PARAMETER NAME="CLK_DOMAIN" VALUE="ethernetlite_sys_clock_0"/>
+          <PARAMETER NAME="CLK_DOMAIN" VALUE="ethernetlite_sys_clock"/>
           <PARAMETER NAME="NUM_READ_THREADS" VALUE="1"/>
           <PARAMETER NAME="NUM_WRITE_THREADS" VALUE="1"/>
           <PARAMETER NAME="RUSER_BITS_PER_BYTE" VALUE="0"/>
@@ -805,6 +800,34 @@
           </PORTMAPS>
         </BUSINTERFACE>
       </BUSINTERFACES>
+    </MODULE>
+    <MODULE COREREVISION="1" FULLNAME="/util_vector_logic_0" HWVERSION="2.0" INSTANCE="util_vector_logic_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="util_vector_logic" VLNV="xilinx.com:ip:util_vector_logic:2.0">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="C_OPERATION" VALUE="or"/>
+        <PARAMETER NAME="C_SIZE" VALUE="1"/>
+        <PARAMETER NAME="Component_Name" VALUE="ethernetlite_util_vector_logic_0_0"/>
+        <PARAMETER NAME="LOGO_FILE" VALUE="data/sym_orgate.png"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT DIR="I" LEFT="0" NAME="Op1" RIGHT="0" SIGIS="undef" SIGNAME="axi_ethernet_0_wr_ack_p">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_ethernet_0" PORT="wr_ack_p"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" LEFT="0" NAME="Op2" RIGHT="0" SIGIS="undef" SIGNAME="axi_ethernet_0_o_valid_p">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="axi_ethernet_0" PORT="o_valid_p"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" LEFT="0" NAME="Res" RIGHT="0" SIGIS="undef" SIGNAME="util_vector_logic_0_Res">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External_Ports" PORT="ack"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES/>
     </MODULE>
   </MODULES>
 

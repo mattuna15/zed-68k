@@ -1,7 +1,7 @@
 //Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-//Date        : Tue May  4 10:54:01 2021
+//Date        : Fri May 28 10:38:26 2021
 //Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 //Command     : generate_target ethernetlite.bd
 //Design      : ethernetlite
@@ -9,9 +9,10 @@
 //--------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CORE_GENERATION_INFO = "ethernetlite,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=ethernetlite,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=2,numReposBlks=2,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=1,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "ethernetlite.hwdef" *) 
+(* CORE_GENERATION_INFO = "ethernetlite,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=ethernetlite,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=3,numReposBlks=3,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=1,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "ethernetlite.hwdef" *) 
 module ethernetlite
-   (address,
+   (ack,
+    address,
     eth_intr,
     eth_mdio_mdc_mdc,
     eth_mdio_mdc_mdio_i,
@@ -31,13 +32,12 @@ module ethernetlite
     i_valid_p,
     i_wren,
     o_ready_p,
-    o_valid_p,
     rd_data,
     sys_clock,
     sys_resetn,
-    wr_ack_p,
     wr_byte_mask,
     wr_data);
+  output [0:0]ack;
   input [31:0]address;
   (* X_INTERFACE_INFO = "xilinx.com:signal:interrupt:1.0 INTR.ETH_INTR INTERRUPT" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME INTR.ETH_INTR, PortWidth 1, SENSITIVITY EDGE_RISING" *) output eth_intr;
   (* X_INTERFACE_INFO = "xilinx.com:interface:mdio:1.0 eth_mdio_mdc MDC" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME eth_mdio_mdc, CAN_DEBUG false" *) output eth_mdio_mdc_mdc;
@@ -58,11 +58,9 @@ module ethernetlite
   input i_valid_p;
   input i_wren;
   output o_ready_p;
-  output o_valid_p;
   output [31:0]rd_data;
-  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 CLK.SYS_CLOCK CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME CLK.SYS_CLOCK, ASSOCIATED_RESET sys_resetn, CLK_DOMAIN ethernetlite_sys_clock_0, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, INSERT_VIP 0, PHASE 0.000" *) input sys_clock;
+  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 CLK.SYS_CLOCK CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME CLK.SYS_CLOCK, ASSOCIATED_RESET sys_resetn, CLK_DOMAIN ethernetlite_sys_clock, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, INSERT_VIP 0, PHASE 0.000" *) input sys_clock;
   (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 RST.SYS_RESETN RST" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME RST.SYS_RESETN, INSERT_VIP 0, POLARITY ACTIVE_LOW" *) input sys_resetn;
-  output wr_ack_p;
   input [3:0]wr_byte_mask;
   input [31:0]wr_data;
 
@@ -118,9 +116,11 @@ module ethernetlite
   wire i_wren_0_1;
   wire sys_clock_0_1;
   wire sys_resetn_0_1;
+  wire [0:0]util_vector_logic_0_Res;
   wire [3:0]wr_byte_mask_0_1;
   wire [31:0]wr_data_0_1;
 
+  assign ack[0] = util_vector_logic_0_Res;
   assign address_0_1 = address[31:0];
   assign axi_ethernetlite_0_MDIO_MDIO_I = eth_mdio_mdc_mdio_i;
   assign axi_ethernetlite_0_MII_COL = eth_mii_col;
@@ -141,11 +141,9 @@ module ethernetlite
   assign i_valid_p_0_1 = i_valid_p;
   assign i_wren_0_1 = i_wren;
   assign o_ready_p = axi_ethernet_0_o_ready_p;
-  assign o_valid_p = axi_ethernet_0_o_valid_p;
   assign rd_data[31:0] = axi_ethernet_0_rd_data;
   assign sys_clock_0_1 = sys_clock;
   assign sys_resetn_0_1 = sys_resetn;
-  assign wr_ack_p = axi_ethernet_0_wr_ack_p;
   assign wr_byte_mask_0_1 = wr_byte_mask[3:0];
   assign wr_data_0_1 = wr_data[31:0];
   ethernetlite_axi_ethernet_0_0 axi_ethernet_0
@@ -240,4 +238,8 @@ module ethernetlite
         .s_axi_wready(axi_ethernet_0_s_axi_WREADY),
         .s_axi_wstrb(axi_ethernet_0_s_axi_WSTRB),
         .s_axi_wvalid(axi_ethernet_0_s_axi_WVALID));
+  ethernetlite_util_vector_logic_0_0 util_vector_logic_0
+       (.Op1(axi_ethernet_0_wr_ack_p),
+        .Op2(axi_ethernet_0_o_valid_p),
+        .Res(util_vector_logic_0_Res));
 endmodule

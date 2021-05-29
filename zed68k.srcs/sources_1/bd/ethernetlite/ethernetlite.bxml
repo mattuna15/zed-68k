@@ -2,10 +2,10 @@
 <Root MajorVersion="0" MinorVersion="39">
   <CompositeFile CompositeFileTopName="ethernetlite" CanBeSetAsTop="false" CanDisplayChildGraph="true">
     <Description>Composite Fileset</Description>
-    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1620122041"/>
-    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1620122041"/>
-    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1620122041"/>
-    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1620122041"/>
+    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1622194706"/>
+    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1622194706"/>
+    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1622194706"/>
+    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1622194706"/>
     <FileCollection Name="SOURCES" Type="SOURCES">
       <File Name="ip\ethernetlite_axi_ethernetlite_0_0\ethernetlite_axi_ethernetlite_0_0.xci" Type="IP">
         <Instance HierarchyPath="axi_ethernetlite_0"/>
@@ -32,6 +32,14 @@
       <File Name="sim\ethernetlite.v" Type="Verilog">
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="false" IsStatusTracked="false"/>
         <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\ethernetlite_util_vector_logic_0_0\ethernetlite_util_vector_logic_0_0.xci" Type="IP">
+        <Instance HierarchyPath="util_vector_logic_0"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
         <UsedIn Val="SIMULATION"/>
       </File>
       <File Name="ethernetlite_ooc.xdc" Type="XDC">

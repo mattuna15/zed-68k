@@ -70,12 +70,11 @@ entity Microcomputer is
         sdAddress: out std_logic_vector(31 downto 0); --f30000-2
         
         -- ethernet
-        eth_address : inout std_logic_vector(31 downto 0);
-        ethCS : out std_logic;
-        eth_data_out : inout std_logic_vector(31 downto 0);
-        eth_data_in : inout std_logic_vector(31 downto 0);
-        eth_ack : in std_logic;
-        eth_valid : out std_logic;
+
+        eth_data_out : inout std_logic_vector(7 downto 0);
+        eth_data_in : inout std_logic_vector(7 downto 0);
+        eth_ctl : out std_logic_vector(7 downto 0);
+        
         opl3_ctl : inout std_logic_vector(7 downto 0);
         opl3_DataOut : inout std_logic_vector(7 downto 0);
         ps2_clock : inout std_logic;
@@ -371,15 +370,12 @@ sd_rden <= sdControl(2);
 sd_wren <= sdControl(3);
 
 --net 
-ethCS <= '0' when cpuAddress >= x"f40040" and cpuAddress <= x"f40053" else '1';
-eth_address(31 downto 16) <= cpuDataOut when cpuAddress = x"f40040" and cpu_r_w = '0';
-eth_address(15 downto 0) <= cpuDataOut when cpuAddress = x"f40042" and cpu_r_w = '0';
-eth_data_in(31 downto 16) <= cpuDataOut when cpuAddress = x"f40044" and cpu_r_w = '0';
-eth_data_in(15 downto 0) <= cpuDataOut when cpuAddress = x"f40046" and cpu_r_w = '0';
-eth_valid <= cpuDataOut(0) when (cpuAddress = x"f40052" or cpuAddress = x"f40053")
+eth_data_in(7 downto 0) <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40040" or cpuAddress = x"f40041") 
+                            and cpu_r_w = '0' and cpu_lds = '0';
+eth_ctl(7 downto 5) <= cpuDataOut(7 downto 5) when (cpuAddress = x"f40044" or cpuAddress = x"f40045")
                             and cpu_r_w = '0' and cpu_lds = '0';
 
--- keyboard
+-- keyboard48-494A-4B
 
 keybCS <= '1' when (cpuAddress = X"f00018" or cpuAddress = X"f00019")  and cpu_lds = '0' and cpu_r_w = '1' else '0'; 
 -- ____________________________________________________________________________________
@@ -417,18 +413,6 @@ sdAddress(15 downto 8)
 when cpuAddress = x"f40024" and cpu_r_w = '1' and cpu_uds = '0' else 
 sdStatus
 when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
-eth_address(31 downto 24)
-when cpuAddress = x"f40040" and cpu_r_w = '1' and cpu_uds = '0' else 
-eth_address(15 downto 8)
-when cpuAddress = x"f40042" and cpu_r_w = '1' and cpu_uds = '0' else 
-eth_data_in(31 downto 24)
-when cpuAddress = x"f40044" and cpu_r_w = '1' and cpu_uds = '0' else 
-eth_data_in(15 downto 8)
-when cpuAddress = x"f40046" and cpu_r_w = '1' and cpu_uds = '0' else 
-eth_data_out(31 downto 24)
-when cpuAddress = x"f40048" and cpu_r_w = '1' and cpu_uds = '0' else 
-eth_data_out(15 downto 8)
-when cpuAddress = x"f40050" and cpu_r_w = '1' and cpu_uds = '0' else 
 x"00"
 when cpuAddress = x"f00018" and cpu_r_w = '1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
@@ -481,18 +465,12 @@ sdAddress(23 downto 16)
 when (cpuAddress = x"f40022" or cpuAddress = x"f40023")  and cpu_r_w = '1' and cpu_lds = '0' else 
 sdAddress(7 downto 0)
 when (cpuAddress = x"f40024" or cpuAddress = x"f40025") and cpu_r_w = '1' and cpu_lds = '0' else 
-eth_address(23 downto 16)
-when (cpuAddress = x"f40040" or cpuAddress = x"f40041") and cpu_r_w = '1' and cpu_lds = '0' else 
-eth_address(7 downto 0)
-when (cpuAddress = x"f40042" or cpuAddress = x"f40043") and cpu_r_w = '1' and cpu_lds = '0' else 
-eth_data_in(23 downto 16)
-when (cpuAddress = x"f40044" or cpuAddress = x"f40045") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_data_in(7 downto 0)
-when (cpuAddress = x"f40046" or cpuAddress = x"f40047") and cpu_r_w = '1' and cpu_lds = '0' else 
-eth_data_out(23 downto 16)
-when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else 
+when (cpuAddress = x"f40040" or cpuAddress = x"f40041") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_data_out(7 downto 0)
-when (cpuAddress = x"f40050" or cpuAddress = x"f40051") and cpu_r_w = '1' and cpu_lds = '0' else 
+when (cpuAddress = x"f40042" or cpuAddress = x"f40043") and cpu_r_w = '1' and cpu_lds = '0' else 
+eth_ctl(7 downto 0)
+when (cpuAddress = x"f40044" or cpuAddress = x"f40045") and cpu_r_w = '1' and cpu_lds = '0' else 
 keybDataOut
 when (cpuAddress = x"f00018" or cpuAddress = x"f00019")  and cpu_r_w = '1' and cpu_lds = '0' else
 keyb_ctl
@@ -505,8 +483,6 @@ not ram_ack when ram_cen = '0' else
 not rtc_ack when rtcCS = '1' else
 NOT sd_ack when
 (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' else
-NOT eth_ack when
-ethCS = '0' and cpu_r_w = '0' else
 '0';
     
 end;

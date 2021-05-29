@@ -1,4 +1,0 @@
-ethernetlite_axi_ethernetlite_0_0.vhd,vhdl,xil_defaultlib,../../../bd/ethernetlite/ip/ethernetlite_axi_ethernetlite_0_0/sim/ethernetlite_axi_ethernetlite_0_0.vhd,
-ethernetlite_axi_ethernet_0_0.v,verilog,xil_defaultlib,../../../bd/ethernetlite/ip/ethernetlite_axi_ethernet_0_0/sim/ethernetlite_axi_ethernet_0_0.v,
-ethernetlite.v,verilog,xil_defaultlib,../../../bd/ethernetlite/sim/ethernetlite.v,
-glbl.v,Verilog,xil_defaultlib,glbl.v

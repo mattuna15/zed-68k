@@ -58,6 +58,7 @@
 // __clk200__200.00000______0.000______50.0______114.829_____98.575
 // __clk166__166.66667______0.000______50.0______118.758_____98.575
 // ___clk50__50.00000______0.000______50.0______151.636_____98.575
+// _eth_clk__25.00000______0.000______50.0______175.402_____98.575
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -76,6 +77,7 @@
     .clk200(clk200),     // output clk200
     .clk166(clk166),     // output clk166
     .clk50(clk50),     // output clk50
+    .eth_clk(eth_clk),     // output eth_clk
     // Status and control signals
     .resetn(resetn), // input resetn
     .locked(locked),       // output locked

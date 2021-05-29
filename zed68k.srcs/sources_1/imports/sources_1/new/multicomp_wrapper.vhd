@@ -92,18 +92,19 @@ port(
     ck_scl : inout STD_LOGIC;
     ck_sda : inout STD_LOGIC;
     
-    eth_mdio_mdc_mdc : out STD_LOGIC;
-    eth_mdio_mdc_mdio_io : inout STD_LOGIC;
-    eth_mii_col : in STD_LOGIC;
-    eth_mii_crs : in STD_LOGIC;
-    eth_mii_rst_n : out STD_LOGIC;
-    eth_mii_rx_clk : in STD_LOGIC;
-    eth_mii_rx_dv : in STD_LOGIC;
-    eth_mii_rx_er : in STD_LOGIC;
-    eth_mii_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    eth_mii_tx_clk : in STD_LOGIC;
-    eth_mii_tx_en : out STD_LOGIC;
-    eth_mii_txd : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    eth_mdc : out STD_LOGIC;
+    eth_mdio : inout STD_LOGIC;
+    eth_col : in STD_LOGIC;
+    eth_crs : in STD_LOGIC;
+    eth_rstn : out STD_LOGIC;
+    eth_rx_clk : in STD_LOGIC;
+    eth_rx_dv : in STD_LOGIC;
+    eth_rxerr : in STD_LOGIC;
+    eth_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    eth_tx_clk : in STD_LOGIC;
+    eth_tx_en : out STD_LOGIC;
+    eth_txd : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    eth_ref_clk : out STD_LOGIC;
     
     op_a0 : out std_logic;
     op_a1 : out std_logic;
@@ -202,18 +203,15 @@ architecture Behavioral of multicomp_wrapper is
 
 --net
     signal ethCS : std_logic;
-    signal eth_i_valid : std_logic;
-    signal eth_i_valid_p : std_logic;
-    signal eth_i_valid_count: integer := 0;
-    signal eth_valid :  std_logic;
     
-    signal eth_address : std_logic_vector(31 downto 0);
-    signal eth_data_in : std_logic_vector(31 downto 0);
-    signal eth_data_out : std_logic_vector(31 downto 0);
+    signal eth_data_in : std_logic_vector(7 downto 0);
+    signal eth_data_out : std_logic_vector(7 downto 0);
     
     signal eth_ack_o :std_logic;
     signal eth_wr_ack : std_logic;
     signal eth_ack :std_logic;
+    signal eth_ctl :std_logic_vector(7 downto 0);
+    
     
     signal opl3_ctl :std_logic_vector(7 downto 0);
     signal opl3_DataOut : std_logic_vector(7 downto 0);
@@ -299,33 +297,56 @@ component serial_wrapper is
   );
 end component;
 
-component ethernetlite_wrapper is
-    port  (
-        address : in std_logic_vector(31 downto 0);
-        eth_intr : out std_logic;
-        eth_mdio_mdc_mdc : out std_logic;
-        eth_mdio_mdc_mdio_io : inout std_logic;
-        eth_mii_col : in std_logic;
-        eth_mii_crs : in std_logic;
-        eth_mii_rst_n : out std_logic;
-        eth_mii_rx_clk : in std_logic;
-        eth_mii_rx_dv : in std_logic;
-        eth_mii_rx_er : in std_logic;
-        eth_mii_rxd : in std_logic_vector(3 downto 0);
-        eth_mii_tx_clk : in std_logic;
-        eth_mii_tx_en : out std_logic;
-        eth_mii_txd : out std_logic_vector(3 downto 0);
-        i_cen : in std_logic;
-        i_valid_p : in std_logic;
-        i_wren : in std_logic;
-        o_ready_p : out std_logic;
-        o_valid_p : out std_logic;
-        rd_data : out std_logic_vector(31 downto 0);
-        sys_clock  : in std_logic;
-        sys_resetn  : in std_logic;
-        wr_ack_p : out std_logic;
-        wr_byte_mask : in std_logic_vector(3 downto 0);
-        wr_data : out std_logic_vector(31 downto 0)
+component FC1002_MII is
+    port (
+        --Sys/Common
+        Clk             : in  std_logic; --100 MHz
+        Reset           : in  std_logic; --Active high
+        UseDHCP         : in  std_logic; --'1' to use DHCP
+        IP_Addr         : in  std_logic_vector(31 downto 0); --IP address if not using DHCP
+        IP_Ok           : out std_logic; --DHCP ready
+
+        --MAC/MII
+        MII_REF_CLK_25M : out std_logic; --MII continous 25 MHz reference clock
+        MII_RST_N       : out std_logic; --Phy reset, active low
+        MII_COL         : in  std_logic; --Collision detect
+        MII_CRS         : in  std_logic; --Carrier sense
+        MII_RX_CLK      : in  std_logic; --Receive clock
+        MII_CRS_DV      : in  std_logic; --Receive data valid
+        MII_RXD         : in  std_logic_vector(3 downto 0); --Receive data
+        MII_RXERR       : in  std_logic; --Receive error
+        MII_TX_CLK      : in  std_logic; --Transmit clock
+        MII_TXEN        : out std_logic; --Transmit enable
+        MII_TXD         : out std_logic_vector(3 downto 0); --Transmit data
+        MII_MDC         : out std_logic; --Management clock
+        MII_MDIO        : inout std_logic; --Management data
+
+        --SPI/Boot Control
+        SPI_CSn         : out std_logic; --Chip select
+        SPI_SCK         : out std_logic; --Serial clock
+        SPI_MOSI        : out std_logic; --Master out slave in
+        SPI_MISO        : in  std_logic; --Master in slave out
+
+        --Logic Analyzer
+        LA0_TrigIn      : in  std_logic; --Trigger input
+        LA0_Clk         : in  std_logic; --Clock
+        LA0_TrigOut     : out std_logic; --Trigger out
+        LA0_Signals     : in  std_logic_vector(31 downto 0); --Signals
+        LA0_SampleEn    : in  std_logic; --Sample enable
+
+        --TCP Basic Server
+        TCP0_Service    : in  std_logic_vector(15 downto 0); --Service
+        TCP0_ServerPort : in  std_logic_vector(15 downto 0); --TCP local server port
+        TCP0_Connected  : out std_logic; --Client connected
+        TCP0_AllAcked   : out std_logic; --All outgoing data acked
+        TCP0_nTxFree    : out std_logic_vector(15 downto 0); --Number of free bytes in outgoing buffer
+        TCP0_nRxData    : out std_logic_vector(15 downto 0); --Number of bytes in receiving buffer
+        TCP0_TxData     : in  std_logic_vector(7 downto 0); --Transmit data
+        TCP0_TxValid    : in  std_logic; --Transmit data valid
+        TCP0_TxReady    : out std_logic; --Transmit data ready
+        TCP0_RxData     : out std_logic_vector(7 downto 0); --Receive data
+        TCP0_RxValid    : out std_logic; --Receive data valid
+        TCP0_RxReady    : in  std_logic  --Receive data ready
     );
 end component;
 
@@ -337,9 +358,6 @@ attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
 attribute dont_touch of gameduino_spi : label is "true";
 attribute dont_touch of opl3_spi : label is "true";
-attribute dont_touch of eth_i_valid : signal is "true";
-attribute dont_touch of eth_i_valid_p : signal is "true";
-attribute dont_touch of eth_valid_flag : label is "true";
 
 begin
    --------------------------------------------------
@@ -458,12 +476,9 @@ end process;
         sdControl => sdControl,
         
         --ethernet
-        eth_address => eth_address,
-        ethCS => ethCS,
         eth_data_out => eth_data_out,
         eth_data_in => eth_data_in,
-        eth_ack => eth_ack_o,
-        eth_valid => eth_valid,
+        eth_ctl => eth_ctl,
         
         opl3_ctl => opl3_ctl,
         opl3_DataOut => opl3_DataOut,
@@ -681,57 +696,58 @@ sdcard: entity work.sd_controller
     
 -- ethernet
     
-    --net
-
-    eth_i_valid <= ((not ethCS) and eth_valid ) and (not cpuAS);
-    
-    eth_valid_flag: process (sys_clock)
-    begin
-
-    if rising_edge(sys_clock) then
-        if (eth_i_valid_count = 0) and (eth_i_valid = '1') then
-            eth_i_valid_p <= '1';
-            eth_i_valid_count <= eth_i_valid_count+1;
-        elsif (eth_i_valid_count = 1) then
-            eth_i_valid_p <= '1';
-            eth_i_valid_count <= 2;
-        else 
-            eth_i_valid_p <= '0';
-            eth_i_valid_count <= 0;
-        end if;
-    end if;
-
-    end process;
-    
-    ethernet : ethernetlite_wrapper
+    ethernet : FC1002_MII 
     port map (
-        address => eth_address,
-        eth_intr => open,
-        eth_mdio_mdc_mdc => eth_mdio_mdc_mdc,
-        eth_mdio_mdc_mdio_io => eth_mdio_mdc_mdio_io,
-        eth_mii_col => eth_mii_col,
-        eth_mii_crs => eth_mii_crs,
-        eth_mii_rst_n => eth_mii_rst_n,
-        eth_mii_rx_clk => eth_mii_rx_clk,
-        eth_mii_rx_dv => eth_mii_rx_dv,
-        eth_mii_rx_er => eth_mii_rx_er,
-        eth_mii_rxd => eth_mii_rxd,
-        eth_mii_tx_clk => eth_mii_tx_clk,
-        eth_mii_tx_en => eth_mii_tx_en,
-        eth_mii_txd => eth_mii_txd,
-        i_cen => ethCS,
-        i_valid_p => eth_i_valid_p,
-        i_wren => cpuWriteEn,
-        o_ready_p => open,
-        o_valid_p => eth_ack,
-        rd_data => eth_data_out,
-        sys_clock => sys_clock,
-        sys_resetn => sys_resetn,
-        wr_ack_p => eth_wr_ack,
-        wr_byte_mask => "1111",
-        wr_data => eth_data_in
+        --Sys/Common
+        Clk             => sys_clock, --100 MHz
+        Reset           => not sys_resetn,--Active high
+        UseDHCP         => '1', --'1' to use DHCP
+        IP_Addr         => (others => '0'), --IP address if not using DHCP
+        IP_Ok           => eth_ctl(0), --DHCP ready
+
+        --MAC/MII
+        MII_REF_CLK_25M => eth_ref_clk, --MII continous 25 MHz reference clock
+        MII_RST_N      => eth_rstn, --Phy reset, active low
+        MII_COL        => eth_col, --Collision detect
+        MII_CRS        => eth_crs, --Carrier sense
+        MII_RX_CLK     => eth_rx_clk, --Receive clock
+        MII_CRS_DV     => eth_rx_dv, --Receive data valid
+        MII_RXD        => eth_rxd, --Receive data
+        MII_RXERR      => eth_rxerr, --Receive error
+        MII_TX_CLK     => eth_tx_clk, --Transmit clock
+        MII_TXEN       => eth_tx_en, --Transmit enable
+        MII_TXD        => eth_txd,--Transmit data
+        MII_MDC        => eth_mdc, --Management clock
+        MII_MDIO       => eth_mdio, --Management data
+
+        --SPI/Boot Control
+        SPI_CSn         => open,
+        SPI_SCK       => open,
+        SPI_MOSI      => open,
+        SPI_MISO      => '0',
+
+        --Logic Analyzer
+        LA0_TrigIn     => '0',
+        LA0_Clk        => '0',
+        LA0_TrigOut     => open,
+        LA0_Signals    => (others => '0'), --Signals
+        LA0_SampleEn   => '0', --Sample enable
+
+        --TCP Basic Server
+        TCP0_Service    => x"0112",
+        TCP0_ServerPort => x"E001",
+        TCP0_Connected => eth_ctl(1), --Client connected
+        TCP0_AllAcked  => eth_ctl(2),--All outgoing data acked
+        TCP0_nTxFree  => open, --Number of free bytes in outgoing buffer
+        TCP0_nRxData   => open, --Number of bytes in receiving buffer
+        TCP0_TxData     => eth_data_in, --Transmit data
+        TCP0_TxValid    => eth_ctl(5), --Transmit data valid
+        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
+        TCP0_RxData     => eth_data_out, --Receive data
+        TCP0_RxValid    => eth_ctl(4), --Receive data valid
+        TCP0_RxReady    => eth_ctl(6)  --Receive data ready
     );
-    
+   
     --opl
     
     op_a0 <= opl3_ctl(0);

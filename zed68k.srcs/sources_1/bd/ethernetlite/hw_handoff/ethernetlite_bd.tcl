@@ -169,17 +169,16 @@ proc create_root_design { parentCell } {
 
 
   # Create ports
+  set ack [ create_bd_port -dir O -from 0 -to 0 ack ]
   set address [ create_bd_port -dir I -from 31 -to 0 address ]
   set eth_intr [ create_bd_port -dir O -type intr eth_intr ]
   set i_cen [ create_bd_port -dir I i_cen ]
   set i_valid_p [ create_bd_port -dir I i_valid_p ]
   set i_wren [ create_bd_port -dir I i_wren ]
   set o_ready_p [ create_bd_port -dir O o_ready_p ]
-  set o_valid_p [ create_bd_port -dir O o_valid_p ]
   set rd_data [ create_bd_port -dir O -from 31 -to 0 rd_data ]
   set sys_clock [ create_bd_port -dir I -type clk sys_clock ]
   set sys_resetn [ create_bd_port -dir I -type rst sys_resetn ]
-  set wr_ack_p [ create_bd_port -dir O wr_ack_p ]
   set wr_byte_mask [ create_bd_port -dir I -from 3 -to 0 wr_byte_mask ]
   set wr_data [ create_bd_port -dir I -from 31 -to 0 wr_data ]
 
@@ -205,6 +204,14 @@ proc create_root_design { parentCell } {
    CONFIG.USE_BOARD_FLOW {true} \
  ] $axi_ethernetlite_0
 
+  # Create instance: util_vector_logic_0, and set properties
+  set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
+  set_property -dict [ list \
+   CONFIG.C_OPERATION {or} \
+   CONFIG.C_SIZE {1} \
+   CONFIG.LOGO_FILE {data/sym_orgate.png} \
+ ] $util_vector_logic_0
+
   # Create interface connections
   connect_bd_intf_net -intf_net axi_ethernet_0_s_axi [get_bd_intf_pins axi_ethernet_0/s_axi] [get_bd_intf_pins axi_ethernetlite_0/S_AXI]
   connect_bd_intf_net -intf_net axi_ethernetlite_0_MDIO [get_bd_intf_ports eth_mdio_mdc] [get_bd_intf_pins axi_ethernetlite_0/MDIO]
@@ -213,15 +220,16 @@ proc create_root_design { parentCell } {
   # Create port connections
   connect_bd_net -net address_0_1 [get_bd_ports address] [get_bd_pins axi_ethernet_0/address]
   connect_bd_net -net axi_ethernet_0_o_ready_p [get_bd_ports o_ready_p] [get_bd_pins axi_ethernet_0/o_ready_p]
-  connect_bd_net -net axi_ethernet_0_o_valid_p [get_bd_ports o_valid_p] [get_bd_pins axi_ethernet_0/o_valid_p]
+  connect_bd_net -net axi_ethernet_0_o_valid_p [get_bd_pins axi_ethernet_0/o_valid_p] [get_bd_pins util_vector_logic_0/Op2]
   connect_bd_net -net axi_ethernet_0_rd_data [get_bd_ports rd_data] [get_bd_pins axi_ethernet_0/rd_data]
-  connect_bd_net -net axi_ethernet_0_wr_ack_p [get_bd_ports wr_ack_p] [get_bd_pins axi_ethernet_0/wr_ack_p]
+  connect_bd_net -net axi_ethernet_0_wr_ack_p [get_bd_pins axi_ethernet_0/wr_ack_p] [get_bd_pins util_vector_logic_0/Op1]
   connect_bd_net -net axi_ethernetlite_0_ip2intc_irpt [get_bd_ports eth_intr] [get_bd_pins axi_ethernetlite_0/ip2intc_irpt]
   connect_bd_net -net i_cen_0_1 [get_bd_ports i_cen] [get_bd_pins axi_ethernet_0/i_cen]
   connect_bd_net -net i_valid_p_0_1 [get_bd_ports i_valid_p] [get_bd_pins axi_ethernet_0/i_valid_p]
   connect_bd_net -net i_wren_0_1 [get_bd_ports i_wren] [get_bd_pins axi_ethernet_0/i_wren]
   connect_bd_net -net sys_clock_0_1 [get_bd_ports sys_clock] [get_bd_pins axi_ethernet_0/sys_clock] [get_bd_pins axi_ethernet_0/ui_clk] [get_bd_pins axi_ethernetlite_0/s_axi_aclk]
   connect_bd_net -net sys_resetn_0_1 [get_bd_ports sys_resetn] [get_bd_pins axi_ethernet_0/init_calib_complete] [get_bd_pins axi_ethernet_0/sys_resetn] [get_bd_pins axi_ethernet_0/ui_clk_sync_rst] [get_bd_pins axi_ethernetlite_0/s_axi_aresetn]
+  connect_bd_net -net util_vector_logic_0_Res [get_bd_ports ack] [get_bd_pins util_vector_logic_0/Res]
   connect_bd_net -net wr_byte_mask_0_1 [get_bd_ports wr_byte_mask] [get_bd_pins axi_ethernet_0/wr_byte_mask]
   connect_bd_net -net wr_data_0_1 [get_bd_ports wr_data] [get_bd_pins axi_ethernet_0/wr_data]
 
