@@ -74,6 +74,8 @@ entity Microcomputer is
         eth_data_out : inout std_logic_vector(7 downto 0);
         eth_data_in : inout std_logic_vector(7 downto 0);
         eth_ctl : out std_logic_vector(7 downto 0);
+        eth_tx_free : in std_logic_vector(15 downto 0);
+        eth_rx_count : in std_logic_vector(15 downto 0);
         
         opl3_ctl : inout std_logic_vector(7 downto 0);
         opl3_DataOut : inout std_logic_vector(7 downto 0);
@@ -415,6 +417,12 @@ sdStatus
 when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
 x"00"
 when cpuAddress = x"f00018" and cpu_r_w = '1' and cpu_uds = '0' else
+eth_tx_free(15 downto 8)
+when cpuAddress = x"f40046" and cpu_r_w = '1' and cpu_uds = '0' else
+eth_rx_count(15 downto 8)
+when cpuAddress = x"f40048" and cpu_r_w = '1' and cpu_uds = '0' else 
+X"00"
+when (cpuAddress >= x"f40040" and cpuAddress <= x"f40045") and cpu_r_w = '1' and cpu_uds = '0' else  
 X"00" when cpu_uds = '1';
 
 cpuDataIn(7 downto 0)
@@ -470,7 +478,11 @@ when (cpuAddress = x"f40040" or cpuAddress = x"f40041") and cpu_r_w = '1' and cp
 eth_data_out(7 downto 0)
 when (cpuAddress = x"f40042" or cpuAddress = x"f40043") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_ctl(7 downto 0)
-when (cpuAddress = x"f40044" or cpuAddress = x"f40045") and cpu_r_w = '1' and cpu_lds = '0' else 
+when (cpuAddress = x"f40044" or cpuAddress = x"f40045") and cpu_r_w = '1' and cpu_lds = '0' else
+eth_tx_free(7 downto 0)
+when (cpuAddress = x"f40046" or cpuAddress = x"f40047") and cpu_r_w = '1' and cpu_lds = '0' else
+eth_rx_count(7 downto 0)
+when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else 
 keybDataOut
 when (cpuAddress = x"f00018" or cpuAddress = x"f00019")  and cpu_r_w = '1' and cpu_lds = '0' else
 keyb_ctl

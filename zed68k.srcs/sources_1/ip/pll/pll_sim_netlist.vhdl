@@ -1,7 +1,7 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Mon May 24 08:56:48 2021
+-- Date        : Sat May 29 13:15:45 2021
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim d:/code/zed-68k/zed68k.srcs/sources_1/ip/pll/pll_sim_netlist.vhdl
 -- Design      : pll
@@ -95,7 +95,7 @@ plle2_adv_inst: unisim.vcomponents.PLLE2_ADV
       CLKOUT2_DIVIDE => 20,
       CLKOUT2_DUTY_CYCLE => 0.500000,
       CLKOUT2_PHASE => 0.000000,
-      CLKOUT3_DIVIDE => 40,
+      CLKOUT3_DIVIDE => 10,
       CLKOUT3_DUTY_CYCLE => 0.500000,
       CLKOUT3_PHASE => 0.000000,
       CLKOUT4_DIVIDE => 1,

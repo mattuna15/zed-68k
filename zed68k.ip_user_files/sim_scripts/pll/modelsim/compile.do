@@ -10,7 +10,6 @@ vmap xil_defaultlib modelsim_lib/msim/xil_defaultlib
 vlog -work xpm  -incr -sv "+incdir+../../../ipstatic" \
 "D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
 "D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv" \
-"D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv" \
 
 vcom -work xpm  -93 \
 "D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_VCOMP.vhd" \

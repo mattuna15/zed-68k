@@ -115,8 +115,12 @@ port(
     op_sck :out std_logic;
     
     ps2_data : inout std_logic;
-    ps2_clock : inout std_logic
+    ps2_clock : inout std_logic;
     
+            -- SPI Flash Mem
+     qspi_cs         : out std_logic;        
+     qspi_dq         : inout std_logic_vector(3 downto 0);   -- dg(0) is MOSI, dq(1) MISO
+     qspi_sck        : out std_logic
 	);
 end multicomp_wrapper;
 
@@ -206,12 +210,10 @@ architecture Behavioral of multicomp_wrapper is
     
     signal eth_data_in : std_logic_vector(7 downto 0);
     signal eth_data_out : std_logic_vector(7 downto 0);
-    
-    signal eth_ack_o :std_logic;
-    signal eth_wr_ack : std_logic;
-    signal eth_ack :std_logic;
     signal eth_ctl :std_logic_vector(7 downto 0);
-    
+    signal eth_clk :std_logic;
+    signal eth_tx_free : std_logic_vector(15 downto 0);
+    signal eth_rx_count : std_logic_vector(15 downto 0);
     
     signal opl3_ctl :std_logic_vector(7 downto 0);
     signal opl3_DataOut : std_logic_vector(7 downto 0);
@@ -224,7 +226,8 @@ architecture Behavioral of multicomp_wrapper is
         locked : out std_logic;
         clk200  : out std_logic;
         clk166 : out std_logic;
-        clk50: out std_logic
+        clk50: out std_logic;
+        eth_clk :out std_logic
     );
     end component;
     
@@ -371,7 +374,8 @@ begin
         locked => clk_locked,
         clk200 => clk200,
         clk166 => clk166,
-        clk50 => clk50
+        clk50 => clk50,
+        eth_clk => eth_clk
     );
      
 reset_proc : process
@@ -484,7 +488,9 @@ end process;
         opl3_DataOut => opl3_DataOut,
         ps2_clock => ps2_clock,
         ps2_data => ps2_data,
-        clk50 => clk50
+        clk50 => clk50,
+        eth_tx_free => eth_tx_free,
+        eth_rx_count => eth_rx_count
         
     );
     
@@ -699,7 +705,7 @@ sdcard: entity work.sd_controller
     ethernet : FC1002_MII 
     port map (
         --Sys/Common
-        Clk             => sys_clock, --100 MHz
+        Clk             => eth_clk, --100 MHz
         Reset           => not sys_resetn,--Active high
         UseDHCP         => '1', --'1' to use DHCP
         IP_Addr         => (others => '0'), --IP address if not using DHCP
@@ -721,11 +727,11 @@ sdcard: entity work.sd_controller
         MII_MDIO       => eth_mdio, --Management data
 
         --SPI/Boot Control
-        SPI_CSn         => open,
-        SPI_SCK       => open,
-        SPI_MOSI      => open,
-        SPI_MISO      => '0',
-
+        SPI_CSn         => qspi_cs,
+        SPI_SCK         => qspi_sck, --??qspi_sck,
+        SPI_MOSI        => qspi_dq(0),
+        SPI_MISO        => qspi_dq(1),
+       
         --Logic Analyzer
         LA0_TrigIn     => '0',
         LA0_Clk        => '0',
@@ -738,8 +744,8 @@ sdcard: entity work.sd_controller
         TCP0_ServerPort => x"E001",
         TCP0_Connected => eth_ctl(1), --Client connected
         TCP0_AllAcked  => eth_ctl(2),--All outgoing data acked
-        TCP0_nTxFree  => open, --Number of free bytes in outgoing buffer
-        TCP0_nRxData   => open, --Number of bytes in receiving buffer
+        TCP0_nTxFree  => eth_tx_free, --Number of free bytes in outgoing buffer
+        TCP0_nRxData   => eth_rx_count, --Number of bytes in receiving buffer
         TCP0_TxData     => eth_data_in, --Transmit data
         TCP0_TxValid    => eth_ctl(5), --Transmit data valid
         TCP0_TxReady    => eth_ctl(3), --Transmit data ready
@@ -747,6 +753,8 @@ sdcard: entity work.sd_controller
         TCP0_RxValid    => eth_ctl(4), --Receive data valid
         TCP0_RxReady    => eth_ctl(6)  --Receive data ready
     );
+    
+    led(3) <= eth_ctl(1);
    
     --opl
     
@@ -761,6 +769,5 @@ sdcard: entity work.sd_controller
    serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
    serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
    serialStatus(0) <= '1' when count > x"00" else '0';
-   eth_ack_o <= '1' when eth_wr_ack = '1' or eth_ack = '1' else '0';
 
 end Behavioral;
