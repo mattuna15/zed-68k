@@ -4,9 +4,6 @@ ACIAD    EQU ACIAC+2
 ACIA2C    EQU $F20009
 ACIA2D    EQU ACIA2C+2
 
-ACIA3C    EQU $F30009
-ACIA3D    EQU ACIA3C+2
-
 INT_ON   EQU  $2000    ; BOTH, SET SUPERVISOR MODE, S=1
 INT_OFF  EQU  $2700
 
@@ -26,6 +23,22 @@ ESC     EQU $1B
 
 SUPER_STACK   EQU $00E000   ; SUPER STACK TOP Address
 RAMBASE_INIT  EQU $00E000
+
+DATA_TX EQU $F40041
+DATA_RX EQU $F40043
+DATA_CTL EQU $F40045
+DATA_TX_SPACE EQU $F40046
+DATA_RX_COUNT EQU $F40048
+
+* TCP0_TxValid    => eth_ctl(5), --Transmit data valid
+*        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
+*        TCP0_RxValid    => eth_ctl(4), --Receive data valid
+*        TCP0_RxReady    => eth_ctl(6)  --Receive data ready
+
+TXVL EQU 6
+TXRDY EQU 3
+RXVLD EQU 2
+RXRDY EQU 5
 
 *-- sdControl f4000a
 *-- 0 - din valid (a)
@@ -51,7 +64,7 @@ SDDATA    EQU $F4000d
 SDCONTROL EQU $F4000b
 SDSTATUS  EQU $F40009
 
-    ORG $2000
+    ORG $0400
 **************************************************
 
 MAIN 
@@ -62,13 +75,11 @@ MAIN
     LEA.L TITLE1.L,A3     ; print START MESSAGE
     BSR PSTR
 
-    lea AT.l,a3
-    bsr wstr
+*    lea AT.l,a3
+*    bsr wstr
     
 LOOP
     BSR WIN
-   
-    BSR WCIN
     
     BRA LOOP
     
@@ -203,16 +214,44 @@ CIN      BTST.B #RDRF,ACIAC.L
          MOVE.B ACIAD.L,D0
          BSR COUT
          RTS
+
+*DATA_TX EQU $F40041
+*DATA_RX EQU $F40043
+*DATA_CTL EQU $F40045
+*DATA_TX_SPACE EQU $F40046
+*DATA_RX_COUNT EQU $F40048
+*
+** TCP0_TxValid    => eth_ctl(5), --Transmit data valid
+**        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
+**        TCP0_RxValid    => eth_ctl(4), --Receive data valid
+**        TCP0_RxReady    => eth_ctl(6)  --Receive data ready
+*
+*TXVL EQU 5
+*TXRDY EQU 3
+*RXVLD EQU 4
+*RXRDY EQU 6
          
-WOUT      BTST.B #TDRE,ACIA3C.L
+WOUT      BTST.B #TXRDY,DATA_CTL.L
           BEQ.S  WRTS1
-          MOVE.B D0,ACIA3D.L
-WRTS1     RTS
+          MOVE.B D0,DATA_TX.L
           
-WIN      BTST.B #RDRF,ACIA3C.L
+          BSET.B #TXVL,DATA_CTL.L
+          
+WCHK      BTST.B #TXRDY,DATA_CTL.L
+          BNE.S  WCHK
+          
+WRTS1    BCLR.B #TXVL,DATA_CTL.L 
+         RTS
+          
+WIN      BTST.B #RXVLD,DATA_CTL.L
          BEQ.S  WRTS2
-         MOVE.B ACIA3D.L,D0
+         
+         BSET.B #RXRDY,DATA_CTL.L
+         MOVE.B DATA_RX.L,D0
+         BCLR.B #RXRDY,DATA_CTL.L
+         
          BSR COUT
+
 WRTS2    RTS
 
 WCIN     BTST.B #RDRF,ACIAC.L
@@ -235,9 +274,8 @@ PSTR1    RTS
 WSTR     MOVE.B (A3)+,D0
          CMP.B  #0,D0
          BEQ.S WSTR1
-WOT      BTST.B #TDRE,ACIA3C.L
-         BEQ.S  WOT
-         MOVE.B D0,ACIA3D.L
+         
+         BSR   WOUT
          BRA.S WSTR
 
 WSTR1    RTS
@@ -254,6 +292,8 @@ CARDHC DC.B 13,10,'CARD HC',13,10,0
 READING DC.B 13,10,'Reading',13,10,0
 BUSYSTR DC.B 13,10,'Busy',13,10,0
             END MAIN
+
+
 
 *~Font name~Courier New~
 *~Font size~10~

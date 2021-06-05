@@ -73,7 +73,7 @@ entity Microcomputer is
 
         eth_data_out : inout std_logic_vector(7 downto 0);
         eth_data_in : inout std_logic_vector(7 downto 0);
-        eth_ctl : out std_logic_vector(7 downto 0);
+        eth_ctl : inout std_logic_vector(7 downto 0);
         eth_tx_free : in std_logic_vector(15 downto 0);
         eth_rx_count : in std_logic_vector(15 downto 0);
         
@@ -81,7 +81,8 @@ entity Microcomputer is
         opl3_DataOut : inout std_logic_vector(7 downto 0);
         ps2_clock : inout std_logic;
         ps2_data : inout std_logic;
-        clk50 :in std_logic
+        clk50 :in std_logic;
+        eth_ack_rx : in std_logic
         
 	);
 	
@@ -374,9 +375,12 @@ sd_wren <= sdControl(3);
 --net 
 eth_data_in(7 downto 0) <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40040" or cpuAddress = x"f40041") 
                             and cpu_r_w = '0' and cpu_lds = '0';
-eth_ctl(7 downto 5) <= cpuDataOut(7 downto 5) when (cpuAddress = x"f40044" or cpuAddress = x"f40045")
-                            and cpu_r_w = '0' and cpu_lds = '0';
 
+--eth_ctl(5) <= '1' when cpuAddress = x"f40043" and cpu_r_w = '1' and cpu_lds = '0' else '0'; --rden
+--eth_ctl(6) <= '1' when cpuAddress = x"f40041" and cpu_r_w = '0' and cpu_lds = '0' else '0'; --wren
+
+eth_ctl(6 downto 5) <= cpuDataOut(6 downto 5) when cpuAddress = x"f40045" and cpu_r_w = '0' and cpu_lds = '0';
+ 
 -- keyboard48-494A-4B
 
 keybCS <= '1' when (cpuAddress = X"f00018" or cpuAddress = X"f00019")  and cpu_lds = '0' and cpu_r_w = '1' else '0'; 
@@ -495,6 +499,7 @@ not ram_ack when ram_cen = '0' else
 not rtc_ack when rtcCS = '1' else
 NOT sd_ack when
 (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' else
+NOT eth_ack_rx when (cpuAddress = x"f40042" or cpuAddress = x"f40043") else
 '0';
     
 end;

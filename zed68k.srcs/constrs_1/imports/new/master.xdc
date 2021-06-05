@@ -375,10 +375,6 @@ set_property -dict {PACKAGE_PIN U13 IOSTANDARD LVCMOS33} [get_ports SD_WP]
 #Pin 11 GND
 #Pin 12 VCC
 
-
-
-
-
 set_property BITSTREAM.GENERAL.COMPRESS True [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 
@@ -389,39 +385,8 @@ set_property PACKAGE_PIN K6 [get_ports ddr3_reset_n]
 set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 #Internal VREF
 
-connect_debug_port u_ila_0/probe1 [get_nets [list ps2_clock_OBUF]]
-connect_debug_port u_ila_0/probe3 [get_nets [list ps2_data_OBUF]]
-connect_debug_port u_ila_1/probe4 [get_nets [list computer/keyboard/regsel]]
-
-connect_debug_port u_ila_0/probe0 [get_nets [list {computer/keybDataOut[0]} {computer/keybDataOut[1]} {computer/keybDataOut[2]} {computer/keybDataOut[3]} {computer/keybDataOut[4]} {computer/keybDataOut[5]} {computer/keybDataOut[6]} {computer/keybDataOut[7]}]]
 
 
 
-connect_debug_port u_ila_0/probe2 [get_nets [list {computer/keyboard/ps2_keyboard_0/ascii[0]} {computer/keyboard/ps2_keyboard_0/ascii[1]} {computer/keyboard/ps2_keyboard_0/ascii[2]} {computer/keyboard/ps2_keyboard_0/ascii[3]} {computer/keyboard/ps2_keyboard_0/ascii[4]} {computer/keyboard/ps2_keyboard_0/ascii[5]} {computer/keyboard/ps2_keyboard_0/ascii[6]}]]
-connect_debug_port u_ila_0/probe3 [get_nets [list {computer/keyboard/state[0]}]]
-connect_debug_port u_ila_0/probe4 [get_nets [list {computer/keyboard/ascii[0]} {computer/keyboard/ascii[1]} {computer/keyboard/ascii[2]} {computer/keyboard/ascii[3]} {computer/keyboard/ascii[4]} {computer/keyboard/ascii[5]} {computer/keyboard/ascii[6]}]]
-connect_debug_port u_ila_0/probe5 [get_nets [list {computer/keyboard/ascii_code[0]} {computer/keyboard/ascii_code[1]} {computer/keyboard/ascii_code[2]} {computer/keyboard/ascii_code[3]} {computer/keyboard/ascii_code[4]} {computer/keyboard/ascii_code[5]} {computer/keyboard/ascii_code[6]}]]
-connect_debug_port u_ila_0/probe6 [get_nets [list {computer/keyboard/state__0[0]} {computer/keyboard/state__0[1]}]]
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/keyboard/ascii_new]]
-connect_debug_port u_ila_0/probe11 [get_nets [list computer/keyboard/ps2_code_new]]
-connect_debug_port u_ila_0/probe12 [get_nets [list computer/keyboard/prev_ps2_code_new]]
-connect_debug_port u_ila_0/probe13 [get_nets [list computer/keyboard/ps2_keyboard_0/prev_ps2_code_new]]
-connect_debug_port u_ila_0/probe14 [get_nets [list computer/keyboard/ps2_keyboard_0/ps2_code_new]]
 
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/key_fifo/valid]]
-
-
-connect_debug_port u_ila_0/probe21 [get_nets [list ethernet/ethernetlite_i/wr_ack_p]]
-connect_debug_port u_ila_0/probe26 [get_nets [list ethernet/ethernetlite_i/o_valid_p]]
-
-
-connect_debug_port u_ila_0/probe4 [get_nets [list eth_mdio_mdc_mdio_io]]
-connect_debug_port u_ila_0/probe5 [get_nets [list eth_mii_col_IBUF]]
-connect_debug_port u_ila_0/probe6 [get_nets [list eth_mii_crs_IBUF]]
-connect_debug_port u_ila_0/probe7 [get_nets [list eth_mii_rst_n_OBUF]]
-connect_debug_port u_ila_0/probe8 [get_nets [list eth_mii_rx_clk_IBUF]]
-connect_debug_port u_ila_0/probe9 [get_nets [list eth_mii_rx_dv_IBUF]]
-connect_debug_port u_ila_0/probe10 [get_nets [list eth_mii_rx_er_IBUF]]
-connect_debug_port u_ila_0/probe11 [get_nets [list eth_mii_tx_clk_IBUF]]
-connect_debug_port u_ila_0/probe12 [get_nets [list eth_mii_tx_en_OBUF]]
 

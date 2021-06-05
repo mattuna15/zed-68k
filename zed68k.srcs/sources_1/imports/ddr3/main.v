@@ -3,7 +3,7 @@
 // Requires 166 clock, 200 ref clock and 100 system clock
 // Tested on Arty A7-35
 
-module main_memory_control(
+module main_memory_control (
 
         //cpu bus
         input [27:0]    address, // Must be left shifted by 3
