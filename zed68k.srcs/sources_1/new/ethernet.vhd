@@ -142,6 +142,19 @@ port (
 	oready : in std_logic);
 end component;
 
+component axis_rx_fifo is
+port (
+  s_axis_aresetn : in std_logic;
+  s_axis_aclk : in std_logic;
+  s_axis_tvalid : in std_logic;
+  s_axis_tready : out std_logic;
+  s_axis_tdata : in std_logic_vector(7 downto 0);
+  m_axis_tvalid : out std_logic;
+  m_axis_tready : in std_logic;
+  m_axis_tdata : out std_logic_vector(7 downto 0)
+);
+end component;
+
    signal  axis_tx_data : std_logic_vector(7 downto 0); --Transmit data
    signal  axis_tx_valid : std_logic; --Transmit data valid
    signal  axis_tx_ready : std_logic; --Transmit data ready
@@ -150,25 +163,37 @@ end component;
    signal  axis_rx_ready : std_logic; --Receive data ready
    signal  eth_state: std_logic_vector(1 downto 0);
    
+   signal  fifo_rx_data : std_logic_vector(7 downto 0); --Receive data
+   signal  fifo_rx_valid : std_logic; --Receive data valid
+   signal  fifo_rx_ready : std_logic; --Receive data ready
 
    signal cpu_eth_rx_ready : std_logic;
    signal eth_rx_first : std_logic :='1';
 
-attribute dont_touch : string;
-
-attribute dont_touch of rx_register : label is "true";
-attribute dont_touch of tx_register : label is "true";
-
 begin
+
+rx_fifo: axis_rx_fifo
+port map (
+
+  s_axis_aresetn => sys_resetn,
+  s_axis_aclk => eth_clk,
+  s_axis_tvalid => axis_rx_valid,
+  s_axis_tready => axis_rx_ready,
+  s_axis_tdata => axis_rx_data,
+  m_axis_tvalid => fifo_rx_valid,
+  m_axis_tready => fifo_rx_ready,
+  m_axis_tdata => fifo_rx_data
+);
+
 
 rx_register: axis_register
 port map (
 	clock => eth_clk, 
 	resetn =>  sys_resetn,
 	size => eth_rx_sts,
-	idata => axis_rx_data,
-	ivalid => axis_rx_valid,
-	iready => axis_rx_ready,
+	idata => fifo_rx_data,
+	ivalid => fifo_rx_valid,
+	iready => fifo_rx_ready,
 	odata => reg_rx_data,
 	ovalid => reg_rx_valid,
 	oready => reg_rx_ready

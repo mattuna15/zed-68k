@@ -250,6 +250,14 @@ WIN      BTST.B #RXVLD,DATA_CTL.L
          MOVE.B DATA_RX.L,D0
          BCLR.B #RXRDY,DATA_CTL.L
          
+*         ADD.L #1, D1
+*         
+*         CMP #$2000,D1
+*         BNE WRTS2
+*         
+*         MOVE.L #0, D1
+*         MOVE.B #$63,D0
+         
          BSR COUT
 
 WRTS2    RTS
@@ -291,6 +299,8 @@ CARDV2 DC.B 13,10,'Card V2',13,10,0
 CARDHC DC.B 13,10,'CARD HC',13,10,0
 READING DC.B 13,10,'Reading',13,10,0
 BUSYSTR DC.B 13,10,'Busy',13,10,0
+FULLSTOP DC.B '.',0
+
             END MAIN
 
 
