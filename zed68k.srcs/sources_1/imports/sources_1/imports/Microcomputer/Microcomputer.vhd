@@ -348,7 +348,6 @@ serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
 
 -- spi
 
-
 spi_ctrl(4)     <= cpuDataOut(4) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0';  --cont                  
 spi_ctrl(3)     <= cpuDataOut(3) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0'; -- enable
 spi_ctrl(2 downto 0) <= cpuDataOut(2 downto 0) when (cpuAddress = X"f40008" or cpuAddress = X"f40009") and cpu_lds = '0' and cpu_r_w = '0';                   
@@ -376,11 +375,7 @@ sd_wren <= sdControl(3);
 eth_data_in(7 downto 0) <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40040" or cpuAddress = x"f40041") 
                             and cpu_r_w = '0' and cpu_lds = '0';
 
---eth_ctl(5) <= '1' when cpuAddress = x"f40043" and cpu_r_w = '1' and cpu_lds = '0' else '0'; --rden
---eth_ctl(6) <= '1' when cpuAddress = x"f40041" and cpu_r_w = '0' and cpu_lds = '0' else '0'; --wren
-
 eth_ctl(6 downto 5) <= cpuDataOut(6 downto 5) when cpuAddress = x"f40045" and cpu_r_w = '0' and cpu_lds = '0';
- 
 -- keyboard48-494A-4B
 
 keybCS <= '1' when (cpuAddress = X"f00018" or cpuAddress = X"f00019")  and cpu_lds = '0' and cpu_r_w = '1' else '0'; 

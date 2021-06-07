@@ -61,19 +61,6 @@ Port (
 end ethernet;
 
 architecture Behavioral of ethernet is
-
-  -- signal ethCS : std_logic;
-    
-    signal reg_rx_ready: std_logic;
-    signal reg_rx_valid: std_logic;
-    signal reg_rx_data: std_logic_vector(7 downto 0);
-
-
-    signal eth_tx_free : std_logic_vector(15 downto 0);
-    signal eth_rx_count : std_logic_vector(15 downto 0);
-    signal eth_tx_sts: std_logic_vector(1 downto 0);
-    signal eth_rx_sts: std_logic_vector(1 downto 0);
-    
     
 component FC1002_MII is
     port (
@@ -166,9 +153,23 @@ end component;
    signal  fifo_rx_data : std_logic_vector(7 downto 0); --Receive data
    signal  fifo_rx_valid : std_logic; --Receive data valid
    signal  fifo_rx_ready : std_logic; --Receive data ready
+   
+    signal reg_rx_ready: std_logic;
+    signal reg_rx_valid: std_logic;
+    signal reg_rx_data: std_logic_vector(7 downto 0);
+    
+    signal reg_tx_ready: std_logic;
+    signal reg_tx_valid: std_logic;
+    signal reg_tx_data: std_logic_vector(7 downto 0);
+
+    signal eth_tx_free : std_logic_vector(15 downto 0);
+    signal eth_rx_count : std_logic_vector(15 downto 0);
+    signal eth_tx_sts: std_logic_vector(1 downto 0);
+    signal eth_rx_sts: std_logic_vector(1 downto 0);
 
    signal cpu_eth_rx_ready : std_logic;
    signal eth_rx_first : std_logic :='1';
+   signal eth_tx_first : std_logic :='1';
 
 begin
 
@@ -201,6 +202,7 @@ port map (
 	
 	cpu_eth_rx_ready <= eth_ctl(5);
     eth_ctl(2) <= reg_rx_valid;
+
 
 rx_proc: process(eth_clk)
     
@@ -246,13 +248,37 @@ port map (
 	clock => eth_clk, 
 	resetn =>  sys_resetn,
 	size => eth_tx_sts,
-	idata => eth_data_in,
-	ivalid => eth_ctl(6),
-	iready => eth_ctl(3),
+	idata => reg_tx_data,--eth_data_in,
+	ivalid => reg_tx_valid,--eth_ctl(6),
+	iready => reg_tx_ready,--eth_ctl(3),
 	odata => axis_tx_data,
 	ovalid => axis_tx_valid,
 	oready => axis_tx_ready
 	);
+   
+eth_ctl(3) <= reg_tx_ready;
+    
+tx_proc: process(eth_clk)
+begin
+
+    if rising_edge(eth_clk) then
+    
+        if eth_ctl(6) = '1' and reg_tx_valid = '0' and eth_tx_first = '1' then
+            reg_tx_data <= eth_data_in;
+            reg_tx_valid <= '1';
+            eth_tx_first <= '0';
+        else
+            reg_tx_valid <= '0';
+            
+            if eth_ctl(6) = '0' then 
+                eth_tx_first <= '1';
+            end if;
+                
+        end if;
+
+    end if;
+    
+end process;
     
     ethernet : FC1002_MII 
     port map (

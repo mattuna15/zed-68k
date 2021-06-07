@@ -1,6 +1,6 @@
 00000400 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 06/06/2021 15:58:30
+Created On: 06/06/2021 20:35:13
 
 00000000  =00F00009                  1  ACIAC    EQU $F00009
 00000000  =00F0000B                  2  ACIAD    EQU ACIAC+2
@@ -34,10 +34,10 @@ Created On: 06/06/2021 15:58:30
 00000000  =00F40046                 30  DATA_TX_SPACE EQU $F40046
 00000000  =00F40048                 31  DATA_RX_COUNT EQU $F40048
 00000000                            32  
-00000000                            33  * TCP0_TxValid    => eth_ctl(5), --Transmit data valid
+00000000                            33  * TCP0_TxValid    => eth_ctl(6), --Transmit data valid
 00000000                            34  *        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
-00000000                            35  *        TCP0_RxValid    => eth_ctl(4), --Receive data valid
-00000000                            36  *        TCP0_RxReady    => eth_ctl(6)  --Receive data ready
+00000000                            35  *        TCP0_RxValid    => eth_ctl(2), --Receive data valid
+00000000                            36  *        TCP0_RxReady    => eth_ctl(5)  --Receive data ready
 00000000                            37  
 00000000  =00000006                 38  TXVL EQU 6
 00000000  =00000003                 39  TXRDY EQU 3
@@ -76,255 +76,248 @@ Created On: 06/06/2021 15:58:30
 00000400  46FC 2700                 72      MOVE.W #INT_OFF,SR 
 00000404  6100 0114                 73      BSR INIT_ACIA
 00000408                            74     
-00000408  47F9 000005F7             75      LEA.L TITLE1.L,A3     ; print START MESSAGE
-0000040E  6100 01C2                 76      BSR PSTR
+00000408  47F9 000005EF             75      LEA.L TITLE1.L,A3     ; print START MESSAGE
+0000040E  6100 01BA                 76      BSR PSTR
 00000412                            77  
 00000412                            78  *    lea AT.l,a3
 00000412                            79  *    bsr wstr
 00000412                            80      
 00000412                            81  LOOP
-00000412  6100 0184                 82      BSR WIN
+00000412  6100 0144                 82      BSR CIN
 00000416                            83      
-00000416  60FA                      84      BRA LOOP
-00000418                            85      
-00000418                            86          
-00000418                            87  CHECK_DRIVE   
-00000418  47F9 00000625             88              LEA.L CHECKING.L,A3     ; print START MESSAGE
-0000041E  6100 01B2                 89              BSR PSTR
-00000422                            90              
-00000422  49F9 00F40009             91              LEA.L SDSTATUS.L,A4
-00000428                            92              
-00000428  1214                      93              MOVE.b (A4), D1
-0000042A  EC09                      94              LSR.B #$06, D1  ; GET BYTES 7,6 
-0000042C                            95  
-0000042C  B23C 0000                 96              CMP.B #$00,D1
-00000430  6700 001A                 97              BEQ NO_CARD
-00000434                            98              
-00000434  B23C 0001                 99              CMP.B #$01,D1
-00000438  6700 0022                100              BEQ CARD_V1
-0000043C                           101              
-0000043C  B23C 0002                102              CMP.B #$02,D1
-00000440  6700 0028                103              BEQ CARD_V2
-00000444                           104  
-00000444  B23C 0003                105              CMP.B #$03,D1
-00000448  6700 002E                106              BEQ CARD_HC   
-0000044C                           107  
-0000044C                           108  NO_CARD     
-0000044C  47F9 00000632            109              LEA.L NOCARD.L,A3     ; print START MESSAGE
-00000452  6100 017E                110              BSR PSTR 
-00000456  4EF9 00A00BB4            111              JMP $A00BB4 ;EXIT BACK TO MON
-0000045C                           112              ;BRA RETURN
-0000045C                           113  CARD_V1
-0000045C  47F9 0000063E            114              LEA.L CARDV1.L,A3     ; print START MESSAGE
-00000462  6100 016E                115              BSR PSTR 
-00000466  6000 001A                116              BRA RETURN
-0000046A                           117  CARD_V2
-0000046A  47F9 0000064A            118              LEA.L CARDV2.L,A3     ; print START MESSAGE
-00000470  6100 0160                119              BSR PSTR 
-00000474  6000 000C                120              BRA RETURN
-00000478                           121  
-00000478  47F9 00000656            122  CARD_HC     LEA.L CARDHC.L,A3     ; print START MESSAGE
-0000047E  6100 0152                123              BSR PSTR        
-00000482                           124              
-00000482  4E75                     125  RETURN      RTS
-00000484                           126  
-00000484                           127  **************************************************
+00000416                            84  *    BSR WOUT
+00000416                            85      
+00000416  60FA                      86      BRA LOOP
+00000418                            87      
+00000418                            88          
+00000418                            89  CHECK_DRIVE   
+00000418  47F9 0000061D             90              LEA.L CHECKING.L,A3     ; print START MESSAGE
+0000041E  6100 01AA                 91              BSR PSTR
+00000422                            92              
+00000422  49F9 00F40009             93              LEA.L SDSTATUS.L,A4
+00000428                            94              
+00000428  1214                      95              MOVE.b (A4), D1
+0000042A  EC09                      96              LSR.B #$06, D1  ; GET BYTES 7,6 
+0000042C                            97  
+0000042C  B23C 0000                 98              CMP.B #$00,D1
+00000430  6700 001A                 99              BEQ NO_CARD
+00000434                           100              
+00000434  B23C 0001                101              CMP.B #$01,D1
+00000438  6700 0022                102              BEQ CARD_V1
+0000043C                           103              
+0000043C  B23C 0002                104              CMP.B #$02,D1
+00000440  6700 0028                105              BEQ CARD_V2
+00000444                           106  
+00000444  B23C 0003                107              CMP.B #$03,D1
+00000448  6700 002E                108              BEQ CARD_HC   
+0000044C                           109  
+0000044C                           110  NO_CARD     
+0000044C  47F9 0000062A            111              LEA.L NOCARD.L,A3     ; print START MESSAGE
+00000452  6100 0176                112              BSR PSTR 
+00000456  4EF9 00A00BB4            113              JMP $A00BB4 ;EXIT BACK TO MON
+0000045C                           114              ;BRA RETURN
+0000045C                           115  CARD_V1
+0000045C  47F9 00000636            116              LEA.L CARDV1.L,A3     ; print START MESSAGE
+00000462  6100 0166                117              BSR PSTR 
+00000466  6000 001A                118              BRA RETURN
+0000046A                           119  CARD_V2
+0000046A  47F9 00000642            120              LEA.L CARDV2.L,A3     ; print START MESSAGE
+00000470  6100 0158                121              BSR PSTR 
+00000474  6000 000C                122              BRA RETURN
+00000478                           123  
+00000478  47F9 0000064E            124  CARD_HC     LEA.L CARDHC.L,A3     ; print START MESSAGE
+0000047E  6100 014A                125              BSR PSTR        
+00000482                           126              
+00000482  4E75                     127  RETURN      RTS
 00000484                           128  
-00000484                           129  
-00000484                           130  READDRV     
+00000484                           129  **************************************************
+00000484                           130  
 00000484                           131  
-00000484  47F9 00000662            132              LEA.L READING.L, A3     ; print START MESSAGE
-0000048A  6100 0146                133              BSR PSTR  
-0000048E                           134              
-0000048E                           135              
-0000048E  49F9 00F40009            136  BUSY        LEA.L SDSTATUS.L,A4
-00000494  1214                     137              MOVE.b (A4), D1
-00000496  B23C 00C0                138              CMP.b #$c0,D1
-0000049A  6700 000E                139              BEQ RDEN               ; busy 0
-0000049E                           140              
-0000049E  47F9 0000066E            141              LEA.L BUSYSTR.L,A3     ; print START MESSAGE
-000004A4  6100 012C                142              BSR PSTR 
-000004A8                           143              
-000004A8  60E4                     144              BRA.S BUSY
-000004AA                           145              
-000004AA  45F9 00F4000B            146  RDEN        LEA.L SDCONTROL.L,A2
-000004B0  08D2 0002                147              BSET.b #02, (a2)
-000004B4                           148   
-000004B4                           149              for d5 = #1 to #512 do.s
-000004B4  3A3C 0001                150s     MOVE.W  #1,D5
-000004B8  6030                     151s     BRA.S   _20000001
-000004BA                           152s _20000000
-000004BA                           153              
-000004BA  47F9 00000625            154              LEA.L CHECKING.L,A3     ; print START MESSAGE
-000004C0  6100 0110                155              BSR PSTR
-000004C4                           156              
-000004C4  1214                     157  DOUT        MOVE.b (A4), D1
-000004C6  0801 0004                158              BTST #4,D1
-000004CA  67F8                     159              BEQ DOUT
-000004CC                           160  
-000004CC  4BF9 00F4000D            161  READ        LEA.l SDDATA.L,A5   
-000004D2                           162              
-000004D2  1015                     163              MOVE.b (A5), D0
-000004D4  08D2 0001                164              BSET.b   #01, (a2)  ;ACK
-000004D8  6100 0036                165              BSR OUT2X
-000004DC  1214                     166  DAVAIL      MOVE.b (A4), D1
-000004DE  0801 0004                167              BTST #4,D1
-000004E2  66F8                     168              BNE DAVAIL
-000004E4                           169              
-000004E4  0892 0001                170              BCLR.b   #01, (a2)  ;ACK
-000004E8                           171              
-000004E8                           172              endf
-000004E8  5245                     173s     ADD.W   #1,D5
-000004EA                           174s _20000001
-000004EA  BA7C 0200                175s     CMP.W   #512,D5
-000004EE  6FCA                     176s     BLE.S   _20000000
-000004F0                           177  
-000004F0  0892 0002                178              BCLR.b  #02, (a2)  ; REMOVE RDEN
-000004F4                           179              
-000004F4  4E75                     180              RTS
-000004F6                           181  
-000004F6  1F00                     182  OUT1X        MOVE.B D0,-(SP)    ;SAVE D0
-000004F8  C03C 000F                183               AND.B #$F,D0
-000004FC  0600 0030                184               ADD.B #'0',D0
-00000500  B03C 0039                185               CMP.B #'9',D0
-00000504  6302                     186               BLS.S   OUT1X1
-00000506  5E00                     187               ADD.B #7,D0
-00000508  6100 002A                188  OUT1X1       BSR COUT
-0000050C  101F                     189               MOVE.B (SP)+,D0    ;RESTORE D0
-0000050E  4E75                     190               RTS
-00000510                           191  
-00000510  E818                     192  OUT2X        ROR.B #4,D0
-00000512  61E2                     193               BSR.S OUT1X
-00000514  E918                     194               ROL.B #4,D0
-00000516  60DE                     195               BRA OUT1X
-00000518                           196  
-00000518  4E75                     197          RTS
-0000051A                           198  **************************************************   
-0000051A                           199     ; INIT ACIA
-0000051A                           200  
-0000051A  13FC 0003 00F00009       201  INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
-00000522  303C 0064                202             MOVE.W #100,D0
-00000526  51C8 FFFE                203             DBRA  D0,*
-0000052A  13FC 0015 00F00009       204             MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
-00000532  4E75                     205             RTS
-00000534                           206  
-00000534  0839 0001 00F00009       207  COUT      BTST.B #TDRE,ACIAC.L
-0000053C  67F6                     208            BEQ.S  COUT
-0000053E  13C0 00F0000B            209            MOVE.B D0,ACIAD.L
-00000544  4E75                     210            RTS
-00000546                           211  
-00000546                           212  
-00000546  0839 0000 00F20009       213  CINS      BTST.B #RDRF,ACIA2C.L
-0000054E  67F6                     214            BEQ.S  CINS
-00000550  1039 00F2000B            215            MOVE.B ACIA2D.L,D0
-00000556  4E75                     216            RTS
-00000558                           217  
-00000558                           218  
-00000558  0839 0000 00F00009       219  CIN      BTST.B #RDRF,ACIAC.L
-00000560  67F6                     220           BEQ.S  CIN
-00000562  1039 00F0000B            221           MOVE.B ACIAD.L,D0
-00000568  61CA                     222           BSR COUT
-0000056A  4E75                     223           RTS
-0000056C                           224  
-0000056C                           225  *DATA_TX EQU $F40041
-0000056C                           226  *DATA_RX EQU $F40043
-0000056C                           227  *DATA_CTL EQU $F40045
-0000056C                           228  *DATA_TX_SPACE EQU $F40046
-0000056C                           229  *DATA_RX_COUNT EQU $F40048
-0000056C                           230  *
-0000056C                           231  ** TCP0_TxValid    => eth_ctl(5), --Transmit data valid
-0000056C                           232  **        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
-0000056C                           233  **        TCP0_RxValid    => eth_ctl(4), --Receive data valid
-0000056C                           234  **        TCP0_RxReady    => eth_ctl(6)  --Receive data ready
-0000056C                           235  *
-0000056C                           236  *TXVL EQU 5
-0000056C                           237  *TXRDY EQU 3
-0000056C                           238  *RXVLD EQU 4
-0000056C                           239  *RXRDY EQU 6
-0000056C                           240           
-0000056C  0839 0003 00F40045       241  WOUT      BTST.B #TXRDY,DATA_CTL.L
-00000574  6718                     242            BEQ.S  WRTS1
-00000576  13C0 00F40041            243            MOVE.B D0,DATA_TX.L
-0000057C                           244            
-0000057C  08F9 0006 00F40045       245            BSET.B #TXVL,DATA_CTL.L
-00000584                           246            
-00000584  0839 0003 00F40045       247  WCHK      BTST.B #TXRDY,DATA_CTL.L
-0000058C  66F6                     248            BNE.S  WCHK
-0000058E                           249            
-0000058E  08B9 0006 00F40045       250  WRTS1    BCLR.B #TXVL,DATA_CTL.L 
-00000596  4E75                     251           RTS
-00000598                           252            
-00000598  0839 0002 00F40045       253  WIN      BTST.B #RXVLD,DATA_CTL.L
-000005A0  671A                     254           BEQ.S  WRTS2
-000005A2                           255           
-000005A2  08F9 0005 00F40045       256           BSET.B #RXRDY,DATA_CTL.L
-000005AA  1039 00F40043            257           MOVE.B DATA_RX.L,D0
-000005B0  08B9 0005 00F40045       258           BCLR.B #RXRDY,DATA_CTL.L
-000005B8                           259           
-000005B8                           260  *         ADD.L #1, D1
-000005B8                           261  *         
-000005B8                           262  *         CMP #$2000,D1
-000005B8                           263  *         BNE WRTS2
-000005B8                           264  *         
-000005B8                           265  *         MOVE.L #0, D1
-000005B8                           266  *         MOVE.B #$63,D0
-000005B8                           267           
-000005B8  6100 FF7A                268           BSR COUT
-000005BC                           269  
-000005BC  4E75                     270  WRTS2    RTS
-000005BE                           271  
-000005BE  0839 0000 00F00009       272  WCIN     BTST.B #RDRF,ACIAC.L
-000005C6  6708                     273           BEQ.S  WRTS3
-000005C8  1039 00F0000B            274           MOVE.B ACIAD.L,D0
-000005CE  619C                     275           BSR WOUT
-000005D0  4E75                     276  WRTS3    RTS
-000005D2                           277           
-000005D2                           278  ; A3 POINTED TO FIRST BYTE
-000005D2                           279  ; END WITH 0
-000005D2                           280  
-000005D2  101B                     281  PSTR     MOVE.B (A3)+,D0
-000005D4  B03C 0000                282           CMP.B  #0,D0
-000005D8  6706                     283           BEQ.S PSTR1
-000005DA  6100 FF58                284           BSR COUT
-000005DE  60F2                     285           BRA.S PSTR
-000005E0                           286  
-000005E0  4E75                     287  PSTR1    RTS
-000005E2                           288  
-000005E2  101B                     289  WSTR     MOVE.B (A3)+,D0
-000005E4  B03C 0000                290           CMP.B  #0,D0
-000005E8  6704                     291           BEQ.S WSTR1
-000005EA                           292           
-000005EA  6180                     293           BSR   WOUT
-000005EC  60F4                     294           BRA.S WSTR
-000005EE                           295  
-000005EE  4E75                     296  WSTR1    RTS
-000005F0                           297  
-000005F0= 0D 0A 41 54 0D 0A 00     298  AT DC.B 13,10,'AT',13,10,0
-000005F7= 0D 0A 46 6F 6E 74 20     299  TITLE1 DC.B 13,10,'Font Loader',13,10,0
+00000484                           132  READDRV     
+00000484                           133  
+00000484  47F9 0000065A            134              LEA.L READING.L, A3     ; print START MESSAGE
+0000048A  6100 013E                135              BSR PSTR  
+0000048E                           136              
+0000048E                           137              
+0000048E  49F9 00F40009            138  BUSY        LEA.L SDSTATUS.L,A4
+00000494  1214                     139              MOVE.b (A4), D1
+00000496  B23C 00C0                140              CMP.b #$c0,D1
+0000049A  6700 000E                141              BEQ RDEN               ; busy 0
+0000049E                           142              
+0000049E  47F9 00000666            143              LEA.L BUSYSTR.L,A3     ; print START MESSAGE
+000004A4  6100 0124                144              BSR PSTR 
+000004A8                           145              
+000004A8  60E4                     146              BRA.S BUSY
+000004AA                           147              
+000004AA  45F9 00F4000B            148  RDEN        LEA.L SDCONTROL.L,A2
+000004B0  08D2 0002                149              BSET.b #02, (a2)
+000004B4                           150   
+000004B4                           151              for d5 = #1 to #512 do.s
+000004B4  3A3C 0001                152s     MOVE.W  #1,D5
+000004B8  6030                     153s     BRA.S   _20000001
+000004BA                           154s _20000000
+000004BA                           155              
+000004BA  47F9 0000061D            156              LEA.L CHECKING.L,A3     ; print START MESSAGE
+000004C0  6100 0108                157              BSR PSTR
+000004C4                           158              
+000004C4  1214                     159  DOUT        MOVE.b (A4), D1
+000004C6  0801 0004                160              BTST #4,D1
+000004CA  67F8                     161              BEQ DOUT
+000004CC                           162  
+000004CC  4BF9 00F4000D            163  READ        LEA.l SDDATA.L,A5   
+000004D2                           164              
+000004D2  1015                     165              MOVE.b (A5), D0
+000004D4  08D2 0001                166              BSET.b   #01, (a2)  ;ACK
+000004D8  6100 0036                167              BSR OUT2X
+000004DC  1214                     168  DAVAIL      MOVE.b (A4), D1
+000004DE  0801 0004                169              BTST #4,D1
+000004E2  66F8                     170              BNE DAVAIL
+000004E4                           171              
+000004E4  0892 0001                172              BCLR.b   #01, (a2)  ;ACK
+000004E8                           173              
+000004E8                           174              endf
+000004E8  5245                     175s     ADD.W   #1,D5
+000004EA                           176s _20000001
+000004EA  BA7C 0200                177s     CMP.W   #512,D5
+000004EE  6FCA                     178s     BLE.S   _20000000
+000004F0                           179  
+000004F0  0892 0002                180              BCLR.b  #02, (a2)  ; REMOVE RDEN
+000004F4                           181              
+000004F4  4E75                     182              RTS
+000004F6                           183  
+000004F6  1F00                     184  OUT1X        MOVE.B D0,-(SP)    ;SAVE D0
+000004F8  C03C 000F                185               AND.B #$F,D0
+000004FC  0600 0030                186               ADD.B #'0',D0
+00000500  B03C 0039                187               CMP.B #'9',D0
+00000504  6302                     188               BLS.S   OUT1X1
+00000506  5E00                     189               ADD.B #7,D0
+00000508  6100 002A                190  OUT1X1       BSR COUT
+0000050C  101F                     191               MOVE.B (SP)+,D0    ;RESTORE D0
+0000050E  4E75                     192               RTS
+00000510                           193  
+00000510  E818                     194  OUT2X        ROR.B #4,D0
+00000512  61E2                     195               BSR.S OUT1X
+00000514  E918                     196               ROL.B #4,D0
+00000516  60DE                     197               BRA OUT1X
+00000518                           198  
+00000518  4E75                     199          RTS
+0000051A                           200  **************************************************   
+0000051A                           201     ; INIT ACIA
+0000051A                           202  
+0000051A  13FC 0003 00F00009       203  INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
+00000522  303C 0064                204             MOVE.W #100,D0
+00000526  51C8 FFFE                205             DBRA  D0,*
+0000052A  13FC 0015 00F00009       206             MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
+00000532  4E75                     207             RTS
+00000534                           208  
+00000534  0839 0001 00F00009       209  COUT      BTST.B #TDRE,ACIAC.L
+0000053C  67F6                     210            BEQ.S  COUT
+0000053E  13C0 00F0000B            211            MOVE.B D0,ACIAD.L
+00000544  4E75                     212            RTS
+00000546                           213  
+00000546                           214  
+00000546  0839 0000 00F20009       215  CINS      BTST.B #RDRF,ACIA2C.L
+0000054E  67F6                     216            BEQ.S  CINS
+00000550  1039 00F2000B            217            MOVE.B ACIA2D.L,D0
+00000556  4E75                     218            RTS
+00000558                           219  
+00000558                           220  
+00000558  0839 0000 00F00009       221  CIN      BTST.B #RDRF,ACIAC.L
+00000560  67F6                     222           BEQ.S  CIN
+00000562  1039 00F0000B            223           MOVE.B ACIAD.L,D0
+00000568  61CA                     224           BSR COUT
+0000056A  6100 0004                225           BSR WOUT
+0000056E  4E75                     226           RTS
+00000570                           227  
+00000570                           228  *DATA_TX EQU $F40041
+00000570                           229  *DATA_RX EQU $F40043
+00000570                           230  *DATA_CTL EQU $F40045
+00000570                           231  *DATA_TX_SPACE EQU $F40046
+00000570                           232  *DATA_RX_COUNT EQU $F40048
+00000570                           233  *
+00000570                           234  ** TCP0_TxValid    => eth_ctl(5), --Transmit data valid
+00000570                           235  **        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
+00000570                           236  **        TCP0_RxValid    => eth_ctl(4), --Receive data valid
+00000570                           237  **        TCP0_RxReady    => eth_ctl(6)  --Receive data ready
+00000570                           238  *
+00000570                           239  *TXVL EQU 5
+00000570                           240  *TXRDY EQU 3
+00000570                           241  *RXVLD EQU 4
+00000570                           242  *RXRDY EQU 6
+00000570                           243           
+00000570  0839 0003 00F40045       244  WOUT      BTST.B #TXRDY,DATA_CTL.L
+00000578  670E                     245            BEQ.S  WRTS1
+0000057A                           246            
+0000057A  13C0 00F40041            247            MOVE.B D0,DATA_TX.L 
+00000580  08F9 0006 00F40045       248            BSET.B #TXVL,DATA_CTL.L
+00000588                           249            
+00000588                           250            
+00000588  08B9 0006 00F40045       251  WRTS1    BCLR.B #TXVL,DATA_CTL.L 
+00000590  4E75                     252           RTS
+00000592                           253            
+00000592  0839 0002 00F40045       254  WIN      BTST.B #RXVLD,DATA_CTL.L
+0000059A  6718                     255           BEQ.S  WRTS2
+0000059C                           256           
+0000059C  08F9 0005 00F40045       257           BSET.B #RXRDY,DATA_CTL.L
+000005A4  1039 00F40043            258           MOVE.B DATA_RX.L,D0
+000005AA  08B9 0005 00F40045       259           BCLR.B #RXRDY,DATA_CTL.L
+000005B2                           260           
+000005B2  6180                     261           BSR COUT
+000005B4                           262  
+000005B4  4E75                     263  WRTS2    RTS
+000005B6                           264  
+000005B6  0839 0000 00F00009       265  WCIN     BTST.B #RDRF,ACIAC.L
+000005BE  6708                     266           BEQ.S  WRTS3
+000005C0  1039 00F0000B            267           MOVE.B ACIAD.L,D0
+000005C6  61A8                     268           BSR WOUT
+000005C8  4E75                     269  WRTS3    RTS
+000005CA                           270           
+000005CA                           271  ; A3 POINTED TO FIRST BYTE
+000005CA                           272  ; END WITH 0
+000005CA                           273  
+000005CA  101B                     274  PSTR     MOVE.B (A3)+,D0
+000005CC  B03C 0000                275           CMP.B  #0,D0
+000005D0  6706                     276           BEQ.S PSTR1
+000005D2  6100 FF60                277           BSR COUT
+000005D6  60F2                     278           BRA.S PSTR
+000005D8                           279  
+000005D8  4E75                     280  PSTR1    RTS
+000005DA                           281  
+000005DA  101B                     282  WSTR     MOVE.B (A3)+,D0
+000005DC  B03C 0000                283           CMP.B  #0,D0
+000005E0  6704                     284           BEQ.S WSTR1
+000005E2                           285           
+000005E2  618C                     286           BSR   WOUT
+000005E4  60F4                     287           BRA.S WSTR
+000005E6                           288  
+000005E6  4E75                     289  WSTR1    RTS
+000005E8                           290  
+000005E8= 0D 0A 41 54 0D 0A 00     291  AT DC.B 13,10,'AT',13,10,0
+000005EF= 0D 0A 46 6F 6E 74 20     292  TITLE1 DC.B 13,10,'Font Loader',13,10,0
           4C 6F 61 64 65 72 0D  
           0A 00                 
-00000607= 0D 0A 4C 6F 61 64 69     302  WAITING DC.B 13,10,'Loading',13,10,0
+000005FF= 0D 0A 4C 6F 61 64 69     295  WAITING DC.B 13,10,'Loading',13,10,0
           6E 67 0D 0A 00        
-00000613= 0D 0A 42 79 74 65 20     304  RECVD DC.B 13,10,'Byte Received',13,10,0
+0000060B= 0D 0A 42 79 74 65 20     297  RECVD DC.B 13,10,'Byte Received',13,10,0
           52 65 63 65 69 76 65  
           64 0D 0A 00           
-00000625= 0D 0A 43 68 65 63 6B     307  CHECKING DC.B 13,10,'Checking',13,10,0
+0000061D= 0D 0A 43 68 65 63 6B     300  CHECKING DC.B 13,10,'Checking',13,10,0
           69 6E 67 0D 0A 00     
-00000632= 0D 0A 4E 6F 20 43 61     309  NOCARD DC.B 13,10,'No Card',13,10,0
+0000062A= 0D 0A 4E 6F 20 43 61     302  NOCARD DC.B 13,10,'No Card',13,10,0
           72 64 0D 0A 00        
-0000063E= 0D 0A 43 61 72 64 20     311  CARDV1 DC.B 13,10,'Card V1',13,10,0
+00000636= 0D 0A 43 61 72 64 20     304  CARDV1 DC.B 13,10,'Card V1',13,10,0
           56 31 0D 0A 00        
-0000064A= 0D 0A 43 61 72 64 20     313  CARDV2 DC.B 13,10,'Card V2',13,10,0
+00000642= 0D 0A 43 61 72 64 20     306  CARDV2 DC.B 13,10,'Card V2',13,10,0
           56 32 0D 0A 00        
-00000656= 0D 0A 43 41 52 44 20     315  CARDHC DC.B 13,10,'CARD HC',13,10,0
+0000064E= 0D 0A 43 41 52 44 20     308  CARDHC DC.B 13,10,'CARD HC',13,10,0
           48 43 0D 0A 00        
-00000662= 0D 0A 52 65 61 64 69     317  READING DC.B 13,10,'Reading',13,10,0
+0000065A= 0D 0A 52 65 61 64 69     310  READING DC.B 13,10,'Reading',13,10,0
           6E 67 0D 0A 00        
-0000066E= 0D 0A 42 75 73 79 0D     319  BUSYSTR DC.B 13,10,'Busy',13,10,0
+00000666= 0D 0A 42 75 73 79 0D     312  BUSYSTR DC.B 13,10,'Busy',13,10,0
           0A 00                 
-00000677= 2E 00                    321  FULLSTOP DC.B '.',0
-00000679                           322  
-00000679                           323              END MAIN
+0000066F= 2E 00                    314  FULLSTOP DC.B '.',0
+00000671                           315  
+00000671                           316              END MAIN
 
 No errors detected
 No warnings generated
@@ -337,17 +330,17 @@ ACIA2C              F20009
 ACIA2D              F2000B
 ACIAC               F00009
 ACIAD               F0000B
-AT                  5F0
+AT                  5E8
 BS                  8
 BUSY                48E
-BUSYSTR             66E
-CARDHC              656
-CARDV1              63E
-CARDV2              64A
+BUSYSTR             666
+CARDHC              64E
+CARDV1              636
+CARDV2              642
 CARD_HC             478
 CARD_V1             45C
 CARD_V2             46A
-CHECKING            625
+CHECKING            61D
 CHECK_DRIVE         418
 CIN                 558
 CINS                546
@@ -361,27 +354,27 @@ DATA_TX_SPACE       F40046
 DAVAIL              4DC
 DOUT                4C4
 ESC                 1B
-FULLSTOP            677
+FULLSTOP            66F
 INIT_ACIA           51A
 INT_OFF             2700
 INT_ON              2000
 LF                  A
 LOOP                412
 MAIN                400
-NOCARD              632
+NOCARD              62A
 NO_CARD             44C
 OUT1X               4F6
 OUT1X1              508
 OUT2X               510
-PSTR                5D2
-PSTR1               5E0
+PSTR                5CA
+PSTR1               5D8
 RAMBASE_INIT        E000
 RDEN                4AA
 RDRF                0
 READ                4CC
 READDRV             484
-READING             662
-RECVD               613
+READING             65A
+RECVD               60B
 RETURN              482
 RS                  1E
 RXRDY               5
@@ -394,19 +387,18 @@ SP                  20
 SUPERVISOR_BIT      5
 SUPER_STACK         E000
 TDRE                1
-TITLE1              5F7
+TITLE1              5EF
 TRACE_BIT           7
 TXRDY               3
 TXVL                6
-WAITING             607
-WCHK                584
-WCIN                5BE
-WIN                 598
-WOUT                56C
-WRTS1               58E
-WRTS2               5BC
-WRTS3               5D0
-WSTR                5E2
-WSTR1               5EE
+WAITING             5FF
+WCIN                5B6
+WIN                 592
+WOUT                570
+WRTS1               588
+WRTS2               5B4
+WRTS3               5C8
+WSTR                5DA
+WSTR1               5E6
 _20000000           4BA
 _20000001           4EA

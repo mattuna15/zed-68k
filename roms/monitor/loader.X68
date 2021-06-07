@@ -30,10 +30,10 @@ DATA_CTL EQU $F40045
 DATA_TX_SPACE EQU $F40046
 DATA_RX_COUNT EQU $F40048
 
-* TCP0_TxValid    => eth_ctl(5), --Transmit data valid
+* TCP0_TxValid    => eth_ctl(6), --Transmit data valid
 *        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
-*        TCP0_RxValid    => eth_ctl(4), --Receive data valid
-*        TCP0_RxReady    => eth_ctl(6)  --Receive data ready
+*        TCP0_RxValid    => eth_ctl(2), --Receive data valid
+*        TCP0_RxReady    => eth_ctl(5)  --Receive data ready
 
 TXVL EQU 6
 TXRDY EQU 3
@@ -79,7 +79,9 @@ MAIN
 *    bsr wstr
     
 LOOP
-    BSR WIN
+    BSR CIN
+    
+*    BSR WOUT
     
     BRA LOOP
     
@@ -213,6 +215,7 @@ CIN      BTST.B #RDRF,ACIAC.L
          BEQ.S  CIN
          MOVE.B ACIAD.L,D0
          BSR COUT
+         BSR WOUT
          RTS
 
 *DATA_TX EQU $F40041
@@ -233,12 +236,10 @@ CIN      BTST.B #RDRF,ACIAC.L
          
 WOUT      BTST.B #TXRDY,DATA_CTL.L
           BEQ.S  WRTS1
-          MOVE.B D0,DATA_TX.L
           
+          MOVE.B D0,DATA_TX.L 
           BSET.B #TXVL,DATA_CTL.L
           
-WCHK      BTST.B #TXRDY,DATA_CTL.L
-          BNE.S  WCHK
           
 WRTS1    BCLR.B #TXVL,DATA_CTL.L 
          RTS
@@ -249,14 +250,6 @@ WIN      BTST.B #RXVLD,DATA_CTL.L
          BSET.B #RXRDY,DATA_CTL.L
          MOVE.B DATA_RX.L,D0
          BCLR.B #RXRDY,DATA_CTL.L
-         
-*         ADD.L #1, D1
-*         
-*         CMP #$2000,D1
-*         BNE WRTS2
-*         
-*         MOVE.L #0, D1
-*         MOVE.B #$63,D0
          
          BSR COUT
 
