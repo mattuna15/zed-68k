@@ -148,7 +148,7 @@ end component;
    signal   axis_rx_data : std_logic_vector(7 downto 0); --Receive data
    signal  axis_rx_valid : std_logic; --Receive data valid
    signal  axis_rx_ready : std_logic; --Receive data ready
-   signal  eth_state: std_logic_vector(1 downto 0);
+   signal  eth_state: std_logic_vector(2 downto 0);
    
    signal  fifo_rx_data : std_logic_vector(7 downto 0); --Receive data
    signal  fifo_rx_valid : std_logic; --Receive data valid
@@ -170,6 +170,14 @@ end component;
    signal cpu_eth_rx_ready : std_logic;
    signal eth_rx_first : std_logic :='1';
    signal eth_tx_first : std_logic :='1';
+   
+   
+   attribute dont_touch : string;
+
+   attribute dont_touch of rx_proc : label is "true";
+   attribute dont_touch of rx_register : label is "true";
+   attribute dont_touch of tx_proc : label is "true";
+   attribute dont_touch of tx_register : label is "true";
 
 begin
 
@@ -211,33 +219,41 @@ begin
     if rising_edge(eth_clk) then
     
     case eth_state is
-    when "00" =>
+    when "000" => -- idle
         eth_ack_rx <= '0';
-        if cpu_eth_rx_ready = '1' and reg_rx_valid = '1' then
-            if eth_rx_first = '0' then
-                reg_rx_ready <= '1';
-            else 
-                eth_rx_first <= '0';
-            end if;
-                
-            eth_state <= "01";
+        if reg_rx_valid = '1' then 
+            eth_state <= "001";
         else
-            if reg_rx_valid = '0' then
-                eth_rx_first <= '1';
-            end if;
-            reg_rx_ready <= '0';
+            eth_rx_first <= '1';
         end if;
-    when "01" =>
-        eth_data_out <= reg_rx_data;
-        reg_rx_ready <= '0';
-        eth_ack_rx <= '1';
-        if cpu_eth_rx_ready = '0' then
-            eth_state <= "10";
-        END IF;
-    when others =>
-        eth_ack_rx <= '0';
-        eth_state <= "00";
-    end case;
+    when "001" => --valid rx on dataout
+        if eth_rx_first <= '1' then
+            eth_rx_first <= '0';
+            eth_state <= "010"; -- valid first
+        else
+            eth_state <= "100"; -- not first so get next valid char.
+        end if;
+    when "010" => -- valid first char - it is first and valid so wait until cpu wants it
+        if cpu_eth_rx_ready = '1' then
+            eth_data_out <= reg_rx_data; -- data out
+            eth_ack_rx <= '1'; --ack data to cpu
+            eth_state <= "011";
+        end if;
+    when "011" => -- either need new char or next char
+            if cpu_eth_rx_ready = '0' then -- wait until cpu finished with data
+                eth_ack_rx <= '0'; --don't ack data to cpu
+                eth_state <= "100";
+            end if;
+    when "100" => -- next char
+            if reg_rx_valid = '1' then
+                reg_rx_ready <= '1';
+            end if;
+            eth_state <= "110";
+    when others => --next char should be ready (if valid)
+            reg_rx_ready <= '0';
+            eth_rx_first <= '1';
+            eth_state <= "000";
+    end case;     
                 
     end if;
 

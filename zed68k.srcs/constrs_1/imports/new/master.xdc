@@ -385,8 +385,3 @@ set_property PACKAGE_PIN K6 [get_ports ddr3_reset_n]
 set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 #Internal VREF
 
-
-
-
-
-

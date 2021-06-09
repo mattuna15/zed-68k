@@ -76,6 +76,20 @@ BS      EQU 8
 RS      EQU $1E
 ESC     EQU $1B
 
+DATA_TX EQU $F40041
+DATA_RX EQU $F40043
+DATA_CTL EQU $F40045
+
+* TCP0_TxValid    => eth_ctl(6), --Transmit data valid
+*        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
+*        TCP0_RxValid    => eth_ctl(2), --Receive data valid
+*        TCP0_RxReady    => eth_ctl(5)  --Receive data ready
+
+TXVL EQU 6
+TXRDY EQU 3
+RXVLD EQU 2
+RXRDY EQU 5
+
 SUPER_STACK   EQU $DF0000   ; SUPER STACK TOP Address
 RAMBASE_INIT  EQU $DF0000   
 
@@ -1599,6 +1613,7 @@ MAIN MOVE.W #INT_OFF,SR  ; INTERRUPT OFF, SUPERVISOR MODE SET
       BSR SCROLL            ; NEW LINE
 
       BSR CLEAR_MON_RAM     ; Initialize 1Kbyte from RAMBASE with 0.
+      
 
       LEA.L TITLE1.L,A3     ; print START MESSAGE
       BSR PSTR
@@ -1612,7 +1627,11 @@ MAIN MOVE.W #INT_OFF,SR  ; INTERRUPT OFF, SUPERVISOR MODE SET
       MOVE.W D0,USER_SR(A6) 
 
       CLR.L FLAG(A6)         ; CLEAR SYSTEM MONITOR FLAG
-      MOVE.W #INT_ON,SR       ; ON INTERRUPT, SUPERVISOR MODE SET
+      
+      MOVE.L #SUPER_STACK+USER_STACK, $0000
+      MOVE.L #RAM+$400, $0004
+      
+      MOVE.W #INT_ON,SR       ; ON INTcoutERRUPT, SUPERVISOR MODE SET
 
 loop  BSR SEND_PROMPT
       BSR CIN
@@ -1732,23 +1751,51 @@ INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
            MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
            RTS
 
-COUT      BTST.B #TDRE,ACIAC.L
+COUT      BTST.B #TXRDY,DATA_CTL.L
           BEQ.S  COUT
-          MOVE.B D0,ACIAD.L
+          
+          MOVE.B D0,DATA_TX.L 
+          BSET.B #TXVL,DATA_CTL.L
+WRTS1     BCLR.B #TXVL,DATA_CTL.L 
           RTS
 
-
-CINS      BTST.B #RDRF,ACIA2C.L
-          BEQ.S  CINS
-          MOVE.B ACIA2D.L,D0
-          RTS
-
-
-CIN      BTST.B #RDRF,ACIAC.L
+CIN      BTST.B #RXVLD,DATA_CTL.L
          BEQ.S  CIN
-         MOVE.B ACIAD.L,D0
+
+         BSET.B #RXRDY,DATA_CTL.L
+         MOVE.B DATA_RX.L,D0
+         BCLR.B #RXRDY,DATA_CTL.L
+         
          BSR COUT
-         RTS
+
+WRTS2    RTS
+
+CINS     BTST.B #RXVLD,DATA_CTL.L
+         BEQ.S  CINS
+         
+         BSET.B #RXRDY,DATA_CTL.L
+         MOVE.B DATA_RX.L,D0
+         BCLR.B #RXRDY,DATA_CTL.L
+         
+WRTS3    RTS
+
+*COUT      BTST.B #TDRE,ACIAC.L
+*          BEQ.S  COUT
+*          MOVE.B D0,ACIAD.L
+*          RTS
+*
+*
+*CINS      BTST.B #RDRF,ACIA2C.L
+*          BEQ.S  CINS
+*          MOVE.B ACIA2D.L,D0
+*          RTS
+*
+*
+*CIN      BTST.B #RDRF,ACIAC.L
+*         BEQ.S  CIN
+*         MOVE.B ACIAD.L,D0
+*         BSR COUT
+*         RTS
 
 	ENDC
 
@@ -1912,6 +1959,9 @@ CHECK_ESC       CMP.B #ESC,D0
 
 
 GET_TYPE        BSR CINS
+                CMP.B #'9',D0
+                BEQ WAIT_CR
+                
                 CMP.B #'8',D0
                 BNE CHECK_START
 
@@ -2742,6 +2792,13 @@ SERVICE_TRAP0   ;MOVE.B ACIA2D.L,D0
                 MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
 
                 JMP LOOP.L        ; GET BACK MONITOR
+                
+                
+SERVICE_TRAP14  MOVE.B #$61,D0
+                BSR COUT
+                MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
+
+                JMP LOOP.L        ; GET BACK MONITOR           
 
 
 ; DISASSEMBLE THE MACHNIE CODE INTO MNEMONIC
@@ -3044,7 +3101,7 @@ VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_TRAP0    ; 43 TRAP #11
           DC.L  SERVICE_TRAP0    ; 44 TRAP #12
           DC.L  SERVICE_TRAP0    ; 45 TRAP #13
-          DC.L  SERVICE_TRAP0    ; 46 TRAP #14
+          DC.L  SERVICE_TRAP14    ; 46 TRAP #14
           DC.L  SERVICE_TRAP0    ; 47 TRAP #15
 ;----------------------- STRING CONSTANT -------------------------------------
 
@@ -3069,7 +3126,7 @@ QUICK  DC.B 'uick home, get back to start of RAM!',13,10,0
 HEX    DC.B 'ex dump memory',13,10,10
        DC.B 'ADDRESS  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F',0
 
-LOAD   DC.B 'oad Motorola s-record (accept s1,s2 and s8) quit: ESC',13,10,0
+LOAD   DC.B 'oad Motorola s-record (accept s1,s2,s8 and s9) quit: ESC',13,10,0
 
 NUMBER DC.B ' bytes loaded, ',0
 ERROR  DC.B ' records checksum error',13,10,0
@@ -3162,6 +3219,7 @@ USER_STACK  EQU  STACK_AREA+$FF00    ; TOP OF STACK
 
 
        END	MAIN
+
 
 
 

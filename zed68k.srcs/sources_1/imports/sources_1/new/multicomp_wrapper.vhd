@@ -542,51 +542,51 @@ sdcard: entity work.sd_controller
 );
 
 
---uarts
-    io_serial_term_tx: serial_wrapper 
-        port map (
-        sys_clk => sys_clock,
-        tx_data => serialTermTxData,
-        tx_wr_en => serialTermTxWrite_en,
-        cts => open,
-        rts => open,
-        reset_n => sys_resetn,
-        txd => uart_rxd_out,
-        tx_send_active => serialTermTxActive
-  );
+--uarts (not needed
+--    io_serial_term_tx: serial_wrapper 
+--        port map (
+--        sys_clk => sys_clock,
+--        tx_data => serialTermTxData,
+--        tx_wr_en => serialTermTxWrite_en,
+--        cts => open,
+--        rts => open,
+--        reset_n => sys_resetn,
+--        txd => uart_rxd_out,
+--        tx_send_active => serialTermTxActive
+--  );
   
-  --gd_uart_txd_out <= uart_rxd_out;
+--  --gd_uart_txd_out <= uart_rxd_out;
   
-  io_serial_term_rx : entity work.design_1_wrapper
-    port map (
-      LED => open,
-      rd_en => serialTermRead_en,
-      m68_rxd => serialTermRxData,
-      rd_clk => sys_clock,
-      reset_n => sys_resetn,
-      rxd1 => uart_txd_in,
-      rd_data_cnt(8 downto 1) => rx_count,
-      rd_data_cnt(0) => rx_data_trigger,
-      clk100_i => sys_clock,
-      cts => open,
-      rts => open
-    );  
+--  io_serial_term_rx : entity work.design_1_wrapper
+--    port map (
+--      LED => open,
+--      rd_en => serialTermRead_en,
+--      m68_rxd => serialTermRxData,
+--      rd_clk => sys_clock,
+--      reset_n => sys_resetn,
+--      rxd1 => uart_txd_in,
+--      rd_data_cnt(8 downto 1) => rx_count,
+--      rd_data_cnt(0) => rx_data_trigger,
+--      clk100_i => sys_clock,
+--      cts => open,
+--      rts => open
+--    );  
 
 
-    io_serial_load : design_1_wrapper
-    port map (
-      LED => open,
-      rd_en => serialRead_en,
-      m68_rxd => serialData,
-      rd_clk => sys_clock,
-      reset_n => sys_resetn,
-      rxd1 => rxd2,
-      rd_data_cnt(8 downto 1) => count,
-      rd_data_cnt(0) => data_trigger,
-      clk100_i => sys_clock,
-      cts => open,
-      rts => open
-    );  
+--    io_serial_load : design_1_wrapper
+--    port map (
+--      LED => open,
+--      rd_en => serialRead_en,
+--      m68_rxd => serialData,
+--      rd_clk => sys_clock,
+--      reset_n => sys_resetn,
+--      rxd1 => rxd2,
+--      rd_data_cnt(8 downto 1) => count,
+--      rd_data_cnt(0) => data_trigger,
+--      clk100_i => sys_clock,
+--      cts => open,
+--      rts => open
+--    );  
     
     -- memory
     
