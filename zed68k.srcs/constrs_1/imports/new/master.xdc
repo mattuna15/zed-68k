@@ -42,15 +42,19 @@ set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports {led[3]}]
 #set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { btn[2] }]; #IO_L11N_T1_SRCC_16 Sch=btn[2]
 #set_property -dict { PACKAGE_PIN B8    IOSTANDARD LVCMOS33 } [get_ports { btn[3] }]; #IO_L12P_T1_MRCC_16 Sch=btn[3]
 
-# Pmod Header JA
-#Pin 1 RTS
-#Pin 2 RXD
-#Pin 3 TXD
-#Pin 4 CTS
+## Pmod Header JA
+set_property -dict {PACKAGE_PIN G13 IOSTANDARD LVCMOS33} [get_ports eth_cs]
+set_property -dict {PACKAGE_PIN B11 IOSTANDARD LVCMOS33} [get_ports eth_mosi]
+set_property -dict {PACKAGE_PIN A11 IOSTANDARD LVCMOS33} [get_ports eth_miso]
+set_property -dict {PACKAGE_PIN D12 IOSTANDARD LVCMOS33} [get_ports eth_sclk]
+set_property -dict {PACKAGE_PIN D13 IOSTANDARD LVCMOS33} [get_ports eth_spisel]
 
-#set_property -dict {PACKAGE_PIN G13 IOSTANDARD LVCMOS33} [get_ports cts2]
-set_property -dict {PACKAGE_PIN A11 IOSTANDARD LVCMOS33} [get_ports rxd2]
-#set_property -dict {PACKAGE_PIN D12 IOSTANDARD LVCMOS33} [get_ports rts2]
+set_property PULLUP true [get_ports eth_spisel]
+
+#set_property -dict { PACKAGE_PIN B18   IOSTANDARD LVCMOS33 } [get_ports { ja[5] }]; #IO_L10P_T1_AD11P_15 Sch=ja[8]
+#set_property -dict { PACKAGE_PIN A18   IOSTANDARD LVCMOS33 } [get_ports { ja[6] }]; #IO_L10N_T1_AD11N_15 Sch=ja[9]
+#set_property -dict { PACKAGE_PIN K16   IOSTANDARD LVCMOS33 } [get_ports { ja[7] }]; #IO_25_15 Sch=ja[10]
+
 
 
 #1 RTS / SS	UART Request to Send / SPI Slave Select

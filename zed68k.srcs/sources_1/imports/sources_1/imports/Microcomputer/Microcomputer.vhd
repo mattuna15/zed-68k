@@ -24,21 +24,7 @@ entity Microcomputer is
 	    sys_clk     : in std_logic;
 		n_reset		: in std_logic;
 		cpu_as      : out std_logic; -- Address strobe
-		
--- terminal
 
-        serialTerminalStatus: in std_logic_vector(7 downto 0);
-        
-		rx_serialRead_en : out std_logic;
-        serialRxData: in std_logic_vector(7 downto 0);
-        
-        tx_serialWrite_en : out std_logic;
-        serialTxData: out std_logic_vector(7 downto 0);
-
--- srec		
-		serialRead_en : out std_logic;
-        serialStatus: in std_logic_vector(7 downto 0);
-        serialData: in std_logic_vector(7 downto 0);
         
         
               -- RAM interface
@@ -69,20 +55,31 @@ entity Microcomputer is
     
         sdAddress: out std_logic_vector(31 downto 0); --f30000-2
         
-        -- ethernet
+        -- ethernet terminal
 
         eth_data_out : inout std_logic_vector(7 downto 0);
         eth_data_in : inout std_logic_vector(7 downto 0);
         eth_ctl : inout std_logic_vector(7 downto 0);
         eth_tx_free : in std_logic_vector(15 downto 0);
         eth_rx_count : in std_logic_vector(15 downto 0);
+        eth_ack_rx : in std_logic;
+        eth_intr : in std_logic;
         
+        --eth spi
+        eth_spi_ctrl : inout std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+        eth_spi_DataIn :  inout std_logic_vector(7 downto 0);
+        eth_spi_DataOut : inout std_logic_vector(7 downto 0);
+        
+        --sound
         opl3_ctl : inout std_logic_vector(7 downto 0);
         opl3_DataOut : inout std_logic_vector(7 downto 0);
+        
+        --keyboard
         ps2_clock : inout std_logic;
         ps2_data : inout std_logic;
-        clk50 :in std_logic;
-        eth_ack_rx : in std_logic
+        
+        clk50 :in std_logic
+
         
 	);
 	
@@ -91,7 +88,6 @@ end Microcomputer;
 architecture struct of Microcomputer is
 
     signal monRomData					: std_logic_vector(15 downto 0);
-
 	signal n_externalRamCS			: std_logic :='1';
 	
     signal keybCS			: std_logic;
@@ -124,7 +120,6 @@ architecture struct of Microcomputer is
     
 	signal	timer_int :  std_logic;
 	signal	ps2_int :  std_logic;
-	signal	spi_int :  std_logic;
 
 	signal timerCS : std_logic;
 	signal timerDataOut : std_logic_vector(7 downto 0);
@@ -166,9 +161,9 @@ begin
 --	port map (
 --		clk => sys_clk,
 --		reset => n_reset,
---		int1 => serialTerminalStatus(0),
---		int2 => ps2_int,
---		int3 => '0',
+--		int1 => new_key,
+--		int2 => timer_int,
+--		int3 => eth_intr,
 --		int4 => '0',
 --		int5 => '0',
 --	    int6 => '0',
@@ -228,10 +223,6 @@ timer: entity work.timer
 
 -- keyboard
 
---    signal keybCS			: std_logic :='1';
---    signal keybDataOut      : std_logic_vector(7 downto 0);
---    signal new_key			: std_logic :='1';
---    signal ps2_asc      : std_logic_vector(6 downto 0);
     
 keyboard: entity work.keyboard 
    port map (
@@ -272,7 +263,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => "111", --int_out,	-- For this simple demo we'll ignore interrupts
+		IPL => "111",-- int_out,	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
@@ -324,12 +315,6 @@ cpu1 : entity work.TG68
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; --E00000-E0FFFF
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; 
 
---terminal
-tx_serialWrite_en <= '1' when cpuAddress = X"f0000b"  and cpu_r_w = '0' and cpu_lds = '0' else '0';
-rx_serialRead_en <= '1' when cpuAddress = X"f0000b" and cpu_r_w = '1' and cpu_lds = '0'  else '0';
-
--- srec
-serialRead_en <= '1' when cpuAddress = X"f2000b" else '0'; -- f200000
 
 --periph
 timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress < x"f30040" else '0';           
@@ -343,9 +328,6 @@ ram_ub <= cpu_uds;
 ram_lb <= cpu_lds;
 ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
 
---terminal
-serialTxData <= cpuDataOut(7 downto 0) when tx_serialWrite_en = '1';
-
 -- spi
 
 spi_ctrl(4)     <= cpuDataOut(4) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0';  --cont                  
@@ -358,6 +340,11 @@ gd_daz_sel <= not spi_ctrl(2);
 
 opl3_ctl(5 downto 0) <= cpuDataout(5 downto 0) when (cpuAddress = X"f40010" or cpuAddress = X"f40011") and cpu_lds = '0' and cpu_r_w = '0'; 
 opl3_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f40012" or cpuAddress = X"f40013") and cpu_lds = '0' and cpu_r_w = '0'; 
+
+eth_spi_ctrl(1 downto 0) <= cpuDataout(1 downto 0) when (cpuAddress = X"f60008" or cpuAddress = X"f60009") and cpu_lds = '0' and cpu_r_w = '0'; 
+eth_spi_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f6000a" or cpuAddress = X"f6000b") and cpu_lds = '0' and cpu_r_w = '0'; 
+
+
 
 -- timer
 timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
@@ -431,23 +418,21 @@ when n_basRom2CS = '0' else
 "00000" & cpuAddress(3 downto 1)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' else 
 r_Vec(vecAddress)(7 downto 0)
-when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else
-serialStatus
-when cpuAddress = x"f20009" else
-serialData 
-when serialRead_en = '1' else 
-serialTerminalStatus
-when cpuAddress = x"f00009" else
-serialRxData 
-when rx_serialRead_en = '1' else 
+when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else 
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"E00000" else
 milliseconds(23 downto 16)
 when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
 milliseconds(7 downto 0)
 when timerCS = '1' and (cpuAddress = X"f30032" or cpuAddress = X"f30033") and cpu_r_w ='1' and cpu_lds = '0' else
+eth_spi_DataIn
+when (cpuAddress = X"F6000C" or cpuAddress = X"F6000D") and cpu_r_w = '1' and cpu_lds = '0' else
+eth_spi_DataOut
+when (cpuAddress = X"F6000A" or cpuAddress = X"F6000B") and cpu_r_w = '1' and cpu_lds = '0' else
+eth_spi_ctrl
+when (cpuAddress = X"F60008" or cpuAddress = X"F60009") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_DataIn
-when (cpuAddress = X"F4000C" or cpuAddress = X"F4000D") and cpu_r_w = '1' and cpu_lds = '0' else
+when (cpuAddress = X"F6000C" or cpuAddress = X"F6000D") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_DataOut
 when (cpuAddress = X"F4000A" or cpuAddress = X"F4000B") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_ctrl

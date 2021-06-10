@@ -55,7 +55,15 @@ Port (
     eth_tx_clk : in STD_LOGIC;
     eth_tx_en : out STD_LOGIC;
     eth_txd : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    eth_ref_clk : out STD_LOGIC
+    eth_ref_clk : out STD_LOGIC;
+    
+    eth_intr : out STD_LOGIC;
+            --SPI/Boot Control
+        SPI_CSn         : out std_logic; --Chip select
+        SPI_SCK         : out std_logic; --Serial clock
+        SPI_MOSI        : out std_logic; --Master out slave in
+        SPI_MISO        : in  std_logic --Master in slave out
+
 
  );
 end ethernet;
@@ -210,6 +218,7 @@ port map (
 	
 	cpu_eth_rx_ready <= eth_ctl(5);
     eth_ctl(2) <= reg_rx_valid;
+    
 
 
 rx_proc: process(eth_clk)
@@ -217,6 +226,7 @@ rx_proc: process(eth_clk)
 begin
 
     if rising_edge(eth_clk) then
+    
     
     case eth_state is
     when "000" => -- idle
@@ -228,12 +238,14 @@ begin
         end if;
     when "001" => --valid rx on dataout
         if eth_rx_first <= '1' then
+            eth_intr <= '1';
             eth_rx_first <= '0';
             eth_state <= "010"; -- valid first
         else
             eth_state <= "100"; -- not first so get next valid char.
         end if;
     when "010" => -- valid first char - it is first and valid so wait until cpu wants it
+        eth_intr <= '0';
         if cpu_eth_rx_ready = '1' then
             eth_data_out <= reg_rx_data; -- data out
             eth_ack_rx <= '1'; --ack data to cpu
@@ -321,10 +333,10 @@ end process;
         MII_MDIO       => eth_mdio, --Management data
 
         --SPI/Boot Control
-        SPI_CSn         => open,
-        SPI_SCK         => open, --qspi_sck, --??qspi_sck,
-        SPI_MOSI        => open, --qspi_dq(0),
-        SPI_MISO        => '0', --qspi_dq(1),
+        SPI_CSn         => SPI_CSn,
+        SPI_SCK         => SPI_SCK, --qspi_sck, --??qspi_sck,
+        SPI_MOSI        => SPI_MOSI, --qspi_dq(0),
+        SPI_MISO        => SPI_MISO, --qspi_dq(1),
        
         --Logic Analyzer
         LA0_TrigIn     => '0',

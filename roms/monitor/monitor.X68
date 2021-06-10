@@ -43,8 +43,8 @@ SV\@  DS      0
       ENDM
 
 ; Use EASy68k Simulator
-;EASY68K_SIM	EQU 0		; set 0 to use ACIA1
-EASY68K_SIM	EQU 1		; set 1 to use EASy68K Sim68K I/O  
+EASY68K_SIM	EQU 0		; set 0 to use ACIA1
+;EASY68K_SIM	EQU 1		; set 1 to use EASy68K Sim68K I/O  
 
 BIT_ESC      EQU 0              ; ESC BIT POSITION
 RAM      EQU $000000            ; RAM START ADDRESS
@@ -3219,6 +3219,7 @@ USER_STACK  EQU  STACK_AREA+$FF00    ; TOP OF STACK
 
 
        END	MAIN
+
 
 
 

@@ -120,31 +120,20 @@ port(
             -- SPI Flash Mem
      qspi_cs         : out std_logic;        
      qspi_dq         : inout std_logic_vector(3 downto 0);   -- dg(0) is MOSI, dq(1) MISO
-     qspi_sck        : out std_logic
+     qspi_sck        : out std_logic;
+     
+     eth_cs : out std_logic;
+     eth_mosi : out std_logic;
+     eth_miso : in std_logic;
+     eth_sclk : out std_logic;
+     eth_spisel : out std_logic
+      
 	);
 end multicomp_wrapper;
 
 architecture Behavioral of multicomp_wrapper is
 
     signal boot_rom : std_logic := '1';
-    
-   
-    --serial term
-    signal serialTermStatus: std_logic_vector(7 downto 0) := x"00"; 
-    signal serialTermRxData: std_logic_vector(7 downto 0) := x"00";
-    signal serialTermRead_en: std_logic := '0';
-    signal serialTermTxData: std_logic_vector(7 downto 0) := x"00";
-    signal serialTermTxActive : std_logic := '0';
-    signal serialTermTxWrite_en: std_logic;
-    signal rx_count: std_logic_vector( 7 downto 0) := x"00";
-    signal rx_data_trigger: std_logic := '0';
-    
-    --serial s-rec
-    signal serialStatus: std_logic_vector(7 downto 0) := x"00"; 
-    signal serialData: std_logic_vector(7 downto 0) := x"00";
-    signal serialRead_en: std_logic := '0';
-    signal count: std_logic_vector( 7 downto 0) := x"00";
-    signal data_trigger: std_logic := '0';
 
    -- RAM interface
 
@@ -214,12 +203,52 @@ architecture Behavioral of multicomp_wrapper is
     signal eth_clk :std_logic;
     signal eth_tx_free : std_logic_vector(15 downto 0);
     signal eth_rx_count : std_logic_vector(15 downto 0);
+    signal eth_intr : std_logic;
     
     signal opl3_ctl :std_logic_vector(7 downto 0);
     signal opl3_DataOut : std_logic_vector(7 downto 0);
     
+            --eth spi
+    signal    eth_spi_ctrl :  std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+    signal    eth_spi_DataIn :   std_logic_vector(7 downto 0);
+    signal    eth_spi_DataOut :  std_logic_vector(7 downto 0);
+    
    -- components
     
+component ethernet is
+Port (
+    eth_clk : in std_logic;
+    sys_resetn : in std_logic;
+    
+    --cpu data
+    eth_data_in : in std_logic_vector(7 downto 0);
+    eth_data_out : out std_logic_vector(7 downto 0);
+    eth_ctl : inout std_logic_vector(7 downto 0);
+    eth_ack_rx: out std_logic;
+    
+    --phy
+    eth_mdc : out STD_LOGIC;
+    eth_mdio : inout STD_LOGIC;
+    eth_col : in STD_LOGIC;
+    eth_crs : in STD_LOGIC;
+    eth_rstn : out STD_LOGIC;
+    eth_rx_clk : in STD_LOGIC;
+    eth_rx_dv : in STD_LOGIC;
+    eth_rxerr : in STD_LOGIC;
+    eth_rxd : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    eth_tx_clk : in STD_LOGIC;
+    eth_tx_en : out STD_LOGIC;
+    eth_txd : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    eth_ref_clk : out STD_LOGIC;
+            --SPI/Boot Control
+        SPI_CSn         : out std_logic; --Chip select
+        SPI_SCK         : out std_logic; --Serial clock
+        SPI_MOSI        : out std_logic; --Master out slave in
+        SPI_MISO        : in  std_logic; --Master in slave out
+    eth_intr : out STD_LOGIC
+
+ );
+end component;
     
     component pll
     port ( 
@@ -272,35 +301,6 @@ architecture Behavioral of multicomp_wrapper is
       init_calib_complete :out std_logic
     );
     end component;
-    
-  component design_1_wrapper
-  port (
-    LED : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    clk100_i : in STD_LOGIC;
-    cts : out STD_LOGIC;
-    m68_rxd : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    rd_clk : in STD_LOGIC;
-    rd_data_cnt : out STD_LOGIC_VECTOR ( 8 downto 0 );
-    rd_en : in STD_LOGIC;
-    reset_n : in STD_LOGIC;
-    rts : out STD_LOGIC;
-    rxd1 : in STD_LOGIC
-  );
-end component;
-    
-    
-component serial_wrapper is
-  port (
-    cts : out STD_LOGIC;
-    reset_n : in STD_LOGIC;
-    rts : out STD_LOGIC;
-    sys_clk : in STD_LOGIC;
-    tx_data : in STD_LOGIC_VECTOR ( 7 downto 0 );
-    tx_send_active : out STD_LOGIC;
-    tx_wr_en : in STD_LOGIC;
-    txd : out STD_LOGIC
-  );
-end component;
 
 attribute dont_touch : string;
 
@@ -316,6 +316,8 @@ begin
    --------------------------------------------------
    -- Instantiate Clock generation
    --------------------------------------------------
+   
+    eth_spisel <= '1';
        
     pll1:  pll
     port map (
@@ -387,20 +389,7 @@ end process;
         
         sys_clk => sys_clock,
         n_reset	=> sys_resetn,
-		
-		--srec
-	    serialRead_en => serialRead_en,
-		serialStatus => serialStatus,
-		serialData => serialData,
-		
-		--terminal
 
-        serialTerminalStatus => serialTermStatus,
-        rx_serialRead_en => serialTermRead_en,
-        serialRxData => serialTermRxData,
-        tx_serialWrite_en => serialTermTxWrite_en,
-        serialTxData => serialTermTxData,
-		
 		                  -- RAM interface
       ram_a                => cpuAddress,
       ram_dq_i             => cpuDataOut(15 downto 0),
@@ -441,8 +430,15 @@ end process;
         ps2_clock => ps2_clock,
         ps2_data => ps2_data,
         clk50 => clk50,
+        
         eth_tx_free => eth_tx_free,
-        eth_rx_count => eth_rx_count
+        eth_rx_count => eth_rx_count,
+        eth_intr => eth_intr,
+        
+                --eth spi
+        eth_spi_ctrl => eth_spi_ctrl,
+        eth_spi_DataIn => eth_spi_DataIn,
+        eth_spi_DataOut => eth_spi_DataOut
         
     );
     
@@ -468,6 +464,24 @@ end process;
       spi_miso_i => gd_miso        -- sd_dat_io(0)
    );
    
+  eth_spi: entity work.spi_master 
+  PORT map (
+      clk_i      => sys_clock,
+      rst_i      => not sys_resetn, 
+
+      -- CPU interface
+      valid_i    => eth_spi_ctrl(0),
+      ready_o    => eth_spi_ctrl(7),
+      data_i     => eth_spi_DataOut,
+      data_o     => eth_spi_DataIn,
+
+      -- Connect to SD card
+      spi_sclk_o => eth_sclk,       -- sd_sck_io
+      spi_mosi_o => eth_mosi,       -- sd_cmd_io
+      spi_miso_i => eth_miso      -- sd_dat_io(0)
+   );
+   
+   eth_cs <= not eth_spi_ctrl(1);
     
     opl3_spi: entity work.spi_master 
   PORT map (
@@ -495,9 +509,7 @@ end process;
       -- sd
       
       sd_rden <= sdControl(2);
-      sd_wren <= sdControl(3);
-      led(2) <= sdStatus(5); -- drive led
-       
+      sd_wren <= sdControl(3);       
        --spi mode please.
          
        SD_DAT1 <= '1';
@@ -540,53 +552,6 @@ sdcard: entity work.sd_controller
 	sd_type => sdStatus(7 downto 6),	-- Card status (see above)
 	sd_fsm => open -- FSM state (see block at end of file)
 );
-
-
---uarts (not needed
---    io_serial_term_tx: serial_wrapper 
---        port map (
---        sys_clk => sys_clock,
---        tx_data => serialTermTxData,
---        tx_wr_en => serialTermTxWrite_en,
---        cts => open,
---        rts => open,
---        reset_n => sys_resetn,
---        txd => uart_rxd_out,
---        tx_send_active => serialTermTxActive
---  );
-  
---  --gd_uart_txd_out <= uart_rxd_out;
-  
---  io_serial_term_rx : entity work.design_1_wrapper
---    port map (
---      LED => open,
---      rd_en => serialTermRead_en,
---      m68_rxd => serialTermRxData,
---      rd_clk => sys_clock,
---      reset_n => sys_resetn,
---      rxd1 => uart_txd_in,
---      rd_data_cnt(8 downto 1) => rx_count,
---      rd_data_cnt(0) => rx_data_trigger,
---      clk100_i => sys_clock,
---      cts => open,
---      rts => open
---    );  
-
-
---    io_serial_load : design_1_wrapper
---    port map (
---      LED => open,
---      rd_en => serialRead_en,
---      m68_rxd => serialData,
---      rd_clk => sys_clock,
---      reset_n => sys_resetn,
---      rxd1 => rxd2,
---      rd_data_cnt(8 downto 1) => count,
---      rd_data_cnt(0) => data_trigger,
---      clk100_i => sys_clock,
---      cts => open,
---      rts => open
---    );  
     
     -- memory
     
@@ -653,8 +618,8 @@ sdcard: entity work.sd_controller
     );
     
 -- ethernet
-ethernet: entity work.ethernet 
-Port map (
+ethernet_FSM: ethernet 
+Port map ( 
     eth_clk => eth_clk,
     sys_resetn => sys_resetn,
     
@@ -677,10 +642,14 @@ Port map (
     eth_tx_clk => eth_tx_clk,
     eth_tx_en => eth_tx_en,
     eth_txd => eth_txd,
-    eth_ref_clk  => eth_ref_clk
-
+    eth_ref_clk  => eth_ref_clk,
+    --SPI/Boot Control
+        SPI_CSn         => open, --qspi_cs,
+        SPI_SCK         => open, --qspi_sck, --??qspi_sck,
+        SPI_MOSI        => open, --qspi_dq(0),
+        SPI_MISO        => '0', --qspi_dq(1),
+    eth_intr => eth_intr
  );
-
 
     --opl
     
@@ -692,8 +661,5 @@ Port map (
     
     
    led(0) <= mem_ready;
-   serialTermStatus(0) <= '1' when rx_count > x"00" else '0';
-   serialTermStatus(1) <= '1' when serialTermTxActive = '0' else '0';
-   serialStatus(0) <= '1' when count > x"00" else '0';
 
 end Behavioral;
