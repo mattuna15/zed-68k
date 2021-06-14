@@ -213,6 +213,12 @@ architecture Behavioral of multicomp_wrapper is
     signal    eth_spi_DataIn :   std_logic_vector(7 downto 0);
     signal    eth_spi_DataOut :  std_logic_vector(7 downto 0);
     
+    signal ps2k_clk_in: std_logic;
+	signal ps2k_dat_in : std_logic;
+	signal ps2k_clk_out : std_logic;
+	signal ps2k_dat_out : std_logic;
+
+    
    -- components
     
 component ethernet is
@@ -427,9 +433,6 @@ end process;
         
         opl3_ctl => opl3_ctl,
         opl3_DataOut => opl3_DataOut,
-        ps2_clock => ps2_clock,
-        ps2_data => ps2_data,
-        clk50 => clk50,
         
         eth_tx_free => eth_tx_free,
         eth_rx_count => eth_rx_count,
@@ -438,8 +441,38 @@ end process;
                 --eth spi
         eth_spi_ctrl => eth_spi_ctrl,
         eth_spi_DataIn => eth_spi_DataIn,
-        eth_spi_DataOut => eth_spi_DataOut
+        eth_spi_DataOut => eth_spi_DataOut,
         
+        --ps2
+        ps2k_clk_in => ps2k_clk_in,
+		ps2k_dat_in => ps2k_dat_in,
+		ps2k_clk_out => ps2k_clk_out,
+		ps2k_dat_out => ps2k_dat_out,
+		ps2m_clk_in => '0',
+		ps2m_dat_in => '0',
+		ps2m_clk_out => open,
+		ps2m_dat_out => open
+    );
+    
+    ps2switch: entity work.PS2Switch
+    port map (
+        mode_s => '0',
+        -- keyboard ps/2 block
+        kbd_clk_in  => ps2k_clk_out,
+        kbd_clk_out  => ps2k_clk_in,
+        kbd_data_in => ps2k_dat_out,
+        kbd_data_out => ps2k_dat_in,
+        -- mouse ps/2 block
+        mouse_clk_in   => '0',
+        mouse_clk_out  => open,
+        mouse_data_in  => '0',
+        mouse_data_out => open,
+        --port A
+        prtA_clk  => ps2_clock,
+        prtA_data => ps2_data,
+        --port B
+        prtB_clk  => open,
+        prtB_data => open
     );
     
     sda_pup <= '1';

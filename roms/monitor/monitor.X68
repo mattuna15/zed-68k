@@ -3067,6 +3067,12 @@ VECINIT2  MOVE.L    (a0)+,(a1)+
           MOVE.L    #RAMBASE_INIT,(a1)
           RTS
 
+PS2INT
+          RTS
+          
+TIMERINT    
+          RTS
+          
 ;----------------- M68000 EXCEPTION VECTOR TABLE -----------------------------
 VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_ADDRESSERR   ; 3 Address error
@@ -3080,8 +3086,8 @@ VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_TRAP0    ; 11 Line 1111 emulator
 
           DC.L  SERVICE_TRAP0    ; 24 Spurious Interupt
-          DC.L  SERVICE_TRAP0    ; 25 LEVEL 1 Interupt autovector
-          DC.L  SERVICE_TRAP0    ; 26 LEVEL 2 Interupt autovector
+          DC.L  PS2INT              ; 25 LEVEL 1 Interupt autovector
+          DC.L  TIMERINT            ; 26 LEVEL 2 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 27 LEVEL 3 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 28 LEVEL 4 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 29 LEVEL 5 Interupt autovector
@@ -3219,6 +3225,7 @@ USER_STACK  EQU  STACK_AREA+$FF00    ; TOP OF STACK
 
 
        END	MAIN
+
 
 
 

@@ -74,13 +74,16 @@ entity Microcomputer is
         opl3_ctl : inout std_logic_vector(7 downto 0);
         opl3_DataOut : inout std_logic_vector(7 downto 0);
         
-        --keyboard
-        ps2_clock : inout std_logic;
-        ps2_data : inout std_logic;
-        
-        clk50 :in std_logic
+		-- PS/2 keyboard / mouse
+		ps2k_clk_in : in std_logic;
+		ps2k_dat_in : in std_logic;
+		ps2k_clk_out : out std_logic;
+		ps2k_dat_out : out std_logic;
+		ps2m_clk_in : in std_logic;
+		ps2m_dat_in : in std_logic;
+		ps2m_clk_out : out std_logic;
+		ps2m_dat_out : out std_logic
 
-        
 	);
 	
 end Microcomputer;
@@ -89,13 +92,6 @@ architecture struct of Microcomputer is
 
     signal monRomData					: std_logic_vector(15 downto 0);
 	signal n_externalRamCS			: std_logic :='1';
-	
-    signal keybCS			: std_logic;
-    signal keybDataOut      : std_logic_vector(7 downto 0);
-    signal keyb_ctl         : std_logic_vector(7 downto 0);
-    signal new_key			: std_logic;
-    signal ps2_asc      : std_logic_vector(7 downto 0);
-
 
 	signal n_basRom1CS					: std_logic :='1';
     signal n_basRom2CS					: std_logic :='1';
@@ -118,13 +114,16 @@ architecture struct of Microcomputer is
     signal int_out: std_logic_vector(2 downto 0) := "111";
     signal int_ack: std_logic := '0';
     
-	signal	timer_int :  std_logic;
-	signal	ps2_int :  std_logic;
+-- Peripheral register block signals
 
-	signal timerCS : std_logic;
-	signal timerDataOut : std_logic_vector(7 downto 0);
-	signal timer_reg_sel : std_logic;
-	signal milliseconds: std_logic_vector(31 downto 0);
+signal per_reg_addr : std_logic_vector(11 downto 0);
+signal per_reg_dataout : std_logic_vector(15 downto 0);
+signal per_reg_datain : std_logic_vector(15 downto 0);
+signal per_reg_rw : std_logic;
+signal per_reg_req : std_logic;
+signal per_reg_dtack : std_logic;
+signal per_timer_int : std_logic;
+signal per_ps2_int : std_logic;
 	
 	signal rtcCS: std_logic;
 	signal rtc_ack :std_logic;
@@ -137,41 +136,53 @@ architecture struct of Microcomputer is
 	
 		attribute dont_touch : string;
     attribute dont_touch of rtc : label is "true";
-    attribute dont_touch of keyboard : label is "true";
-    attribute dont_touch of key_fifo : label is "true";
     
-    component ps2_fifo IS
-  PORT (
-    clk : IN STD_LOGIC;
-    rst : IN STD_LOGIC;
-    din : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-    wr_en : IN STD_LOGIC;
-    rd_en : IN STD_LOGIC;
-    dout : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-    full : OUT STD_LOGIC;
-    empty : OUT STD_LOGIC;
-    data_count : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
-  );
-END component;
-	
 begin
---interrupts
 
---interrupts: entity work.interrupt_controller
---	port map (
---		clk => sys_clk,
---		reset => n_reset,
---		int1 => new_key,
---		int2 => timer_int,
---		int3 => eth_intr,
---		int4 => '0',
---		int5 => '0',
---	    int6 => '0',
---		int7 => '0',
---		int_out => int_out,
---		ack => int_ack
---		);
+interrupts: entity work.interrupt_controller
+	port map (
+		clk => sys_clk,
+		reset => n_reset,
+		int1 => per_ps2_int,
+		int2 => per_timer_int,
+		int3 => '0',
+		int4 => '0',
+		int5 => '0',
+	    int6 => '0',
+		int7 => '0',
+		int_out => int_out,
+		ack => int_ack
+		);
 
+peripheral : entity work.peripheral_controller
+		port map (
+		clk => sys_clk,
+		reset => n_reset,
+		
+		reg_addr_in => per_reg_addr,
+		reg_data_in => per_reg_datain,
+		reg_data_out => per_reg_dataout,
+		reg_rw => per_reg_rw,
+		reg_uds => cpu_uds,
+		reg_lds => cpu_lds,
+		reg_dtack => per_reg_dtack,
+		reg_req => per_reg_req,
+
+		timer_int => per_timer_int,
+		ps2_int => per_ps2_int,
+
+		ps2k_clk_in => ps2k_clk_in,
+		ps2k_dat_in => ps2k_dat_in,
+		ps2k_clk_out => ps2k_clk_out,
+		ps2k_dat_out => ps2k_dat_out,
+		ps2m_clk_in => ps2m_clk_in,
+		ps2m_dat_in => ps2m_dat_in,
+		ps2m_clk_out => ps2m_clk_out,
+		ps2m_dat_out => ps2m_dat_out,
+
+		bootrom_overlay => open,
+		hex => open
+	);
 
 --rtc
   rtc : ENTITY work.pmod_real_time_clock 
@@ -205,54 +216,6 @@ begin
     valid_o       => rtc_ack
 );
 
-	
---f30030 16 bit millisecond timer
-
-timer: entity work.timer  
-	port map ( 
-	 clk       => sys_clk,
-    rst        => not n_reset,
-    cs         => timerCS, 
-    addr       => timer_reg_sel,
-    rw         => cpu_r_w, 
-    data_in    => cpuDataOut(7 downto 0), 
-	 data_out  => timerDataOut,
-	 count_up_millis => milliseconds,
-	 irq        => timer_int
-  ); 
-
--- keyboard
-
-    
-keyboard: entity work.keyboard 
-   port map (
-      clk_i      => sys_clk,
-
-      -- From keyboard
-      ps2_clk_i  => ps2_clock,
-      ps2_data_i => ps2_data,
-
-      -- To computer
-      data_o     => ps2_asc, 
-      irq_o      => new_key,
-
-      debug_o   => open
-   );
- 
- key_fifo: ps2_fifo 
-  PORT map (
-    clk => sys_clk,
-    rst => not n_reset,
-    din => ps2_asc,
-    wr_en => new_key,
-    rd_en => keybCS,
-    dout => keybDataOut,
-    full => open,
-    empty => open,
-    data_count => keyb_ctl(3 downto 0)
-  );
-
-
 -- ____________________________________________________________________________________
 -- CPU CHOICE GOES HERE
     
@@ -263,7 +226,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => "111",-- int_out,	-- For this simple demo we'll ignore interrupts
+		IPL => int_out,	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
@@ -305,19 +268,12 @@ cpu1 : entity work.TG68
         clk_i => sys_clk,
         data_o => monRomData(7 downto 0)
     );
-    
- 
-    
+
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
-  
 
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; --E00000-E0FFFF
-n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; 
-
-
---periph
-timer_reg_sel <= '1' when cpuAddress >= x"f30000" and cpuAddress < x"f30040" else '0';           
+n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1';       
 
 -- RAM
 ram_cen <= '0' when  cpuAddress < X"E00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
@@ -341,13 +297,7 @@ gd_daz_sel <= not spi_ctrl(2);
 opl3_ctl(5 downto 0) <= cpuDataout(5 downto 0) when (cpuAddress = X"f40010" or cpuAddress = X"f40011") and cpu_lds = '0' and cpu_r_w = '0'; 
 opl3_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f40012" or cpuAddress = X"f40013") and cpu_lds = '0' and cpu_r_w = '0'; 
 
-eth_spi_ctrl(1 downto 0) <= cpuDataout(1 downto 0) when (cpuAddress = X"f60008" or cpuAddress = X"f60009") and cpu_lds = '0' and cpu_r_w = '0'; 
-eth_spi_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f6000a" or cpuAddress = X"f6000b") and cpu_lds = '0' and cpu_r_w = '0'; 
-
-
-
 -- timer
-timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
 rtcCS <= '1' when cpuAddress >= x"f30040" and cpuAddress < x"f30048" else '0';
 
 -- sd 
@@ -363,12 +313,22 @@ eth_data_in(7 downto 0) <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40040" o
                             and cpu_r_w = '0' and cpu_lds = '0';
 
 eth_ctl(6 downto 5) <= cpuDataOut(6 downto 5) when cpuAddress = x"f40045" and cpu_r_w = '0' and cpu_lds = '0';
--- keyboard48-494A-4B
 
-keybCS <= '1' when (cpuAddress = X"f00018" or cpuAddress = X"f00019")  and cpu_lds = '0' and cpu_r_w = '1' else '0'; 
+eth_spi_ctrl(1 downto 0) <= cpuDataout(1 downto 0) when (cpuAddress = X"f60008" or cpuAddress = X"f60009") and cpu_lds = '0' and cpu_r_w = '0'; 
+eth_spi_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f6000a" or cpuAddress = X"f6000b") and cpu_lds = '0' and cpu_r_w = '0'; 
+
+
+-- peripheral
+
+per_reg_req <= '1' when cpuAddress >= X"f20000" and cpuAddress <= X"f2FFFF" else '0';
+per_reg_addr <= cpuAddress(11 downto 0) when per_reg_req = '1' ;
+per_reg_datain <= cpuDataOut when per_reg_req = '1' and cpu_r_w = '0';
+per_reg_rw <= cpu_r_w when per_reg_req = '1';
+
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
  
+-- upper
 cpuDataIn(15 downto 8) 
 <= 
 X"00" 
@@ -383,10 +343,6 @@ ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
 x"00"
 when cpuAddress >= x"f40008" and cpuAddress <= x"f4000d" and cpu_r_w = '1' and cpu_uds = '0' else
-milliseconds(31 downto 24)
-when timerCS = '1' and cpuAddress = X"f30030" and cpu_r_w ='1' and cpu_uds = '0' else
-milliseconds(15 downto 8)
-when timerCS = '1' and cpuAddress = X"f30032" and cpu_r_w ='1' and cpu_uds = '0' else
 x"00"
 when rtcCS = '1' and cpuAddress = X"f30046" and cpu_r_w ='1' and cpu_uds = '0' else
 rtc_data(47 downto 40)
@@ -409,8 +365,11 @@ eth_rx_count(15 downto 8)
 when cpuAddress = x"f40048" and cpu_r_w = '1' and cpu_uds = '0' else 
 X"00"
 when (cpuAddress >= x"f40040" and cpuAddress <= x"f40045") and cpu_r_w = '1' and cpu_uds = '0' else  
+per_reg_dataout(15 downto 8) 
+when per_reg_req = '1' and cpu_r_w = '1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
 
+--lower
 cpuDataIn(7 downto 0)
 <= 
 monRomData(7 downto 0)
@@ -421,10 +380,6 @@ r_Vec(vecAddress)(7 downto 0)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else 
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"E00000" else
-milliseconds(23 downto 16)
-when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
-milliseconds(7 downto 0)
-when timerCS = '1' and (cpuAddress = X"f30032" or cpuAddress = X"f30033") and cpu_r_w ='1' and cpu_lds = '0' else
 eth_spi_DataIn
 when (cpuAddress = X"F6000C" or cpuAddress = X"F6000D") and cpu_r_w = '1' and cpu_lds = '0' else
 eth_spi_DataOut
@@ -466,13 +421,10 @@ when (cpuAddress = x"f40044" or cpuAddress = x"f40045") and cpu_r_w = '1' and cp
 eth_tx_free(7 downto 0)
 when (cpuAddress = x"f40046" or cpuAddress = x"f40047") and cpu_r_w = '1' and cpu_lds = '0' else
 eth_rx_count(7 downto 0)
-when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else 
-keybDataOut
-when (cpuAddress = x"f00018" or cpuAddress = x"f00019")  and cpu_r_w = '1' and cpu_lds = '0' else
-keyb_ctl
-when (cpuAddress = x"f0001a" or cpuAddress = x"f0001b")  and cpu_r_w = '1' and cpu_lds = '0' else 
+when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else
+per_reg_dataout(7 downto 0) 
+when per_reg_req = '1' and cpu_r_w = '1' and cpu_lds = '0' else  
 X"00" when cpu_lds = '1' ;
-
 
 cpu_dtack <= 
 not ram_ack when ram_cen = '0' else 
@@ -480,6 +432,7 @@ not rtc_ack when rtcCS = '1' else
 NOT sd_ack when
 (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' else
 NOT eth_ack_rx when (cpuAddress = x"f40042" or cpuAddress = x"f40043") else
+per_reg_dtack when per_reg_req = '1' else
 '0';
     
 end;
