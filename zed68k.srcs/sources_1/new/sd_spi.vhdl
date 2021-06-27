@@ -133,7 +133,6 @@ port (
 	sd_busy : out std_logic;		-- '0' if a RD or WR can be accepted
 	sd_error_code : out std_logic_vector(2 downto 0); -- See above, 000=No error
 	
-	
 	reset : in std_logic;	-- System reset
 	clk : in std_logic;		-- twice the SPI clk (max 50MHz)
 	

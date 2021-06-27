@@ -120,13 +120,8 @@ port(
             -- SPI Flash Mem
      qspi_cs         : out std_logic;        
      qspi_dq         : inout std_logic_vector(3 downto 0);   -- dg(0) is MOSI, dq(1) MISO
-     qspi_sck        : out std_logic;
+     qspi_sck        : out std_logic
      
-     eth_cs : out std_logic;
-     eth_mosi : out std_logic;
-     eth_miso : in std_logic;
-     eth_sclk : out std_logic;
-     eth_spisel : out std_logic
       
 	);
 end multicomp_wrapper;
@@ -187,12 +182,13 @@ architecture Behavioral of multicomp_wrapper is
     -- sd
     
     signal sdCardDataOut				: std_logic_vector(7 downto 0);
+    signal sdCardDataIn				: std_logic_vector(7 downto 0);
     signal sdStatus: std_logic_vector(7 downto 0) := (others => '0'); --f30009
     signal sdControl: std_logic_vector(7 downto 0); --f3000a
     signal sdAddress: std_logic_vector(31 downto 0) := (others => '0'); --f30000-2
+    signal sdEraseCount: std_logic_vector(7 downto 0);
     signal sd_rden : std_logic;
     signal sd_wren : std_logic;
-    signal sd_ack  : std_logic;
 
 --net
       signal eth_ack_rx: std_logic;
@@ -208,10 +204,6 @@ architecture Behavioral of multicomp_wrapper is
     signal opl3_ctl :std_logic_vector(7 downto 0);
     signal opl3_DataOut : std_logic_vector(7 downto 0);
     
-            --eth spi
-    signal    eth_spi_ctrl :  std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
-    signal    eth_spi_DataIn :   std_logic_vector(7 downto 0);
-    signal    eth_spi_DataOut :  std_logic_vector(7 downto 0);
     
     signal ps2k_clk_in: std_logic;
 	signal ps2k_dat_in : std_logic;
@@ -314,16 +306,13 @@ attribute dont_touch of reset_proc : label is "true";
 attribute dont_touch of valid_flag : label is "true";
 attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
-attribute dont_touch of gameduino_spi : label is "true";
-attribute dont_touch of opl3_spi : label is "true";
 
 
 begin
    --------------------------------------------------
    -- Instantiate Clock generation
    --------------------------------------------------
-   
-    eth_spisel <= '1';
+
        
     pll1:  pll
     port map (
@@ -421,9 +410,11 @@ end process;
         
         -- sd
         sdCardDataOut => sdCardDataOut,
+        sdCardDataIn => sdCardDataIn,
         sdAddress => sdAddress,
         sdStatus => sdStatus,
         sdControl => sdControl,
+        sdEraseCount => sdEraseCount,
         
         --ethernet
         eth_data_out => eth_data_out,
@@ -437,12 +428,7 @@ end process;
         eth_tx_free => eth_tx_free,
         eth_rx_count => eth_rx_count,
         eth_intr => eth_intr,
-        
-                --eth spi
-        eth_spi_ctrl => eth_spi_ctrl,
-        eth_spi_DataIn => eth_spi_DataIn,
-        eth_spi_DataOut => eth_spi_DataOut,
-        
+
         --ps2
         ps2k_clk_in => ps2k_clk_in,
 		ps2k_dat_in => ps2k_dat_in,
@@ -496,25 +482,6 @@ end process;
       spi_mosi_o => gd_mosi,       -- sd_cmd_io
       spi_miso_i => gd_miso        -- sd_dat_io(0)
    );
-   
-  eth_spi: entity work.spi_master 
-  PORT map (
-      clk_i      => sys_clock,
-      rst_i      => not sys_resetn, 
-
-      -- CPU interface
-      valid_i    => eth_spi_ctrl(0),
-      ready_o    => eth_spi_ctrl(7),
-      data_i     => eth_spi_DataOut,
-      data_o     => eth_spi_DataIn,
-
-      -- Connect to SD card
-      spi_sclk_o => eth_sclk,       -- sd_sck_io
-      spi_mosi_o => eth_mosi,       -- sd_cmd_io
-      spi_miso_i => eth_miso      -- sd_dat_io(0)
-   );
-   
-   eth_cs <= not eth_spi_ctrl(1);
     
     opl3_spi: entity work.spi_master 
   PORT map (
@@ -539,8 +506,7 @@ end process;
    op_ic <= opl3_ctl(3);
    op_wr <= opl3_ctl(4);
    
-      -- sd
-      
+      -- sd 
       sd_rden <= sdControl(2);
       sd_wren <= sdControl(3);       
        --spi mode please.
@@ -557,26 +523,26 @@ sdcard: entity work.sd_controller
 	miso => SD_DAT0,			-- From SD card 
 	sclk => SD_SCK,			-- To SD card
 	card_present => not SD_CD,	-- From socket - can be fixed to '1' if no switch is present
-	card_write_prot => SD_WP,	-- From socket - can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
+	card_write_prot => '0',	-- From socket - can be fixed to '0' if no switch is present, or '1' to make a Read-Only interface
 
 	rd => sd_rden,				-- Trigger single block read
-	rd_multiple => '0',		-- Trigger multiple block read
+	rd_multiple => sdControl(4),		-- Trigger multiple block read
 	dout => sdCardDataOut,	-- Data from SD card
 	dout_avail => sdStatus(4),		-- Set when dout is valid
 	dout_taken => sdControl(1),		-- Acknowledgement for dout
 	
 	wr => sd_wren,				-- Trigger single block write
-	wr_multiple => '0',		-- Trigger multiple block write
-	din => cpuDataOut(7 downto 0),	-- Data to SD card
+	wr_multiple => sdControl(5),		-- Trigger multiple block write
+	din => sdCardDataIn,	-- Data to SD card
 	din_valid => sdControl(0),		-- Set when din is valid
-	din_taken => sd_ack,		-- Ackowledgement for din
+	din_taken => sdStatus(3),		-- Ackowledgement for din
 	
 	addr => sdAddress,	-- Block address
-	erase_count => x"00", -- For wr_multiple only
+	erase_count => sdEraseCount, -- For wr_multiple only
 
 	sd_error => sdStatus(0),		-- '1' if an error occurs, reset on next RD or WR (just check for error code)
 	sd_busy => sdStatus(5),		-- '0' if a RD or WR can be accepted
-	sd_error_code => sdStatus (3 downto 1), -- See above, 000=No error
+	sd_error_code => open, -- See above, 000=No error
 
 	reset => not sys_resetn,	-- System reset
 	clk => clk50,		-- twice the SPI clk (max 50MHz)

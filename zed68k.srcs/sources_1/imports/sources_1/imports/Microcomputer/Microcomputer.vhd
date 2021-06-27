@@ -25,8 +25,6 @@ entity Microcomputer is
 		n_reset		: in std_logic;
 		cpu_as      : out std_logic; -- Address strobe
 
-        
-        
               -- RAM interface
       ram_a                : out    std_logic_vector(26 downto 0);
       ram_dq_i             : out    std_logic_vector(15 downto 0);
@@ -50,6 +48,8 @@ entity Microcomputer is
         spi_DataOut : inout std_logic_vector(7 downto 0);
         
         sdCardDataOut				: in std_logic_vector(7 downto 0);
+        sdCardDataIn				: out std_logic_vector(7 downto 0);
+        sdEraseCount				: out std_logic_vector(7 downto 0);
         sdStatus: inout std_logic_vector(7 downto 0) := (others => '0'); --f30009
         sdControl: inout std_logic_vector(7 downto 0); --f3000a
     
@@ -65,15 +65,11 @@ entity Microcomputer is
         eth_ack_rx : in std_logic;
         eth_intr : in std_logic;
         
-        --eth spi
-        eth_spi_ctrl : inout std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
-        eth_spi_DataIn :  inout std_logic_vector(7 downto 0);
-        eth_spi_DataOut : inout std_logic_vector(7 downto 0);
-        
         --sound
         opl3_ctl : inout std_logic_vector(7 downto 0);
         opl3_DataOut : inout std_logic_vector(7 downto 0);
         
+
 		-- PS/2 keyboard / mouse
 		ps2k_clk_in : in std_logic;
 		ps2k_dat_in : in std_logic;
@@ -83,6 +79,7 @@ entity Microcomputer is
 		ps2m_dat_in : in std_logic;
 		ps2m_clk_out : out std_logic;
 		ps2m_dat_out : out std_logic
+
 
 	);
 	
@@ -131,7 +128,6 @@ signal per_ps2_int : std_logic;
 
     signal sd_rden : std_logic;
     signal sd_wren : std_logic;
-    signal sd_ack  : std_logic;
 	signal n_sdCardCS : std_logic;
 	
 		attribute dont_touch : string;
@@ -226,7 +222,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => int_out,	-- For this simple demo we'll ignore interrupts
+		IPL => "111",	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
@@ -305,6 +301,8 @@ n_sdCardCS <= '0' when cpuAddress >= x"f40020" and cpuAddress <= x"f40030" else 
 sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40022" and cpu_r_w = '0';
 sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40024" and cpu_r_w = '0';
 sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40020" or cpuAddress = x"f40021") and cpu_r_w = '0' and cpu_lds = '0';
+sdCardDataIn <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' and cpu_lds = '0';
+sdEraseCount <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40028" or cpuAddress = x"f40029") and cpu_r_w = '0' and cpu_lds = '0';
 sd_rden <= sdControl(2);
 sd_wren <= sdControl(3);
 
@@ -313,9 +311,6 @@ eth_data_in(7 downto 0) <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40040" o
                             and cpu_r_w = '0' and cpu_lds = '0';
 
 eth_ctl(6 downto 5) <= cpuDataOut(6 downto 5) when cpuAddress = x"f40045" and cpu_r_w = '0' and cpu_lds = '0';
-
-eth_spi_ctrl(1 downto 0) <= cpuDataout(1 downto 0) when (cpuAddress = X"f60008" or cpuAddress = X"f60009") and cpu_lds = '0' and cpu_r_w = '0'; 
-eth_spi_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f6000a" or cpuAddress = X"f6000b") and cpu_lds = '0' and cpu_r_w = '0'; 
 
 
 -- peripheral
@@ -358,6 +353,10 @@ when cpuAddress = x"f40024" and cpu_r_w = '1' and cpu_uds = '0' else
 sdStatus
 when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
 x"00"
+when cpuAddress = x"f40026" and cpu_r_w = '1' and cpu_uds = '0' else
+x"00"
+when cpuAddress = x"f40028" and cpu_r_w = '1' and cpu_uds = '0' else
+x"00"
 when cpuAddress = x"f00018" and cpu_r_w = '1' and cpu_uds = '0' else
 eth_tx_free(15 downto 8)
 when cpuAddress = x"f40046" and cpu_r_w = '1' and cpu_uds = '0' else
@@ -380,14 +379,8 @@ r_Vec(vecAddress)(7 downto 0)
 when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else 
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"E00000" else
-eth_spi_DataIn
-when (cpuAddress = X"F6000C" or cpuAddress = X"F6000D") and cpu_r_w = '1' and cpu_lds = '0' else
-eth_spi_DataOut
-when (cpuAddress = X"F6000A" or cpuAddress = X"F6000B") and cpu_r_w = '1' and cpu_lds = '0' else
-eth_spi_ctrl
-when (cpuAddress = X"F60008" or cpuAddress = X"F60009") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_DataIn
-when (cpuAddress = X"F6000C" or cpuAddress = X"F6000D") and cpu_r_w = '1' and cpu_lds = '0' else
+when (cpuAddress = X"F4000C" or cpuAddress = X"F4000D") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_DataOut
 when (cpuAddress = X"F4000A" or cpuAddress = X"F4000B") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_ctrl
@@ -404,6 +397,8 @@ rtc_data(23 downto 16)
 when rtcCS = '1' and (cpuAddress = X"f30042" or cpuAddress = X"F30043") and cpu_r_w ='1' and cpu_lds = '0' else
 rtc_data(7 downto 0)
 when rtcCS = '1' and (cpuAddress = X"f30040" or cpuAddress = X"F30041") and cpu_r_w ='1' and cpu_lds = '0' else
+sdEraseCount
+when (cpuAddress = x"f40028" or cpuAddress = x"f40029") and cpu_r_w = '1' and cpu_lds = '0' else
 sdCardDataOut
 when (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '1' and cpu_lds = '0' else
 sdControl
@@ -429,8 +424,6 @@ X"00" when cpu_lds = '1' ;
 cpu_dtack <= 
 not ram_ack when ram_cen = '0' else 
 not rtc_ack when rtcCS = '1' else
-NOT sd_ack when
-(cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' else
 NOT eth_ack_rx when (cpuAddress = x"f40042" or cpuAddress = x"f40043") else
 per_reg_dtack when per_reg_req = '1' else
 '0';

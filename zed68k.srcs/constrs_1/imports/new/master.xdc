@@ -441,73 +441,8 @@ connect_debug_port u_ila_0/probe60 [get_nets [list computer/interrupts/timer_int
 connect_debug_port u_ila_0/probe61 [get_nets [list computer/timer_set]]
 connect_debug_port u_ila_0/probe62 [get_nets [list computer/timer_set_i_1_n_0]]
 
-create_debug_core u_ila_0 ila
-set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
-set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
-set_property C_ADV_TRIGGER false [get_debug_cores u_ila_0]
-set_property C_DATA_DEPTH 2048 [get_debug_cores u_ila_0]
-set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
-set_property C_INPUT_PIPE_STAGES 0 [get_debug_cores u_ila_0]
-set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
-set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
-set_property port_width 1 [get_debug_ports u_ila_0/clk]
-connect_debug_port u_ila_0/clk [get_nets [list sys_clock_IBUF_BUFG]]
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 2 [get_debug_ports u_ila_0/probe0]
 connect_debug_port u_ila_0/probe0 [get_nets [list {computer/interrupts/int_out[0]} {computer/interrupts/int_out[1]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
-set_property port_width 24 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list {cpuAddress[0]} {cpuAddress[1]} {cpuAddress[2]} {cpuAddress[3]} {cpuAddress[4]} {cpuAddress[5]} {cpuAddress[6]} {cpuAddress[7]} {cpuAddress[8]} {cpuAddress[9]} {cpuAddress[10]} {cpuAddress[11]} {cpuAddress[12]} {cpuAddress[13]} {cpuAddress[14]} {cpuAddress[15]} {cpuAddress[16]} {cpuAddress[17]} {cpuAddress[18]} {cpuAddress[19]} {cpuAddress[20]} {cpuAddress[21]} {cpuAddress[22]} {cpuAddress[23]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 16 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list {cpuDataOut[0]} {cpuDataOut[1]} {cpuDataOut[2]} {cpuDataOut[3]} {cpuDataOut[4]} {cpuDataOut[5]} {cpuDataOut[6]} {cpuDataOut[7]} {cpuDataOut[8]} {cpuDataOut[9]} {cpuDataOut[10]} {cpuDataOut[11]} {cpuDataOut[12]} {cpuDataOut[13]} {cpuDataOut[14]} {cpuDataOut[15]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
-set_property port_width 16 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list {cpuDataIn[0]} {cpuDataIn[1]} {cpuDataIn[2]} {cpuDataIn[3]} {cpuDataIn[4]} {cpuDataIn[5]} {cpuDataIn[6]} {cpuDataIn[7]} {cpuDataIn[8]} {cpuDataIn[9]} {cpuDataIn[10]} {cpuDataIn[11]} {cpuDataIn[12]} {cpuDataIn[13]} {cpuDataIn[14]} {cpuDataIn[15]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
-set_property port_width 7 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list {computer/addr_out[16]} {computer/addr_out[17]} {computer/addr_out[18]} {computer/addr_out[20]} {computer/addr_out[21]} {computer/addr_out[22]} {computer/addr_out[23]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
-set_property port_width 12 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list {computer/per_reg_addr[0]} {computer/per_reg_addr[1]} {computer/per_reg_addr[2]} {computer/per_reg_addr[3]} {computer/per_reg_addr[4]} {computer/per_reg_addr[5]} {computer/per_reg_addr[6]} {computer/per_reg_addr[7]} {computer/per_reg_addr[8]} {computer/per_reg_addr[9]} {computer/per_reg_addr[10]} {computer/per_reg_addr[11]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 16 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list {computer/per_reg_datain[0]} {computer/per_reg_datain[1]} {computer/per_reg_datain[2]} {computer/per_reg_datain[3]} {computer/per_reg_datain[4]} {computer/per_reg_datain[5]} {computer/per_reg_datain[6]} {computer/per_reg_datain[7]} {computer/per_reg_datain[8]} {computer/per_reg_datain[9]} {computer/per_reg_datain[10]} {computer/per_reg_datain[11]} {computer/per_reg_datain[12]} {computer/per_reg_datain[13]} {computer/per_reg_datain[14]} {computer/per_reg_datain[15]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
-set_property port_width 16 [get_debug_ports u_ila_0/probe7]
-connect_debug_port u_ila_0/probe7 [get_nets [list {computer/per_reg_dataout[0]} {computer/per_reg_dataout[1]} {computer/per_reg_dataout[2]} {computer/per_reg_dataout[3]} {computer/per_reg_dataout[4]} {computer/per_reg_dataout[5]} {computer/per_reg_dataout[6]} {computer/per_reg_dataout[7]} {computer/per_reg_dataout[8]} {computer/per_reg_dataout[9]} {computer/per_reg_dataout[10]} {computer/per_reg_dataout[11]} {computer/per_reg_dataout[12]} {computer/per_reg_dataout[13]} {computer/per_reg_dataout[14]} {computer/per_reg_dataout[15]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
-set_property port_width 1 [get_debug_ports u_ila_0/probe8]
 connect_debug_port u_ila_0/probe8 [get_nets [list computer/cpu1_n_84]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
-set_property port_width 1 [get_debug_ports u_ila_0/probe9]
 connect_debug_port u_ila_0/probe9 [get_nets [list computer/per_ps2_int]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe10]
-set_property port_width 1 [get_debug_ports u_ila_0/probe10]
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/per_reg_rw]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe11]
-set_property port_width 1 [get_debug_ports u_ila_0/probe11]
 connect_debug_port u_ila_0/probe11 [get_nets [list computer/per_timer_int]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe12]
-set_property port_width 1 [get_debug_ports u_ila_0/probe12]
-connect_debug_port u_ila_0/probe12 [get_nets [list computer/ps2_clock_IBUF]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe13]
-set_property port_width 1 [get_debug_ports u_ila_0/probe13]
-connect_debug_port u_ila_0/probe13 [get_nets [list computer/rtc_ack]]
-set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
-set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
-set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets sys_clock_IBUF_BUFG]
+
