@@ -157,7 +157,7 @@ architecture Behavioral of multicomp_wrapper is
 
       signal ramDataOut: std_logic_vector(15 downto 0);
       signal initial_stack: std_logic_vector(31 downto 0) := x"00DF0000";
-      signal initial_pc: std_logic_vector(31 downto 0) := x"00E00BB4";
+      signal initial_pc: std_logic_vector(31 downto 0) := x"00E00BC0";
       
       signal memDataOut: std_logic_vector(15 downto 0);
       signal mem_ack:std_logic;

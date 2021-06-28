@@ -446,3 +446,4 @@ connect_debug_port u_ila_0/probe8 [get_nets [list computer/cpu1_n_84]]
 connect_debug_port u_ila_0/probe9 [get_nets [list computer/per_ps2_int]]
 connect_debug_port u_ila_0/probe11 [get_nets [list computer/per_timer_int]]
 
+

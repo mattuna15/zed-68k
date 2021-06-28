@@ -1631,7 +1631,7 @@ MAIN MOVE.W #INT_OFF,SR  ; INTERRUPT OFF, SUPERVISOR MODE SET
       MOVE.L #SUPER_STACK+USER_STACK, $0000
       MOVE.L #RAM+$400, $0004
       
-      MOVE.W #INT_ON,SR       ; ON INTcoutERRUPT, SUPERVISOR MODE SET
+      MOVE.W #INT_OFF,SR       ; ON INTcoutERRUPT, SUPERVISOR MODE SET
 
 loop  BSR SEND_PROMPT
       BSR CIN
@@ -2789,17 +2789,9 @@ WHAT3         RTS
 
 SERVICE_TRAP0   ;MOVE.B ACIA2D.L,D0
                 ;BSR COUT
-                MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
+                MOVE.W #INT_OFF,SR   ; REENTER SUPERVISOR MODE
 
                 JMP LOOP.L        ; GET BACK MONITOR
-                
-                
-SERVICE_TRAP14  MOVE.B #$61,D0
-                BSR COUT
-                MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
-
-                JMP LOOP.L        ; GET BACK MONITOR           
-
 
 ; DISASSEMBLE THE MACHNIE CODE INTO MNEMONIC
 
@@ -3066,12 +3058,6 @@ VECINIT2  MOVE.L    (a0)+,(a1)+
           MOVEA.W   #$C0,A1
           MOVE.L    #RAMBASE_INIT,(a1)
           RTS
-
-PS2INT
-          RTS
-          
-TIMERINT    
-          RTS
           
 ;----------------- M68000 EXCEPTION VECTOR TABLE -----------------------------
 VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
@@ -3086,8 +3072,8 @@ VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_TRAP0    ; 11 Line 1111 emulator
 
           DC.L  SERVICE_TRAP0    ; 24 Spurious Interupt
-          DC.L  PS2INT              ; 25 LEVEL 1 Interupt autovector
-          DC.L  TIMERINT            ; 26 LEVEL 2 Interupt autovector
+          DC.L  SERVICE_TRAP0 ; 25 LEVEL 1 Interupt autovector
+          DC.L  SERVICE_TRAP0 ; 26 LEVEL 2 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 27 LEVEL 3 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 28 LEVEL 4 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 29 LEVEL 5 Interupt autovector
@@ -3107,7 +3093,7 @@ VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_TRAP0    ; 43 TRAP #11
           DC.L  SERVICE_TRAP0    ; 44 TRAP #12
           DC.L  SERVICE_TRAP0    ; 45 TRAP #13
-          DC.L  SERVICE_TRAP14    ; 46 TRAP #14
+          DC.L  SERVICE_TRAP0    ; 46 TRAP #14
           DC.L  SERVICE_TRAP0    ; 47 TRAP #15
 ;----------------------- STRING CONSTANT -------------------------------------
 
@@ -3225,6 +3211,7 @@ USER_STACK  EQU  STACK_AREA+$FF00    ; TOP OF STACK
 
 
        END	MAIN
+
 
 
 

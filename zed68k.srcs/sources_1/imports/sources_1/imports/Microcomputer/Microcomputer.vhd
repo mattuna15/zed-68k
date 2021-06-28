@@ -222,7 +222,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => "111",	-- For this simple demo we'll ignore interrupts
+		IPL => int_out,	
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
