@@ -1,0 +1,55 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"1.74467",
+   "Default View_TopLeft":"-129,-27",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS-threadsafe
+#  -string -flagsOSRD
+preplace port clk_in100 -pg 1 -lvl 0 -x 0 -y 260 -defaultsOSRD
+preplace port start_i -pg 1 -lvl 0 -x 0 -y 490 -defaultsOSRD
+preplace port rd_en -pg 1 -lvl 0 -x 0 -y 200 -defaultsOSRD
+preplace port ready_o -pg 1 -lvl 5 -x 1070 -y 320 -defaultsOSRD
+preplace port error -pg 1 -lvl 5 -x 1070 -y 440 -defaultsOSRD
+preplace portBus opa_i -pg 1 -lvl 0 -x 0 -y 370 -defaultsOSRD
+preplace portBus opb_i -pg 1 -lvl 0 -x 0 -y 400 -defaultsOSRD
+preplace portBus fpu_op_i -pg 1 -lvl 0 -x 0 -y 430 -defaultsOSRD
+preplace portBus rmode_i -pg 1 -lvl 0 -x 0 -y 460 -defaultsOSRD
+preplace portBus result_o -pg 1 -lvl 5 -x 1070 -y 380 -defaultsOSRD
+preplace portBus data_count_0 -pg 1 -lvl 5 -x 1070 -y 140 -defaultsOSRD
+preplace inst fifo_generator_0 -pg 1 -lvl 4 -x 870 -y 140 -defaultsOSRD
+preplace inst clk_wiz -pg 1 -lvl 1 -x 110 -y 260 -defaultsOSRD
+preplace inst util_reduced_logic_0 -pg 1 -lvl 4 -x 870 -y 440 -defaultsOSRD
+preplace inst xlconcat_0 -pg 1 -lvl 3 -x 590 -y 440 -defaultsOSRD
+preplace inst fpu_0 -pg 1 -lvl 2 -x 350 -y 420 -defaultsOSRD
+preplace inst util_vector_logic_0 -pg 1 -lvl 4 -x 870 -y 320 -defaultsOSRD
+preplace netloc clk_wiz_clk_out1 1 1 3 210 220 NJ 220 NJ
+preplace netloc clk_in1_0_1 1 0 1 NJ 260
+preplace netloc start_i_0_1 1 0 2 NJ 490 210J
+preplace netloc opa_i_0_1 1 0 2 NJ 370 200J
+preplace netloc opb_i_0_1 1 0 2 NJ 400 210J
+preplace netloc fpu_op_i_0_1 1 0 2 NJ 430 NJ
+preplace netloc rmode_i_0_1 1 0 2 NJ 460 200J
+preplace netloc fpu_0_output_o 1 2 2 490 100 NJ
+preplace netloc fpu_0_ready_o 1 2 2 500 120 NJ
+preplace netloc rd_en_0_1 1 0 4 NJ 200 NJ 200 NJ 200 NJ
+preplace netloc fifo_generator_0_dout 1 3 2 690 380 NJ
+preplace netloc fpu_0_ine_o 1 2 1 N 370
+preplace netloc fpu_0_overflow_o 1 2 1 N 390
+preplace netloc fpu_0_underflow_o 1 2 1 N 410
+preplace netloc fpu_0_div_zero_o 1 2 1 N 430
+preplace netloc fpu_0_inf_o 1 2 1 N 450
+preplace netloc fpu_0_zero_o 1 2 1 N 470
+preplace netloc fpu_0_qnan_o 1 2 1 N 490
+preplace netloc fpu_0_snan_o 1 2 1 N 510
+preplace netloc xlconcat_0_dout 1 3 1 NJ 440
+preplace netloc util_reduced_logic_0_Res 1 4 1 NJ 440
+preplace netloc fifo_generator_0_data_count 1 4 1 NJ 140
+preplace netloc fifo_generator_0_empty 1 3 1 680 160n
+preplace netloc util_vector_logic_0_Res 1 4 1 NJ 320
+levelinfo -pg 1 0 110 350 590 870 1070
+pagesize -pg 1 -db -bbox -sgen -130 0 1230 570
+"
+}
+{
+   "da_clkrst_cnt":"1"
+}

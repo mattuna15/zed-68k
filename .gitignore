@@ -8,3 +8,4 @@ m68.prm
 *.L68
 *.layout
 zed68k.hw/
+roms/monitor/monitor.S68

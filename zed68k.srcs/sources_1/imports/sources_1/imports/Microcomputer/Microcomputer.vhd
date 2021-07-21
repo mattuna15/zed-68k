@@ -87,6 +87,22 @@ end Microcomputer;
 
 architecture struct of Microcomputer is
 
+component fpu_design_wrapper 
+    port (
+        clk_in100       	: in std_logic;
+        opa_i       	: in std_logic_vector(31 downto 0);   
+        opb_i       	: in std_logic_vector(31 downto 0);
+        fpu_op_i		: in std_logic_vector(2 downto 0);
+        rmode_i 		: in std_logic_vector(1 downto 0);  
+        result_o    	: out std_logic_vector(31 downto 0);
+		error 			: out std_logic;
+        start_i	  		: in  std_logic;
+        ready_o 		: out std_logic;
+        rd_en           : in std_logic;
+        data_count_0    : out std_logic_vector(4 downto 0)
+	);   
+end component;
+
     signal monRomData					: std_logic_vector(15 downto 0);
 	signal n_externalRamCS			: std_logic :='1';
 
@@ -130,7 +146,24 @@ signal per_ps2_int : std_logic;
     signal sd_wren : std_logic;
 	signal n_sdCardCS : std_logic;
 	
-		attribute dont_touch : string;
+		signal timerCS : std_logic;
+	signal timerDataOut : std_logic_vector(7 downto 0);
+	signal timer_reg_sel : std_logic;
+	signal milliseconds: std_logic_vector(31 downto 0);
+	
+	--fpu
+	
+signal opa_i, opb_i : std_logic_vector(31 downto 0);
+signal fpu_op_i		: std_logic_vector(2 downto 0);
+signal rmode_i : std_logic_vector(1 downto 0);
+signal result_o : std_logic_vector(31 downto 0);
+signal start_i, ready_o, rd_en : std_logic ; 
+signal error: std_logic;
+signal fpu_sts, fpu_ctl : std_logic_vector(7 downto 0);
+signal fpu_count : std_logic_vector(4 downto 0);
+	
+	
+    attribute dont_touch : string;
     attribute dont_touch of rtc : label is "true";
     
 begin
@@ -222,7 +255,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => int_out,	
+		IPL => int_out,	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
@@ -231,6 +264,35 @@ cpu1 : entity work.TG68
 		uds => cpu_uds,
 		lds => cpu_lds
   );
+
+      -- instantiate fpu
+    fpu1: fpu_design_wrapper 
+    port map (
+			clk_in100 => sys_clk,
+			opa_i => opa_i,
+			opb_i => opb_i,
+			fpu_op_i =>	fpu_op_i,
+			rmode_i => rmode_i,	
+			result_o => result_o,  
+			error => error,
+        	start_i => start_i,
+        	ready_o => ready_o,
+        	rd_en => rd_en,
+        	data_count_0 => fpu_count
+        	);	
+  
+  timer: entity work.timer  
+	port map ( 
+	 clk       => sys_clk,
+    rst        => not n_reset,
+    cs         => timerCS, 
+    addr       => '0',
+    rw         => cpu_r_w, 
+    data_in    => (others => '0'), 
+	 data_out  => open,
+	 count_up_millis => milliseconds,
+	 irq        => open
+  ); 
 	
 	-- rom address
     memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
@@ -240,6 +302,7 @@ cpu1 : entity work.TG68
     r_Vec(vecAddress) <= cpuDataOut when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '0' ;
     int_ack <= '1' when cpuAddress(31 downto 16) = X"FFFF" and cpu_r_w = '1' else '0'; -- acknowledge interrupts
     
+
 -- ____________________________________________________________________________________
 -- ROM GOES HERE
     
@@ -295,6 +358,7 @@ opl3_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f40012" or cpuAddres
 
 -- timer
 rtcCS <= '1' when cpuAddress >= x"f30040" and cpuAddress < x"f30048" else '0';
+timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
 
 -- sd 
 n_sdCardCS <= '0' when cpuAddress >= x"f40020" and cpuAddress <= x"f40030" else '1';
@@ -319,6 +383,27 @@ per_reg_req <= '1' when cpuAddress >= X"f20000" and cpuAddress <= X"f2FFFF" else
 per_reg_addr <= cpuAddress(11 downto 0) when per_reg_req = '1' ;
 per_reg_datain <= cpuDataOut when per_reg_req = '1' and cpu_r_w = '0';
 per_reg_rw <= cpu_r_w when per_reg_req = '1';
+
+
+--FPU
+
+
+opa_i(31 downto 16) <= cpuDataOut when cpuAddress = x"f50000" and cpu_r_w = '0';
+opa_i(15 downto 0) <= cpuDataOut when cpuAddress = x"f50002" and cpu_r_w = '0';
+opb_i(31 downto 16) <= cpuDataOut when cpuAddress = x"f50004" and cpu_r_w = '0';
+opb_i(15 downto 0) <= cpuDataOut when cpuAddress = x"f50006" and cpu_r_w = '0';    
+
+fpu_ctl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f5000c" or cpuAddress = x"f5000d") 
+            and cpu_r_w = '0' and cpu_lds = '0';
+           
+rd_en <= '1' when (cpuAddress >= x"f50008" and cpuAddress <= x"f5000b") and cpu_r_w = '1' else '0';
+            
+start_i <= fpu_ctl(0);
+fpu_op_i <= fpu_ctl(3 downto 1);
+rmode_i <= fpu_ctl(5 downto 4);
+
+fpu_sts(0) <= '1' when  ready_o = '1' or fpu_count > 0 else '0' ;
+fpu_sts(1) <= error;
 
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
@@ -366,7 +451,18 @@ X"00"
 when (cpuAddress >= x"f40040" and cpuAddress <= x"f40045") and cpu_r_w = '1' and cpu_uds = '0' else  
 per_reg_dataout(15 downto 8) 
 when per_reg_req = '1' and cpu_r_w = '1' and cpu_uds = '0' else
+milliseconds(31 downto 24)
+when timerCS = '1' and cpuAddress = X"f30030" and cpu_r_w ='1' and cpu_uds = '0' else
+milliseconds(15 downto 8)
+when timerCS = '1' and cpuAddress = X"f30032" and cpu_r_w ='1' and cpu_uds = '0' else
+opa_i(31 downto 24) when cpuAddress = x"f50000" and cpu_r_w = '1' and cpu_uds = '0' else
+opa_i(15 downto 8) when cpuAddress = x"f50002" and cpu_r_w = '1' and cpu_uds = '0' else
+opb_i(31 downto 24) when cpuAddress = x"f50004" and cpu_r_w = '1' and cpu_uds = '0' else
+opb_i(15 downto 8) when cpuAddress = x"f50006" and cpu_r_w = '1' and cpu_uds = '0' else
+result_o(31 downto 24) when cpuAddress = x"f50008" and cpu_r_w = '1' and cpu_uds = '0' else
+result_o(15 downto 8) when cpuAddress = x"f5000a" and cpu_r_w = '1'and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
+
 
 --lower
 cpuDataIn(7 downto 0)
@@ -419,6 +515,18 @@ eth_rx_count(7 downto 0)
 when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else
 per_reg_dataout(7 downto 0) 
 when per_reg_req = '1' and cpu_r_w = '1' and cpu_lds = '0' else  
+milliseconds(23 downto 16)
+when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
+milliseconds(7 downto 0)
+when timerCS = '1' and (cpuAddress = X"f30032" or cpuAddress = X"f30033") and cpu_r_w ='1' and cpu_lds = '0' else
+opa_i(23 downto 16) when (cpuAddress = x"f50000" or cpuAddress = x"f50001")  and cpu_r_w = '1' and cpu_lds = '0' else
+opa_i(7 downto 0) when (cpuAddress = x"f50002" or cpuAddress = x"f50003")  and cpu_r_w = '1' and cpu_lds = '0' else
+opb_i(23 downto 16) when (cpuAddress = x"f50004" or cpuAddress = x"f50005")  and cpu_r_w = '1' and cpu_lds = '0' else
+opb_i(7 downto 0) when (cpuAddress = x"f50006" or cpuAddress = x"f50007")  and cpu_r_w = '1' and cpu_lds = '0' else
+result_o(23 downto 16) when (cpuAddress = x"f50008" or cpuAddress = x"f50009")  and cpu_r_w = '1' and cpu_lds = '0' else
+result_o(7 downto 0) when (cpuAddress = x"f5000a" or cpuAddress = x"f500b")  and cpu_r_w = '1' and cpu_lds = '0' else
+fpu_ctl when (cpuAddress = x"f5000c" or cpuAddress = x"f5000d") and cpu_r_w = '1' and cpu_lds = '0' else
+fpu_sts when (cpuAddress = x"f5000e" or cpuAddress = x"f5000f") and cpu_r_w = '1' and cpu_lds = '0' else
 X"00" when cpu_lds = '1' ;
 
 cpu_dtack <= 

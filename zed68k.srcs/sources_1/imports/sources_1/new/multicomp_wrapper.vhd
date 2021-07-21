@@ -39,12 +39,6 @@ port(
         resetn      : in STD_LOGIC;
 
     led : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    
-    --serial
-    uart_rxd_out : out STD_LOGIC;
-    uart_txd_in : in STD_LOGIC;
-
-    rxd2 : in STD_LOGIC;
       
       --ram
     
@@ -306,7 +300,8 @@ attribute dont_touch of reset_proc : label is "true";
 attribute dont_touch of valid_flag : label is "true";
 attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
-
+attribute dont_touch of gameduino_spi : label is "true";
+attribute dont_touch of opl3_spi : label is "true";
 
 begin
    --------------------------------------------------
@@ -482,6 +477,7 @@ end process;
       spi_mosi_o => gd_mosi,       -- sd_cmd_io
       spi_miso_i => gd_miso        -- sd_dat_io(0)
    );
+   
     
     opl3_spi: entity work.spi_master 
   PORT map (
