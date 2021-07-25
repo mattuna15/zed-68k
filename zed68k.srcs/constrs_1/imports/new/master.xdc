@@ -389,16 +389,3 @@ set_property PACKAGE_PIN K6 [get_ports ddr3_reset_n]
 set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 #Internal VREF
 
-
-
-
-
-
-
-
-connect_debug_port u_ila_0/clk [get_nets [list sys_clock_IBUF_BUFG]]
-connect_debug_port u_ila_0/probe0 [get_nets [list {computer/fpu1/s_output_o1_in[0]} {computer/fpu1/s_output_o1_in[1]} {computer/fpu1/s_output_o1_in[2]} {computer/fpu1/s_output_o1_in[3]} {computer/fpu1/s_output_o1_in[4]} {computer/fpu1/s_output_o1_in[5]} {computer/fpu1/s_output_o1_in[6]} {computer/fpu1/s_output_o1_in[7]} {computer/fpu1/s_output_o1_in[8]} {computer/fpu1/s_output_o1_in[9]} {computer/fpu1/s_output_o1_in[10]} {computer/fpu1/s_output_o1_in[11]} {computer/fpu1/s_output_o1_in[12]} {computer/fpu1/s_output_o1_in[13]} {computer/fpu1/s_output_o1_in[14]} {computer/fpu1/s_output_o1_in[15]} {computer/fpu1/s_output_o1_in[16]} {computer/fpu1/s_output_o1_in[17]} {computer/fpu1/s_output_o1_in[18]} {computer/fpu1/s_output_o1_in[19]} {computer/fpu1/s_output_o1_in[20]} {computer/fpu1/s_output_o1_in[21]} {computer/fpu1/s_output_o1_in[22]} {computer/fpu1/s_output_o1_in[23]} {computer/fpu1/s_output_o1_in[24]} {computer/fpu1/s_output_o1_in[25]} {computer/fpu1/s_output_o1_in[26]} {computer/fpu1/s_output_o1_in[27]} {computer/fpu1/s_output_o1_in[28]} {computer/fpu1/s_output_o1_in[29]} {computer/fpu1/s_output_o1_in[30]}]]
-connect_debug_port u_ila_0/probe5 [get_nets [list computer/fpu1/s_start_i]]
-connect_debug_port dbg_hub/clk [get_nets sys_clock_IBUF_BUFG]
-
-

@@ -11,7 +11,6 @@
     },
     "design_tree": {
       "fifo_generator_0": "",
-      "clk_wiz": "",
       "util_reduced_logic_0": "",
       "xlconcat_0": "",
       "fpu_0": "",
@@ -117,24 +116,15 @@
           }
         }
       },
-      "clk_wiz": {
-        "vlnv": "xilinx.com:ip:clk_wiz:6.0",
-        "xci_name": "fpu_design_clk_wiz_0",
-        "parameters": {
-          "USE_LOCKED": {
-            "value": "false"
-          },
-          "USE_RESET": {
-            "value": "false"
-          }
-        }
-      },
       "util_reduced_logic_0": {
         "vlnv": "xilinx.com:ip:util_reduced_logic:2.0",
         "xci_name": "fpu_design_util_reduced_logic_0_0",
         "parameters": {
           "C_OPERATION": {
             "value": "or"
+          },
+          "C_SIZE": {
+            "value": "5"
           }
         }
       },
@@ -143,7 +133,7 @@
         "xci_name": "fpu_design_xlconcat_0_0",
         "parameters": {
           "NUM_PORTS": {
-            "value": "8"
+            "value": "5"
           }
         }
       },
@@ -160,16 +150,16 @@
             "direction": "I",
             "parameters": {
               "CLK_DOMAIN": {
-                "value": "/clk_wiz_clk_out1",
-                "value_src": "ip_prop"
+                "value": "fpu_design_clk_in100",
+                "value_src": "default_prop"
               },
               "FREQ_HZ": {
                 "value": "100000000",
-                "value_src": "ip_prop"
+                "value_src": "default_prop"
               },
               "PHASE": {
-                "value": "0.0",
-                "value_src": "ip_prop"
+                "value": "0.000",
+                "value_src": "default_prop"
               }
             }
           },
@@ -246,15 +236,9 @@
     "nets": {
       "clk_wiz_clk_out1": {
         "ports": [
-          "clk_wiz/clk_out1",
+          "clk_in100",
           "fifo_generator_0/clk",
           "fpu_0/clk_i"
-        ]
-      },
-      "clk_in1_0_1": {
-        "ports": [
-          "clk_in100",
-          "clk_wiz/clk_in1"
         ]
       },
       "start_i_0_1": {
@@ -311,54 +295,6 @@
           "result_o"
         ]
       },
-      "fpu_0_ine_o": {
-        "ports": [
-          "fpu_0/ine_o",
-          "xlconcat_0/In0"
-        ]
-      },
-      "fpu_0_overflow_o": {
-        "ports": [
-          "fpu_0/overflow_o",
-          "xlconcat_0/In1"
-        ]
-      },
-      "fpu_0_underflow_o": {
-        "ports": [
-          "fpu_0/underflow_o",
-          "xlconcat_0/In2"
-        ]
-      },
-      "fpu_0_div_zero_o": {
-        "ports": [
-          "fpu_0/div_zero_o",
-          "xlconcat_0/In3"
-        ]
-      },
-      "fpu_0_inf_o": {
-        "ports": [
-          "fpu_0/inf_o",
-          "xlconcat_0/In4"
-        ]
-      },
-      "fpu_0_zero_o": {
-        "ports": [
-          "fpu_0/zero_o",
-          "xlconcat_0/In5"
-        ]
-      },
-      "fpu_0_qnan_o": {
-        "ports": [
-          "fpu_0/qnan_o",
-          "xlconcat_0/In6"
-        ]
-      },
-      "fpu_0_snan_o": {
-        "ports": [
-          "fpu_0/snan_o",
-          "xlconcat_0/In7"
-        ]
-      },
       "xlconcat_0_dout": {
         "ports": [
           "xlconcat_0/dout",
@@ -387,6 +323,36 @@
         "ports": [
           "util_vector_logic_0/Res",
           "ready_o"
+        ]
+      },
+      "fpu_0_div_zero_o": {
+        "ports": [
+          "fpu_0/div_zero_o",
+          "xlconcat_0/In0"
+        ]
+      },
+      "fpu_0_inf_o": {
+        "ports": [
+          "fpu_0/inf_o",
+          "xlconcat_0/In1"
+        ]
+      },
+      "fpu_0_zero_o": {
+        "ports": [
+          "fpu_0/zero_o",
+          "xlconcat_0/In2"
+        ]
+      },
+      "fpu_0_qnan_o": {
+        "ports": [
+          "fpu_0/qnan_o",
+          "xlconcat_0/In3"
+        ]
+      },
+      "fpu_0_snan_o": {
+        "ports": [
+          "fpu_0/snan_o",
+          "xlconcat_0/In4"
         ]
       }
     }

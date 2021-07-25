@@ -52,19 +52,19 @@
 
 (* X_CORE_INFO = "util_reduced_logic_v2_0_4_util_reduced_logic,Vivado 2020.1" *)
 (* CHECK_LICENSE_TYPE = "fpu_design_util_reduced_logic_0_0,util_reduced_logic_v2_0_4_util_reduced_logic,{}" *)
-(* CORE_GENERATION_INFO = "fpu_design_util_reduced_logic_0_0,util_reduced_logic_v2_0_4_util_reduced_logic,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=util_reduced_logic,x_ipVersion=2.0,x_ipCoreRevision=4,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_OPERATION=or,C_SIZE=8}" *)
+(* CORE_GENERATION_INFO = "fpu_design_util_reduced_logic_0_0,util_reduced_logic_v2_0_4_util_reduced_logic,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=util_reduced_logic,x_ipVersion=2.0,x_ipCoreRevision=4,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_OPERATION=or,C_SIZE=5}" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module fpu_design_util_reduced_logic_0_0 (
   Op1,
   Res
 );
 
-input wire [7 : 0] Op1;
+input wire [4 : 0] Op1;
 output wire Res;
 
   util_reduced_logic_v2_0_4_util_reduced_logic #(
     .C_OPERATION("or"),
-    .C_SIZE(8)
+    .C_SIZE(5)
   ) inst (
     .Op1(Op1),
     .Res(Res)

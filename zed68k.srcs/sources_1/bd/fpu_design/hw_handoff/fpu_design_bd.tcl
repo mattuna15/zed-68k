@@ -177,13 +177,6 @@ proc create_root_design { parentCell } {
   set rmode_i [ create_bd_port -dir I -from 1 -to 0 rmode_i ]
   set start_i [ create_bd_port -dir I start_i ]
 
-  # Create instance: clk_wiz, and set properties
-  set clk_wiz [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz ]
-  set_property -dict [ list \
-   CONFIG.USE_LOCKED {false} \
-   CONFIG.USE_RESET {false} \
- ] $clk_wiz
-
   # Create instance: fifo_generator_0, and set properties
   set fifo_generator_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:fifo_generator:13.2 fifo_generator_0 ]
   set_property -dict [ list \
@@ -218,6 +211,7 @@ proc create_root_design { parentCell } {
   set util_reduced_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_reduced_logic:2.0 util_reduced_logic_0 ]
   set_property -dict [ list \
    CONFIG.C_OPERATION {or} \
+   CONFIG.C_SIZE {5} \
    CONFIG.LOGO_FILE {data/sym_orgate.png} \
  ] $util_reduced_logic_0
 
@@ -232,25 +226,21 @@ proc create_root_design { parentCell } {
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
   set_property -dict [ list \
-   CONFIG.NUM_PORTS {8} \
+   CONFIG.NUM_PORTS {5} \
  ] $xlconcat_0
 
   # Create port connections
-  connect_bd_net -net clk_in1_0_1 [get_bd_ports clk_in100] [get_bd_pins clk_wiz/clk_in1]
-  connect_bd_net -net clk_wiz_clk_out1 [get_bd_pins clk_wiz/clk_out1] [get_bd_pins fifo_generator_0/clk] [get_bd_pins fpu_0/clk_i]
+  connect_bd_net -net clk_wiz_clk_out1 [get_bd_ports clk_in100] [get_bd_pins fifo_generator_0/clk] [get_bd_pins fpu_0/clk_i]
   connect_bd_net -net fifo_generator_0_data_count [get_bd_ports data_count_0] [get_bd_pins fifo_generator_0/data_count]
   connect_bd_net -net fifo_generator_0_dout [get_bd_ports result_o] [get_bd_pins fifo_generator_0/dout]
   connect_bd_net -net fifo_generator_0_empty [get_bd_pins fifo_generator_0/empty] [get_bd_pins util_vector_logic_0/Op1]
-  connect_bd_net -net fpu_0_div_zero_o [get_bd_pins fpu_0/div_zero_o] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net fpu_0_ine_o [get_bd_pins fpu_0/ine_o] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net fpu_0_inf_o [get_bd_pins fpu_0/inf_o] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net fpu_0_div_zero_o [get_bd_pins fpu_0/div_zero_o] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net fpu_0_inf_o [get_bd_pins fpu_0/inf_o] [get_bd_pins xlconcat_0/In1]
   connect_bd_net -net fpu_0_output_o [get_bd_pins fifo_generator_0/din] [get_bd_pins fpu_0/output_o]
-  connect_bd_net -net fpu_0_overflow_o [get_bd_pins fpu_0/overflow_o] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net fpu_0_qnan_o [get_bd_pins fpu_0/qnan_o] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net fpu_0_qnan_o [get_bd_pins fpu_0/qnan_o] [get_bd_pins xlconcat_0/In3]
   connect_bd_net -net fpu_0_ready_o [get_bd_pins fifo_generator_0/wr_en] [get_bd_pins fpu_0/ready_o]
-  connect_bd_net -net fpu_0_snan_o [get_bd_pins fpu_0/snan_o] [get_bd_pins xlconcat_0/In7]
-  connect_bd_net -net fpu_0_underflow_o [get_bd_pins fpu_0/underflow_o] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net fpu_0_zero_o [get_bd_pins fpu_0/zero_o] [get_bd_pins xlconcat_0/In5]
+  connect_bd_net -net fpu_0_snan_o [get_bd_pins fpu_0/snan_o] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net fpu_0_zero_o [get_bd_pins fpu_0/zero_o] [get_bd_pins xlconcat_0/In2]
   connect_bd_net -net fpu_op_i_0_1 [get_bd_ports fpu_op_i] [get_bd_pins fpu_0/fpu_op_i]
   connect_bd_net -net opa_i_0_1 [get_bd_ports opa_i] [get_bd_pins fpu_0/opa_i]
   connect_bd_net -net opb_i_0_1 [get_bd_ports opb_i] [get_bd_pins fpu_0/opb_i]

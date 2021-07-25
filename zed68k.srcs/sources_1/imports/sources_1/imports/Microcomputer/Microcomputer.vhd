@@ -168,50 +168,50 @@ signal fpu_count : std_logic_vector(4 downto 0);
     
 begin
 
-interrupts: entity work.interrupt_controller
-	port map (
-		clk => sys_clk,
-		reset => n_reset,
-		int1 => per_ps2_int,
-		int2 => per_timer_int,
-		int3 => '0',
-		int4 => '0',
-		int5 => '0',
-	    int6 => '0',
-		int7 => '0',
-		int_out => int_out,
-		ack => int_ack
-		);
+--interrupts: entity work.interrupt_controller
+--	port map (
+--		clk => sys_clk,
+--		reset => n_reset,
+--		int1 => per_ps2_int,
+--		int2 => per_timer_int,
+--		int3 => '0',
+--		int4 => '0',
+--		int5 => '0',
+--	    int6 => '0',
+--		int7 => '0',
+--		int_out => int_out,
+--		ack => int_ack
+--		);
 
-peripheral : entity work.peripheral_controller
-		port map (
-		clk => sys_clk,
-		reset => n_reset,
+--peripheral : entity work.peripheral_controller
+--		port map (
+--		clk => sys_clk,
+--		reset => n_reset,
 		
-		reg_addr_in => per_reg_addr,
-		reg_data_in => per_reg_datain,
-		reg_data_out => per_reg_dataout,
-		reg_rw => per_reg_rw,
-		reg_uds => cpu_uds,
-		reg_lds => cpu_lds,
-		reg_dtack => per_reg_dtack,
-		reg_req => per_reg_req,
+--		reg_addr_in => per_reg_addr,
+--		reg_data_in => per_reg_datain,
+--		reg_data_out => per_reg_dataout,
+--		reg_rw => per_reg_rw,
+--		reg_uds => cpu_uds,
+--		reg_lds => cpu_lds,
+--		reg_dtack => per_reg_dtack,
+--		reg_req => per_reg_req,
 
-		timer_int => per_timer_int,
-		ps2_int => per_ps2_int,
+--		timer_int => per_timer_int,
+--		ps2_int => per_ps2_int,
 
-		ps2k_clk_in => ps2k_clk_in,
-		ps2k_dat_in => ps2k_dat_in,
-		ps2k_clk_out => ps2k_clk_out,
-		ps2k_dat_out => ps2k_dat_out,
-		ps2m_clk_in => ps2m_clk_in,
-		ps2m_dat_in => ps2m_dat_in,
-		ps2m_clk_out => ps2m_clk_out,
-		ps2m_dat_out => ps2m_dat_out,
+--		ps2k_clk_in => ps2k_clk_in,
+--		ps2k_dat_in => ps2k_dat_in,
+--		ps2k_clk_out => ps2k_clk_out,
+--		ps2k_dat_out => ps2k_dat_out,
+--		ps2m_clk_in => ps2m_clk_in,
+--		ps2m_dat_in => ps2m_dat_in,
+--		ps2m_clk_out => ps2m_clk_out,
+--		ps2m_dat_out => ps2m_dat_out,
 
-		bootrom_overlay => open,
-		hex => open
-	);
+--		bootrom_overlay => open,
+--		hex => open
+--	);
 
 --rtc
   rtc : ENTITY work.pmod_real_time_clock 
@@ -255,7 +255,7 @@ cpu1 : entity work.TG68
         reset => n_reset,
         clkena_in => '1',
         data_in => cpuDataIn,   
-		IPL => int_out,	-- For this simple demo we'll ignore interrupts
+		IPL => "111",	-- For this simple demo we'll ignore interrupts
 		dtack => cpu_dtack,
 		addr => cpuAddress,
 		as => cpu_as,
@@ -379,10 +379,10 @@ eth_ctl(6 downto 5) <= cpuDataOut(6 downto 5) when cpuAddress = x"f40045" and cp
 
 -- peripheral
 
-per_reg_req <= '1' when cpuAddress >= X"f20000" and cpuAddress <= X"f2FFFF" else '0';
-per_reg_addr <= cpuAddress(11 downto 0) when per_reg_req = '1' ;
-per_reg_datain <= cpuDataOut when per_reg_req = '1' and cpu_r_w = '0';
-per_reg_rw <= cpu_r_w when per_reg_req = '1';
+--per_reg_req <= '1' when cpuAddress >= X"f20000" and cpuAddress <= X"f2FFFF" else '0';
+--per_reg_addr <= cpuAddress(11 downto 0) when per_reg_req = '1' ;
+--per_reg_datain <= cpuDataOut when per_reg_req = '1' and cpu_r_w = '0';
+--per_reg_rw <= cpu_r_w when per_reg_req = '1';
 
 
 --FPU
@@ -524,7 +524,7 @@ opa_i(7 downto 0) when (cpuAddress = x"f50002" or cpuAddress = x"f50003")  and c
 opb_i(23 downto 16) when (cpuAddress = x"f50004" or cpuAddress = x"f50005")  and cpu_r_w = '1' and cpu_lds = '0' else
 opb_i(7 downto 0) when (cpuAddress = x"f50006" or cpuAddress = x"f50007")  and cpu_r_w = '1' and cpu_lds = '0' else
 result_o(23 downto 16) when (cpuAddress = x"f50008" or cpuAddress = x"f50009")  and cpu_r_w = '1' and cpu_lds = '0' else
-result_o(7 downto 0) when (cpuAddress = x"f5000a" or cpuAddress = x"f500b")  and cpu_r_w = '1' and cpu_lds = '0' else
+result_o(7 downto 0) when (cpuAddress = x"f5000a" or cpuAddress = x"f5000b")  and cpu_r_w = '1' and cpu_lds = '0' else
 fpu_ctl when (cpuAddress = x"f5000c" or cpuAddress = x"f5000d") and cpu_r_w = '1' and cpu_lds = '0' else
 fpu_sts when (cpuAddress = x"f5000e" or cpuAddress = x"f5000f") and cpu_r_w = '1' and cpu_lds = '0' else
 X"00" when cpu_lds = '1' ;

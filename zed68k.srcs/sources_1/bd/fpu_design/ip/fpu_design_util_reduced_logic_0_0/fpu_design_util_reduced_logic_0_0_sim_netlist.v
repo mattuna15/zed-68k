@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Wed Jul 21 11:23:51 2021
+// Date        : Sun Jul 25 07:37:12 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/fpu_design/ip/fpu_design_util_reduced_logic_0_0/fpu_design_util_reduced_logic_0_0_sim_netlist.v
@@ -17,10 +17,10 @@
 module fpu_design_util_reduced_logic_0_0
    (Op1,
     Res);
-  input [7:0]Op1;
+  input [4:0]Op1;
   output Res;
 
-  wire [7:0]Op1;
+  wire [4:0]Op1;
   wire Res;
 
   fpu_design_util_reduced_logic_0_0_util_reduced_logic_v2_0_4_util_reduced_logic inst
@@ -33,29 +33,20 @@ module fpu_design_util_reduced_logic_0_0_util_reduced_logic_v2_0_4_util_reduced_
    (Res,
     Op1);
   output Res;
-  input [7:0]Op1;
+  input [4:0]Op1;
 
-  wire [7:0]Op1;
+  wire [4:0]Op1;
   wire Res;
-  wire Res_INST_0_i_1_n_0;
 
   LUT5 #(
     .INIT(32'hFFFFFFFE)) 
-    Res_INST_0
-       (.I0(Op1[2]),
+    Res0
+       (.I0(Op1[0]),
         .I1(Op1[3]),
-        .I2(Op1[0]),
+        .I2(Op1[4]),
         .I3(Op1[1]),
-        .I4(Res_INST_0_i_1_n_0),
+        .I4(Op1[2]),
         .O(Res));
-  LUT4 #(
-    .INIT(16'hFFFE)) 
-    Res_INST_0_i_1
-       (.I0(Op1[5]),
-        .I1(Op1[4]),
-        .I2(Op1[7]),
-        .I3(Op1[6]),
-        .O(Res_INST_0_i_1_n_0));
 endmodule
 `ifndef GLBL
 `define GLBL
