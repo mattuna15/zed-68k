@@ -3,7 +3,7 @@
    "Default View_ScaleFactor":"1.67328",
    "Default View_TopLeft":"-10,-88",
    "ExpandedHierarchyInLayout":"",
-   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS-threadsafe
+   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS
 #  -string -flagsOSRD
 preplace port clk_in100 -pg 1 -lvl 0 -x -20 -y 20 -defaultsOSRD
 preplace port start_i -pg 1 -lvl 0 -x -20 -y 240 -defaultsOSRD

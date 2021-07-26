@@ -109,7 +109,7 @@ signal ine_o, overflow_o, underflow_o, div_zero_o, inf_o, zero_o, qnan_o, snan_o
 
 signal slv_out : std_logic_vector(31 downto 0);
 
-constant CLK_PERIOD :time := 10 ns; -- period of clk period
+constant CLK_PERIOD :time := 1ns; -- period of clk period
 
 
 begin
@@ -152,7 +152,7 @@ begin
     ---------------------------------------------------------------------------
     -- toggle clock
     ---------------------------------------------------------------------------
-    clk_i <= not(clk_i) after 5 ns;
+    clk_i <= not(clk_i) after 500 ps;
 
 
     verify : process 

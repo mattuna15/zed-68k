@@ -154,15 +154,9 @@ architecture rtl of fpu is
     signal div_valid : std_logic;
 	
 	--	***Square units***
-	
-	signal pre_norm_sqrt_fracta_o		: std_logic_vector(51 downto 0);
-	signal pre_norm_sqrt_exp_o				: std_logic_vector(7 downto 0);
-			 
-	signal sqrt_sqr_o			: std_logic_vector(25 downto 0);
-	signal sqrt_ine_o			: std_logic;
-
-	signal post_norm_sqrt_output	: std_logic_vector(31 downto 0);
-	signal post_norm_sqrt_ine_o		: std_logic;
+	signal sqrt_output : std_logic_vector(31 downto 0);
+    signal sqrt_ready : std_logic;
+    signal sqrt_valid : std_logic;
 	
 	
 begin
@@ -269,38 +263,20 @@ begin
     
     );
 
+    
+    --***Square units***
 
-			 
-	
-	--***Square units***
-
-	i_pre_norm_sqrt : pre_norm_sqrt
-	port map(
-			 clk_i => clk_i,
-			 opa_i => s_opa_i,
-			 fracta_52_o => pre_norm_sqrt_fracta_o,
-			 exp_o => pre_norm_sqrt_exp_o);
-		
-	i_sqrt: sqrt 
-	generic map(RD_WIDTH=>52, SQ_WIDTH=>26) 
-	port map(
-			 clk_i => clk_i,
-			 rad_i => pre_norm_sqrt_fracta_o, 
-			 start_i => s_start_i, 
-	   		 ready_o => open, 
-	  		 sqr_o => sqrt_sqr_o,
-			 ine_o => sqrt_ine_o);
-
-	i_post_norm_sqrt : post_norm_sqrt
-	port map(
-			clk_i => clk_i,
-			opa_i => s_opa_i,
-			fract_26_i => sqrt_sqr_o,
-			exp_i => pre_norm_sqrt_exp_o,
-			ine_i => sqrt_ine_o,
-			rmode_i => s_rmode_i,
-			output_o => post_norm_sqrt_output,
-			ine_o => post_norm_sqrt_ine_o);
+	i_sqr: entity work.fpsqrt 
+    Port  map ( 
+        clock_i => clk_i,
+        reset_n => start_i,
+        op_a => opa_i,
+        result => sqrt_output,
+        
+        valid_i => sqrt_valid,
+        ready_o => sqrt_ready
+    
+    );
 			
 			
 			
@@ -345,6 +321,11 @@ begin
 			    else 
 			         div_valid <= '0';
 			    end if;
+			    if (fpu_op_i="100") then
+			         sqrt_valid <= '1';
+			    else 
+			         sqrt_valid <= '0';
+			    end if;
 				s_state <= busy;
 				s_count <= 0;
 			elsif s_count=6 and ((fpu_op_i="000") or (fpu_op_i="001")) then
@@ -360,7 +341,8 @@ begin
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;
-			elsif s_count=33 and fpu_op_i="100" then
+			elsif s_count>=33 and fpu_op_i="100" and sqrt_ready='1' then
+			    sqrt_valid <= '0';
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;			
@@ -386,9 +368,9 @@ begin
 			elsif fpu_op_i="011" and div_valid = '1' then
 				s_output1  <= div_output;
 				s_ine_o <= '0';
-			elsif fpu_op_i="100" then
-				s_output1 	<= post_norm_sqrt_output;
-				s_ine_o 	<= post_norm_sqrt_ine_o;			
+			elsif fpu_op_i="100" and sqrt_valid = '1' then
+				s_output1 	<= sqrt_output;
+				s_ine_o 	<= '0';		
 			else
 				s_output1 	<= (others => '0');
 				s_ine_o 		<= '0';
