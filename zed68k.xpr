@@ -47,20 +47,20 @@
     <Option Name="DSADesignIntentExternalHost" Val="false"/>
     <Option Name="DSADesignIntentEmbedded" Val="true"/>
     <Option Name="DSADesignIntentDatacenter" Val="false"/>
-    <Option Name="WTXSimLaunchSim" Val="1039"/>
+    <Option Name="WTXSimLaunchSim" Val="1096"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="179"/>
-    <Option Name="WTModelSimExportSim" Val="178"/>
-    <Option Name="WTQuestaExportSim" Val="178"/>
-    <Option Name="WTIesExportSim" Val="178"/>
-    <Option Name="WTVcsExportSim" Val="178"/>
-    <Option Name="WTRivieraExportSim" Val="178"/>
-    <Option Name="WTActivehdlExportSim" Val="178"/>
+    <Option Name="WTXSimExportSim" Val="189"/>
+    <Option Name="WTModelSimExportSim" Val="188"/>
+    <Option Name="WTQuestaExportSim" Val="188"/>
+    <Option Name="WTIesExportSim" Val="188"/>
+    <Option Name="WTVcsExportSim" Val="188"/>
+    <Option Name="WTRivieraExportSim" Val="188"/>
+    <Option Name="WTActivehdlExportSim" Val="188"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -76,6 +76,13 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sources_1/ip/floating_point_0/floating_point_0.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/imports/fpu100/fpupack.vhd">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/fpupack.vhd"/>
@@ -88,6 +95,12 @@
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/comppack.vhd"/>
           <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/fpdiv.vhd">
+        <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -111,14 +124,6 @@
       <File Path="$PSRCDIR/sources_1/imports/fpu100/post_norm_addsub.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/post_norm_addsub.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/post_norm_div.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/post_norm_div.vhd"/>
           <Attr Name="ImportTime" Val="1626772701"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -148,14 +153,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/pre_norm_div.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/pre_norm_div.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/imports/fpu100/pre_norm_mul.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/pre_norm_mul.vhd"/>
@@ -167,14 +164,6 @@
       <File Path="$PSRCDIR/sources_1/imports/fpu100/pre_norm_sqrt.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/pre_norm_sqrt.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/serial_div.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/serial_div.vhd"/>
           <Attr Name="ImportTime" Val="1626772701"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -332,6 +321,33 @@
       <File Path="$PSRCDIR/sources_1/imports/sources_1/new/multicomp_wrapper.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/post_norm_div.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/post_norm_div.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/pre_norm_div.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/pre_norm_div.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/serial_div.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/serial_div.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/interrupt_controller.vhd">

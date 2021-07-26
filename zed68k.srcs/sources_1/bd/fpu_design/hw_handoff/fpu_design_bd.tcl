@@ -182,16 +182,20 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.Data_Count {true} \
    CONFIG.Data_Count_Width {5} \
+   CONFIG.Empty_Threshold_Assert_Value {2} \
+   CONFIG.Empty_Threshold_Negate_Value {3} \
    CONFIG.Full_Threshold_Assert_Value {30} \
    CONFIG.Full_Threshold_Negate_Value {29} \
    CONFIG.Input_Data_Width {32} \
    CONFIG.Input_Depth {32} \
    CONFIG.Output_Data_Width {32} \
    CONFIG.Output_Depth {32} \
+   CONFIG.Performance_Options {Standard_FIFO} \
    CONFIG.Read_Data_Count_Width {5} \
    CONFIG.Reset_Pin {false} \
    CONFIG.Reset_Type {Asynchronous_Reset} \
    CONFIG.Use_Dout_Reset {false} \
+   CONFIG.Use_Extra_Logic {false} \
    CONFIG.Valid_Flag {false} \
    CONFIG.Write_Data_Count_Width {5} \
  ] $fifo_generator_0

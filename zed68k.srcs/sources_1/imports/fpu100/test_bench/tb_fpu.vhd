@@ -103,7 +103,7 @@ signal fpu_op_i		: std_logic_vector(2 downto 0);
 signal rmode_i : std_logic_vector(1 downto 0);
 signal output_o : std_logic_vector(31 downto 0);
 signal start_i, ready_o : std_logic ; 
-signal ine_o, overflow_o, underflow_o, div_zero_o, inf_o, zero_o, qnan_o, snan_o: std_logic;
+signal ine_o, overflow_o, underflow_o, div_zero_o, inf_o, zero_o, qnan_o, snan_o, rd_en: std_logic;
 
 
 
@@ -114,24 +114,39 @@ constant CLK_PERIOD :time := 10 ns; -- period of clk period
 
 begin
 
-    -- instantiate fpu
-    i_fpu: fpu port map (
-			clk_i => clk_i,
+--    -- instantiate fpu
+--    i_fpu: fpu port map (
+--			clk_i => clk_i,
+--			opa_i => opa_i,
+--			opb_i => opb_i,
+--			fpu_op_i =>	fpu_op_i,
+--			rmode_i => rmode_i,	
+--			output_o => output_o,  
+--			ine_o => ine_o,
+--			overflow_o => overflow_o,
+--			underflow_o => underflow_o,		
+--        	div_zero_o => div_zero_o,
+--        	inf_o => inf_o,
+--        	zero_o => zero_o,		
+--        	qnan_o => qnan_o, 		
+--        	snan_o => snan_o,
+--        	start_i => start_i,
+--        	ready_o => ready_o);	
+        	
+    i_fpu: entity work.fpu_design_wrapper 
+    port map (
+			clk_in100 => clk_i,
 			opa_i => opa_i,
 			opb_i => opb_i,
 			fpu_op_i =>	fpu_op_i,
 			rmode_i => rmode_i,	
-			output_o => output_o,  
-			ine_o => ine_o,
-			overflow_o => overflow_o,
-			underflow_o => underflow_o,		
-        	div_zero_o => div_zero_o,
-        	inf_o => inf_o,
-        	zero_o => zero_o,		
-        	qnan_o => qnan_o, 		
-        	snan_o => snan_o,
+			result_o => output_o,   
+			error => open,
         	start_i => start_i,
-        	ready_o => ready_o);		
+        	ready_o => ready_o,
+        	rd_en => rd_en,
+        	data_count_0 => open
+        	);		
 			
 
     ---------------------------------------------------------------------------
@@ -141,110 +156,100 @@ begin
 
 
     verify : process 
-		--The operands and results are in Hex format. The test vectors must be placed in a strict order for the verfication to work.
-		file testcases_file: TEXT open read_mode is "testcases.txt"; --Name of the file containing the test cases. 
 
-		variable file_line: line;
-		variable str_in: string(8 downto 1);
-		variable str_fpu_op: string(3 downto 1);
-		variable str_rmode: string(2 downto 1);
     begin
 
 
 		---------------------------------------------------------------------------------------------------------------------------------------------------
-		---------------------------------------------------SoftFloat test vectors (10000 test cases for each operation) --------------------------------------------------------------------
+	
 		start_i <= '0';
-		while not endfile(testcases_file) loop
-
-			wait for CLK_PERIOD; start_i <= '1';
-			
-			str_read(testcases_file,str_in);
-			opa_i <= strhex_to_slv(str_in);
-			
-			str_read(testcases_file,str_in);
-			opb_i <= strhex_to_slv(str_in);
-
-			str_read(testcases_file,str_fpu_op);
-			fpu_op_i <= to_std_logic_vector(str_fpu_op);
-			
-			str_read(testcases_file,str_rmode);
-			rmode_i <= to_std_logic_vector(str_rmode);
-			
-			str_read(testcases_file,str_in);
-			slv_out <= strhex_to_slv(str_in);
-			
-			wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-
-			assert output_o = slv_out
-			report "Error!!!"
-			severity failure;
-			str_read(testcases_file,str_in);
-			
-		end loop;		
-
-		-------- Boundary values-----
-		
-		start_i <= '0';
-		--		  seeeeeeeefffffffffffffffffffffff
-		--infinity
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01111111011111111111111111111111";  
-		opb_i <= "01111111011111111111111111111111"; 
-		fpu_op_i <= "000";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		assert output_o="01111111100000000000000000000000"
-		report "Error!!!"
-		severity failure;
-		
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- 1 x1.001 - 1x1.000 = 0x0.001
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "00000000100100000000000000000000";  
-		opb_i <= "10000000100000000000000000000000"; 
-		fpu_op_i <= "000";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		assert output_o="00000000000100000000000000000000"
-		report "Error!!!"
-		severity failure;	
-
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- 10 x 1.0001 - 10 x 1.0000 = 
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "00000001000010000000000000000000";  
-		opb_i <= "10000001000000000000000000000000"; 
-		fpu_op_i <= "000";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		assert output_o="00000000000100000000000000000000"
-		report "Error!!!"
-		severity failure;
-		
-
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- -0 -0 = -0  
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "10000000000000000000000000000000";  
-		opb_i <= "10000000000000000000000000000000"; 
-		fpu_op_i <= "000";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		assert output_o="10000000000000000000000000000000"
-		report "Error!!!"
-		severity failure;
-		
 		--		  seeeeeeeefffffffffffffffffffffff
 		-- 0 + x = x 
 		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "00000000000000000000000000000000";  
-		opb_i <= "01000010001000001000000000100000"; 
+		opa_i <= "01000000001101110111110011101110";  
+		opb_i <= "00111111010111011111001110110110"; 
 		fpu_op_i <= "000";
 		rmode_i <= "00";
 		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		assert output_o="01000010001000001000000000100000"
-		report "Error!!!"
-		severity failure;
+		
+		wait for CLK_PERIOD;
+		rd_en <= '1';
+		wait for CLK_PERIOD;
+		assert output_o="01000000010100111010001010110011";
+		rd_en <= '0';
+		wait for CLK_PERIOD;
+
+		
+				start_i <= '0';
+		--		  seeeeeeeefffffffffffffffffffffff
+		-- 0 + x = x 
+		wait for CLK_PERIOD; start_i <= '1'; 
+		opa_i <= "01000000001101110111110011101110";  
+		opb_i <= "00111111010111011111001110110110"; 
+		fpu_op_i <= "001";
+		rmode_i <= "00";
+		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
+		
+		wait for CLK_PERIOD;
+		rd_en <= '1';
+		wait for CLK_PERIOD;
+		assert output_o="01000000010100111010001010110011";
+		rd_en <= '0';
+		wait for CLK_PERIOD;
+
+		
+				start_i <= '0';
+		--		  seeeeeeeefffffffffffffffffffffff
+		-- 0 + x = x 
+		wait for CLK_PERIOD; start_i <= '1'; 
+		opa_i <= "01000000001101110111110011101110";  
+		opb_i <= "00111111010111011111001110110110"; 
+		fpu_op_i <= "010";
+		rmode_i <= "00";
+		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
+		
+		wait for CLK_PERIOD;
+		rd_en <= '1';
+		wait for CLK_PERIOD;
+		assert output_o="01000000010100111010001010110011";
+		rd_en <= '0';
+		wait for CLK_PERIOD;
+				
+		
+				start_i <= '0';
+		--		  seeeeeeeefffffffffffffffffffffff
+		-- 0 + x = x 
+		wait for CLK_PERIOD; start_i <= '1'; 
+		opa_i <= "01000000001101110111110011101110";  
+		opb_i <= "00111111010111011111001110110110"; 
+		fpu_op_i <= "011";
+		rmode_i <= "00";
+		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
+		
+		wait for CLK_PERIOD;
+		rd_en <= '1';
+		wait for CLK_PERIOD;
+		assert output_o="01000000010100111010001010110011";
+		rd_en <= '0';
+		wait for CLK_PERIOD;
+		
+						start_i <= '0';
+		--		  seeeeeeeefffffffffffffffffffffff
+		-- 0 + x = x 
+		wait for CLK_PERIOD; start_i <= '1'; 
+		opa_i <= "01000000001101110111110011101110";  
+		opb_i <= "00111111010111011111001110110110"; 
+		fpu_op_i <= "100";
+		rmode_i <= "00";
+		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
+		
+		wait for CLK_PERIOD;
+		rd_en <= '1';
+		wait for CLK_PERIOD;
+		assert output_o="01000000010100111010001010110011";
+		rd_en <= '0';
+		wait for CLK_PERIOD;
+				
 		
 
 		----------------------------------------------------------------------------------------------------------------------------------------------------

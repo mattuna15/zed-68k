@@ -1,0 +1,7 @@
+fpu_design_fpu_0_0.v,verilog,xil_defaultlib,../../../bd/fpu_design/ip/fpu_design_fpu_0_0/sim/fpu_design_fpu_0_0.v,
+fpu_design_fifo_generator_0_0.v,verilog,xil_defaultlib,../../../bd/fpu_design/ip/fpu_design_fifo_generator_0_0/sim/fpu_design_fifo_generator_0_0.v,
+fpu_design_util_reduced_logic_0_0.v,verilog,xil_defaultlib,../../../bd/fpu_design/ip/fpu_design_util_reduced_logic_0_0/sim/fpu_design_util_reduced_logic_0_0.v,
+fpu_design_xlconcat_0_0.v,verilog,xil_defaultlib,../../../bd/fpu_design/ip/fpu_design_xlconcat_0_0/sim/fpu_design_xlconcat_0_0.v,
+fpu_design_util_vector_logic_0_0.v,verilog,xil_defaultlib,../../../bd/fpu_design/ip/fpu_design_util_vector_logic_0_0/sim/fpu_design_util_vector_logic_0_0.v,
+fpu_design.v,verilog,xil_defaultlib,../../../bd/fpu_design/sim/fpu_design.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v

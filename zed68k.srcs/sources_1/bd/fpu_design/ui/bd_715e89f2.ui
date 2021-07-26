@@ -1,48 +1,48 @@
 {
    "ActiveEmotionalView":"Default View",
    "Default View_ScaleFactor":"1.67328",
-   "Default View_TopLeft":"-129,-86",
+   "Default View_TopLeft":"-10,-88",
    "ExpandedHierarchyInLayout":"",
-   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS
+   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS-threadsafe
 #  -string -flagsOSRD
-preplace port clk_in100 -pg 1 -lvl 0 -x 0 -y 20 -defaultsOSRD
-preplace port start_i -pg 1 -lvl 0 -x 0 -y 240 -defaultsOSRD
-preplace port rd_en -pg 1 -lvl 0 -x 0 -y 320 -defaultsOSRD
-preplace port error -pg 1 -lvl 4 -x 920 -y 420 -defaultsOSRD
-preplace portBus opa_i -pg 1 -lvl 0 -x 0 -y 120 -defaultsOSRD
-preplace portBus opb_i -pg 1 -lvl 0 -x 0 -y 150 -defaultsOSRD
-preplace portBus fpu_op_i -pg 1 -lvl 0 -x 0 -y 180 -defaultsOSRD
-preplace portBus rmode_i -pg 1 -lvl 0 -x 0 -y 210 -defaultsOSRD
-preplace portBus ready_o -pg 1 -lvl 4 -x 920 -y 300 -defaultsOSRD
-preplace portBus result_o -pg 1 -lvl 4 -x 920 -y 360 -defaultsOSRD
-preplace portBus data_count_0 -pg 1 -lvl 4 -x 920 -y 130 -defaultsOSRD
-preplace inst fifo_generator_0 -pg 1 -lvl 3 -x 720 -y 130 -defaultsOSRD
-preplace inst util_reduced_logic_0 -pg 1 -lvl 3 -x 720 -y 420 -defaultsOSRD
-preplace inst xlconcat_0 -pg 1 -lvl 2 -x 410 -y 220 -defaultsOSRD
+preplace port clk_in100 -pg 1 -lvl 0 -x -20 -y 20 -defaultsOSRD
+preplace port start_i -pg 1 -lvl 0 -x -20 -y 240 -defaultsOSRD
+preplace port rd_en -pg 1 -lvl 0 -x -20 -y 320 -defaultsOSRD
+preplace port error -pg 1 -lvl 4 -x 970 -y 420 -defaultsOSRD
+preplace portBus opa_i -pg 1 -lvl 0 -x -20 -y 120 -defaultsOSRD
+preplace portBus opb_i -pg 1 -lvl 0 -x -20 -y 150 -defaultsOSRD
+preplace portBus fpu_op_i -pg 1 -lvl 0 -x -20 -y 180 -defaultsOSRD
+preplace portBus rmode_i -pg 1 -lvl 0 -x -20 -y 210 -defaultsOSRD
+preplace portBus ready_o -pg 1 -lvl 4 -x 970 -y 300 -defaultsOSRD
+preplace portBus result_o -pg 1 -lvl 4 -x 970 -y 360 -defaultsOSRD
+preplace portBus data_count_0 -pg 1 -lvl 4 -x 970 -y 130 -defaultsOSRD
+preplace inst fifo_generator_0 -pg 1 -lvl 3 -x 760 -y 130 -defaultsOSRD
+preplace inst util_reduced_logic_0 -pg 1 -lvl 3 -x 760 -y 420 -defaultsOSRD
+preplace inst xlconcat_0 -pg 1 -lvl 2 -x 430 -y 220 -defaultsOSRD
+preplace inst util_vector_logic_0 -pg 1 -lvl 3 -x 760 -y 300 -defaultsOSRD
 preplace inst fpu_0 -pg 1 -lvl 1 -x 170 -y 170 -defaultsOSRD
-preplace inst util_vector_logic_0 -pg 1 -lvl 3 -x 720 -y 300 -defaultsOSRD
-preplace netloc clk_wiz_clk_out1 1 0 3 30 20 NJ 20 520J
-preplace netloc start_i_0_1 1 0 1 30J 220n
-preplace netloc opa_i_0_1 1 0 1 20J 120n
-preplace netloc opb_i_0_1 1 0 1 30J 150n
+preplace netloc clk_wiz_clk_out1 1 0 3 20 20 310J 120 520J
+preplace netloc start_i_0_1 1 0 1 20J 220n
+preplace netloc opa_i_0_1 1 0 1 0J 120n
+preplace netloc opb_i_0_1 1 0 1 0J 150n
 preplace netloc fpu_op_i_0_1 1 0 1 NJ 180
-preplace netloc rmode_i_0_1 1 0 1 20J 200n
+preplace netloc rmode_i_0_1 1 0 1 0J 200n
 preplace netloc fpu_0_output_o 1 1 2 N 80 NJ
 preplace netloc fpu_0_ready_o 1 1 2 N 100 NJ
-preplace netloc rd_en_0_1 1 0 3 NJ 320 NJ 320 510J
-preplace netloc fifo_generator_0_dout 1 2 2 540 360 NJ
-preplace netloc xlconcat_0_dout 1 2 1 500J 220n
+preplace netloc rd_en_0_1 1 0 3 10J 10 NJ 10 530J
+preplace netloc fifo_generator_0_dout 1 2 2 550 360 NJ
+preplace netloc xlconcat_0_dout 1 2 1 530J 220n
 preplace netloc util_reduced_logic_0_Res 1 3 1 NJ 420
 preplace netloc fifo_generator_0_data_count 1 3 1 NJ 130
-preplace netloc fifo_generator_0_empty 1 2 1 530 140n
+preplace netloc fifo_generator_0_empty 1 2 1 540 140n
 preplace netloc util_vector_logic_0_Res 1 3 1 NJ 300
 preplace netloc fpu_0_div_zero_o 1 1 1 N 180
 preplace netloc fpu_0_inf_o 1 1 1 N 200
 preplace netloc fpu_0_zero_o 1 1 1 N 220
 preplace netloc fpu_0_qnan_o 1 1 1 N 240
 preplace netloc fpu_0_snan_o 1 1 1 N 260
-levelinfo -pg 1 0 170 410 720 920
-pagesize -pg 1 -db -bbox -sgen -130 0 1080 480
+levelinfo -pg 1 -20 170 430 760 970
+pagesize -pg 1 -db -bbox -sgen -150 0 1130 480
 "
 }
 {

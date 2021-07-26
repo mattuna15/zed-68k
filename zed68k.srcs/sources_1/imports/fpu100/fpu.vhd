@@ -148,19 +148,10 @@ architecture rtl of fpu is
 	signal post_norm_mul_output	: std_logic_vector(31 downto 0);
 	signal post_norm_mul_ine	: std_logic;
 	
-	--	***Division units signals***
-	
-	signal pre_norm_div_dvdnd : std_logic_vector(49 downto 0);
-	signal pre_norm_div_dvsor : std_logic_vector(26 downto 0);
-	signal pre_norm_div_exp	: std_logic_vector(EXP_WIDTH+1 downto 0);
-	
-	signal serial_div_qutnt : std_logic_vector(26 downto 0);
-	signal serial_div_rmndr : std_logic_vector(26 downto 0);
-	signal serial_div_sign : std_logic;
-	signal serial_div_div_zero : std_logic;
-	
-	signal post_norm_div_output : std_logic_vector(31 downto 0);
-	signal post_norm_div_ine : std_logic;
+
+    signal div_output : std_logic_vector(31 downto 0);
+    signal div_ready : std_logic;
+    signal div_valid : std_logic;
 	
 	--	***Square units***
 	
@@ -265,41 +256,20 @@ begin
 		
 	--***Division units***
 	
-	i_pre_norm_div : pre_norm_div
-	port map(
-			 clk_i => clk_i,
-			 opa_i => s_opa_i,
-			 opb_i => s_opb_i,
-			 exp_10_o => pre_norm_div_exp,
-			 dvdnd_50_o	=> pre_norm_div_dvdnd,
-			 dvsor_27_o	=> pre_norm_div_dvsor);
-			 
-	i_serial_div : serial_div
-	port map(
-			 clk_i=> clk_i,
-			 dvdnd_i => pre_norm_div_dvdnd,
-			 dvsor_i => pre_norm_div_dvsor,
-			 sign_dvd_i => s_opa_i(31),
-			 sign_div_i => s_opb_i(31),
-			 start_i => s_start_i,
-			 ready_o => open,
-			 qutnt_o => serial_div_qutnt,
-			 rmndr_o => serial_div_rmndr,
-			 sign_o => serial_div_sign,
-			 div_zero_o	=> serial_div_div_zero);
-	
-	i_post_norm_div : post_norm_div
-	port map(
-			 clk_i => clk_i,
-			 opa_i => s_opa_i,
-			 opb_i => s_opb_i,
-			 qutnt_i =>	serial_div_qutnt,
-			 rmndr_i => serial_div_rmndr,
-			 exp_10_i => pre_norm_div_exp,
-			 sign_i	=> serial_div_sign,
-			 rmode_i =>	s_rmode_i,
-			 output_o => post_norm_div_output,
-			 ine_o => post_norm_div_ine);
+	i_div: entity work.fpdiv 
+    Port  map ( 
+        clock_i => clk_i,
+        reset_n => start_i,
+        op_a => opa_i,
+        op_b => opb_i,
+        result => div_output,
+        
+        valid_i => div_valid,
+        ready_o => div_ready
+    
+    );
+
+
 			 
 	
 	--***Square units***
@@ -370,6 +340,11 @@ begin
 	begin
 		if rising_edge(clk_i) then
 			if s_start_i ='1' then
+			    if (fpu_op_i="011") then
+			         div_valid <= '1';
+			    else 
+			         div_valid <= '0';
+			    end if;
 				s_state <= busy;
 				s_count <= 0;
 			elsif s_count=6 and ((fpu_op_i="000") or (fpu_op_i="001")) then
@@ -380,7 +355,8 @@ begin
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;
-			elsif s_count=33 and fpu_op_i="011" then
+			elsif div_ready = '1' and fpu_op_i="011" and s_count>=63 then
+			    div_valid <= '0';
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;
@@ -407,9 +383,9 @@ begin
 			elsif fpu_op_i="010" then
 				s_output1 	<= post_norm_mul_output;
 				s_ine_o 		<= post_norm_mul_ine;
-			elsif fpu_op_i="011" then
-				s_output1 	<= post_norm_div_output;
-				s_ine_o 		<= post_norm_div_ine;		
+			elsif fpu_op_i="011" and div_valid = '1' then
+				s_output1  <= div_output;
+				s_ine_o <= '0';
 			elsif fpu_op_i="100" then
 				s_output1 	<= post_norm_sqrt_output;
 				s_ine_o 	<= post_norm_sqrt_ine_o;			
@@ -455,7 +431,6 @@ begin
 	-- Generate Exceptions 
 	s_underflow_o <= '1' when s_output1(30 downto 23)="00000000" and s_ine_o='1' else '0'; 
 	s_overflow_o <= '1' when s_output1(30 downto 23)="11111111" and s_ine_o='1' else '0';
-	s_div_zero_o <= serial_div_div_zero when fpu_op_i="011" else '0';
 	s_inf_o <= '1' when s_output1(30 downto 23)="11111111" and (s_qnan_o or s_snan_o)='0' else '0';
 	s_zero_o <= '1' when or_reduce(s_output1(30 downto 0))='0' else '0';
 	s_qnan_o <= '1' when s_output1(30 downto 0)=QNAN else '0';
