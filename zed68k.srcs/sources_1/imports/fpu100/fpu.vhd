@@ -158,6 +158,9 @@ architecture rtl of fpu is
     signal sqrt_ready : std_logic;
     signal sqrt_valid : std_logic;
 	
+    signal conv_output : std_logic_vector(31 downto 0);
+    signal conv_ready : std_logic;
+    signal conv_valid : std_logic;
 	
 begin
 	--***Add/Substract units***
@@ -277,7 +280,8 @@ begin
         ready_o => sqrt_ready
     
     );
-			
+    
+        
 			
 			
 -----------------------------------------------------------------			
@@ -326,6 +330,11 @@ begin
 			    else 
 			         sqrt_valid <= '0';
 			    end if;
+			    if (fpu_op_i="101") then
+			         conv_valid <= '1';
+			    else 
+			         conv_valid <= '0';
+			    end if;
 				s_state <= busy;
 				s_count <= 0;
 			elsif s_count=6 and ((fpu_op_i="000") or (fpu_op_i="001")) then
@@ -336,13 +345,18 @@ begin
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;
-			elsif div_ready = '1' and fpu_op_i="011" and s_count>=63 then
+			elsif div_ready = '1' and fpu_op_i="011" and s_count>=21 then
 			    div_valid <= '0';
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;
-			elsif s_count>=33 and fpu_op_i="100" and sqrt_ready='1' then
+			elsif s_count>=21 and fpu_op_i="100" and sqrt_ready='1' then
 			    sqrt_valid <= '0';
+				s_state <= waiting;
+				ready_o <= '1';
+				s_count <=0;	
+		    elsif s_count>=10 and fpu_op_i="101" and conv_ready='1' then
+			    conv_valid <= '0';
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;			
@@ -370,7 +384,10 @@ begin
 				s_ine_o <= '0';
 			elsif fpu_op_i="100" and sqrt_valid = '1' then
 				s_output1 	<= sqrt_output;
-				s_ine_o 	<= '0';		
+				s_ine_o 	<= '0';	
+			elsif fpu_op_i="101" and conv_valid = '1' then
+				s_output1 	<= conv_output;
+				s_ine_o 	<= '0';			
 			else
 				s_output1 	<= (others => '0');
 				s_ine_o 		<= '0';

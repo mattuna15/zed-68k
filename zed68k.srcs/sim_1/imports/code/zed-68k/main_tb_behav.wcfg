@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1794745fs"></ZoomStartTime>
-      <ZoomEndTime time="2006280fs"></ZoomEndTime>
-      <Cursor1Time time="1901738fs"></Cursor1Time>
+      <ZoomStartTime time="839673fs"></ZoomStartTime>
+      <ZoomEndTime time="1248186fs"></ZoomEndTime>
+      <Cursor1Time time="1180100fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="351"></NameColumnWidth>
-      <ValueColumnWidth column_width="128"></ValueColumnWidth>
+      <NameColumnWidth column_width="339"></NameColumnWidth>
+      <ValueColumnWidth column_width="116"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="36" />
+   <WVObjectSize size="46" />
    <wvobject fp_name="/tb_fpu/clk_i" type="logic">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -48,6 +48,10 @@
       <obj_property name="ObjectShortName">output_o[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_fpu/start_i" type="logic">
+      <obj_property name="ElementShortName">start_i</obj_property>
+      <obj_property name="ObjectShortName">start_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/start_i" type="logic">
       <obj_property name="ElementShortName">start_i</obj_property>
       <obj_property name="ObjectShortName">start_i</obj_property>
    </wvobject>
@@ -166,5 +170,41 @@
    <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/s_count" type="other">
       <obj_property name="ElementShortName">s_count</obj_property>
       <obj_property name="ObjectShortName">s_count</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/valid_i" type="logic">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/ready_o" type="logic">
+      <obj_property name="ElementShortName">ready_o</obj_property>
+      <obj_property name="ObjectShortName">ready_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/s_axis_a_tvalid" type="logic">
+      <obj_property name="ElementShortName">s_axis_a_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/s_axis_a_tready" type="logic">
+      <obj_property name="ElementShortName">s_axis_a_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/s_axis_a_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_a_tdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/m_axis_result_tvalid" type="logic">
+      <obj_property name="ElementShortName">m_axis_result_tvalid</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/m_axis_result_tready" type="logic">
+      <obj_property name="ElementShortName">m_axis_result_tready</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/m_axis_result_tdata" type="array">
+      <obj_property name="ElementShortName">m_axis_result_tdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_0/inst/i_sqr/fpu_state" type="array">
+      <obj_property name="ElementShortName">fpu_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">fpu_state[2:0]</obj_property>
    </wvobject>
 </wave_config>

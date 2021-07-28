@@ -14,7 +14,8 @@
       "util_reduced_logic_0": "",
       "xlconcat_0": "",
       "util_vector_logic_0": "",
-      "fpu_0": ""
+      "fpu_0": "",
+      "clk_wiz_0": ""
     },
     "ports": {
       "clk_in100": {
@@ -93,11 +94,8 @@
         "vlnv": "xilinx.com:ip:fifo_generator:13.2",
         "xci_name": "fpu_design_fifo_generator_0_0",
         "parameters": {
-          "Data_Count": {
-            "value": "true"
-          },
-          "Data_Count_Width": {
-            "value": "5"
+          "Fifo_Implementation": {
+            "value": "Independent_Clocks_Block_RAM"
           },
           "Input_Data_Width": {
             "value": "32"
@@ -110,6 +108,12 @@
           },
           "Performance_Options": {
             "value": "Standard_FIFO"
+          },
+          "Read_Data_Count": {
+            "value": "true"
+          },
+          "Read_Data_Count_Width": {
+            "value": "5"
           },
           "Reset_Pin": {
             "value": "false"
@@ -165,16 +169,16 @@
             "direction": "I",
             "parameters": {
               "CLK_DOMAIN": {
-                "value": "fpu_design_clk_in100",
-                "value_src": "default_prop"
+                "value": "/clk_wiz_0_clk_out1",
+                "value_src": "ip_prop"
               },
               "FREQ_HZ": {
-                "value": "100000000",
-                "value_src": "default_prop"
+                "value": "200000000",
+                "value_src": "ip_prop"
               },
               "PHASE": {
-                "value": "0.000",
-                "value_src": "default_prop"
+                "value": "0.0",
+                "value_src": "ip_prop"
               }
             }
           },
@@ -234,22 +238,75 @@
             "direction": "O"
           }
         }
+      },
+      "clk_wiz_0": {
+        "vlnv": "xilinx.com:ip:clk_wiz:6.0",
+        "xci_name": "fpu_design_clk_wiz_0_0",
+        "parameters": {
+          "CLKOUT1_DRIVES": {
+            "value": "BUFG"
+          },
+          "CLKOUT1_JITTER": {
+            "value": "114.829"
+          },
+          "CLKOUT1_PHASE_ERROR": {
+            "value": "98.575"
+          },
+          "CLKOUT1_REQUESTED_OUT_FREQ": {
+            "value": "200"
+          },
+          "CLKOUT2_DRIVES": {
+            "value": "BUFG"
+          },
+          "CLKOUT3_DRIVES": {
+            "value": "BUFG"
+          },
+          "CLKOUT4_DRIVES": {
+            "value": "BUFG"
+          },
+          "CLKOUT5_DRIVES": {
+            "value": "BUFG"
+          },
+          "CLKOUT6_DRIVES": {
+            "value": "BUFG"
+          },
+          "CLKOUT7_DRIVES": {
+            "value": "BUFG"
+          },
+          "FEEDBACK_SOURCE": {
+            "value": "FDBK_AUTO"
+          },
+          "MMCM_CLKFBOUT_MULT_F": {
+            "value": "10.000"
+          },
+          "MMCM_CLKOUT0_DIVIDE_F": {
+            "value": "5.000"
+          },
+          "MMCM_COMPENSATION": {
+            "value": "ZHOLD"
+          },
+          "MMCM_DIVCLK_DIVIDE": {
+            "value": "1"
+          },
+          "OVERRIDE_MMCM": {
+            "value": "false"
+          },
+          "PRIM_SOURCE": {
+            "value": "Global_buffer"
+          },
+          "USE_LOCKED": {
+            "value": "false"
+          },
+          "USE_RESET": {
+            "value": "false"
+          },
+          "USE_SAFE_CLOCK_STARTUP": {
+            "value": "false"
+          }
+        }
       }
     },
     "nets": {
-      "clk_wiz_clk_out1": {
-        "ports": [
-          "clk_in100",
-          "fifo_generator_0/clk",
-          "fpu_0/clk_i"
-        ]
-      },
-      "start_i_0_1": {
-        "ports": [
-          "start_i",
-          "fpu_0/start_i"
-        ]
-      },
       "opa_i_0_1": {
         "ports": [
           "opa_i",
@@ -310,12 +367,6 @@
           "error"
         ]
       },
-      "fifo_generator_0_data_count": {
-        "ports": [
-          "fifo_generator_0/data_count",
-          "data_count_0"
-        ]
-      },
       "fifo_generator_0_empty": {
         "ports": [
           "fifo_generator_0/empty",
@@ -356,6 +407,32 @@
         "ports": [
           "fpu_0/snan_o",
           "xlconcat_0/In4"
+        ]
+      },
+      "start_i_1": {
+        "ports": [
+          "start_i",
+          "fpu_0/start_i"
+        ]
+      },
+      "clk_in100_1": {
+        "ports": [
+          "clk_in100",
+          "clk_wiz_0/clk_in1",
+          "fifo_generator_0/rd_clk"
+        ]
+      },
+      "clk_wiz_0_clk_out1": {
+        "ports": [
+          "clk_wiz_0/clk_out1",
+          "fpu_0/clk_i",
+          "fifo_generator_0/wr_clk"
+        ]
+      },
+      "fifo_generator_0_rd_data_count": {
+        "ports": [
+          "fifo_generator_0/rd_data_count",
+          "data_count_0"
         ]
       }
     }

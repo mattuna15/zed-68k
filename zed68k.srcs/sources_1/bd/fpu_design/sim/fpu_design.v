@@ -1,7 +1,7 @@
 //Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-//Date        : Mon Jul 26 16:27:26 2021
+//Date        : Wed Jul 28 14:57:55 2021
 //Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 //Command     : generate_target fpu_design.bd
 //Design      : fpu_design
@@ -9,7 +9,7 @@
 //--------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CORE_GENERATION_INFO = "fpu_design,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=fpu_design,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=5,numReposBlks=5,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=1,numPkgbdBlks=0,bdsource=USER,da_clkrst_cnt=1,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "fpu_design.hwdef" *) 
+(* CORE_GENERATION_INFO = "fpu_design,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=fpu_design,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=6,numReposBlks=6,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=1,numPkgbdBlks=0,bdsource=USER,da_clkrst_cnt=1,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "fpu_design.hwdef" *) 
 module fpu_design
    (clk_in100,
     data_count_0,
@@ -34,10 +34,11 @@ module fpu_design
   input [1:0]rmode_i;
   input start_i;
 
-  wire clk_wiz_clk_out1;
-  wire [4:0]fifo_generator_0_data_count;
+  wire clk_in100_1;
+  wire clk_wiz_0_clk_out1;
   wire [31:0]fifo_generator_0_dout;
   wire fifo_generator_0_empty;
+  wire [4:0]fifo_generator_0_rd_data_count;
   wire fpu_0_div_zero_o;
   wire fpu_0_inf_o;
   wire [31:0]fpu_0_output_o;
@@ -50,13 +51,13 @@ module fpu_design
   wire [31:0]opb_i_0_1;
   wire rd_en_0_1;
   wire [1:0]rmode_i_0_1;
-  wire start_i_0_1;
+  wire start_i_1;
   wire util_reduced_logic_0_Res;
   wire [0:0]util_vector_logic_0_Res;
   wire [4:0]xlconcat_0_dout;
 
-  assign clk_wiz_clk_out1 = clk_in100;
-  assign data_count_0[4:0] = fifo_generator_0_data_count;
+  assign clk_in100_1 = clk_in100;
+  assign data_count_0[4:0] = fifo_generator_0_rd_data_count;
   assign error = util_reduced_logic_0_Res;
   assign fpu_op_i_0_1 = fpu_op_i[2:0];
   assign opa_i_0_1 = opa_i[31:0];
@@ -65,17 +66,21 @@ module fpu_design
   assign ready_o[0] = util_vector_logic_0_Res;
   assign result_o[31:0] = fifo_generator_0_dout;
   assign rmode_i_0_1 = rmode_i[1:0];
-  assign start_i_0_1 = start_i;
+  assign start_i_1 = start_i;
+  fpu_design_clk_wiz_0_0 clk_wiz_0
+       (.clk_in1(clk_in100_1),
+        .clk_out1(clk_wiz_0_clk_out1));
   fpu_design_fifo_generator_0_0 fifo_generator_0
-       (.clk(clk_wiz_clk_out1),
-        .data_count(fifo_generator_0_data_count),
-        .din(fpu_0_output_o),
+       (.din(fpu_0_output_o),
         .dout(fifo_generator_0_dout),
         .empty(fifo_generator_0_empty),
+        .rd_clk(clk_in100_1),
+        .rd_data_count(fifo_generator_0_rd_data_count),
         .rd_en(rd_en_0_1),
+        .wr_clk(clk_wiz_0_clk_out1),
         .wr_en(fpu_0_ready_o));
   fpu_design_fpu_0_0 fpu_0
-       (.clk_i(clk_wiz_clk_out1),
+       (.clk_i(clk_wiz_0_clk_out1),
         .div_zero_o(fpu_0_div_zero_o),
         .fpu_op_i(fpu_op_i_0_1),
         .inf_o(fpu_0_inf_o),
@@ -86,7 +91,7 @@ module fpu_design
         .ready_o(fpu_0_ready_o),
         .rmode_i(rmode_i_0_1),
         .snan_o(fpu_0_snan_o),
-        .start_i(start_i_0_1),
+        .start_i(start_i_1),
         .zero_o(fpu_0_zero_o));
   fpu_design_util_reduced_logic_0_0 util_reduced_logic_0
        (.Op1(xlconcat_0_dout),
