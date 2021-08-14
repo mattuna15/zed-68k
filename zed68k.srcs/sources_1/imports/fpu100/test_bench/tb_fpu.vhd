@@ -78,11 +78,11 @@ architecture rtl of tb_fpu is
 component fpu 
     port (
         clk_i       	: in std_logic;
-        opa_i       	: in std_logic_vector(31 downto 0);   
-        opb_i       	: in std_logic_vector(31 downto 0);
+        opa_i       	: in std_logic_vector(63 downto 0);   
+        opb_i       	: in std_logic_vector(63 downto 0);
         fpu_op_i		: in std_logic_vector(2 downto 0);
         rmode_i 		: in std_logic_vector(1 downto 0);  
-        output_o    	: out std_logic_vector(31 downto 0);
+        output_o    	: out std_logic_vector(63 downto 0);
 		ine_o 			: out std_logic;
         overflow_o  	: out std_logic;
         underflow_o 	: out std_logic;
@@ -98,14 +98,14 @@ end component;
 
 
 signal clk_i : std_logic:= '1';
-signal opa_i, opb_i : std_logic_vector(31 downto 0);
+signal opa_i, opb_i : std_logic_vector(63 downto 0);
 signal fpu_op_i		: std_logic_vector(2 downto 0);
 signal rmode_i : std_logic_vector(1 downto 0);
-signal output_o : std_logic_vector(31 downto 0);
+signal output_o : std_logic_vector(63 downto 0);
 signal start_i, ready_o : std_logic ; 
 signal ine_o, overflow_o, underflow_o, div_zero_o, inf_o, zero_o, qnan_o, snan_o, rd_en: std_logic;
 
-
+signal locked: std_logic;
 
 signal slv_out : std_logic_vector(31 downto 0);
 
@@ -146,6 +146,8 @@ begin
         	ready_o => ready_o,
         	rd_en => rd_en,
         	data_count_0 => open
+        	--power_down => '0',
+        	--locked => locked
         	);		
 			
 
@@ -159,7 +161,7 @@ begin
 
     begin
 
-        wait for 0.5 us;
+       -- wait until locked = '1';
 
 		---------------------------------------------------------------------------------------------------------------------------------------------------
 	
@@ -167,8 +169,8 @@ begin
 		--		  seeeeeeeefffffffffffffffffffffff
 		-- 0 + x = x 
 		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01000000001101110111110011101110";  
-		opb_i <= "00111111010111011111001110110110"; 
+		opa_i <= x"40061F9ADD667804";  
+		opb_i <= x"3FF3C0C9539B8887"; 
 		fpu_op_i <= "000";
 		rmode_i <= "00";
 		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
@@ -176,7 +178,7 @@ begin
 		wait for CLK_PERIOD;
 		rd_en <= '1';
 		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
+		--assert output_o="01000000010100111010001010110011";
 		rd_en <= '0';
 		wait for CLK_PERIOD;
 
@@ -185,8 +187,8 @@ begin
 		--		  seeeeeeeefffffffffffffffffffffff
 		-- 0 + x = x 
 		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01000000001101110111110011101110";  
-		opb_i <= "00111111010111011111001110110110"; 
+		opa_i <= x"40061F9ADD667804";  
+		opb_i <= x"3FF3C0C9539B8887"; 
 		fpu_op_i <= "001";
 		rmode_i <= "00";
 		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
@@ -194,7 +196,7 @@ begin
 		wait for CLK_PERIOD;
 		rd_en <= '1';
 		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
+		--assert output_o="01000000010100111010001010110011";
 		rd_en <= '0';
 		wait for CLK_PERIOD;
 
@@ -203,8 +205,8 @@ begin
 		--		  seeeeeeeefffffffffffffffffffffff
 		-- 0 + x = x 
 		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01000000001101110111110011101110";  
-		opb_i <= "00111111010111011111001110110110"; 
+		opa_i <= x"40061F9ADD667804";  
+		opb_i <= x"3FF3C0C9539B8887"; 
 		fpu_op_i <= "010";
 		rmode_i <= "00";
 		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
@@ -212,7 +214,7 @@ begin
 		wait for CLK_PERIOD;
 		rd_en <= '1';
 		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
+		--assert output_o="01000000010100111010001010110011";
 		rd_en <= '0';
 		wait for CLK_PERIOD;
 				
@@ -221,8 +223,8 @@ begin
 		--		  seeeeeeeefffffffffffffffffffffff
 		-- 0 + x = x 
 		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01000000001101110111110011101110";  
-		opb_i <= "00111111010111011111001110110110"; 
+		opa_i <= x"40061F9ADD667804";  
+		opb_i <= x"3FF3C0C9539B8887"; 
 		fpu_op_i <= "011";
 		rmode_i <= "00";
 		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
@@ -230,97 +232,10 @@ begin
 		wait for CLK_PERIOD;
 		rd_en <= '1';
 		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
+		--assert output_o="01000000010100111010001010110011";
 		rd_en <= '0';
 		wait for CLK_PERIOD;
-		
-						start_i <= '0';
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- 0 + x = x 
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01000000001101110111110011101110";  
-		opb_i <= "00111111010111011111001110110110"; 
-		fpu_op_i <= "100";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		
-		wait for CLK_PERIOD;
-		rd_en <= '1';
-		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
-		rd_en <= '0';
-		wait for CLK_PERIOD;
-				
-				
-						start_i <= '0';
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- 0 + x = x 
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01000000001101110111110011101110";  
-		opb_i <= "00111111010111011111001110110110"; 
-		fpu_op_i <= "011";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		
-		wait for CLK_PERIOD;
-		rd_en <= '1';
-		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
-		rd_en <= '0';
-		wait for CLK_PERIOD;
-		
-						start_i <= '0';
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- 0 + x = x 
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "01000000001101110111110011101110";  
-		opb_i <= "00111111010111011111001110110110"; 
-		fpu_op_i <= "100";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		
-		wait for CLK_PERIOD;
-		rd_en <= '1';
-		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
-		rd_en <= '0';
-		wait for CLK_PERIOD;
-		
-								start_i <= '0';
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- 0 + x = x 
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "00000000000000000000000110010001";  
-		opb_i <= "00111111010111011111001110110110"; 
-		fpu_op_i <= "101";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		
-		wait for CLK_PERIOD;
-		rd_en <= '1';
-		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
-		rd_en <= '0';
-		wait for CLK_PERIOD;
-		
-		
-										start_i <= '0';
-		--		  seeeeeeeefffffffffffffffffffffff
-		-- 0 + x = x 
-		wait for CLK_PERIOD; start_i <= '1'; 
-		opa_i <= "10000000000000000000000110010001";  
-		opb_i <= "00111111010111011111001110110110"; 
-		fpu_op_i <= "101";
-		rmode_i <= "00";
-		wait for CLK_PERIOD; start_i <= '0'; wait until ready_o='1';
-		
-		wait for CLK_PERIOD;
-		rd_en <= '1';
-		wait for CLK_PERIOD;
-		assert output_o="01000000010100111010001010110011";
-		rd_en <= '0';
-		wait for CLK_PERIOD;
-		
+
 
 		----------------------------------------------------------------------------------------------------------------------------------------------------
 		assert false

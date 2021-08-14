@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# fpu
+# fpu_double
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -167,40 +167,15 @@ proc create_root_design { parentCell } {
   # Create ports
   set clk_in100 [ create_bd_port -dir I -type clk clk_in100 ]
   set data_count_0 [ create_bd_port -dir O -from 4 -to 0 data_count_0 ]
-  set error [ create_bd_port -dir O error ]
+  set error [ create_bd_port -dir O -from 0 -to 0 error ]
   set fpu_op_i [ create_bd_port -dir I -from 2 -to 0 fpu_op_i ]
-  set opa_i [ create_bd_port -dir I -from 31 -to 0 opa_i ]
-  set opb_i [ create_bd_port -dir I -from 31 -to 0 opb_i ]
+  set opa_i [ create_bd_port -dir I -from 63 -to 0 opa_i ]
+  set opb_i [ create_bd_port -dir I -from 63 -to 0 opb_i ]
   set rd_en [ create_bd_port -dir I rd_en ]
   set ready_o [ create_bd_port -dir O -from 0 -to 0 ready_o ]
-  set result_o [ create_bd_port -dir O -from 31 -to 0 result_o ]
+  set result_o [ create_bd_port -dir O -from 63 -to 0 result_o ]
   set rmode_i [ create_bd_port -dir I -from 1 -to 0 rmode_i ]
   set start_i [ create_bd_port -dir I start_i ]
-
-  # Create instance: clk_wiz_0, and set properties
-  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0 ]
-  set_property -dict [ list \
-   CONFIG.CLKOUT1_DRIVES {BUFG} \
-   CONFIG.CLKOUT1_JITTER {114.829} \
-   CONFIG.CLKOUT1_PHASE_ERROR {98.575} \
-   CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {200} \
-   CONFIG.CLKOUT2_DRIVES {BUFG} \
-   CONFIG.CLKOUT3_DRIVES {BUFG} \
-   CONFIG.CLKOUT4_DRIVES {BUFG} \
-   CONFIG.CLKOUT5_DRIVES {BUFG} \
-   CONFIG.CLKOUT6_DRIVES {BUFG} \
-   CONFIG.CLKOUT7_DRIVES {BUFG} \
-   CONFIG.FEEDBACK_SOURCE {FDBK_AUTO} \
-   CONFIG.MMCM_CLKFBOUT_MULT_F {10.000} \
-   CONFIG.MMCM_CLKOUT0_DIVIDE_F {5.000} \
-   CONFIG.MMCM_COMPENSATION {ZHOLD} \
-   CONFIG.MMCM_DIVCLK_DIVIDE {1} \
-   CONFIG.OVERRIDE_MMCM {false} \
-   CONFIG.PRIM_SOURCE {Global_buffer} \
-   CONFIG.USE_LOCKED {false} \
-   CONFIG.USE_RESET {false} \
-   CONFIG.USE_SAFE_CLOCK_STARTUP {false} \
- ] $clk_wiz_0
 
   # Create instance: fifo_generator_0, and set properties
   set fifo_generator_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:fifo_generator:13.2 fifo_generator_0 ]
@@ -212,9 +187,9 @@ proc create_root_design { parentCell } {
    CONFIG.Fifo_Implementation {Independent_Clocks_Block_RAM} \
    CONFIG.Full_Threshold_Assert_Value {29} \
    CONFIG.Full_Threshold_Negate_Value {28} \
-   CONFIG.Input_Data_Width {32} \
+   CONFIG.Input_Data_Width {64} \
    CONFIG.Input_Depth {32} \
-   CONFIG.Output_Data_Width {32} \
+   CONFIG.Output_Data_Width {64} \
    CONFIG.Output_Depth {32} \
    CONFIG.Performance_Options {Standard_FIFO} \
    CONFIG.Read_Data_Count {true} \
@@ -227,25 +202,17 @@ proc create_root_design { parentCell } {
    CONFIG.Write_Data_Count_Width {5} \
  ] $fifo_generator_0
 
-  # Create instance: fpu_0, and set properties
-  set block_name fpu
-  set block_cell_name fpu_0
-  if { [catch {set fpu_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+  # Create instance: fpu_double_0, and set properties
+  set block_name fpu_double
+  set block_cell_name fpu_double_0
+  if { [catch {set fpu_double_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
-   } elseif { $fpu_0 eq "" } {
+   } elseif { $fpu_double_0 eq "" } {
      catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
      return 1
    }
   
-  # Create instance: util_reduced_logic_0, and set properties
-  set util_reduced_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_reduced_logic:2.0 util_reduced_logic_0 ]
-  set_property -dict [ list \
-   CONFIG.C_OPERATION {or} \
-   CONFIG.C_SIZE {5} \
-   CONFIG.LOGO_FILE {data/sym_orgate.png} \
- ] $util_reduced_logic_0
-
   # Create instance: util_vector_logic_0, and set properties
   set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
   set_property -dict [ list \
@@ -254,34 +221,38 @@ proc create_root_design { parentCell } {
    CONFIG.LOGO_FILE {data/sym_notgate.png} \
  ] $util_vector_logic_0
 
-  # Create instance: xlconcat_0, and set properties
-  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  # Create instance: util_vector_logic_1, and set properties
+  set util_vector_logic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_1 ]
   set_property -dict [ list \
-   CONFIG.NUM_PORTS {5} \
- ] $xlconcat_0
+   CONFIG.C_OPERATION {or} \
+   CONFIG.C_SIZE {1} \
+   CONFIG.LOGO_FILE {data/sym_orgate.png} \
+ ] $util_vector_logic_1
+
+  # Create instance: xlconstant_0, and set properties
+  set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
+  set_property -dict [ list \
+   CONFIG.CONST_VAL {0} \
+ ] $xlconstant_0
 
   # Create port connections
-  connect_bd_net -net clk_in100_1 [get_bd_ports clk_in100] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins fifo_generator_0/rd_clk]
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins fifo_generator_0/wr_clk] [get_bd_pins fpu_0/clk_i]
+  connect_bd_net -net clk_in100_1 [get_bd_ports clk_in100] [get_bd_pins fifo_generator_0/rd_clk] [get_bd_pins fifo_generator_0/wr_clk] [get_bd_pins fpu_double_0/clk]
   connect_bd_net -net fifo_generator_0_dout [get_bd_ports result_o] [get_bd_pins fifo_generator_0/dout]
   connect_bd_net -net fifo_generator_0_empty [get_bd_pins fifo_generator_0/empty] [get_bd_pins util_vector_logic_0/Op1]
   connect_bd_net -net fifo_generator_0_rd_data_count [get_bd_ports data_count_0] [get_bd_pins fifo_generator_0/rd_data_count]
-  connect_bd_net -net fpu_0_div_zero_o [get_bd_pins fpu_0/div_zero_o] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net fpu_0_inf_o [get_bd_pins fpu_0/inf_o] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net fpu_0_output_o [get_bd_pins fifo_generator_0/din] [get_bd_pins fpu_0/output_o]
-  connect_bd_net -net fpu_0_qnan_o [get_bd_pins fpu_0/qnan_o] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net fpu_0_ready_o [get_bd_pins fifo_generator_0/wr_en] [get_bd_pins fpu_0/ready_o]
-  connect_bd_net -net fpu_0_snan_o [get_bd_pins fpu_0/snan_o] [get_bd_pins xlconcat_0/In4]
-  connect_bd_net -net fpu_0_zero_o [get_bd_pins fpu_0/zero_o] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net fpu_op_i_0_1 [get_bd_ports fpu_op_i] [get_bd_pins fpu_0/fpu_op_i]
-  connect_bd_net -net opa_i_0_1 [get_bd_ports opa_i] [get_bd_pins fpu_0/opa_i]
-  connect_bd_net -net opb_i_0_1 [get_bd_ports opb_i] [get_bd_pins fpu_0/opb_i]
+  connect_bd_net -net fpu_double_0_exception [get_bd_pins fpu_double_0/exception] [get_bd_pins util_vector_logic_1/Op1]
+  connect_bd_net -net fpu_double_0_invalid [get_bd_pins fpu_double_0/invalid] [get_bd_pins util_vector_logic_1/Op2]
+  connect_bd_net -net fpu_double_0_out_fp [get_bd_pins fifo_generator_0/din] [get_bd_pins fpu_double_0/out_fp]
+  connect_bd_net -net fpu_double_0_ready [get_bd_pins fifo_generator_0/wr_en] [get_bd_pins fpu_double_0/ready]
+  connect_bd_net -net fpu_op_i_1 [get_bd_ports fpu_op_i] [get_bd_pins fpu_double_0/fpu_op]
+  connect_bd_net -net opa_0_1 [get_bd_ports opa_i] [get_bd_pins fpu_double_0/opa]
+  connect_bd_net -net opb_0_1 [get_bd_ports opb_i] [get_bd_pins fpu_double_0/opb]
   connect_bd_net -net rd_en_0_1 [get_bd_ports rd_en] [get_bd_pins fifo_generator_0/rd_en]
-  connect_bd_net -net rmode_i_0_1 [get_bd_ports rmode_i] [get_bd_pins fpu_0/rmode_i]
-  connect_bd_net -net start_i_1 [get_bd_ports start_i] [get_bd_pins fpu_0/start_i]
-  connect_bd_net -net util_reduced_logic_0_Res [get_bd_ports error] [get_bd_pins util_reduced_logic_0/Res]
+  connect_bd_net -net rmode_i_1 [get_bd_ports rmode_i] [get_bd_pins fpu_double_0/rmode]
+  connect_bd_net -net start_i_1 [get_bd_ports start_i] [get_bd_pins fpu_double_0/enable]
   connect_bd_net -net util_vector_logic_0_Res [get_bd_ports ready_o] [get_bd_pins util_vector_logic_0/Res]
-  connect_bd_net -net xlconcat_0_dout [get_bd_pins util_reduced_logic_0/Op1] [get_bd_pins xlconcat_0/dout]
+  connect_bd_net -net util_vector_logic_1_Res [get_bd_ports error] [get_bd_pins util_vector_logic_1/Res]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins fpu_double_0/rst] [get_bd_pins xlconstant_0/dout]
 
   # Create address segments
 

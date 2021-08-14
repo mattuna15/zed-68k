@@ -54,53 +54,57 @@
 
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module fpu_design_fifo_generator_0_0 (
-  clk,
+  wr_clk,
+  rd_clk,
   din,
   wr_en,
   rd_en,
   dout,
   full,
   empty,
-  data_count
+  rd_data_count
 );
 
-(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME core_clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN fpu_design_clk_in100, INSERT_VIP 0" *)
-(* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 core_clk CLK" *)
-input wire clk;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME write_clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN fpu_design_clk_in100, INSERT_VIP 0" *)
+(* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 write_clk CLK" *)
+input wire wr_clk;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME read_clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN fpu_design_clk_in100, INSERT_VIP 0" *)
+(* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 read_clk CLK" *)
+input wire rd_clk;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE WR_DATA" *)
-input wire [31 : 0] din;
+input wire [63 : 0] din;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE WR_EN" *)
 input wire wr_en;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_read:1.0 FIFO_READ RD_EN" *)
 input wire rd_en;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_read:1.0 FIFO_READ RD_DATA" *)
-output wire [31 : 0] dout;
+output wire [63 : 0] dout;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE FULL" *)
 output wire full;
 (* X_INTERFACE_INFO = "xilinx.com:interface:fifo_read:1.0 FIFO_READ EMPTY" *)
 output wire empty;
-output wire [4 : 0] data_count;
+output wire [4 : 0] rd_data_count;
 
   fifo_generator_v13_2_5 #(
-    .C_COMMON_CLOCK(1),
+    .C_COMMON_CLOCK(0),
     .C_SELECT_XPM(0),
     .C_COUNT_TYPE(0),
     .C_DATA_COUNT_WIDTH(5),
     .C_DEFAULT_VALUE("BlankString"),
-    .C_DIN_WIDTH(32),
+    .C_DIN_WIDTH(64),
     .C_DOUT_RST_VAL("0"),
-    .C_DOUT_WIDTH(32),
+    .C_DOUT_WIDTH(64),
     .C_ENABLE_RLOCS(0),
     .C_FAMILY("artix7"),
     .C_FULL_FLAGS_RST_VAL(0),
     .C_HAS_ALMOST_EMPTY(0),
     .C_HAS_ALMOST_FULL(0),
     .C_HAS_BACKUP(0),
-    .C_HAS_DATA_COUNT(1),
+    .C_HAS_DATA_COUNT(0),
     .C_HAS_INT_CLK(0),
     .C_HAS_MEMINIT_FILE(0),
     .C_HAS_OVERFLOW(0),
-    .C_HAS_RD_DATA_COUNT(0),
+    .C_HAS_RD_DATA_COUNT(1),
     .C_HAS_RD_RST(0),
     .C_HAS_RST(0),
     .C_HAS_SRST(0),
@@ -109,7 +113,7 @@ output wire [4 : 0] data_count;
     .C_HAS_WR_ACK(0),
     .C_HAS_WR_DATA_COUNT(0),
     .C_HAS_WR_RST(0),
-    .C_IMPLEMENTATION_TYPE(0),
+    .C_IMPLEMENTATION_TYPE(2),
     .C_INIT_WR_PNTR_VAL(0),
     .C_MEMORY_TYPE(1),
     .C_MIF_FILE_NAME("BlankString"),
@@ -117,12 +121,12 @@ output wire [4 : 0] data_count;
     .C_OVERFLOW_LOW(0),
     .C_PRELOAD_LATENCY(1),
     .C_PRELOAD_REGS(0),
-    .C_PRIM_FIFO_TYPE("512x36"),
+    .C_PRIM_FIFO_TYPE("512x72"),
     .C_PROG_EMPTY_THRESH_ASSERT_VAL(2),
     .C_PROG_EMPTY_THRESH_NEGATE_VAL(3),
     .C_PROG_EMPTY_TYPE(0),
-    .C_PROG_FULL_THRESH_ASSERT_VAL(30),
-    .C_PROG_FULL_THRESH_NEGATE_VAL(29),
+    .C_PROG_FULL_THRESH_ASSERT_VAL(29),
+    .C_PROG_FULL_THRESH_NEGATE_VAL(28),
     .C_PROG_FULL_TYPE(0),
     .C_RD_DATA_COUNT_WIDTH(5),
     .C_RD_DEPTH(32),
@@ -287,12 +291,12 @@ output wire [4 : 0] data_count;
   ) inst (
     .backup(1'D0),
     .backup_marker(1'D0),
-    .clk(clk),
+    .clk(1'D0),
     .rst(1'D0),
     .srst(1'D0),
-    .wr_clk(1'D0),
+    .wr_clk(wr_clk),
     .wr_rst(1'D0),
-    .rd_clk(1'D0),
+    .rd_clk(rd_clk),
     .rd_rst(1'D0),
     .din(din),
     .wr_en(wr_en),
@@ -316,8 +320,8 @@ output wire [4 : 0] data_count;
     .almost_empty(),
     .valid(),
     .underflow(),
-    .data_count(data_count),
-    .rd_data_count(),
+    .data_count(),
+    .rd_data_count(rd_data_count),
     .wr_data_count(),
     .prog_full(),
     .prog_empty(),

@@ -400,3 +400,15 @@ connect_debug_port u_ila_0/probe6 [get_nets [list {computer/fpu1/fpu_design_i/fp
 connect_debug_port u_ila_0/probe7 [get_nets [list {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[0]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[1]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[2]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[3]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[4]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[5]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[6]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[7]} {computer/fpu1/fpu_design_i/fpu_0/inst/i_post_norm_div/s_expo3[8]}]]
 
 
+
+connect_debug_port u_ila_1/probe5 [get_nets [list computer/fpu1/ready_o_0]]
+
+
+
+
+connect_debug_port u_ila_0/clk [get_nets [list computer/fpu1/fpu_design_i/clk_wiz_0/inst/clk_out1]]
+connect_debug_port dbg_hub/clk [get_nets u_ila_0_clk_out1]
+
+
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/fpu1/error]]
+

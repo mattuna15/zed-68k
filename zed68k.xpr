@@ -47,20 +47,20 @@
     <Option Name="DSADesignIntentExternalHost" Val="false"/>
     <Option Name="DSADesignIntentEmbedded" Val="true"/>
     <Option Name="DSADesignIntentDatacenter" Val="false"/>
-    <Option Name="WTXSimLaunchSim" Val="1148"/>
+    <Option Name="WTXSimLaunchSim" Val="1190"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="204"/>
-    <Option Name="WTModelSimExportSim" Val="203"/>
-    <Option Name="WTQuestaExportSim" Val="203"/>
-    <Option Name="WTIesExportSim" Val="203"/>
-    <Option Name="WTVcsExportSim" Val="203"/>
-    <Option Name="WTRivieraExportSim" Val="203"/>
-    <Option Name="WTActivehdlExportSim" Val="203"/>
+    <Option Name="WTXSimExportSim" Val="236"/>
+    <Option Name="WTModelSimExportSim" Val="235"/>
+    <Option Name="WTQuestaExportSim" Val="235"/>
+    <Option Name="WTIesExportSim" Val="235"/>
+    <Option Name="WTVcsExportSim" Val="235"/>
+    <Option Name="WTRivieraExportSim" Val="235"/>
+    <Option Name="WTActivehdlExportSim" Val="235"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -76,108 +76,74 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PSRCDIR/sources_1/ip/floating_point_1/floating_point_1.xci">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpupack.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpupack.vhd"/>
+          <Attr Name="ImportTime" Val="1626894725"/>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/ip/floating_point_0/floating_point_0.xci">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/comppack.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/comppack.vhd"/>
+          <Attr Name="ImportTime" Val="1626894724"/>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/fpupack.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_add.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/fpupack.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_add.vhd"/>
+          <Attr Name="ImportTime" Val="1626894724"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/comppack.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_div.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/comppack.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_div.vhd"/>
+          <Attr Name="ImportTime" Val="1626894724"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/fpdiv.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_exceptions.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_exceptions.vhd"/>
+          <Attr Name="ImportTime" Val="1626894725"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/fpsqrt.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_mul.vhd">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_mul.vhd"/>
+          <Attr Name="ImportTime" Val="1626894725"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/addsub_28.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/addsub_28.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/mul_24.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/mul_24.vhd"/>
-          <Attr Name="ImportTime" Val="1626772705"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/post_norm_addsub.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/post_norm_addsub.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/post_norm_mul.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/post_norm_mul.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/pre_norm_addsub.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/pre_norm_addsub.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/pre_norm_mul.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/pre_norm_mul.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/serial_mul.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/serial_mul.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/fpu.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_round.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/fpu.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_round.vhd"/>
+          <Attr Name="ImportTime" Val="1626894725"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_sub.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_sub.vhd"/>
+          <Attr Name="ImportTime" Val="1626894725"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_double.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_double.vhd"/>
+          <Attr Name="ImportTime" Val="1626894724"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -196,11 +162,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="fpu_design.bd" FileRelPathName="ip/fpu_design_fpu_0_0/fpu_design_fpu_0_0.xci">
-          <Proxy FileSetName="fpu_design_fpu_0_0"/>
+        <CompFileExtendedInfo CompFileName="fpu_design.bd" FileRelPathName="ip/fpu_design_fifo_generator_0_0/fpu_design_fifo_generator_0_0.xci">
+          <Proxy FileSetName="fpu_design_fifo_generator_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="fpu_design.bd" FileRelPathName="ip/fpu_design_util_reduced_logic_0_0/fpu_design_util_reduced_logic_0_0.xci">
-          <Proxy FileSetName="fpu_design_util_reduced_logic_0_0"/>
+        <CompFileExtendedInfo CompFileName="fpu_design.bd" FileRelPathName="ip/fpu_design_fpu_double_0_0/fpu_design_fpu_double_0_0.xci">
+          <Proxy FileSetName="fpu_design_fpu_double_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/ip_repo/RetroRecv_1.0/axis_register.v">
@@ -309,10 +275,38 @@
           <Attr Name="UsedIn" Val="synthesis"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/interrupt_controller.vhd">
-        <FileInfo SFType="VHDL2008">
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/test_bench/txt_util.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/test_bench/txt_util.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/utilities.vhd">
+        <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/pre_norm_addsub.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/pre_norm_addsub.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/addsub_28.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/addsub_28.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/Peripherals/cascade_timer.vhd">
@@ -323,47 +317,20 @@
           <Attr Name="UsedIn" Val="synthesis"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/Peripherals/io_ps2_com.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/Documents/fixed_generic_pkg-body.vhdl">
         <FileInfo SFType="VHDL2008">
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../Retro-Computers/68000/TG68_AMR/TG68_AMR_FPGA/RTL/Peripherals/io_ps2_com.vhd"/>
-          <Attr Name="ImportTime" Val="1599907446"/>
+          <Attr Name="ImportPath" Val="C:/Users/LattePanda/Documents/fixed_generic_pkg-body.vhdl"/>
+          <Attr Name="ImportTime" Val="1626779936"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/peripheral_controller.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/post_norm_addsub.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/keyboard/ps2.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/ps2.vhd"/>
-          <Attr Name="ImportTime" Val="1586464696"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/keyboard/scancode.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/scancode.vhd"/>
-          <Attr Name="ImportTime" Val="1586464696"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/keyboard/keyboard.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/keyboard.vhd"/>
-          <Attr Name="ImportTime" Val="1586464696"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/new/utilities.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/post_norm_addsub.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -376,6 +343,113 @@
           <Attr Name="ImportTime" Val="1603442604"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/peripheral_controller.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/floating_point_1/floating_point_1.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/floating_point_0/floating_point_0.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/floating_point_2_2/floating_point_2.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/fpdiv.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/fpmult.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/fpsqrt.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu100/fpu.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/fpu.vhd"/>
+          <Attr Name="ImportTime" Val="1626772701"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/keyboard/scancode.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/scancode.vhd"/>
+          <Attr Name="ImportTime" Val="1586464696"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/Documents/fixed_float_types.vhdl">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="C:/Users/LattePanda/Documents/fixed_float_types.vhdl"/>
+          <Attr Name="ImportTime" Val="1626779911"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/keyboard/ps2.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/ps2.vhd"/>
+          <Attr Name="ImportTime" Val="1586464696"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/interrupt_controller.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/Peripherals/io_ps2_com.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Retro-Computers/68000/TG68_AMR/TG68_AMR_FPGA/RTL/Peripherals/io_ps2_com.vhd"/>
+          <Attr Name="ImportTime" Val="1599907446"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/keyboard/keyboard.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/keyboard.vhd"/>
+          <Attr Name="ImportTime" Val="1586464696"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/ip/mig/mig_b.prj">
@@ -402,15 +476,6 @@
           <Attr Name="ScopedToCell" Val="mig_7series_0"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/test_bench/txt_util.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/test_bench/txt_util.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/imports/Documents/fixed_generic_pkg.vhdl">
         <FileInfo SFType="VHDL2008">
           <Attr Name="AutoDisabled" Val="1"/>
@@ -420,29 +485,11 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/Documents/fixed_float_types.vhdl">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="C:/Users/LattePanda/Documents/fixed_float_types.vhdl"/>
-          <Attr Name="ImportTime" Val="1626779911"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/imports/Documents/fixed_pkg.vhdl">
         <FileInfo SFType="VHDL2008">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="C:/Users/LattePanda/Documents/fixed_pkg.vhdl"/>
           <Attr Name="ImportTime" Val="1626781203"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/Documents/fixed_generic_pkg-body.vhdl">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="C:/Users/LattePanda/Documents/fixed_generic_pkg-body.vhdl"/>
-          <Attr Name="ImportTime" Val="1626779936"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -501,6 +548,15 @@
         <FileInfo SFType="VHDL2008">
           <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/test_bench/tb_fpu.vhd"/>
           <Attr Name="ImportTime" Val="1626772702"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_double_TB.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_double_TB.vhd"/>
+          <Attr Name="ImportTime" Val="1626894725"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -650,15 +706,15 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="fpu_design_util_reduced_logic_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fpu_design_util_reduced_logic_0_0">
+    <FileSet Name="fpu_design_fifo_generator_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fpu_design_fifo_generator_0_0">
       <Config>
-        <Option Name="TopModule" Val="fpu_design_util_reduced_logic_0_0"/>
+        <Option Name="TopModule" Val="fpu_design_fifo_generator_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="fpu_design_fpu_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fpu_design_fpu_0_0">
+    <FileSet Name="fpu_design_fpu_double_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fpu_design_fpu_double_0_0">
       <Config>
-        <Option Name="TopModule" Val="fpu_design_fpu_0_0"/>
+        <Option Name="TopModule" Val="fpu_design_fpu_double_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -722,7 +778,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="fpu_design_util_reduced_logic_0_0_synth_1" Type="Ft3:Synth" SrcSet="fpu_design_util_reduced_logic_0_0" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_util_reduced_logic_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/fpu_design_util_reduced_logic_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="fpu_design_fifo_generator_0_0_synth_1" Type="Ft3:Synth" SrcSet="fpu_design_fifo_generator_0_0" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_fifo_generator_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/fpu_design_fifo_generator_0_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -732,7 +788,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="fpu_design_fpu_0_0_synth_1" Type="Ft3:Synth" SrcSet="fpu_design_fpu_0_0" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_fpu_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/fpu_design_fpu_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="fpu_design_fpu_double_0_0_synth_1" Type="Ft3:Synth" SrcSet="fpu_design_fpu_double_0_0" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_fpu_double_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/fpu_design_fpu_double_0_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
           <Desc>Vivado Synthesis Defaults</Desc>
@@ -937,7 +993,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="fpu_design_util_reduced_logic_0_0_impl_1" Type="Ft2:EntireDesign" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_util_reduced_logic_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="fpu_design_util_reduced_logic_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="fpu_design_fifo_generator_0_0_impl_1" Type="Ft2:EntireDesign" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_fifo_generator_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="fpu_design_fifo_generator_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -954,7 +1010,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="fpu_design_fpu_0_0_impl_1" Type="Ft2:EntireDesign" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_fpu_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="fpu_design_fpu_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="fpu_design_fpu_double_0_0_impl_1" Type="Ft2:EntireDesign" Part="xc7a35ticsg324-1L" ConstrsSet="fpu_design_fpu_double_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="fpu_design_fpu_double_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
           <Desc>Default settings for Implementation.</Desc>

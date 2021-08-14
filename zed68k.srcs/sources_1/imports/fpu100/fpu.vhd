@@ -103,8 +103,8 @@ end fpu;
 architecture rtl of fpu is
     
 
-	constant MUL_SERIAL: integer range 0 to 1 := 0; -- 0 for parallel multiplier, 1 for serial
-	constant MUL_COUNT: integer:= 11; --11 for parallel multiplier, 34 for serial
+	constant MUL_SERIAL: integer range 0 to 1 := 1; -- 0 for parallel multiplier, 1 for serial
+	constant MUL_COUNT: integer:= 34; --11 for parallel multiplier, 34 for serial
 		
 	-- Input/output registers
 	signal s_opa_i, s_opb_i : std_logic_vector(FP_WIDTH-1 downto 0);
@@ -148,6 +148,9 @@ architecture rtl of fpu is
 	signal post_norm_mul_output	: std_logic_vector(31 downto 0);
 	signal post_norm_mul_ine	: std_logic;
 	
+	signal mul_output : std_logic_vector(31 downto 0);
+    signal mul_ready : std_logic;
+    signal mul_valid : std_logic;
 
     signal div_output : std_logic_vector(31 downto 0);
     signal div_ready : std_logic;
@@ -201,55 +204,68 @@ begin
 	
 	--***Multiply units***
 	
-	i_pre_norm_mul: pre_norm_mul
-	port map(
-		clk_i => clk_i,		
-		opa_i => s_opa_i,
-		opb_i => s_opb_i,
-		exp_10_o => pre_norm_mul_exp_10,
-		fracta_24_o	=> pre_norm_mul_fracta_24,
-		fractb_24_o	=> pre_norm_mul_fractb_24);
+--	i_pre_norm_mul: pre_norm_mul
+--	port map(
+--		clk_i => clk_i,		
+--		opa_i => s_opa_i,
+--		opb_i => s_opb_i,
+--		exp_10_o => pre_norm_mul_exp_10,
+--		fracta_24_o	=> pre_norm_mul_fracta_24,
+--		fractb_24_o	=> pre_norm_mul_fractb_24);
 			 	
-	i_mul_24 : mul_24
-	port map(
-			 clk_i => clk_i,
-			 fracta_i => pre_norm_mul_fracta_24,
-			 fractb_i => pre_norm_mul_fractb_24,
-			 signa_i => s_opa_i(31),
-			 signb_i => s_opb_i(31),
-			 start_i => start_i,
-			 fract_o => mul_24_fract_48, 
-			 sign_o =>	mul_24_sign,
-			 ready_o => open);	
+--	i_mul_24 : mul_24
+--	port map(
+--			 clk_i => clk_i,
+--			 fracta_i => pre_norm_mul_fracta_24,
+--			 fractb_i => pre_norm_mul_fractb_24,
+--			 signa_i => s_opa_i(31),
+--			 signb_i => s_opb_i(31),
+--			 start_i => start_i,
+--			 fract_o => mul_24_fract_48, 
+--			 sign_o =>	mul_24_sign,
+--			 ready_o => open);	
 			 
-	i_serial_mul : serial_mul
-	port map(
-			 clk_i => clk_i,
-			 fracta_i => pre_norm_mul_fracta_24,
-			 fractb_i => pre_norm_mul_fractb_24,
-			 signa_i => s_opa_i(31),
-			 signb_i => s_opb_i(31),
-			 start_i => s_start_i,
-			 fract_o => serial_mul_fract_48, 
-			 sign_o =>	serial_mul_sign,
-			 ready_o => open);	
+--	i_serial_mul : serial_mul
+--	port map(
+--			 clk_i => clk_i,
+--			 fracta_i => pre_norm_mul_fracta_24,
+--			 fractb_i => pre_norm_mul_fractb_24,
+--			 signa_i => s_opa_i(31),
+--			 signb_i => s_opb_i(31),
+--			 start_i => s_start_i,
+--			 fract_o => serial_mul_fract_48, 
+--			 sign_o =>	serial_mul_sign,
+--			 ready_o => open);	
 	
-	-- serial or parallel multiplier will be choosed depending on constant MUL_SERIAL
-	mul_fract_48 <= mul_24_fract_48 when MUL_SERIAL=0 else serial_mul_fract_48;
-	mul_sign <= mul_24_sign when MUL_SERIAL=0 else serial_mul_sign;
+--	-- serial or parallel multiplier will be choosed depending on constant MUL_SERIAL
+--	mul_fract_48 <= mul_24_fract_48 when MUL_SERIAL=0 else serial_mul_fract_48;
+--	mul_sign <= mul_24_sign when MUL_SERIAL=0 else serial_mul_sign;
 	
-	i_post_norm_mul : post_norm_mul
-	port map(
-			 clk_i => clk_i,
-			 opa_i => s_opa_i,
-			 opb_i => s_opb_i,
-			 exp_10_i => pre_norm_mul_exp_10,
-			 fract_48_i	=> mul_fract_48,
-			 sign_i	=> mul_sign,
-			 rmode_i => s_rmode_i,
-			 output_o => post_norm_mul_output,
-			 ine_o => post_norm_mul_ine
-			);
+--	i_post_norm_mul : post_norm_mul
+--	port map(
+--			 clk_i => clk_i,
+--			 opa_i => s_opa_i,
+--			 opb_i => s_opb_i,
+--			 exp_10_i => pre_norm_mul_exp_10,
+--			 fract_48_i	=> mul_fract_48,
+--			 sign_i	=> mul_sign,
+--			 rmode_i => s_rmode_i,
+--			 output_o => post_norm_mul_output,
+--			 ine_o => post_norm_mul_ine
+--			);
+
+	i_mul: entity work.fpmult 
+    Port  map ( 
+        clock_i => clk_i,
+        reset_n => start_i,
+        op_a => opa_i,
+        op_b => opb_i,
+        result => mul_output,
+         
+        valid_i => mul_valid,
+        ready_o => mul_ready
+    
+    );
 		
 	--***Division units***
 	
@@ -330,6 +346,11 @@ begin
 			    else 
 			         sqrt_valid <= '0';
 			    end if;
+			    if (fpu_op_i="010") then
+			         mul_valid <= '1';
+			    else 
+			         mul_valid <= '0';
+			    end if;
 			    if (fpu_op_i="101") then
 			         conv_valid <= '1';
 			    else 
@@ -341,7 +362,8 @@ begin
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;
-			elsif s_count=MUL_COUNT and fpu_op_i="010" then
+			elsif mul_ready = '1' and s_count>=11 and fpu_op_i="010" then
+				mul_valid <= '0';
 				s_state <= waiting;
 				ready_o <= '1';
 				s_count <=0;
@@ -376,9 +398,9 @@ begin
 			if fpu_op_i="000" or fpu_op_i="001" then	
 				s_output1 		<= postnorm_addsub_output_o;
 				s_ine_o 		<= postnorm_addsub_ine_o;
-			elsif fpu_op_i="010" then
-				s_output1 	<= post_norm_mul_output;
-				s_ine_o 		<= post_norm_mul_ine;
+			elsif fpu_op_i="010" and div_valid = '1' then
+				s_output1 	<= mul_output;
+				s_ine_o 		<= '0';
 			elsif fpu_op_i="011" and div_valid = '1' then
 				s_output1  <= div_output;
 				s_ine_o <= '0';
