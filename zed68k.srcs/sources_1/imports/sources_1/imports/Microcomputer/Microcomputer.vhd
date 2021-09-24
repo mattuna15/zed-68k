@@ -87,23 +87,20 @@ end Microcomputer;
 
 architecture struct of Microcomputer is
 
-component fpu_design_wrapper 
-    port (
-        clk_in100       	: in std_logic;
-        opa_i       	: in std_logic_vector(63 downto 0);   
-        opb_i       	: in std_logic_vector(63 downto 0);
-        fpu_op_i		: in std_logic_vector(2 downto 0);
-        rmode_i 		: in std_logic_vector(1 downto 0);  
-        result_o    	: out std_logic_vector(63 downto 0);
-		error 			: out std_logic;
-        start_i	  		: in  std_logic;
-        --power_down	    : in  std_logic;
-        --locked	  		: out  std_logic;
-        ready_o 		: out std_logic;
-        rd_en           : in std_logic;
-        data_count_0    : out std_logic_vector(4 downto 0)
-	);   
-end component;
+	component fpu_double IS
+
+   PORT( 
+      clk, rst, enable : IN     std_logic;
+      rmode : IN     std_logic_vector (1 DOWNTO 0);
+      fpu_op : IN     std_logic_vector (2 DOWNTO 0);
+      opa, opb : IN     std_logic_vector (63 DOWNTO 0);
+      out_fp: OUT    std_logic_vector (63 DOWNTO 0);
+      ready : OUT  std_logic
+      --underflow, overflow, inexact : OUT    std_logic;
+      --exception, invalid : OUT    std_logic
+   );
+
+	END component;
 
     signal monRomData					: std_logic_vector(15 downto 0);
 	signal n_externalRamCS			: std_logic :='1';
@@ -170,7 +167,6 @@ signal fpu_running : std_logic;
 	
     attribute dont_touch : string;
     attribute dont_touch of rtc : label is "true";
-    attribute dont_touch of fpu1  : label is "true";
     
 begin
 
@@ -272,22 +268,19 @@ cpu1 : entity work.TG68
   );
 
       -- instantiate fpu
-    fpu1: fpu_design_wrapper 
+    fpu1: fpu_double 
     port map (
-			clk_in100 => sys_clk,
-			opa_i => opa_i,
-			opb_i => opb_i,
-			fpu_op_i =>	fpu_op_i,
-			rmode_i => rmode_i,	
-			result_o => result_o,  
-			error => error,
-        	start_i => start_i,
-        	ready_o => ready_o,
-        	rd_en => rd_en,
-        	data_count_0 => fpu_count
-        	--power_down => fpu_switch,
-        	--locked => fpu_running
-        	);	
+			clk => sys_clk,
+			rst =>  not n_reset,
+			opa => opa_i,
+			opb => opb_i,
+			fpu_op =>	fpu_op_i,
+			rmode => rmode_i,	
+			out_fp => result_o,  
+        	enable => start_i,
+        	ready => ready_o 
+   );
+
   
   timer: entity work.timer  
 	port map ( 
@@ -409,7 +402,7 @@ opb_i(15 downto 0) <= cpuDataOut when cpuAddress  = x"f5000e" and cpu_r_w = '0';
 fpu_ctl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f50018" or cpuAddress = x"f50019") 
             and cpu_r_w = '0' and cpu_lds = '0';
            
-rd_en <= '1' when (cpuAddress >= x"f50010" and cpuAddress <= x"f50017") and cpu_r_w = '1' else '0';
+--rd_en <= '1' when (cpuAddress >= x"f50010" and cpuAddress <= x"f50017") and cpu_r_w = '1' else '0';
             
 start_i <= fpu_ctl(0);
 fpu_op_i <= fpu_ctl(3 downto 1);

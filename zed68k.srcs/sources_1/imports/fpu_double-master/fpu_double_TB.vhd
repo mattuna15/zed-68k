@@ -56,12 +56,7 @@ architecture TB_ARCHITECTURE of fpu_double_tb is
 		opa : in std_logic_vector(63 downto 0);
 		opb : in std_logic_vector(63 downto 0);
 		out_fp : out std_logic_vector(63 downto 0);
-		ready : out std_logic;
-		underflow : out std_logic;
-		overflow : out std_logic;
-		inexact : out std_logic;
-		exception : out std_logic;
-		invalid : out std_logic );
+		ready : out std_logic );
 	end component;
 
 	signal clk : std_logic;
@@ -96,12 +91,7 @@ begin
 			opa => opa,
 			opb => opb,
 			out_fp => out_fp,
-			ready => ready,
-			underflow => underflow,
-			overflow => overflow,
-			inexact => inexact,
-			exception => exception,
-			invalid => invalid
+			ready => ready
 		);
 
 	

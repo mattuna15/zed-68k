@@ -114,7 +114,10 @@ port(
             -- SPI Flash Mem
      qspi_cs         : out std_logic;        
      qspi_dq         : inout std_logic_vector(3 downto 0);   -- dg(0) is MOSI, dq(1) MISO
-     qspi_sck        : out std_logic
+     qspi_sck        : out std_logic;
+     
+      usb_uart_rxd : in  std_logic;
+    usb_uart_txd : out  std_logic 
      
       
 	);
@@ -433,6 +436,7 @@ end process;
 		ps2m_dat_in => '0',
 		ps2m_clk_out => open,
 		ps2m_dat_out => open
+        
     );
     
     ps2switch: entity work.PS2Switch

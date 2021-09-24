@@ -3,164 +3,50 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="tb_fpu_behav.wdb" id="1">
+      <db_ref path="fpu_double_tb_behav.wdb" id="1">
          <top_modules>
             <top_module name="comppack" />
+            <top_module name="fpu_double_tb" />
             <top_module name="fpupack" />
-            <top_module name="glbl" />
-            <top_module name="tb_fpu" />
-            <top_module name="txt_util" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="236724fs"></ZoomStartTime>
-      <ZoomEndTime time="376386fs"></ZoomEndTime>
-      <Cursor1Time time="257919fs"></Cursor1Time>
+      <ZoomStartTime time="10449120fs"></ZoomStartTime>
+      <ZoomEndTime time="12117121fs"></ZoomEndTime>
+      <Cursor1Time time="11515000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="386"></NameColumnWidth>
-      <ValueColumnWidth column_width="162"></ValueColumnWidth>
+      <NameColumnWidth column_width="289"></NameColumnWidth>
+      <ValueColumnWidth column_width="186"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="35" />
-   <wvobject fp_name="/tb_fpu/clk_i" type="logic">
-      <obj_property name="ElementShortName">clk_i</obj_property>
-      <obj_property name="ObjectShortName">clk_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/opa_i" type="array">
-      <obj_property name="ElementShortName">opa_i[63:0]</obj_property>
-      <obj_property name="ObjectShortName">opa_i[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/opb_i" type="array">
-      <obj_property name="ElementShortName">opb_i[63:0]</obj_property>
-      <obj_property name="ObjectShortName">opb_i[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/fpu_op_i" type="array">
-      <obj_property name="ElementShortName">fpu_op_i[2:0]</obj_property>
-      <obj_property name="ObjectShortName">fpu_op_i[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/rmode_i" type="array">
-      <obj_property name="ElementShortName">rmode_i[1:0]</obj_property>
-      <obj_property name="ObjectShortName">rmode_i[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/output_o" type="array">
-      <obj_property name="ElementShortName">output_o[63:0]</obj_property>
-      <obj_property name="ObjectShortName">output_o[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/start_i" type="logic">
-      <obj_property name="ElementShortName">start_i</obj_property>
-      <obj_property name="ObjectShortName">start_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/ready_o" type="logic">
-      <obj_property name="ElementShortName">ready_o</obj_property>
-      <obj_property name="ObjectShortName">ready_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/CLK_PERIOD" type="other">
-      <obj_property name="ElementShortName">CLK_PERIOD</obj_property>
-      <obj_property name="ObjectShortName">CLK_PERIOD</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/rd_en" type="logic">
-      <obj_property name="ElementShortName">rd_en</obj_property>
-      <obj_property name="ObjectShortName">rd_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/error" type="array">
-      <obj_property name="ElementShortName">error[0:0]</obj_property>
-      <obj_property name="ObjectShortName">error[0:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/data_count_0" type="array">
-      <obj_property name="ElementShortName">data_count_0[4:0]</obj_property>
-      <obj_property name="ObjectShortName">data_count_0[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/result_o" type="array">
-      <obj_property name="ElementShortName">result_o[63:0]</obj_property>
-      <obj_property name="ObjectShortName">result_o[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/rst" type="logic">
-      <obj_property name="ElementShortName">rst</obj_property>
-      <obj_property name="ObjectShortName">rst</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/enable" type="logic">
+   <WVObjectSize size="7" />
+   <wvobject fp_name="/fpu_double_tb/UUT/enable" type="logic">
       <obj_property name="ElementShortName">enable</obj_property>
       <obj_property name="ObjectShortName">enable</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/rmode" type="array">
+   <wvobject fp_name="/fpu_double_tb/UUT/rmode" type="array">
       <obj_property name="ElementShortName">rmode[1:0]</obj_property>
       <obj_property name="ObjectShortName">rmode[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/fpu_op" type="array">
+   <wvobject fp_name="/fpu_double_tb/UUT/fpu_op" type="array">
       <obj_property name="ElementShortName">fpu_op[2:0]</obj_property>
       <obj_property name="ObjectShortName">fpu_op[2:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/opa" type="array">
+   <wvobject fp_name="/fpu_double_tb/UUT/opa" type="array">
       <obj_property name="ElementShortName">opa[63:0]</obj_property>
       <obj_property name="ObjectShortName">opa[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/opb" type="array">
+   <wvobject fp_name="/fpu_double_tb/UUT/opb" type="array">
       <obj_property name="ElementShortName">opb[63:0]</obj_property>
       <obj_property name="ObjectShortName">opb[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/out_fp" type="array">
+   <wvobject fp_name="/fpu_double_tb/UUT/out_fp" type="array">
       <obj_property name="ElementShortName">out_fp[63:0]</obj_property>
       <obj_property name="ObjectShortName">out_fp[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/out_round" type="array">
-      <obj_property name="ElementShortName">out_round[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_round[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/out_except" type="array">
-      <obj_property name="ElementShortName">out_except[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_except[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/ready_0" type="logic">
-      <obj_property name="ElementShortName">ready_0</obj_property>
-      <obj_property name="ObjectShortName">ready_0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/ready" type="logic">
+   <wvobject fp_name="/fpu_double_tb/UUT/ready" type="logic">
       <obj_property name="ElementShortName">ready</obj_property>
       <obj_property name="ObjectShortName">ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/underflow" type="logic">
-      <obj_property name="ElementShortName">underflow</obj_property>
-      <obj_property name="ObjectShortName">underflow</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/overflow" type="logic">
-      <obj_property name="ElementShortName">overflow</obj_property>
-      <obj_property name="ObjectShortName">overflow</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inexact" type="logic">
-      <obj_property name="ElementShortName">inexact</obj_property>
-      <obj_property name="ObjectShortName">inexact</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/exception" type="logic">
-      <obj_property name="ElementShortName">exception</obj_property>
-      <obj_property name="ObjectShortName">exception</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/invalid" type="logic">
-      <obj_property name="ElementShortName">invalid</obj_property>
-      <obj_property name="ObjectShortName">invalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/in_progress" type="logic">
-      <obj_property name="ElementShortName">in_progress</obj_property>
-      <obj_property name="ObjectShortName">in_progress</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/enable" type="logic">
-      <obj_property name="ElementShortName">enable</obj_property>
-      <obj_property name="ObjectShortName">enable</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/count_cycles" type="array">
-      <obj_property name="ElementShortName">count_cycles[6:0]</obj_property>
-      <obj_property name="ObjectShortName">count_cycles[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/count_ready" type="array">
-      <obj_property name="ElementShortName">count_ready[6:0]</obj_property>
-      <obj_property name="ObjectShortName">count_ready[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_fpu/i_fpu/fpu_design_i/fpu_double_0/inst/count_busy" type="logic">
-      <obj_property name="ElementShortName">count_busy</obj_property>
-      <obj_property name="ObjectShortName">count_busy</obj_property>
    </wvobject>
 </wave_config>

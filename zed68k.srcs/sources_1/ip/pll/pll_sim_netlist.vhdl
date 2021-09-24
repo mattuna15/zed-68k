@@ -3,7 +3,8 @@
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
 -- Date        : Sat May 29 13:15:45 2021
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim d:/code/zed-68k/zed68k.srcs/sources_1/ip/pll/pll_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top pll -prefix
+--               pll_ pll_sim_netlist.vhdl
 -- Design      : pll
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -23,8 +24,6 @@ entity pll_pll_clk_wiz is
     locked : out STD_LOGIC;
     clk_in : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of pll_pll_clk_wiz : entity is "pll_clk_wiz";
 end pll_pll_clk_wiz;
 
 architecture STRUCTURE of pll_pll_clk_wiz is
