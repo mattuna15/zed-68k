@@ -3,50 +3,49 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="fpu_double_tb_behav.wdb" id="1">
+      <db_ref path="timer_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="comppack" />
-            <top_module name="fpu_double_tb" />
-            <top_module name="fpupack" />
+            <top_module name="glbl" />
+            <top_module name="timer_tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="10449120fs"></ZoomStartTime>
-      <ZoomEndTime time="12117121fs"></ZoomEndTime>
-      <Cursor1Time time="11515000fs"></Cursor1Time>
+      <ZoomStartTime time="31293639864fs"></ZoomStartTime>
+      <ZoomEndTime time="95295802028fs"></ZoomEndTime>
+      <Cursor1Time time="84628775000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="289"></NameColumnWidth>
-      <ValueColumnWidth column_width="186"></ValueColumnWidth>
+      <ValueColumnWidth column_width="170"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="7" />
-   <wvobject fp_name="/fpu_double_tb/UUT/enable" type="logic">
-      <obj_property name="ElementShortName">enable</obj_property>
-      <obj_property name="ObjectShortName">enable</obj_property>
+   <wvobject fp_name="/timer_tb/timer_comp/clk1" type="logic">
+      <obj_property name="ElementShortName">clk1</obj_property>
+      <obj_property name="ObjectShortName">clk1</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/rmode" type="array">
-      <obj_property name="ElementShortName">rmode[1:0]</obj_property>
-      <obj_property name="ObjectShortName">rmode[1:0]</obj_property>
+   <wvobject fp_name="/timer_tb/timer_comp/clk100hz" type="logic">
+      <obj_property name="ElementShortName">clk100hz</obj_property>
+      <obj_property name="ObjectShortName">clk100hz</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/fpu_op" type="array">
-      <obj_property name="ElementShortName">fpu_op[2:0]</obj_property>
-      <obj_property name="ObjectShortName">fpu_op[2:0]</obj_property>
+   <wvobject fp_name="/timer_tb/timer_comp/count_up_millis" type="array">
+      <obj_property name="ElementShortName">count_up_millis[31:0]</obj_property>
+      <obj_property name="ObjectShortName">count_up_millis[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/opa" type="array">
-      <obj_property name="ElementShortName">opa[63:0]</obj_property>
-      <obj_property name="ObjectShortName">opa[63:0]</obj_property>
+   <wvobject fp_name="/timer_tb/timer_comp/count" type="other">
+      <obj_property name="ElementShortName">count</obj_property>
+      <obj_property name="ObjectShortName">count</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/opb" type="array">
-      <obj_property name="ElementShortName">opb[63:0]</obj_property>
-      <obj_property name="ObjectShortName">opb[63:0]</obj_property>
+   <wvobject fp_name="/timer_tb/timer_comp/count_up" type="array">
+      <obj_property name="ElementShortName">count_up[31:0]</obj_property>
+      <obj_property name="ObjectShortName">count_up[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/out_fp" type="array">
-      <obj_property name="ElementShortName">out_fp[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_fp[63:0]</obj_property>
+   <wvobject fp_name="/timer_tb/timer_comp/b" type="logic">
+      <obj_property name="ElementShortName">b</obj_property>
+      <obj_property name="ObjectShortName">b</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/ready" type="logic">
-      <obj_property name="ElementShortName">ready</obj_property>
-      <obj_property name="ObjectShortName">ready</obj_property>
+   <wvobject fp_name="/timer_tb/timer_comp/int_en" type="logic">
+      <obj_property name="ElementShortName">int_en</obj_property>
+      <obj_property name="ObjectShortName">int_en</obj_property>
    </wvobject>
 </wave_config>

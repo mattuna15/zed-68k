@@ -32,6 +32,11 @@ end entity;
 architecture rtl of interrupt_controller is
 signal pending : std_logic_vector(6 downto 0) := "0000000";
 signal mask : std_logic_vector(6 downto 0) := "1111111";
+
+    attribute dont_touch : string;
+    attribute dont_touch of pending : signal is "true";
+    attribute dont_touch of mask : signal is "true";
+    
 begin
 
 process(clk,reset)

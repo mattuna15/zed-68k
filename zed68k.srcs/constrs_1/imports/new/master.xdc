@@ -389,3 +389,46 @@ set_property PACKAGE_PIN K6 [get_ports ddr3_reset_n]
 set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 #Internal VREF
 
+
+connect_debug_port u_ila_0/probe4 [get_nets [list {computer/int_out[0]} {computer/int_out[1]}]]
+connect_debug_port u_ila_0/probe5 [get_nets [list computer/int_ack]]
+connect_debug_port u_ila_0/probe8 [get_nets [list computer/keyb_int]]
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/timer_in1]]
+connect_debug_port u_ila_0/probe11 [get_nets [list computer/timer_in2]]
+
+
+
+connect_debug_port u_ila_0/probe7 [get_nets [list computer/irq_o]]
+connect_debug_port u_ila_0/probe11 [get_nets [list {computer/cpu1/rIPL_nr_reg[0]}]]
+connect_debug_port u_ila_0/probe12 [get_nets [list {computer/cpu1/rIPL_nr_reg[1]}]]
+connect_debug_port u_ila_0/probe13 [get_nets [list {computer/cpu1/rIPL_nr_reg[2]}]]
+connect_debug_port u_ila_0/probe15 [get_nets [list computer/TG68_inst/rIPL_nr]]
+
+
+connect_debug_port u_ila_0/probe2 [get_nets [list {computer/interrupts/int_out[0]} {computer/interrupts/int_out[1]} {computer/interrupts/int_out[2]}]]
+connect_debug_port u_ila_0/probe6 [get_nets [list computer/interrupts/ack]]
+connect_debug_port u_ila_0/probe7 [get_nets [list computer/interrupts/int1]]
+connect_debug_port u_ila_0/probe8 [get_nets [list computer/interrupts/int2]]
+connect_debug_port u_ila_0/probe9 [get_nets [list computer/interrupts/int3]]
+
+
+
+connect_debug_port u_ila_0/probe3 [get_nets [list {computer/cpu1/TG68_inst/ALU/trap_interrupt_reg[0]}]]
+
+
+
+
+connect_debug_port u_ila_0/probe3 [get_nets [list {computer/cpu1/TG68_inst/interrupt_reg_0[0]} {computer/cpu1/TG68_inst/interrupt_reg_0[1]} {computer/cpu1/TG68_inst/interrupt_reg_0[2]}]]
+
+
+connect_debug_port u_ila_0/probe24 [get_nets [list computer/timer_en]]
+
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/auto_iack]]
+connect_debug_port u_ila_0/probe12 [get_nets [list computer/timer_1/Interrupt_100khz]]
+connect_debug_port u_ila_0/probe15 [get_nets [list computer/cpu1/TG68_inst/setinterrupt]]
+
+
+connect_debug_port u_ila_0/probe8 [get_nets [list computer/timer_1/Clk]]
+connect_debug_port u_ila_0/probe9 [get_nets [list computer/timer_1/Interrupt]]
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/timer_1/Rst]]
+

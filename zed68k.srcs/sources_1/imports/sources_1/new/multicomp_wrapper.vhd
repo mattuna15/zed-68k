@@ -165,8 +165,8 @@ architecture Behavioral of multicomp_wrapper is
     signal clk50 : std_logic;
     signal reset: std_logic;
     signal clk_locked: std_logic := '0';
-          signal sys_resetn : std_logic;
-      signal sys_clock100 : STD_LOGIC;
+    signal sys_resetn : std_logic;
+
     signal clk166 : std_logic;
     signal clk200: std_logic := '0';
       
@@ -200,14 +200,7 @@ architecture Behavioral of multicomp_wrapper is
     
     signal opl3_ctl :std_logic_vector(7 downto 0);
     signal opl3_DataOut : std_logic_vector(7 downto 0);
-    
-    
-    signal ps2k_clk_in: std_logic;
-	signal ps2k_dat_in : std_logic;
-	signal ps2k_clk_out : std_logic;
-	signal ps2k_dat_out : std_logic;
 
-    
    -- components
     
 component ethernet is
@@ -306,6 +299,9 @@ attribute dont_touch of mem_i_valid_p : signal is "true";
 attribute dont_touch of gameduino_spi : label is "true";
 attribute dont_touch of opl3_spi : label is "true";
 
+signal cpu_clock : std_logic;
+
+
 begin
    --------------------------------------------------
    -- Instantiate Clock generation
@@ -323,6 +319,17 @@ begin
         eth_clk => eth_clk
     );
     
+    
+    pll2:  pll
+    port map (
+        clk_in => sys_clock,
+        resetn  => resetn,
+        locked => open,
+        clk200 => open,
+        clk166 => open,
+        clk50 => open,
+        eth_clk => cpu_clock
+    );
      
 reset_proc : process
 begin   
@@ -339,10 +346,10 @@ begin
     wait for 3us;
 end process;
 
-boot_proc : process (sys_clock)
+boot_proc : process (cpu_clock)
 begin
 
-    if rising_edge(sys_clock) and cpuCS = '0' then
+    if rising_edge(cpu_clock) and cpuCS = '0' then
     if boot_rom = '1'  then
             
             -- setup boot details
@@ -375,12 +382,11 @@ begin
 
 end process;
 
- --gd_uart_txd_out <= uart_rxd_out;
  
  computer: entity work.Microcomputer 
     port map (
         
-        sys_clk => sys_clock,
+        sys_clk => cpu_clock,
         n_reset	=> sys_resetn,
 
 		                  -- RAM interface
@@ -428,36 +434,9 @@ end process;
         eth_intr => eth_intr,
 
         --ps2
-        ps2k_clk_in => ps2k_clk_in,
-		ps2k_dat_in => ps2k_dat_in,
-		ps2k_clk_out => ps2k_clk_out,
-		ps2k_dat_out => ps2k_dat_out,
-		ps2m_clk_in => '0',
-		ps2m_dat_in => '0',
-		ps2m_clk_out => open,
-		ps2m_dat_out => open
-        
-    );
-    
-    ps2switch: entity work.PS2Switch
-    port map (
-        mode_s => '0',
-        -- keyboard ps/2 block
-        kbd_clk_in  => ps2k_clk_out,
-        kbd_clk_out  => ps2k_clk_in,
-        kbd_data_in => ps2k_dat_out,
-        kbd_data_out => ps2k_dat_in,
-        -- mouse ps/2 block
-        mouse_clk_in   => '0',
-        mouse_clk_out  => open,
-        mouse_data_in  => '0',
-        mouse_data_out => open,
-        --port A
-        prtA_clk  => ps2_clock,
-        prtA_data => ps2_data,
-        --port B
-        prtB_clk  => open,
-        prtB_data => open
+        ps2k_clk_in => ps2_clock,
+		ps2k_dat_in => ps2_data
+		
     );
     
     sda_pup <= '1';
@@ -467,7 +446,7 @@ end process;
     
     gameduino_spi: entity work.spi_master 
   PORT map (
-      clk_i      => sys_clock,
+      clk_i      => cpu_clock,
       rst_i      => not sys_resetn, 
 
       -- CPU interface
@@ -485,7 +464,7 @@ end process;
     
     opl3_spi: entity work.spi_master 
   PORT map (
-      clk_i      => sys_clock,
+      clk_i      => cpu_clock,
       rst_i      => not sys_resetn, 
 
       -- CPU interface
@@ -556,10 +535,10 @@ sdcard: entity work.sd_controller
     
     mem_i_valid <= ((not cpuCS) and (not ( cpuLower and CpuUpper))) and (not boot_rom) and (not cpuAS);
     
-    valid_flag: process (sys_clock)
+    valid_flag: process (cpu_clock)
     begin
 
-    if rising_edge(sys_clock) then
+    if rising_edge(cpu_clock) then
         if (i_valid_count = 0) and (mem_i_valid = '1') then
             mem_i_valid_p <= '1';
             i_valid_count <= i_valid_count+1;

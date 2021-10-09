@@ -364,8 +364,6 @@ architecture logic of TG68KdotC_Kernel is
 
 	signal micro_state		: micro_states;
 	signal next_micro_state	: micro_states;
-	
-
 
 BEGIN  
 

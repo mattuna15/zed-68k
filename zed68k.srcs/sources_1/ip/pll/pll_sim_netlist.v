@@ -1,10 +1,9 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sat May 29 13:15:45 2021
+// Date        : Sat Oct  9 17:50:33 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode funcsim -rename_top pll -prefix
-//               pll_ pll_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim d:/code/zed-68k/zed68k.srcs/sources_1/ip/pll/pll_sim_netlist.v
 // Design      : pll
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -47,6 +46,7 @@ module pll
         .resetn(resetn));
 endmodule
 
+(* ORIG_REF_NAME = "pll_clk_wiz" *) 
 module pll_pll_clk_wiz
    (clk200,
     clk166,

@@ -37,13 +37,6 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # To test this script, run the following commands from Vivado Tcl console:
 # source design_1_script.tcl
 
-
-# The design that will be created by this Tcl script contains the following 
-# module references:
-# UART_FIFO_IO_cntl_proc, UART_RX
-
-# Please add the sources of those modules before sourcing this Tcl script.
-
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
 # <./myproj/project_1.xpr> in the current working folder.
@@ -165,88 +158,118 @@ proc create_root_design { parentCell } {
   # Create interface ports
 
   # Create ports
-  set LED [ create_bd_port -dir O -from 7 -to 0 LED ]
-  set clk100_i [ create_bd_port -dir I -type clk clk100_i ]
-  set cts [ create_bd_port -dir O cts ]
-  set m68_rxd [ create_bd_port -dir O -from 7 -to 0 m68_rxd ]
-  set rd_clk [ create_bd_port -dir I -type clk rd_clk ]
-  set rd_data_cnt [ create_bd_port -dir O -from 8 -to 0 rd_data_cnt ]
-  set rd_en [ create_bd_port -dir I rd_en ]
-  set reset_n [ create_bd_port -dir I -type rst reset_n ]
-  set rts [ create_bd_port -dir O rts ]
-  set rxd1 [ create_bd_port -dir I rxd1 ]
-
-  # Create instance: UART_FIFO_IO_cntl_pr_0, and set properties
-  set block_name UART_FIFO_IO_cntl_proc
-  set block_cell_name UART_FIFO_IO_cntl_pr_0
-  if { [catch {set UART_FIFO_IO_cntl_pr_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   } elseif { $UART_FIFO_IO_cntl_pr_0 eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   }
-  
-  # Create instance: UART_RX_0, and set properties
-  set block_name UART_RX
-  set block_cell_name UART_RX_0
-  if { [catch {set UART_RX_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   } elseif { $UART_RX_0 eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   }
-  
-  # Create instance: fifo_generator_0, and set properties
-  set fifo_generator_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:fifo_generator:13.2 fifo_generator_0 ]
+  set Interrupt_100hz [ create_bd_port -dir O -type intr Interrupt_100hz ]
+  set Interrupt_ms [ create_bd_port -dir O -type intr Interrupt_ms ]
+  set Interrupt_us [ create_bd_port -dir O -type intr Interrupt_us ]
+  set clk_en_n [ create_bd_port -dir I clk_en_n ]
+  set clock100 [ create_bd_port -dir I -type clk -freq_hz 100000000 clock100 ]
   set_property -dict [ list \
-   CONFIG.Data_Count_Width {9} \
-   CONFIG.Empty_Threshold_Assert_Value {2} \
-   CONFIG.Empty_Threshold_Negate_Value {3} \
-   CONFIG.Enable_Reset_Synchronization {true} \
-   CONFIG.Enable_Safety_Circuit {false} \
-   CONFIG.Fifo_Implementation {Independent_Clocks_Block_RAM} \
-   CONFIG.Full_Flags_Reset_Value {0} \
-   CONFIG.Full_Threshold_Assert_Value {509} \
-   CONFIG.Full_Threshold_Negate_Value {508} \
-   CONFIG.Input_Data_Width {8} \
-   CONFIG.Input_Depth {512} \
-   CONFIG.Output_Data_Width {8} \
-   CONFIG.Output_Depth {512} \
-   CONFIG.Overflow_Flag {false} \
-   CONFIG.Programmable_Empty_Type {No_Programmable_Empty_Threshold} \
-   CONFIG.Read_Clock_Frequency {1} \
-   CONFIG.Read_Data_Count {true} \
-   CONFIG.Read_Data_Count_Width {9} \
-   CONFIG.Reset_Pin {false} \
-   CONFIG.Reset_Type {Asynchronous_Reset} \
-   CONFIG.Underflow_Flag {false} \
-   CONFIG.Use_Dout_Reset {false} \
-   CONFIG.Use_Embedded_Registers {false} \
-   CONFIG.Valid_Flag {true} \
-   CONFIG.Write_Acknowledge_Flag {true} \
-   CONFIG.Write_Clock_Frequency {1} \
-   CONFIG.Write_Data_Count {true} \
-   CONFIG.Write_Data_Count_Width {9} \
- ] $fifo_generator_0
+   CONFIG.ASSOCIATED_RESET {reset_n} \
+   CONFIG.PHASE {0.000} \
+ ] $clock100
+  set reset_n [ create_bd_port -dir I -type rst reset_n ]
+  set_property -dict [ list \
+   CONFIG.POLARITY {ACTIVE_LOW} \
+ ] $reset_n
+  set timer_en [ create_bd_port -dir I -from 2 -to 0 timer_en ]
+
+  # Create instance: clk_wiz, and set properties
+  set clk_wiz [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz ]
+  set_property -dict [ list \
+   CONFIG.CLK_IN1_BOARD_INTERFACE {Custom} \
+   CONFIG.RESET_BOARD_INTERFACE {Custom} \
+   CONFIG.RESET_PORT {resetn} \
+   CONFIG.RESET_TYPE {ACTIVE_LOW} \
+   CONFIG.USE_BOARD_FLOW {true} \
+   CONFIG.USE_POWER_DOWN {true} \
+ ] $clk_wiz
+
+  # Create instance: ms_timer, and set properties
+  set ms_timer [ create_bd_cell -type ip -vlnv xilinx.com:ip:fit_timer:2.0 ms_timer ]
+  set_property -dict [ list \
+   CONFIG.C_INACCURACY {5} \
+   CONFIG.C_NO_CLOCKS {100000} \
+ ] $ms_timer
+
+  # Create instance: rst_clk_wiz_100M, and set properties
+  set rst_clk_wiz_100M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_clk_wiz_100M ]
+
+  # Create instance: timer100hz, and set properties
+  set timer100hz [ create_bd_cell -type ip -vlnv xilinx.com:ip:fit_timer:2.0 timer100hz ]
+  set_property -dict [ list \
+   CONFIG.C_INACCURACY {2} \
+   CONFIG.C_NO_CLOCKS {10000} \
+ ] $timer100hz
+
+  # Create instance: us_timer, and set properties
+  set us_timer [ create_bd_cell -type ip -vlnv xilinx.com:ip:fit_timer:2.0 us_timer ]
+  set_property -dict [ list \
+   CONFIG.C_INACCURACY {5} \
+   CONFIG.C_NO_CLOCKS {100} \
+ ] $us_timer
+
+  # Create instance: util_vector_logic_0, and set properties
+  set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
+  set_property -dict [ list \
+   CONFIG.C_SIZE {1} \
+ ] $util_vector_logic_0
+
+  # Create instance: util_vector_logic_1, and set properties
+  set util_vector_logic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_1 ]
+  set_property -dict [ list \
+   CONFIG.C_SIZE {1} \
+ ] $util_vector_logic_1
+
+  # Create instance: util_vector_logic_2, and set properties
+  set util_vector_logic_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_2 ]
+  set_property -dict [ list \
+   CONFIG.C_SIZE {1} \
+ ] $util_vector_logic_2
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_0
+
+  # Create instance: xlslice_1, and set properties
+  set xlslice_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_1 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {0} \
+   CONFIG.DIN_TO {0} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_1
+
+  # Create instance: xlslice_2, and set properties
+  set xlslice_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_2 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {1} \
+   CONFIG.DIN_TO {1} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_2
 
   # Create port connections
-  connect_bd_net -net UART_FIFO_IO_cntl_pr_0_fifoM_wr_en [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_wr_en] [get_bd_pins fifo_generator_0/wr_en]
-  connect_bd_net -net UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en [get_bd_ports cts] [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_rx_rd_en]
-  connect_bd_net -net UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en [get_bd_ports rts] [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_tx_wr_en]
-  connect_bd_net -net UART_RX_0_o_RX_Byte [get_bd_pins UART_RX_0/o_RX_Byte] [get_bd_pins fifo_generator_0/din]
-  connect_bd_net -net UART_RX_0_o_RX_DV [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_rx_dv] [get_bd_pins UART_RX_0/o_RX_DV]
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_ports clk100_i] [get_bd_pins UART_FIFO_IO_cntl_pr_0/clk] [get_bd_pins UART_RX_0/i_Clk] [get_bd_pins fifo_generator_0/wr_clk]
-  connect_bd_net -net fifo_generator_0_dout [get_bd_ports LED] [get_bd_ports m68_rxd] [get_bd_pins fifo_generator_0/dout]
-  connect_bd_net -net fifo_generator_0_empty [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_empty] [get_bd_pins fifo_generator_0/empty]
-  connect_bd_net -net fifo_generator_0_full [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_full] [get_bd_pins fifo_generator_0/full]
-  connect_bd_net -net fifo_generator_0_rd_data_count [get_bd_ports rd_data_cnt] [get_bd_pins fifo_generator_0/rd_data_count]
-  connect_bd_net -net fifo_generator_0_wr_ack [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_wr_ack] [get_bd_pins fifo_generator_0/wr_ack]
-  connect_bd_net -net rd_clk_0_1 [get_bd_ports rd_clk] [get_bd_pins fifo_generator_0/rd_clk]
-  connect_bd_net -net rd_en_0_1 [get_bd_ports rd_en] [get_bd_pins fifo_generator_0/rd_en]
-  connect_bd_net -net reset_n_1 [get_bd_ports reset_n] [get_bd_pins UART_FIFO_IO_cntl_pr_0/rst]
-  connect_bd_net -net rxd1_1 [get_bd_ports rxd1] [get_bd_pins UART_RX_0/i_RX_Serial]
+  connect_bd_net -net clk_wiz_clk_out1 [get_bd_pins clk_wiz/clk_out1] [get_bd_pins rst_clk_wiz_100M/slowest_sync_clk] [get_bd_pins util_vector_logic_0/Op2] [get_bd_pins util_vector_logic_1/Op2] [get_bd_pins util_vector_logic_2/Op2]
+  connect_bd_net -net clk_wiz_locked [get_bd_pins clk_wiz/locked] [get_bd_pins rst_clk_wiz_100M/dcm_locked]
+  connect_bd_net -net clock_rtl_1 [get_bd_ports clock100] [get_bd_pins clk_wiz/clk_in1]
+  connect_bd_net -net ms_timer_Interrupt [get_bd_ports Interrupt_us] [get_bd_pins us_timer/Interrupt]
+  connect_bd_net -net ms_timer_Interrupt1 [get_bd_ports Interrupt_ms] [get_bd_pins ms_timer/Interrupt]
+  connect_bd_net -net power_down_0_1 [get_bd_ports clk_en_n] [get_bd_pins clk_wiz/power_down]
+  connect_bd_net -net reset_n_1 [get_bd_ports reset_n] [get_bd_pins clk_wiz/resetn] [get_bd_pins rst_clk_wiz_100M/ext_reset_in]
+  connect_bd_net -net rst_clk_wiz_100M_peripheral_reset [get_bd_pins ms_timer/Rst] [get_bd_pins rst_clk_wiz_100M/peripheral_reset] [get_bd_pins timer100hz/Rst] [get_bd_pins us_timer/Rst]
+  connect_bd_net -net timer100_khz_Interrupt [get_bd_ports Interrupt_100hz] [get_bd_pins timer100hz/Interrupt]
+  connect_bd_net -net timer_en_1 [get_bd_ports timer_en] [get_bd_pins xlslice_0/Din] [get_bd_pins xlslice_1/Din] [get_bd_pins xlslice_2/Din]
+  connect_bd_net -net util_vector_logic_0_Res [get_bd_pins us_timer/Clk] [get_bd_pins util_vector_logic_0/Res]
+  connect_bd_net -net util_vector_logic_1_Res [get_bd_pins timer100hz/Clk] [get_bd_pins util_vector_logic_1/Res]
+  connect_bd_net -net util_vector_logic_2_Res [get_bd_pins ms_timer/Clk] [get_bd_pins util_vector_logic_2/Res]
+  connect_bd_net -net xlslice_0_Dout [get_bd_pins util_vector_logic_0/Op1] [get_bd_pins xlslice_0/Dout]
+  connect_bd_net -net xlslice_1_Dout [get_bd_pins util_vector_logic_1/Op1] [get_bd_pins xlslice_1/Dout]
+  connect_bd_net -net xlslice_2_Dout [get_bd_pins util_vector_logic_2/Op1] [get_bd_pins xlslice_2/Dout]
 
   # Create address segments
 
