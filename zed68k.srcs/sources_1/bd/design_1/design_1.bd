@@ -1,8 +1,8 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x4D21CACB5B402E94",
-      "device": "xc7a35ticsg324-1L",
+      "boundary_crc": "0xCD780C8F96C0FC79",
+      "device": "xc7a100tcsg324-1",
       "name": "design_1",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
@@ -10,45 +10,18 @@
       "validated": "true"
     },
     "design_tree": {
-      "us_timer": "",
-      "timer100hz": "",
-      "clk_wiz": "",
-      "rst_clk_wiz_100M": "",
-      "xlslice_0": "",
-      "xlslice_1": "",
-      "util_vector_logic_0": "",
-      "util_vector_logic_1": "",
-      "ms_timer": "",
-      "xlslice_2": "",
-      "util_vector_logic_2": ""
+      "fifo_generator_0": "",
+      "UART_RX_0": "",
+      "UART_FIFO_IO_cntl_pr_0": ""
     },
     "ports": {
-      "clock100": {
-        "type": "clk",
-        "direction": "I",
-        "parameters": {
-          "ASSOCIATED_RESET": {
-            "value": "reset_n"
-          },
-          "CLK_DOMAIN": {
-            "value": "design_1_clock_rtl",
-            "value_src": "default"
-          },
-          "FREQ_HZ": {
-            "value": "100000000"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.000"
-          }
-        }
+      "rxd1": {
+        "direction": "I"
+      },
+      "m68_rxd": {
+        "direction": "O",
+        "left": "7",
+        "right": "0"
       },
       "reset_n": {
         "type": "rst",
@@ -59,311 +32,285 @@
             "value_src": "default"
           },
           "POLARITY": {
-            "value": "ACTIVE_LOW"
-          }
-        }
-      },
-      "Interrupt_us": {
-        "type": "intr",
-        "direction": "O",
-        "parameters": {
-          "PortWidth": {
-            "value": "1",
+            "value": "ACTIVE_LOW",
             "value_src": "default"
-          },
-          "SENSITIVITY": {
-            "value": "LEVEL_HIGH",
-            "value_src": "const_prop"
           }
         }
       },
-      "Interrupt_100hz": {
-        "type": "intr",
-        "direction": "O",
-        "parameters": {
-          "PortWidth": {
-            "value": "1",
-            "value_src": "default"
-          },
-          "SENSITIVITY": {
-            "value": "LEVEL_HIGH",
-            "value_src": "const_prop"
-          }
-        }
+      "cts": {
+        "direction": "O"
       },
-      "clk_en_n": {
+      "rts": {
+        "direction": "O"
+      },
+      "rd_en": {
         "direction": "I"
       },
-      "timer_en": {
+      "clk100_i": {
+        "type": "clk",
         "direction": "I",
-        "left": "2",
-        "right": "0"
-      },
-      "Interrupt_ms": {
-        "type": "intr",
-        "direction": "O",
         "parameters": {
-          "PortWidth": {
-            "value": "1",
+          "ASSOCIATED_RESET": {
+            "value": "reset_n",
             "value_src": "default"
           },
-          "SENSITIVITY": {
-            "value": "LEVEL_HIGH",
-            "value_src": "const_prop"
+          "CLK_DOMAIN": {
+            "value": "design_1_clk100_i",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default"
           }
         }
+      },
+      "valid": {
+        "direction": "O"
+      },
+      "rx_data_count": {
+        "direction": "O",
+        "left": "8",
+        "right": "0"
       }
     },
     "components": {
-      "us_timer": {
-        "vlnv": "xilinx.com:ip:fit_timer:2.0",
-        "xci_name": "design_1_fit_timer_0_0",
+      "fifo_generator_0": {
+        "vlnv": "xilinx.com:ip:fifo_generator:13.2",
+        "xci_name": "design_1_fifo_generator_0_0",
         "parameters": {
-          "C_INACCURACY": {
-            "value": "5"
-          },
-          "C_NO_CLOCKS": {
-            "value": "100"
-          }
-        }
-      },
-      "timer100hz": {
-        "vlnv": "xilinx.com:ip:fit_timer:2.0",
-        "xci_name": "design_1_fit_timer_0_1",
-        "parameters": {
-          "C_INACCURACY": {
-            "value": "2"
-          },
-          "C_NO_CLOCKS": {
-            "value": "10000"
-          }
-        }
-      },
-      "clk_wiz": {
-        "vlnv": "xilinx.com:ip:clk_wiz:6.0",
-        "xci_name": "design_1_clk_wiz_0",
-        "parameters": {
-          "CLK_IN1_BOARD_INTERFACE": {
-            "value": "Custom"
-          },
-          "RESET_BOARD_INTERFACE": {
-            "value": "Custom"
-          },
-          "RESET_PORT": {
-            "value": "resetn"
-          },
-          "RESET_TYPE": {
-            "value": "ACTIVE_LOW"
-          },
-          "USE_BOARD_FLOW": {
+          "Data_Count": {
             "value": "true"
           },
-          "USE_POWER_DOWN": {
+          "Data_Count_Width": {
+            "value": "9"
+          },
+          "Fifo_Implementation": {
+            "value": "Common_Clock_Block_RAM"
+          },
+          "Input_Data_Width": {
+            "value": "8"
+          },
+          "Input_Depth": {
+            "value": "512"
+          },
+          "Output_Data_Width": {
+            "value": "8"
+          },
+          "Overflow_Flag": {
+            "value": "false"
+          },
+          "Programmable_Empty_Type": {
+            "value": "No_Programmable_Empty_Threshold"
+          },
+          "Reset_Pin": {
+            "value": "false"
+          },
+          "Underflow_Flag": {
+            "value": "false"
+          },
+          "Use_Embedded_Registers": {
+            "value": "false"
+          },
+          "Valid_Flag": {
+            "value": "true"
+          },
+          "Write_Acknowledge_Flag": {
             "value": "true"
           }
         }
       },
-      "rst_clk_wiz_100M": {
-        "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
-        "xci_name": "design_1_rst_clk_wiz_100M_0"
-      },
-      "xlslice_0": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "design_1_xlslice_0_0",
-        "parameters": {
-          "DIN_FROM": {
-            "value": "2"
+      "UART_RX_0": {
+        "vlnv": "xilinx.com:module_ref:UART_RX:1.0",
+        "xci_name": "design_1_UART_RX_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "UART_RX",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "i_Clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "CLK_DOMAIN": {
+                "value": "design_1_clk100_i",
+                "value_src": "default_prop"
+              }
+            }
           },
-          "DIN_TO": {
-            "value": "2"
+          "i_RX_Serial": {
+            "direction": "I"
           },
-          "DIN_WIDTH": {
-            "value": "3"
+          "o_RX_DV": {
+            "direction": "O"
           },
-          "DOUT_WIDTH": {
-            "value": "1"
+          "o_RX_Byte": {
+            "direction": "O",
+            "left": "7",
+            "right": "0"
           }
         }
       },
-      "xlslice_1": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "design_1_xlslice_1_0",
-        "parameters": {
-          "DIN_FROM": {
-            "value": "0"
+      "UART_FIFO_IO_cntl_pr_0": {
+        "vlnv": "xilinx.com:module_ref:UART_FIFO_IO_cntl_proc:1.0",
+        "xci_name": "design_1_UART_FIFO_IO_cntl_pr_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "UART_FIFO_IO_cntl_proc",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_RESET": {
+                "value": "rst",
+                "value_src": "constant"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_clk100_i",
+                "value_src": "default_prop"
+              }
+            }
           },
-          "DIN_TO": {
-            "value": "0"
+          "rst": {
+            "type": "rst",
+            "direction": "I"
           },
-          "DIN_WIDTH": {
-            "value": "3"
+          "uart_rx_dv": {
+            "direction": "I"
           },
-          "DOUT_WIDTH": {
-            "value": "1"
-          }
-        }
-      },
-      "util_vector_logic_0": {
-        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-        "xci_name": "design_1_util_vector_logic_0_0",
-        "parameters": {
-          "C_SIZE": {
-            "value": "1"
-          }
-        }
-      },
-      "util_vector_logic_1": {
-        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-        "xci_name": "design_1_util_vector_logic_0_1",
-        "parameters": {
-          "C_SIZE": {
-            "value": "1"
-          }
-        }
-      },
-      "ms_timer": {
-        "vlnv": "xilinx.com:ip:fit_timer:2.0",
-        "xci_name": "design_1_us_timer_0",
-        "parameters": {
-          "C_INACCURACY": {
-            "value": "5"
+          "uart_tx_rfd": {
+            "direction": "I"
           },
-          "C_NO_CLOCKS": {
-            "value": "100000"
-          }
-        }
-      },
-      "xlslice_2": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "design_1_xlslice_1_1",
-        "parameters": {
-          "DIN_FROM": {
-            "value": "1"
+          "fifoM_full": {
+            "direction": "I"
           },
-          "DIN_TO": {
-            "value": "1"
+          "fifoM_empty": {
+            "direction": "I"
           },
-          "DIN_WIDTH": {
-            "value": "3"
+          "fifoM_wr_ack": {
+            "direction": "I"
           },
-          "DOUT_WIDTH": {
-            "value": "1"
-          }
-        }
-      },
-      "util_vector_logic_2": {
-        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-        "xci_name": "design_1_util_vector_logic_1_0",
-        "parameters": {
-          "C_SIZE": {
-            "value": "1"
+          "uart_rx_rd_en": {
+            "direction": "O"
+          },
+          "uart_tx_wr_en": {
+            "direction": "O"
+          },
+          "fifoM_wr_en": {
+            "direction": "O"
+          },
+          "fifoM_rd_en": {
+            "direction": "O"
           }
         }
       }
     },
     "nets": {
-      "clk_wiz_clk_out1": {
+      "clk_wiz_0_clk_out1": {
         "ports": [
-          "clk_wiz/clk_out1",
-          "rst_clk_wiz_100M/slowest_sync_clk",
-          "util_vector_logic_0/Op2",
-          "util_vector_logic_1/Op2",
-          "util_vector_logic_2/Op2"
+          "clk100_i",
+          "UART_RX_0/i_Clk",
+          "UART_FIFO_IO_cntl_pr_0/clk",
+          "fifo_generator_0/clk"
         ]
       },
-      "clk_wiz_locked": {
+      "fifo_generator_0_dout": {
         "ports": [
-          "clk_wiz/locked",
-          "rst_clk_wiz_100M/dcm_locked"
-        ]
-      },
-      "rst_clk_wiz_100M_peripheral_reset": {
-        "ports": [
-          "rst_clk_wiz_100M/peripheral_reset",
-          "us_timer/Rst",
-          "timer100hz/Rst",
-          "ms_timer/Rst"
-        ]
-      },
-      "clock_rtl_1": {
-        "ports": [
-          "clock100",
-          "clk_wiz/clk_in1"
+          "fifo_generator_0/dout",
+          "m68_rxd"
         ]
       },
       "reset_n_1": {
         "ports": [
           "reset_n",
-          "clk_wiz/resetn",
-          "rst_clk_wiz_100M/ext_reset_in"
+          "UART_FIFO_IO_cntl_pr_0/rst"
         ]
       },
-      "ms_timer_Interrupt": {
+      "rxd1_1": {
         "ports": [
-          "us_timer/Interrupt",
-          "Interrupt_us"
+          "rxd1",
+          "UART_RX_0/i_RX_Serial"
         ]
       },
-      "timer100_khz_Interrupt": {
+      "UART_RX_0_o_RX_Byte": {
         "ports": [
-          "timer100hz/Interrupt",
-          "Interrupt_100hz"
+          "UART_RX_0/o_RX_Byte",
+          "fifo_generator_0/din"
         ]
       },
-      "power_down_0_1": {
+      "UART_RX_0_o_RX_DV": {
         "ports": [
-          "clk_en_n",
-          "clk_wiz/power_down"
+          "UART_RX_0/o_RX_DV",
+          "UART_FIFO_IO_cntl_pr_0/uart_rx_dv"
         ]
       },
-      "timer_en_1": {
+      "fifo_generator_0_full": {
         "ports": [
-          "timer_en",
-          "xlslice_0/Din",
-          "xlslice_1/Din",
-          "xlslice_2/Din"
+          "fifo_generator_0/full",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_full"
         ]
       },
-      "xlslice_0_Dout": {
+      "fifo_generator_0_empty": {
         "ports": [
-          "xlslice_0/Dout",
-          "util_vector_logic_0/Op1"
+          "fifo_generator_0/empty",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_empty"
         ]
       },
-      "util_vector_logic_0_Res": {
+      "UART_FIFO_IO_cntl_pr_0_fifoM_wr_en": {
         "ports": [
-          "util_vector_logic_0/Res",
-          "us_timer/Clk"
+          "UART_FIFO_IO_cntl_pr_0/fifoM_wr_en",
+          "fifo_generator_0/wr_en"
         ]
       },
-      "xlslice_1_Dout": {
+      "fifo_generator_0_wr_ack": {
         "ports": [
-          "xlslice_1/Dout",
-          "util_vector_logic_1/Op1"
+          "fifo_generator_0/wr_ack",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_wr_ack"
         ]
       },
-      "util_vector_logic_1_Res": {
+      "UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en": {
         "ports": [
-          "util_vector_logic_1/Res",
-          "timer100hz/Clk"
+          "UART_FIFO_IO_cntl_pr_0/uart_rx_rd_en",
+          "cts"
         ]
       },
-      "ms_timer_Interrupt1": {
+      "UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en": {
         "ports": [
-          "ms_timer/Interrupt",
-          "Interrupt_ms"
+          "UART_FIFO_IO_cntl_pr_0/uart_tx_wr_en",
+          "rts"
         ]
       },
-      "xlslice_2_Dout": {
+      "rd_en_0_1": {
         "ports": [
-          "xlslice_2/Dout",
-          "util_vector_logic_2/Op1"
+          "rd_en",
+          "fifo_generator_0/rd_en"
         ]
       },
-      "util_vector_logic_2_Res": {
+      "fifo_generator_0_valid": {
         "ports": [
-          "util_vector_logic_2/Res",
-          "ms_timer/Clk"
+          "fifo_generator_0/valid",
+          "valid"
+        ]
+      },
+      "fifo_generator_0_data_count": {
+        "ports": [
+          "fifo_generator_0/data_count",
+          "rx_data_count"
         ]
       }
     }

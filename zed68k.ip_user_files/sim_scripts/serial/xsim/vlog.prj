@@ -1,0 +1,9 @@
+verilog xil_defaultlib  \
+"../../../bd/serial/ip/serial_UART_TX_0_0/sim/serial_UART_TX_0_0.v" \
+"../../../bd/serial/ip/serial_UART_FIFO_IO_cntl_pr_0_0/sim/serial_UART_FIFO_IO_cntl_pr_0_0.v" \
+"../../../bd/serial/ip/serial_fifo_generator_0_0/sim/serial_fifo_generator_0_0.v" \
+"../../../bd/serial/sim/serial.v" \
+
+verilog xil_defaultlib "glbl.v"
+
+nosort

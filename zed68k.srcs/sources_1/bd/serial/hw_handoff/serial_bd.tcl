@@ -50,8 +50,8 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-   create_project project_1 myproj -part xc7a35ticsg324-1L
-   set_property BOARD_PART digilentinc.com:arty-a7-35:part0:1.0 [current_project]
+   create_project project_1 myproj -part xc7a100tcsg324-1
+   set_property BOARD_PART digilentinc.com:arty-a7-100:part0:1.0 [current_project]
 }
 
 
@@ -223,13 +223,12 @@ proc create_root_design { parentCell } {
   connect_bd_net -net UART_FIFO_IO_cntl_pr_0_fifoM_rd_en [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_rd_en] [get_bd_pins fifo_generator_0/rd_en]
   connect_bd_net -net UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en [get_bd_ports cts] [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_rx_rd_en]
   connect_bd_net -net UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en [get_bd_ports rts] [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_tx_wr_en]
-  connect_bd_net -net UART_TX_0_o_TX_Active [get_bd_ports tx_send_active] [get_bd_pins UART_TX_0/o_TX_Active]
   connect_bd_net -net UART_TX_0_o_TX_Done [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_tx_rfd] [get_bd_pins UART_TX_0/o_TX_Done]
   connect_bd_net -net UART_TX_0_o_TX_Serial [get_bd_ports txd] [get_bd_pins UART_TX_0/o_TX_Serial]
   connect_bd_net -net clk_0_1 [get_bd_ports sys_clk] [get_bd_pins UART_FIFO_IO_cntl_pr_0/clk] [get_bd_pins UART_TX_0/i_Clk] [get_bd_pins fifo_generator_0/clk]
   connect_bd_net -net din_0_1 [get_bd_ports tx_data] [get_bd_pins fifo_generator_0/din]
   connect_bd_net -net fifo_generator_0_dout [get_bd_pins UART_TX_0/i_TX_Byte] [get_bd_pins fifo_generator_0/dout]
-  connect_bd_net -net fifo_generator_0_full [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_full] [get_bd_pins fifo_generator_0/full]
+  connect_bd_net -net fifo_generator_0_full [get_bd_ports tx_send_active] [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_full] [get_bd_pins fifo_generator_0/full]
   connect_bd_net -net fifo_generator_0_valid [get_bd_pins UART_TX_0/i_TX_DV] [get_bd_pins fifo_generator_0/valid]
   connect_bd_net -net fifo_generator_0_wr_ack [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_wr_ack] [get_bd_pins fifo_generator_0/wr_ack]
   connect_bd_net -net rst_0_1 [get_bd_ports reset_n] [get_bd_pins UART_FIFO_IO_cntl_pr_0/rst]

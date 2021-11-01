@@ -47,6 +47,8 @@ module main_axi_control(
    output reg [7:0] 		  s_axi_arlen = 8'b0, // 1
    output reg [2:0] 		  s_axi_arsize = 3'b010, // 4 bytes
    output reg [1:0] 		  s_axi_arburst = 2'b0, // fixed
+   output reg [1:0]           s_axi_arcache = 4'b1010,
+   output reg [1:0]           s_axi_awcache = 4'b0110,
    output reg			  s_axi_arvalid,
    input 		  s_axi_arready,
    // Slave Interface Read Data Ports

@@ -1,7 +1,7 @@
 //Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-//Date        : Mon Apr  5 21:22:52 2021
+//Date        : Sun Oct 31 14:16:04 2021
 //Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 //Command     : generate_target serial.bd
 //Design      : serial
@@ -31,7 +31,6 @@ module serial
   wire UART_FIFO_IO_cntl_pr_0_fifoM_rd_en;
   wire UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en;
   wire UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en;
-  wire UART_TX_0_o_TX_Active;
   wire UART_TX_0_o_TX_Done;
   wire UART_TX_0_o_TX_Serial;
   wire clk_0_1;
@@ -48,7 +47,7 @@ module serial
   assign din_0_1 = tx_data[7:0];
   assign rst_0_1 = reset_n;
   assign rts = UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en;
-  assign tx_send_active = UART_TX_0_o_TX_Active;
+  assign tx_send_active = fifo_generator_0_full;
   assign txd = UART_TX_0_o_TX_Serial;
   assign wr_en_0_1 = tx_wr_en;
   serial_UART_FIFO_IO_cntl_pr_0_0 UART_FIFO_IO_cntl_pr_0
@@ -66,7 +65,6 @@ module serial
        (.i_Clk(clk_0_1),
         .i_TX_Byte(fifo_generator_0_dout),
         .i_TX_DV(fifo_generator_0_valid),
-        .o_TX_Active(UART_TX_0_o_TX_Active),
         .o_TX_Done(UART_TX_0_o_TX_Done),
         .o_TX_Serial(UART_TX_0_o_TX_Serial));
   serial_fifo_generator_0_0 fifo_generator_0

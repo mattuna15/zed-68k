@@ -2,7 +2,7 @@
   "design": {
     "design_info": {
       "boundary_crc": "0x1F046E037D68DDB9",
-      "device": "xc7a35ticsg324-1L",
+      "device": "xc7a100tcsg324-1",
       "name": "serial",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
@@ -11,8 +11,8 @@
     },
     "design_tree": {
       "fifo_generator_0": "",
-      "UART_TX_0": "",
-      "UART_FIFO_IO_cntl_pr_0": ""
+      "UART_FIFO_IO_cntl_pr_0": "",
+      "UART_TX_0": ""
     },
     "ports": {
       "sys_clk": {
@@ -111,49 +111,6 @@
           }
         }
       },
-      "UART_TX_0": {
-        "vlnv": "xilinx.com:module_ref:UART_TX:1.0",
-        "xci_name": "serial_UART_TX_0_0",
-        "parameters": {
-          "g_CLKS_PER_BIT": {
-            "value": "868"
-          }
-        },
-        "reference_info": {
-          "ref_type": "hdl",
-          "ref_name": "UART_TX",
-          "boundary_crc": "0x0"
-        },
-        "ports": {
-          "i_Clk": {
-            "type": "clk",
-            "direction": "I",
-            "parameters": {
-              "CLK_DOMAIN": {
-                "value": "serial_sys_clk",
-                "value_src": "default_prop"
-              }
-            }
-          },
-          "i_TX_DV": {
-            "direction": "I"
-          },
-          "i_TX_Byte": {
-            "direction": "I",
-            "left": "7",
-            "right": "0"
-          },
-          "o_TX_Active": {
-            "direction": "O"
-          },
-          "o_TX_Serial": {
-            "direction": "O"
-          },
-          "o_TX_Done": {
-            "direction": "O"
-          }
-        }
-      },
       "UART_FIFO_IO_cntl_pr_0": {
         "vlnv": "xilinx.com:module_ref:UART_FIFO_IO_cntl_proc:1.0",
         "xci_name": "serial_UART_FIFO_IO_cntl_pr_0_0",
@@ -209,6 +166,49 @@
             "direction": "O"
           }
         }
+      },
+      "UART_TX_0": {
+        "vlnv": "xilinx.com:module_ref:UART_TX:1.0",
+        "xci_name": "serial_UART_TX_0_0",
+        "parameters": {
+          "g_CLKS_PER_BIT": {
+            "value": "868"
+          }
+        },
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "UART_TX",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "i_Clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "CLK_DOMAIN": {
+                "value": "serial_sys_clk",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "i_TX_DV": {
+            "direction": "I"
+          },
+          "i_TX_Byte": {
+            "direction": "I",
+            "left": "7",
+            "right": "0"
+          },
+          "o_TX_Active": {
+            "direction": "O"
+          },
+          "o_TX_Serial": {
+            "direction": "O"
+          },
+          "o_TX_Done": {
+            "direction": "O"
+          }
+        }
       }
     },
     "nets": {
@@ -222,8 +222,8 @@
         "ports": [
           "sys_clk",
           "fifo_generator_0/clk",
-          "UART_TX_0/i_Clk",
-          "UART_FIFO_IO_cntl_pr_0/clk"
+          "UART_FIFO_IO_cntl_pr_0/clk",
+          "UART_TX_0/i_Clk"
         ]
       },
       "fifo_generator_0_wr_ack": {
@@ -247,7 +247,8 @@
       "fifo_generator_0_full": {
         "ports": [
           "fifo_generator_0/full",
-          "UART_FIFO_IO_cntl_pr_0/fifoM_full"
+          "UART_FIFO_IO_cntl_pr_0/fifoM_full",
+          "tx_send_active"
         ]
       },
       "din_0_1": {
@@ -290,12 +291,6 @@
         "ports": [
           "UART_TX_0/o_TX_Serial",
           "txd"
-        ]
-      },
-      "UART_TX_0_o_TX_Active": {
-        "ports": [
-          "UART_TX_0/o_TX_Active",
-          "tx_send_active"
         ]
       }
     }

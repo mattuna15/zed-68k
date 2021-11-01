@@ -1,7 +1,7 @@
 //Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-//Date        : Fri Oct  8 20:45:52 2021
+//Date        : Sun Oct 31 17:37:15 2021
 //Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 //Command     : generate_target design_1.bd
 //Design      : design_1
@@ -9,91 +9,77 @@
 //--------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CORE_GENERATION_INFO = "design_1,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=design_1,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=11,numReposBlks=11,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,da_board_cnt=2,da_clkrst_cnt=2,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "design_1.hwdef" *) 
+(* CORE_GENERATION_INFO = "design_1,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=design_1,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=3,numReposBlks=3,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=2,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "design_1.hwdef" *) 
 module design_1
-   (Interrupt_100hz,
-    Interrupt_ms,
-    Interrupt_us,
-    clk_en_n,
-    clock100,
+   (clk100_i,
+    cts,
+    m68_rxd,
+    rd_en,
     reset_n,
-    timer_en);
-  (* X_INTERFACE_INFO = "xilinx.com:signal:interrupt:1.0 INTR.INTERRUPT_100HZ INTERRUPT" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME INTR.INTERRUPT_100HZ, PortWidth 1, SENSITIVITY LEVEL_HIGH" *) output Interrupt_100hz;
-  (* X_INTERFACE_INFO = "xilinx.com:signal:interrupt:1.0 INTR.INTERRUPT_MS INTERRUPT" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME INTR.INTERRUPT_MS, PortWidth 1, SENSITIVITY LEVEL_HIGH" *) output Interrupt_ms;
-  (* X_INTERFACE_INFO = "xilinx.com:signal:interrupt:1.0 INTR.INTERRUPT_US INTERRUPT" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME INTR.INTERRUPT_US, PortWidth 1, SENSITIVITY LEVEL_HIGH" *) output Interrupt_us;
-  input clk_en_n;
-  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 CLK.CLOCK100 CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME CLK.CLOCK100, ASSOCIATED_RESET reset_n, CLK_DOMAIN design_1_clock_rtl, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, INSERT_VIP 0, PHASE 0.000" *) input clock100;
+    rts,
+    rx_data_count,
+    rxd1,
+    valid);
+  (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 CLK.CLK100_I CLK" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME CLK.CLK100_I, ASSOCIATED_RESET reset_n, CLK_DOMAIN design_1_clk100_i, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, INSERT_VIP 0, PHASE 0.000" *) input clk100_i;
+  output cts;
+  output [7:0]m68_rxd;
+  input rd_en;
   (* X_INTERFACE_INFO = "xilinx.com:signal:reset:1.0 RST.RESET_N RST" *) (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME RST.RESET_N, INSERT_VIP 0, POLARITY ACTIVE_LOW" *) input reset_n;
-  input [2:0]timer_en;
+  output rts;
+  output [8:0]rx_data_count;
+  input rxd1;
+  output valid;
 
-  wire clk_wiz_clk_out1;
-  wire clk_wiz_locked;
-  wire clock_rtl_1;
-  wire ms_timer_Interrupt;
-  wire ms_timer_Interrupt1;
-  wire power_down_0_1;
+  wire UART_FIFO_IO_cntl_pr_0_fifoM_wr_en;
+  wire UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en;
+  wire UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en;
+  wire [7:0]UART_RX_0_o_RX_Byte;
+  wire UART_RX_0_o_RX_DV;
+  wire clk_wiz_0_clk_out1;
+  wire [8:0]fifo_generator_0_data_count;
+  wire [7:0]fifo_generator_0_dout;
+  wire fifo_generator_0_empty;
+  wire fifo_generator_0_full;
+  wire fifo_generator_0_valid;
+  wire fifo_generator_0_wr_ack;
+  wire rd_en_0_1;
   wire reset_n_1;
-  wire [0:0]rst_clk_wiz_100M_peripheral_reset;
-  wire timer100_khz_Interrupt;
-  wire [2:0]timer_en_1;
-  wire [0:0]util_vector_logic_0_Res;
-  wire [0:0]util_vector_logic_1_Res;
-  wire [0:0]util_vector_logic_2_Res;
-  wire [0:0]xlslice_0_Dout;
-  wire [0:0]xlslice_1_Dout;
-  wire [0:0]xlslice_2_Dout;
+  wire rxd1_1;
 
-  assign Interrupt_100hz = timer100_khz_Interrupt;
-  assign Interrupt_ms = ms_timer_Interrupt1;
-  assign Interrupt_us = ms_timer_Interrupt;
-  assign clock_rtl_1 = clock100;
-  assign power_down_0_1 = clk_en_n;
+  assign clk_wiz_0_clk_out1 = clk100_i;
+  assign cts = UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en;
+  assign m68_rxd[7:0] = fifo_generator_0_dout;
+  assign rd_en_0_1 = rd_en;
   assign reset_n_1 = reset_n;
-  assign timer_en_1 = timer_en[2:0];
-  design_1_clk_wiz_0 clk_wiz
-       (.clk_in1(clock_rtl_1),
-        .clk_out1(clk_wiz_clk_out1),
-        .locked(clk_wiz_locked),
-        .power_down(power_down_0_1),
-        .resetn(reset_n_1));
-  design_1_us_timer_0 ms_timer
-       (.Clk(util_vector_logic_2_Res),
-        .Interrupt(ms_timer_Interrupt1),
-        .Rst(rst_clk_wiz_100M_peripheral_reset));
-  design_1_rst_clk_wiz_100M_0 rst_clk_wiz_100M
-       (.aux_reset_in(1'b1),
-        .dcm_locked(clk_wiz_locked),
-        .ext_reset_in(reset_n_1),
-        .mb_debug_sys_rst(1'b0),
-        .peripheral_reset(rst_clk_wiz_100M_peripheral_reset),
-        .slowest_sync_clk(clk_wiz_clk_out1));
-  design_1_fit_timer_0_1 timer100hz
-       (.Clk(util_vector_logic_1_Res),
-        .Interrupt(timer100_khz_Interrupt),
-        .Rst(rst_clk_wiz_100M_peripheral_reset));
-  design_1_fit_timer_0_0 us_timer
-       (.Clk(util_vector_logic_0_Res),
-        .Interrupt(ms_timer_Interrupt),
-        .Rst(rst_clk_wiz_100M_peripheral_reset));
-  design_1_util_vector_logic_0_0 util_vector_logic_0
-       (.Op1(xlslice_0_Dout),
-        .Op2(clk_wiz_clk_out1),
-        .Res(util_vector_logic_0_Res));
-  design_1_util_vector_logic_0_1 util_vector_logic_1
-       (.Op1(xlslice_1_Dout),
-        .Op2(clk_wiz_clk_out1),
-        .Res(util_vector_logic_1_Res));
-  design_1_util_vector_logic_1_0 util_vector_logic_2
-       (.Op1(xlslice_2_Dout),
-        .Op2(clk_wiz_clk_out1),
-        .Res(util_vector_logic_2_Res));
-  design_1_xlslice_0_0 xlslice_0
-       (.Din(timer_en_1),
-        .Dout(xlslice_0_Dout));
-  design_1_xlslice_1_0 xlslice_1
-       (.Din(timer_en_1),
-        .Dout(xlslice_1_Dout));
-  design_1_xlslice_1_1 xlslice_2
-       (.Din(timer_en_1),
-        .Dout(xlslice_2_Dout));
+  assign rts = UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en;
+  assign rx_data_count[8:0] = fifo_generator_0_data_count;
+  assign rxd1_1 = rxd1;
+  assign valid = fifo_generator_0_valid;
+  design_1_UART_FIFO_IO_cntl_pr_0_0 UART_FIFO_IO_cntl_pr_0
+       (.clk(clk_wiz_0_clk_out1),
+        .fifoM_empty(fifo_generator_0_empty),
+        .fifoM_full(fifo_generator_0_full),
+        .fifoM_wr_ack(fifo_generator_0_wr_ack),
+        .fifoM_wr_en(UART_FIFO_IO_cntl_pr_0_fifoM_wr_en),
+        .rst(reset_n_1),
+        .uart_rx_dv(UART_RX_0_o_RX_DV),
+        .uart_rx_rd_en(UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en),
+        .uart_tx_rfd(1'b0),
+        .uart_tx_wr_en(UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en));
+  design_1_UART_RX_0_0 UART_RX_0
+       (.i_Clk(clk_wiz_0_clk_out1),
+        .i_RX_Serial(rxd1_1),
+        .o_RX_Byte(UART_RX_0_o_RX_Byte),
+        .o_RX_DV(UART_RX_0_o_RX_DV));
+  design_1_fifo_generator_0_0 fifo_generator_0
+       (.clk(clk_wiz_0_clk_out1),
+        .data_count(fifo_generator_0_data_count),
+        .din(UART_RX_0_o_RX_Byte),
+        .dout(fifo_generator_0_dout),
+        .empty(fifo_generator_0_empty),
+        .full(fifo_generator_0_full),
+        .rd_en(rd_en_0_1),
+        .valid(fifo_generator_0_valid),
+        .wr_ack(fifo_generator_0_wr_ack),
+        .wr_en(UART_FIFO_IO_cntl_pr_0_fifoM_wr_en));
 endmodule

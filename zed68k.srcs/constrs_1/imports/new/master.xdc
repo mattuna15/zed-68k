@@ -37,42 +37,35 @@ set_property -dict {PACKAGE_PIN J5 IOSTANDARD LVCMOS33} [get_ports {led[1]}]
 set_property -dict {PACKAGE_PIN T9 IOSTANDARD LVCMOS33} [get_ports {led[2]}]
 set_property -dict {PACKAGE_PIN T10 IOSTANDARD LVCMOS33} [get_ports {led[3]}]
 
+
 ## Buttons
 #set_property -dict { PACKAGE_PIN C9    IOSTANDARD LVCMOS33 } [get_ports { btn[1] }]; #IO_L11P_T1_SRCC_16 Sch=btn[1]
 #set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { btn[2] }]; #IO_L11N_T1_SRCC_16 Sch=btn[2]
 #set_property -dict { PACKAGE_PIN B8    IOSTANDARD LVCMOS33 } [get_ports { btn[3] }]; #IO_L12P_T1_MRCC_16 Sch=btn[3]
 
 ## Pmod Header JA
-set_property -dict {PACKAGE_PIN G13 IOSTANDARD LVCMOS33} [get_ports eth_cs]
-set_property -dict {PACKAGE_PIN B11 IOSTANDARD LVCMOS33} [get_ports eth_mosi]
-set_property -dict {PACKAGE_PIN A11 IOSTANDARD LVCMOS33} [get_ports eth_miso]
-set_property -dict {PACKAGE_PIN D12 IOSTANDARD LVCMOS33} [get_ports eth_sclk]
-set_property -dict {PACKAGE_PIN D13 IOSTANDARD LVCMOS33} [get_ports eth_spisel]
+set_property -dict {PACKAGE_PIN G13 IOSTANDARD LVCMOS33} [get_ports ps2_data]
+set_property -dict { PACKAGE_PIN B11   IOSTANDARD LVCMOS33 } [get_ports { ja[1] }]; #IO_L4P_T0_15 Sch=ja[2]
+set_property -dict {PACKAGE_PIN A11 IOSTANDARD LVCMOS33} [get_ports ps2_clock]
+set_property -dict { PACKAGE_PIN D12   IOSTANDARD LVCMOS33 } [get_ports { ja[3] }]; #IO_L6P_T0_15 Sch=ja[4]
+set_property -dict { PACKAGE_PIN D13   IOSTANDARD LVCMOS33 } [get_ports { ja[4] }]; #IO_L6N_T0_VREF_15 Sch=ja[7]
+set_property -dict { PACKAGE_PIN B18   IOSTANDARD LVCMOS33 } [get_ports { ja[5] }]; #IO_L10P_T1_AD11P_15 Sch=ja[8]
+set_property -dict { PACKAGE_PIN A18   IOSTANDARD LVCMOS33 } [get_ports { ja[6] }]; #IO_L10N_T1_AD11N_15 Sch=ja[9]
+set_property -dict { PACKAGE_PIN K16   IOSTANDARD LVCMOS33 } [get_ports { ja[7] }]; #IO_25_15 Sch=ja[10]
 
-set_property PULLUP true [get_ports eth_spisel]
-
-#set_property -dict { PACKAGE_PIN B18   IOSTANDARD LVCMOS33 } [get_ports { ja[5] }]; #IO_L10P_T1_AD11P_15 Sch=ja[8]
-#set_property -dict { PACKAGE_PIN A18   IOSTANDARD LVCMOS33 } [get_ports { ja[6] }]; #IO_L10N_T1_AD11N_15 Sch=ja[9]
-#set_property -dict { PACKAGE_PIN K16   IOSTANDARD LVCMOS33 } [get_ports { ja[7] }]; #IO_25_15 Sch=ja[10]
-
-
-
-#1 RTS / SS	UART Request to Send / SPI Slave Select
-#2	RXD / MOSI	UART Receive Data / SPI Master Out Slave In
-#3	TXD / MISO	UART Transmit Data / SPI Master In Slave Out
-#4	CTS / SCK	UART Clear to Send / SPI Serial Clock
-# Pmod Header JB
-set_property -dict {PACKAGE_PIN E15 IOSTANDARD LVCMOS33} [get_ports ps2_data]
-#set_property -dict {PACKAGE_PIN E16 IOSTANDARD LVCMOS33} [get_ports txd3]
-set_property -dict {PACKAGE_PIN D15 IOSTANDARD LVCMOS33} [get_ports ps2_clock]
-#set_property -dict {PACKAGE_PIN C15 IOSTANDARD LVCMOS33} [get_ports rts3]
-set_property PULLUP true [get_ports ps2_data]
-set_property PULLUP true [get_ports ps2_clock]
-
-
-## USB-UART Interface
-set_property -dict {PACKAGE_PIN D10 IOSTANDARD LVCMOS33} [get_ports usb_uart_txd]
-set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports usb_uart_rxd]
+## Pmod Header JB
+#Pin 1 RTS / SS
+#Pin 2 RXD / MOSI
+#Pin 3 TXD / MISO
+#Pin 4 CTS / SCK
+set_property -dict {PACKAGE_PIN E15 IOSTANDARD LVCMOS33} [get_ports esp_cts]
+set_property -dict {PACKAGE_PIN E16 IOSTANDARD LVCMOS33} [get_ports esp_txd]
+set_property -dict {PACKAGE_PIN D15 IOSTANDARD LVCMOS33} [get_ports esp_rxd]
+set_property -dict {PACKAGE_PIN C15 IOSTANDARD LVCMOS33} [get_ports esp_rts]
+set_property -dict { PACKAGE_PIN J17   IOSTANDARD LVCMOS33 } [get_ports { jb[4] }]; #IO_L23P_T3_FOE_B_15 Sch=jb_p[3]
+set_property -dict { PACKAGE_PIN J18   IOSTANDARD LVCMOS33 } [get_ports { jb[5] }]; #IO_L23N_T3_FWE_B_15 Sch=jb_n[3]
+set_property -dict { PACKAGE_PIN K15   IOSTANDARD LVCMOS33 } [get_ports { jb[6] }]; #IO_L24P_T3_RS1_15 Sch=jb_p[4]
+set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { jb[7] }]; #IO_L24N_T3_RS0_15 Sch=jb_n[4]
 
 
 # dazzler pins
@@ -181,6 +174,7 @@ set_property -dict {PACKAGE_PIN A13 IOSTANDARD LVCMOS33} [get_ports sda_pup]
 set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports resetn]
 
 ## SMSC Ethernet PHY
+## SMSC Ethernet PHY
 set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS33} [get_ports eth_col]
 set_property -dict {PACKAGE_PIN G14 IOSTANDARD LVCMOS33} [get_ports eth_crs]
 set_property -dict {PACKAGE_PIN F16 IOSTANDARD LVCMOS33} [get_ports eth_mdc]
@@ -203,12 +197,6 @@ set_property -dict {PACKAGE_PIN H17 IOSTANDARD LVCMOS33} [get_ports {eth_txd[3]}
 
 ##Quad SPI Flash
 
-set_property -dict {PACKAGE_PIN L13 IOSTANDARD LVCMOS33} [get_ports qspi_cs]
-set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports {qspi_dq[0]}]
-set_property -dict {PACKAGE_PIN K18 IOSTANDARD LVCMOS33} [get_ports {qspi_dq[1]}]
-set_property -dict {PACKAGE_PIN L14 IOSTANDARD LVCMOS33} [get_ports {qspi_dq[2]}]
-set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS33} [get_ports {qspi_dq[3]}]
-set_property -dict {PACKAGE_PIN L16 IOSTANDARD LVCMOS33} [get_ports qspi_sck]
 
 ## Power Measurements
 #set_property -dict { PACKAGE_PIN B17   IOSTANDARD LVCMOS33     } [get_ports { vsnsvu_n }]; #IO_L7N_T1_AD2N_15 Sch=ad_n[2]
@@ -388,47 +376,4 @@ set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 set_property PACKAGE_PIN K6 [get_ports ddr3_reset_n]
 set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 #Internal VREF
-
-
-connect_debug_port u_ila_0/probe4 [get_nets [list {computer/int_out[0]} {computer/int_out[1]}]]
-connect_debug_port u_ila_0/probe5 [get_nets [list computer/int_ack]]
-connect_debug_port u_ila_0/probe8 [get_nets [list computer/keyb_int]]
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/timer_in1]]
-connect_debug_port u_ila_0/probe11 [get_nets [list computer/timer_in2]]
-
-
-
-connect_debug_port u_ila_0/probe7 [get_nets [list computer/irq_o]]
-connect_debug_port u_ila_0/probe11 [get_nets [list {computer/cpu1/rIPL_nr_reg[0]}]]
-connect_debug_port u_ila_0/probe12 [get_nets [list {computer/cpu1/rIPL_nr_reg[1]}]]
-connect_debug_port u_ila_0/probe13 [get_nets [list {computer/cpu1/rIPL_nr_reg[2]}]]
-connect_debug_port u_ila_0/probe15 [get_nets [list computer/TG68_inst/rIPL_nr]]
-
-
-connect_debug_port u_ila_0/probe2 [get_nets [list {computer/interrupts/int_out[0]} {computer/interrupts/int_out[1]} {computer/interrupts/int_out[2]}]]
-connect_debug_port u_ila_0/probe6 [get_nets [list computer/interrupts/ack]]
-connect_debug_port u_ila_0/probe7 [get_nets [list computer/interrupts/int1]]
-connect_debug_port u_ila_0/probe8 [get_nets [list computer/interrupts/int2]]
-connect_debug_port u_ila_0/probe9 [get_nets [list computer/interrupts/int3]]
-
-
-
-connect_debug_port u_ila_0/probe3 [get_nets [list {computer/cpu1/TG68_inst/ALU/trap_interrupt_reg[0]}]]
-
-
-
-
-connect_debug_port u_ila_0/probe3 [get_nets [list {computer/cpu1/TG68_inst/interrupt_reg_0[0]} {computer/cpu1/TG68_inst/interrupt_reg_0[1]} {computer/cpu1/TG68_inst/interrupt_reg_0[2]}]]
-
-
-connect_debug_port u_ila_0/probe24 [get_nets [list computer/timer_en]]
-
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/auto_iack]]
-connect_debug_port u_ila_0/probe12 [get_nets [list computer/timer_1/Interrupt_100khz]]
-connect_debug_port u_ila_0/probe15 [get_nets [list computer/cpu1/TG68_inst/setinterrupt]]
-
-
-connect_debug_port u_ila_0/probe8 [get_nets [list computer/timer_1/Clk]]
-connect_debug_port u_ila_0/probe9 [get_nets [list computer/timer_1/Interrupt]]
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/timer_1/Rst]]
 

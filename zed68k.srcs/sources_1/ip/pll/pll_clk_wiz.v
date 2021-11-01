@@ -103,7 +103,7 @@ wire clk_in2_pll;
   wire        clk166_pll;
   wire        clk50_pll;
   wire        eth_clk_pll;
-  wire        cpu_clk_pll;
+  wire        clk_out5_pll;
   wire        clk_out6_pll;
   wire        clk_out7_pll;
 

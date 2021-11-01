@@ -111,14 +111,10 @@ port(
     ps2_data : inout std_logic;
     ps2_clock : inout std_logic;
     
-            -- SPI Flash Mem
-     qspi_cs         : out std_logic;        
-     qspi_dq         : inout std_logic_vector(3 downto 0);   -- dg(0) is MOSI, dq(1) MISO
-     qspi_sck        : out std_logic;
-     
-      usb_uart_rxd : in  std_logic;
-    usb_uart_txd : out  std_logic 
-     
+    esp_cts : in std_logic;
+    esp_txd : out std_logic;
+    esp_rxd : in std_logic;
+    esp_rts : out std_logic
       
 	);
 end multicomp_wrapper;
@@ -200,8 +196,25 @@ architecture Behavioral of multicomp_wrapper is
     
     signal opl3_ctl :std_logic_vector(7 downto 0);
     signal opl3_DataOut : std_logic_vector(7 downto 0);
+    
+    
+    signal serialClkCount         : std_logic_vector(15 downto 0) := x"0000";
+    signal serialClkCount_d       : std_logic_vector(15 downto 0);
+    signal serialClkEn            : std_logic;
+
+	signal	uartIrq     :  std_logic;
+	signal	uartDataOut :  std_logic_vector(7 downto 0);
+	signal	uartDataIn  :  std_logic_vector(7 downto 0);
+	signal  uartRegSel  :  std_logic;
+	signal  uartWRn : std_logic;
+	signal  uartRDn : std_logic;
+	signal  uartIdle : std_logic;
+	signal uartDataAvail :  std_logic;
+	signal uartDataCount : std_logic_vector(8 downto 0);
 
    -- components
+   
+   
     
 component ethernet is
 Port (
@@ -289,8 +302,17 @@ end component;
       init_calib_complete :out std_logic
     );
     end component;
-
-attribute dont_touch : string;
+    
+    component uart_wrapper is
+    port(
+      i_cen,i_regsel,i_valid,i_wren, rx_in, sys_clock, sys_resetn : in std_logic;
+      interrupt, o_ready, o_valid, tx_out, wr_ack : out std_logic;
+      wr_data : in std_logic_vector(7 downto 0);
+      rd_data : out std_logic_vector(7 downto 0)
+  );
+  end component;
+    
+attribute dont_touch : string; 
 
 attribute dont_touch of reset_proc : label is "true";
 attribute dont_touch of valid_flag : label is "true";
@@ -298,6 +320,16 @@ attribute dont_touch of mem_i_valid : signal is "true";
 attribute dont_touch of mem_i_valid_p : signal is "true";
 attribute dont_touch of gameduino_spi : label is "true";
 attribute dont_touch of opl3_spi : label is "true";
+
+attribute dont_touch of uartIrq   : signal is "true";
+attribute dont_touch of uartDataOut : signal is "true";
+attribute dont_touch of uartDataIn  : signal is "true";
+attribute dont_touch of uartRegSel : signal is "true";
+attribute dont_touch of uartWRn : signal is "true";
+attribute dont_touch of uartRDn : signal is "true";
+attribute dont_touch of uartIdle : signal is "true";
+attribute dont_touch of uartDataAvail : signal is "true";
+attribute dont_touch of uartDataCount : signal is "true";
 
 signal cpu_clock : std_logic;
 
@@ -435,7 +467,17 @@ end process;
 
         --ps2
         ps2k_clk_in => ps2_clock,
-		ps2k_dat_in => ps2_data
+		ps2k_dat_in => ps2_data,
+		
+		--uart
+		uartIrq    => uartIrq,
+		uartDataOut => uartDataOut,
+		uartDataIn  => uartDataIn,
+		uartRegSel => uartRegsel,
+		uartRDn => uartRDn,
+        uartWRn => uartWRn,
+        uartIdle => not uartIdle,
+        uartDataAvail => uartDataAvail
 		
     );
     
@@ -484,6 +526,7 @@ end process;
    op_a2 <= opl3_ctl(2);
    op_ic <= opl3_ctl(3);
    op_wr <= opl3_ctl(4);
+   
    
       -- sd 
       sd_rden <= sdControl(2);
@@ -555,7 +598,7 @@ sdcard: entity work.sd_controller
     
  memory:  main_memory_control
     port map(
-    sys_clock => sys_clock,      
+    sys_clock => cpu_clock,      
     sys_resetn => resetn and clk_locked,    
     clock166 => clk166,
     clock200 => clk200,    
@@ -639,5 +682,48 @@ Port map (
     
     
    led(0) <= mem_ready;
+   
+  
+   
+   -- uart 
+   
+   	--uart
+--		uartIrq    => uartIrq,
+--		uartCSn    => uartCSn,
+--		uartDataOut => uartDataOut,
+--		uartDataIn  => uartDataIn,
+--		uartRegSel => uartRegsel,
+--		uartRDn => uartRDn,
+--        uartWRn => uartWRn,
+--        uartIdle => uartIdle,
+--        uartAck => uartAck
 
+   io_serial_term_tx: entity work.serial_wrapper 
+        port map (
+        sys_clk => cpu_clock,
+        tx_data => uartDataOut,
+        tx_wr_en => not uartWRn,
+        cts => open,
+        rts => open,
+        reset_n => resetn and mem_ready and clk_locked,
+        txd => esp_txd,
+        tx_send_active => uartIdle
+  );
+  
+  io_serial_term_rx : entity work.design_1_wrapper
+    port map (
+      rd_en => not uartRDn,
+      m68_rxd => uartDataIn,
+      reset_n => resetn and mem_ready and clk_locked,
+      rxd1 => esp_rxd,
+      valid => uartIrq,
+      clk100_i => cpu_clock,
+      cts => open,
+      rts => open,
+      rx_data_count => uartDataCount
+    );  
+    
+    esp_rts <= '0';
+    uartDataAvail <= '1' when uartDataCount > 0 else '0';
+    
 end Behavioral;

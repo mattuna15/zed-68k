@@ -72,8 +72,16 @@ entity Microcomputer is
 
 		-- PS/2 keyboard / mouse
 		ps2k_clk_in : inout std_logic;
-		ps2k_dat_in : inout std_logic
-
+		ps2k_dat_in : inout std_logic;
+		
+		uartIrq     : in std_logic;
+		uartDataOut : out std_logic_vector(7 downto 0);
+		uartDataIn  : in std_logic_vector(7 downto 0);
+		uartRegSel  : out std_logic;
+		uartWRn    : out std_logic;
+		uartRDn    : out std_logic;
+        uartIdle : in std_logic;
+        uartDataAvail : in std_logic
 	);
 	
 end Microcomputer;
@@ -136,9 +144,7 @@ signal fpu_sts, fpu_ctl : std_logic_vector(7 downto 0);
 
 signal timer_in1, timer_clk_en, keyb_int : std_logic ;
 signal keyb_data : std_logic_vector(7 downto 0);
-
-
-
+signal uartIrqEn : std_logic := '0';
 
 component keyboard is
    port (
@@ -160,8 +166,6 @@ end component;
     attribute dont_touch of rtc : label is "true";
     attribute dont_touch of interrupts : label is "true";
     signal auto_iack :std_logic;
-    signal vec_addr : std_logic_vector(2 downto 0);
-    signal int_addr : std_logic_vector(7 downto 0);
     
 begin
 
@@ -171,7 +175,7 @@ interrupts: entity work.interrupt_controller
 		reset => n_reset,
 		int1 => timer_in1, -- 100hz
 		int2 => keyb_int, 
-		int3 => '0',
+		int3 => uartIrq and uartIrqEn,
 		int4 => '0',
 		int5 => '0',
 	    int6 => '0',
@@ -371,19 +375,24 @@ rmode_i <= fpu_ctl(5 downto 4);
 fpu_sts(0) <= '1' when  ready_o = '1' else '0' ;
 fpu_sts(1) <= error;
 
+uartRDn <= '0' when (cpuAddress = x"f0000a" or cpuAddress = x"f0000b") and cpu_r_w = '1' and cpu_lds = '0' else '1';
+uartWRn <= '0' when (cpuAddress = x"f0000a" or cpuAddress = x"f0000b") and cpu_r_w = '0' and cpu_lds = '0' else '1';
+uartRegSel <= '1' when (cpuAddress = x"f00008" or cpuAddress = x"f00009")  and cpu_lds = '0' else '0'; -- 2 bytes 
+uartDataOut <= cpuDataOut(7 downto 0) when (cpuAddress = x"f0000a" or cpuAddress = x"f0000b") and cpu_r_w = '0' and cpu_lds = '0';
+                
+uartIrqEn <= uartDataOut(2) when uartRegSel='1' and cpu_r_w = '0' and cpu_lds = '0';
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
 
-
 auto_iack <= '1' when cpu_fc = "111" else '0';
-
 
 -- upper
 cpuDataIn(15 downto 8) 
 <= 
---int_addr when auto_iack = '1' else
 X"00" 
 when cpuAddress = X"f30000" and cpu_uds = '0' else
+x"00" 
+when  (cpuAddress >= X"F00008" and cpuAddress <= X"F0000B") and cpu_r_w = '1' and cpu_uds = '0' else
 monRomData(15 downto 8)
 when n_basRom1CS = '0' else
 ram_dq_o(15 downto 8)
@@ -437,11 +446,14 @@ X"00" when cpu_uds = '1';
 --lower
 cpuDataIn(7 downto 0)
 <= 
---int_addr when auto_iack = '1' else
 monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"E00000" else
+uartDataIn 
+when  (cpuAddress = X"F0000A" or cpuAddress = X"F0000B") and cpu_r_w = '1' and cpu_lds = '0' else
+"00000" & uartIrqEn & uartIdle & uartDataAvail  
+when  (cpuAddress = X"F00008" or cpuAddress = X"F00009") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_DataIn
 when (cpuAddress = X"F4000C" or cpuAddress = X"F4000D") and cpu_r_w = '1' and cpu_lds = '0' else
 spi_DataOut

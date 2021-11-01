@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Mon Apr  5 21:22:52 2021" VIVADOVERSION="2020.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Sun Oct 31 14:16:04 2021" VIVADOVERSION="2020.1">
 
-  <SYSTEMINFO ARCH="artix7" BOARD="digilentinc.com:arty-a7-35:part0:1.0" DEVICE="7a35ti" NAME="serial" PACKAGE="csg324" SPEEDGRADE="-1L"/>
+  <SYSTEMINFO ARCH="artix7" BOARD="digilentinc.com:arty-a7-100:part0:1.0" DEVICE="7a100t" NAME="serial" PACKAGE="csg324" SPEEDGRADE="-1"/>
 
   <EXTERNALPORTS>
     <PORT CLKFREQUENCY="100000000" DIR="I" NAME="sys_clk" SIGIS="clk" SIGNAME="External_Ports_sys_clk">
       <CONNECTIONS>
         <CONNECTION INSTANCE="fifo_generator_0" PORT="clk"/>
-        <CONNECTION INSTANCE="UART_TX_0" PORT="i_Clk"/>
         <CONNECTION INSTANCE="UART_FIFO_IO_cntl_pr_0" PORT="clk"/>
+        <CONNECTION INSTANCE="UART_TX_0" PORT="i_Clk"/>
       </CONNECTIONS>
     </PORT>
     <PORT DIR="I" LEFT="7" NAME="tx_data" RIGHT="0" SIGIS="undef" SIGNAME="External_Ports_tx_data">
@@ -41,9 +41,9 @@
         <CONNECTION INSTANCE="UART_TX_0" PORT="o_TX_Serial"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" NAME="tx_send_active" SIGIS="undef" SIGNAME="UART_TX_0_o_TX_Active">
+    <PORT DIR="O" NAME="tx_send_active" SIGIS="undef" SIGNAME="fifo_generator_0_full">
       <CONNECTIONS>
-        <CONNECTION INSTANCE="UART_TX_0" PORT="o_TX_Active"/>
+        <CONNECTION INSTANCE="fifo_generator_0" PORT="full"/>
       </CONNECTIONS>
     </PORT>
   </EXTERNALPORTS>
@@ -127,11 +127,7 @@
             <CONNECTION INSTANCE="fifo_generator_0" PORT="dout"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" NAME="o_TX_Active" SIGIS="undef" SIGNAME="UART_TX_0_o_TX_Active">
-          <CONNECTIONS>
-            <CONNECTION INSTANCE="External_Ports" PORT="tx_send_active"/>
-          </CONNECTIONS>
-        </PORT>
+        <PORT DIR="O" NAME="o_TX_Active" SIGIS="undef"/>
         <PORT DIR="O" NAME="o_TX_Serial" SIGIS="undef" SIGNAME="UART_TX_0_o_TX_Serial">
           <CONNECTIONS>
             <CONNECTION INSTANCE="External_Ports" PORT="txd"/>
@@ -550,6 +546,7 @@
         <PORT DIR="O" NAME="full" SIGIS="undef" SIGNAME="fifo_generator_0_full">
           <CONNECTIONS>
             <CONNECTION INSTANCE="UART_FIFO_IO_cntl_pr_0" PORT="fifoM_full"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="tx_send_active"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="wr_ack" SIGIS="undef" SIGNAME="fifo_generator_0_wr_ack">

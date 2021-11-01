@@ -2,10 +2,10 @@
 <Root MajorVersion="0" MinorVersion="39">
   <CompositeFile CompositeFileTopName="serial" CanBeSetAsTop="false" CanDisplayChildGraph="true">
     <Description>Composite Fileset</Description>
-    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1617654172"/>
-    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1617654172"/>
-    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1617654172"/>
-    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1617654172"/>
+    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1635689764"/>
+    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1635689764"/>
+    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1635689764"/>
+    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1635689764"/>
     <FileCollection Name="SOURCES" Type="SOURCES">
       <File Name="ip\serial_UART_TX_0_0\serial_UART_TX_0_0.xci" Type="IP">
         <Instance HierarchyPath="UART_TX_0"/>
