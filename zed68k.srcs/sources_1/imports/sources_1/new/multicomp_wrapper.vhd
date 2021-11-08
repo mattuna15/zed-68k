@@ -121,7 +121,7 @@ end multicomp_wrapper;
 
 architecture Behavioral of multicomp_wrapper is
 
-    signal boot_rom : std_logic := '1';
+    signal boot_rom : std_logic := '0';
 
    -- RAM interface
 
@@ -149,7 +149,7 @@ architecture Behavioral of multicomp_wrapper is
     signal mem_i_valid_p : std_logic;
 
       signal ramDataOut: std_logic_vector(15 downto 0);
-      signal initial_stack: std_logic_vector(31 downto 0) := x"00DF0000";
+      signal initial_stack: std_logic_vector(31 downto 0) := x"00006000";
       signal initial_pc: std_logic_vector(31 downto 0) := x"00E00BC0";
       
       signal memDataOut: std_logic_vector(15 downto 0);
@@ -211,6 +211,8 @@ architecture Behavioral of multicomp_wrapper is
 	signal  uartIdle : std_logic;
 	signal uartDataAvail :  std_logic;
 	signal uartDataCount : std_logic_vector(8 downto 0);
+	
+	signal sd_codes : std_logic_vector(15 downto 0);
 
    -- components
    
@@ -330,6 +332,9 @@ attribute dont_touch of uartRDn : signal is "true";
 attribute dont_touch of uartIdle : signal is "true";
 attribute dont_touch of uartDataAvail : signal is "true";
 attribute dont_touch of uartDataCount : signal is "true";
+
+
+--attribute dont_touch of sdcard : label is "true";
 
 signal cpu_clock : std_logic;
 
@@ -451,6 +456,7 @@ end process;
         sdStatus => sdStatus,
         sdControl => sdControl,
         sdEraseCount => sdEraseCount,
+        sdCodes => sd_codes,
         
         --ethernet
         eth_data_out => eth_data_out,
@@ -564,14 +570,14 @@ sdcard: entity work.sd_controller
 
 	sd_error => sdStatus(0),		-- '1' if an error occurs, reset on next RD or WR (just check for error code)
 	sd_busy => sdStatus(5),		-- '0' if a RD or WR can be accepted
-	sd_error_code => open, -- See above, 000=No error
+	sd_error_code => sd_codes(2 downto 0), -- See above, 000=No error
 
 	reset => not sys_resetn,	-- System reset
 	clk => clk50,		-- twice the SPI clk (max 50MHz)
 	
 	-- Optional debug outputs
 	sd_type => sdStatus(7 downto 6),	-- Card status (see above)
-	sd_fsm => open -- FSM state (see block at end of file)
+	sd_fsm => sd_codes(15 downto 8) -- FSM state (see block at end of file)
 );
     
     -- memory
@@ -682,9 +688,6 @@ Port map (
     
     
    led(0) <= mem_ready;
-   
-  
-   
    -- uart 
    
    	--uart

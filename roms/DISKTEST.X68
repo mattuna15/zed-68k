@@ -1,11 +1,21 @@
 ACIAC    EQU $F00009
 ACIAD    EQU ACIAC+2
 
-ACIA2C    EQU $F20009
-ACIA2D    EQU ACIA2C+2
+DATA_TX EQU $F40041
+DATA_RX EQU $F40043
+DATA_CTL EQU $F40045
+DATA_TX_SPACE EQU $F40046
+DATA_RX_COUNT EQU $F40048
 
-ACIA3C    EQU $F30009
-ACIA3D    EQU ACIA3C+2
+* TCP0_TxValid    => eth_ctl(6), --Transmit data valid
+*        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
+*        TCP0_RxValid    => eth_ctl(2), --Receive data valid
+*        TCP0_RxReady    => eth_ctl(5)  --Receive data ready
+
+TXVL EQU 6
+TXRDY EQU 3
+RXVLD EQU 2
+RXRDY EQU 5
 
 INT_ON   EQU  $2000    ; BOTH, SET SUPERVISOR MODE, S=1
 INT_OFF  EQU  $2700
@@ -55,15 +65,15 @@ VOLOFFSET EQU $01FE
 PRTOFFSET EQU $01C6
 VOLIND    EQU $55AA
 
-    ORG $2000
+    ORG $8000
   
 
 **************************************************
 
 MAIN 
 
-    MOVE.W #INT_OFF,SR 
-    BSR INIT_ACIA
+    ;MOVE.W #INT_OFF,SR 
+    ;BSR INIT_ACIA
    
     LEA.L TITLE1.L,A3     ; print START MESSAGE
     BSR PSTR
@@ -82,6 +92,8 @@ MAIN
     
     ;load root dir
     BSR GETROOTDIR 
+    
+        jsr $1146
 
     LEA.L ROMFILE.L, A1
     BSR FINDFILE    ; FIND THE FILE
@@ -94,7 +106,7 @@ MAIN
     MOVE.L #$9F0000,SP
         
 
-    JMP $A00BB4
+    JMP $1146
 
 **************************************************     
 *data buffer
@@ -368,19 +380,19 @@ DAVAIL      MOVE.W (A4), D1
 **************************************************   
 * PRINTING - numbers
 
-OUT1X        JSR $A00F3A 
+OUT1X      *  JSR $E00F86 
              RTS
 
-OUT2X        JSR $A00F54
+OUT2X      *  JSR $E00FA0
              RTS
              
-OUT4X        JSR $A00F5C
+OUT4X      *  JSR $E00FA8
              RTS
 
-OUT6X        JSR $A00F64
+OUT6X      *  JSR $E00FB0
              RTS
   
-OUT8X        JSR $A00F6C
+OUT8X      *  JSR $E00FB8
              RTS         
              
 
@@ -388,48 +400,31 @@ OUT8X        JSR $A00F6C
 **************************************************   
 * PRINTING - coout/in
 
-INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
-           MOVE.W #100,D0
-           DBRA  D0,*
-           MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
+INIT_ACIA  MOVE.B #0,ACIAC.L   ; RESET ACIA
+*           MOVE.W #100,D0
+*           DBRA  D0,*
+*           MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
            RTS
-
-COUT      BTST.B #TDRE,ACIAC.L
+           
+COUT      BTST.B #TXRDY,DATA_CTL.L
           BEQ.S  COUT
-          MOVE.B D0,ACIAD.L
-          RTS
-
-; 2nd serial
-CINS      BTST.B #RDRF,ACIA2C.L
-          BEQ.S  CINS
-          MOVE.B ACIA2D.L,D0
-          RTS
-
-
-CIN      BTST.B #RDRF,ACIAC.L
-         BEQ.S  CIN
-         MOVE.B ACIAD.L,D0
-         BSR COUT
-         RTS
-         
-; 3rd serial         
-WOUT      BTST.B #TDRE,ACIA3C.L
-          BEQ.S  WRTS1
-          MOVE.B D0,ACIA3D.L
-WRTS1     RTS
           
-WIN      BTST.B #RDRF,ACIA3C.L
-         BEQ.S  WRTS2
-         MOVE.B ACIA3D.L,D0
+          MOVE.B D0,DATA_TX.L 
+          BSET.B #TXVL,DATA_CTL.L
+          BCLR.B #TXVL,DATA_CTL.L 
+          RTS
+
+CIN      BTST.B #RXVLD,DATA_CTL.L
+         BEQ.S  CIN
+
+         BSET.B #RXRDY,DATA_CTL.L
+         MOVE.B DATA_RX.L,D0
+         BCLR.B #RXRDY,DATA_CTL.L
+         
          BSR COUT
-WRTS2    RTS
 
-WCIN     BTST.B #RDRF,ACIAC.L
-         BEQ.S  WRTS3
-         MOVE.B ACIAD.L,D0
-         BSR WOUT
-WRTS3    RTS
 
+         RTS
 *************
 * Print to console or wifi         
 ; A3 POINTED TO FIRST BYTE
@@ -442,16 +437,6 @@ PSTR     MOVE.B (A3)+,D0
          BRA.S PSTR
 
 PSTR1    RTS
-
-WSTR     MOVE.B (A3)+,D0
-         CMP.B  #0,D0
-         BEQ.S WSTR1
-WOT      BTST.B #TDRE,ACIA3C.L
-         BEQ.S  WOT
-         MOVE.B D0,ACIA3D.L
-         BRA.S WSTR
-
-WSTR1    RTS
 
 ***************************************
  * STRLEN - RETURNS LENGTH OP NULL TERMINATED STRING IN D0
@@ -534,10 +519,12 @@ BUSYSTR DC.B 13,10,'Busy',13,10,0
 VOLSTR DC.B 13,10,'Valid fat32 Volume',13,10,0
 VOLERR DC.B 13,10,'No volume found',13,10,0
 
-ROMFILE DC.B 'ROM     BIN',0
+ROMFILE DC.B 'TICTAC  BAS',0
 ROMFND  DC.B 13,10,'ROM File found',13,10,0
 
        END	MAIN
+
+
 
 
 

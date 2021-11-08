@@ -52,7 +52,7 @@ entity Microcomputer is
         sdEraseCount				: out std_logic_vector(7 downto 0);
         sdStatus: inout std_logic_vector(7 downto 0) := (others => '0'); --f30009
         sdControl: inout std_logic_vector(7 downto 0); --f3000a
-    
+        sdCodes : in std_logic_vector(15 downto 0);
         sdAddress: out std_logic_vector(31 downto 0); --f30000-2
         
         -- ethernet terminal
@@ -103,11 +103,14 @@ architecture struct of Microcomputer is
 
 	END component;
 
-    signal monRomData					: std_logic_vector(15 downto 0);
+--    signal monRomData					: std_logic_vector(15 downto 0);
+    signal monRamData					: std_logic_vector(15 downto 0);
 	signal n_externalRamCS			: std_logic :='1';
 
-	signal n_basRom1CS					: std_logic :='1';
-    signal n_basRom2CS					: std_logic :='1';
+--	signal n_basRom1CS					: std_logic :='1';
+--    signal n_basRom2CS					: std_logic :='1';
+    signal n_basRam1CS					: std_logic :='1';
+    signal n_basRam2CS					: std_logic :='1';
     
     signal    cpuAddress	    :  std_logic_vector(31 downto 0);
 	signal	  cpuDataOut		:  std_logic_vector(15 downto 0);
@@ -146,6 +149,8 @@ signal timer_in1, timer_clk_en, keyb_int : std_logic ;
 signal keyb_data : std_logic_vector(7 downto 0);
 signal uartIrqEn : std_logic := '0';
 
+
+
 component keyboard is
    port (
       clk_i      : in std_logic;
@@ -162,9 +167,21 @@ component keyboard is
    );
 end component;
 	
-    attribute dont_touch : string;
+attribute dont_touch : string; 
+attribute dont_touch of sdCardDataOut : signal is "true";
+attribute dont_touch of sdCardDataIn : signal is "true";
+attribute dont_touch of sdAddress : signal is "true";
+
     attribute dont_touch of rtc : label is "true";
     attribute dont_touch of interrupts : label is "true";
+--     attribute dont_touch of ram1 : label is "true";
+--     attribute dont_touch of ram2 : label is "true";
+     
+    attribute dont_touch of monRamData : signal is "true";
+    attribute dont_touch of memAddress : signal is "true";
+    attribute dont_touch of eth_data_out : signal is "true";
+    attribute dont_touch of eth_data_in : signal is "true";
+    
     signal auto_iack :std_logic;
     
 begin
@@ -273,43 +290,69 @@ cpu1 : entity work.TG68
         	enable => start_i,
         	ready => ready_o 
    );
-	
-	-- rom address
-    memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
     
 -- ____________________________________________________________________________________
 -- ROM GOES HERE
+--	rom1 : entity work.rom -- 8 
+--	generic map (
+--	   G_ADDR_BITS => 13,
+--	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_0.hex"
+--	)
+--    port map(
+--        addr_i => memAddress(12 downto 0),
+--        clk_i => sys_clk,
+--        data_o => monRomData(15 downto 8)
+--    );
     
-	rom1 : entity work.rom -- 8 
+--    rom2 : entity work.rom -- 8 
+--	generic map (
+--	   G_ADDR_BITS => 13,
+--	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_1.hex"
+--	)
+--    port map(
+--        addr_i => memAddress(12 downto 0),
+--        clk_i => sys_clk,
+--        data_o => monRomData(7 downto 0)
+--    );
+    
+	ram1 : entity work.ram -- 8 
 	generic map (
-	   G_ADDR_BITS => 13,
-	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_0.hex"
+	   G_ADDR_BITS => 16,
+	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/tutor_0.hex"
 	)
     port map(
-        addr_i => memAddress(12 downto 0),
+        addr_i => memAddress(15 downto 0),
         clk_i => sys_clk,
-        data_o => monRomData(15 downto 8)
+        data_i => cpuDataOut(15 downto 8),
+        data_o => monRamData(15 downto 8),
+        wren_i => (not cpu_r_w) and (not n_basRam1CS)
     );
     
-    rom2 : entity work.rom -- 8 
+    ram2 : entity work.ram -- 8 
 	generic map (
-	   G_ADDR_BITS => 13,
-	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/monitor_1.hex"
+	   G_ADDR_BITS => 16,
+	   G_INIT_FILE => "D:/code/zed-68k/roms/monitor/tutor_1.hex"
 	)
     port map(
-        addr_i => memAddress(12 downto 0),
+        addr_i => memAddress(15 downto 0),
         clk_i => sys_clk,
-        data_o => monRomData(7 downto 0)
+        data_i => cpuDataOut(7 downto 0),
+        data_o => monRamData(7 downto 0),
+        wren_i => (not cpu_r_w) and (not n_basRam2CS)
     );
 
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
 
-n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; --E00000-E0FFFF
-n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1';       
+--n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; --E00000-E0FFFF
+--n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1';       
+	-- rom address
+memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
+n_basRam1CS <= '0' when cpu_uds = '0' and cpuAddress <= x"FFFF" else '1'; 
+n_basRam2CS <= '0' when cpu_lds = '0' and cpuAddress <= x"FFFF" else '1';       
 
 -- RAM
-ram_cen <= '0' when  cpuAddress < X"E00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
+ram_cen <= '0' when cpuAddress > x"FFFF" and cpuAddress < X"F00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
 ram_a <= cpuAddress(26 downto 0) when ram_cen ='0' else (others => '0'); -- address
@@ -389,12 +432,14 @@ auto_iack <= '1' when cpu_fc = "111" else '0';
 -- upper
 cpuDataIn(15 downto 8) 
 <= 
+monRamData(15 downto 8)
+when n_basRam1CS = '0' else
 X"00" 
 when cpuAddress = X"f30000" and cpu_uds = '0' else
 x"00" 
 when  (cpuAddress >= X"F00008" and cpuAddress <= X"F0000B") and cpu_r_w = '1' and cpu_uds = '0' else
-monRomData(15 downto 8)
-when n_basRom1CS = '0' else
+--monRomData(15 downto 8)
+--when n_basRom1CS = '0' else
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
 x"00"
@@ -407,16 +452,6 @@ rtc_data(31 downto 24)
 when rtcCS = '1' and cpuAddress = X"f30042" and cpu_r_w ='1' and cpu_uds = '0' else
 rtc_data(15 downto 8)
 when rtcCS = '1' and cpuAddress = X"f30040" and cpu_r_w ='1' and cpu_uds = '0' else
-sdAddress(31 downto 24)
-when cpuAddress = x"f40022" and cpu_r_w = '1' and cpu_uds = '0' else 
-sdAddress(15 downto 8)
-when cpuAddress = x"f40024" and cpu_r_w = '1' and cpu_uds = '0' else 
-sdStatus
-when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when cpuAddress = x"f40026" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when cpuAddress = x"f40028" and cpu_r_w = '1' and cpu_uds = '0' else
 x"00"
 when cpuAddress = x"f00018" and cpu_r_w = '1' and cpu_uds = '0' else
 eth_tx_free(15 downto 8)
@@ -425,6 +460,18 @@ eth_rx_count(15 downto 8)
 when cpuAddress = x"f40048" and cpu_r_w = '1' and cpu_uds = '0' else 
 X"00"
 when (cpuAddress >= x"f40040" and cpuAddress <= x"f40045") and cpu_r_w = '1' and cpu_uds = '0' else  
+sdAddress(31 downto 24)
+when cpuAddress = x"f40022" and cpu_r_w = '1' and cpu_uds = '0' else 
+sdAddress(15 downto 8)
+when cpuAddress = x"f40024" and cpu_r_w = '1' and cpu_uds = '0' else 
+sdStatus
+when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
+sdCodes(15 downto 8)
+when cpuAddress = x"f4002a" and cpu_r_w = '1' and cpu_uds = '0' else
+x"00"
+when cpuAddress = x"f40026" and cpu_r_w = '1' and cpu_uds = '0' else
+x"00"
+when cpuAddress = x"f40028" and cpu_r_w = '1' and cpu_uds = '0' else
 milliseconds(31 downto 24)
 when timerCS = '1' and cpuAddress = X"f30030" and cpu_r_w ='1' and cpu_uds = '0' else
 milliseconds(15 downto 8)
@@ -446,8 +493,10 @@ X"00" when cpu_uds = '1';
 --lower
 cpuDataIn(7 downto 0)
 <= 
-monRomData(7 downto 0)
-when n_basRom2CS = '0' else 
+--monRomData(7 downto 0)
+--when n_basRom2CS = '0' else 
+monRamData(7 downto 0)
+when n_basRam2CS = '0' else 
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"E00000" else
 uartDataIn 
@@ -472,16 +521,6 @@ rtc_data(23 downto 16)
 when rtcCS = '1' and (cpuAddress = X"f30042" or cpuAddress = X"F30043") and cpu_r_w ='1' and cpu_lds = '0' else
 rtc_data(7 downto 0)
 when rtcCS = '1' and (cpuAddress = X"f30040" or cpuAddress = X"F30041") and cpu_r_w ='1' and cpu_lds = '0' else
-sdEraseCount
-when (cpuAddress = x"f40028" or cpuAddress = x"f40029") and cpu_r_w = '1' and cpu_lds = '0' else
-sdCardDataOut
-when (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '1' and cpu_lds = '0' else
-sdControl
-when (cpuAddress = x"f40020" or cpuAddress = x"f40021") and cpu_r_w = '1' and cpu_lds = '0' else
-sdAddress(23 downto 16)
-when (cpuAddress = x"f40022" or cpuAddress = x"f40023")  and cpu_r_w = '1' and cpu_lds = '0' else 
-sdAddress(7 downto 0)
-when (cpuAddress = x"f40024" or cpuAddress = x"f40025") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_data_in(7 downto 0)
 when (cpuAddress = x"f40040" or cpuAddress = x"f40041") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_data_out(7 downto 0)
@@ -492,6 +531,18 @@ eth_tx_free(7 downto 0)
 when (cpuAddress = x"f40046" or cpuAddress = x"f40047") and cpu_r_w = '1' and cpu_lds = '0' else
 eth_rx_count(7 downto 0)
 when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else
+sdEraseCount
+when (cpuAddress = x"f40028" or cpuAddress = x"f40029") and cpu_r_w = '1' and cpu_lds = '0' else
+sdCardDataOut
+when (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '1' and cpu_lds = '0' else
+sdControl
+when (cpuAddress = x"f40020" or cpuAddress = x"f40021") and cpu_r_w = '1' and cpu_lds = '0' else
+sdAddress(23 downto 16)
+when (cpuAddress = x"f40022" or cpuAddress = x"f40023")  and cpu_r_w = '1' and cpu_lds = '0' else 
+sdAddress(7 downto 0)
+when (cpuAddress = x"f40024" or cpuAddress = x"f40025") and cpu_r_w = '1' and cpu_lds = '0' else 
+sdCodes(7 downto 0)
+when (cpuAddress = x"f4002a" or cpuAddress = x"f4002b")  and cpu_r_w = '1' and cpu_lds = '0' else
 milliseconds(23 downto 16)
 when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
 milliseconds(7 downto 0)
