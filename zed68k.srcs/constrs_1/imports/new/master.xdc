@@ -377,3 +377,19 @@ set_property PACKAGE_PIN K6 [get_ports ddr3_reset_n]
 set_property IOSTANDARD SSTL135 [get_ports ddr3_reset_n]
 #Internal VREF
 
+
+
+
+
+
+
+
+connect_debug_port u_ila_0/probe0 [get_nets [list {computer/cpuDataOut[0]} {computer/cpuDataOut[1]} {computer/cpuDataOut[2]} {computer/cpuDataOut[3]} {computer/cpuDataOut[4]} {computer/cpuDataOut[5]} {computer/cpuDataOut[6]} {computer/cpuDataOut[7]} {computer/cpuDataOut[8]} {computer/cpuDataOut[9]} {computer/cpuDataOut[10]} {computer/cpuDataOut[11]} {computer/cpuDataOut[12]} {computer/cpuDataOut[13]} {computer/cpuDataOut[14]} {computer/cpuDataOut[15]}]]
+
+connect_debug_port u_ila_0/probe0 [get_nets [list {computer/addr_out[0]} {computer/addr_out[1]} {computer/addr_out[2]} {computer/addr_out[3]} {computer/addr_out[4]} {computer/addr_out[5]} {computer/addr_out[6]} {computer/addr_out[7]} {computer/addr_out[8]} {computer/addr_out[9]} {computer/addr_out[10]} {computer/addr_out[11]} {computer/addr_out[12]} {computer/addr_out[13]} {computer/addr_out[14]} {computer/addr_out[15]} {computer/addr_out[16]} {computer/addr_out[17]} {computer/addr_out[18]} {computer/addr_out[19]} {computer/addr_out[20]} {computer/addr_out[21]} {computer/addr_out[22]} {computer/addr_out[23]} {computer/addr_out[24]} {computer/addr_out[25]} {computer/addr_out[26]}]]
+connect_debug_port u_ila_0/probe3 [get_nets [list computer/fpu1/valid_1]]
+
+connect_debug_port u_ila_0/probe4 [get_nets [list {computer/cpuAddress_0[0]} {computer/cpuAddress_0[1]} {computer/cpuAddress_0[2]} {computer/cpuAddress_0[3]} {computer/cpuAddress_0[4]} {computer/cpuAddress_0[5]} {computer/cpuAddress_0[6]} {computer/cpuAddress_0[7]} {computer/cpuAddress_0[8]} {computer/cpuAddress_0[9]} {computer/cpuAddress_0[10]} {computer/cpuAddress_0[11]} {computer/cpuAddress_0[12]} {computer/cpuAddress_0[13]} {computer/cpuAddress_0[14]} {computer/cpuAddress_0[15]} {computer/cpuAddress_0[16]} {computer/cpuAddress_0[17]} {computer/cpuAddress_0[18]} {computer/cpuAddress_0[19]} {computer/cpuAddress_0[20]} {computer/cpuAddress_0[21]} {computer/cpuAddress_0[22]} {computer/cpuAddress_0[23]} {computer/cpuAddress_0[24]} {computer/cpuAddress_0[25]} {computer/cpuAddress_0[26]} {computer/cpuAddress_0[27]} {computer/cpuAddress_0[28]} {computer/cpuAddress_0[29]} {computer/cpuAddress_0[30]} {computer/cpuAddress_0[31]}]]
+connect_debug_port u_ila_0/probe6 [get_nets [list computer/valid_o]]
+connect_debug_port u_ila_0/probe7 [get_nets [list computer/fpuAck]]
+

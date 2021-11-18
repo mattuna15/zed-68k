@@ -48,20 +48,20 @@
     <Option Name="DSADesignIntentExternalHost" Val="false"/>
     <Option Name="DSADesignIntentEmbedded" Val="true"/>
     <Option Name="DSADesignIntentDatacenter" Val="false"/>
-    <Option Name="WTXSimLaunchSim" Val="1291"/>
+    <Option Name="WTXSimLaunchSim" Val="1302"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="311"/>
-    <Option Name="WTModelSimExportSim" Val="310"/>
-    <Option Name="WTQuestaExportSim" Val="310"/>
-    <Option Name="WTIesExportSim" Val="310"/>
-    <Option Name="WTVcsExportSim" Val="310"/>
-    <Option Name="WTRivieraExportSim" Val="310"/>
-    <Option Name="WTActivehdlExportSim" Val="310"/>
+    <Option Name="WTXSimExportSim" Val="313"/>
+    <Option Name="WTModelSimExportSim" Val="312"/>
+    <Option Name="WTQuestaExportSim" Val="312"/>
+    <Option Name="WTIesExportSim" Val="312"/>
+    <Option Name="WTVcsExportSim" Val="312"/>
+    <Option Name="WTRivieraExportSim" Val="312"/>
+    <Option Name="WTActivehdlExportSim" Val="312"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -104,11 +104,11 @@
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0.xci">
           <Proxy FileSetName="design_1_fifo_generator_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
-          <Proxy FileSetName="design_1_UART_RX_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0.xci">
           <Proxy FileSetName="design_1_UART_FIFO_IO_cntl_pr_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
+          <Proxy FileSetName="design_1_UART_RX_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/serial/serial.bd">
@@ -144,11 +144,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_system_cache_0_0/memory_system_cache_0_0.xci">
-          <Proxy FileSetName="memory_system_cache_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_util_vector_logic_0_0/memory_util_vector_logic_0_0.xci">
           <Proxy FileSetName="memory_util_vector_logic_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_system_cache_0_0/memory_system_cache_0_0.xci">
+          <Proxy FileSetName="memory_system_cache_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_proc_sys_reset_0_0/memory_proc_sys_reset_0_0.xci">
           <Proxy FileSetName="memory_proc_sys_reset_0_0"/>
@@ -207,22 +207,6 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpupack.vhd">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpupack.vhd"/>
-          <Attr Name="ImportTime" Val="1626894725"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/comppack.vhd">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/comppack.vhd"/>
-          <Attr Name="ImportTime" Val="1626894724"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -415,15 +399,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu100/test_bench/txt_util.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu100/test_bench/txt_util.vhd"/>
-          <Attr Name="ImportTime" Val="1626772701"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/imports/Documents/fixed_generic_pkg-body.vhdl">
         <FileInfo SFType="VHDL2008">
           <Attr Name="AutoDisabled" Val="1"/>
@@ -539,8 +514,17 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sim_1/imports/fpu_double-master/fpu_double_TB.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_double_TB.vhd"/>
+          <Attr Name="ImportTime" Val="1626894725"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sim_1/new/uart_tb.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -548,15 +532,6 @@
       <File Path="$PSRCDIR/sim_1/new/timer_tb.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/fpu_double-master/fpu_double_TB.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_double_TB.vhd"/>
-          <Attr Name="ImportTime" Val="1626894725"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -640,7 +615,7 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="uart_tb"/>
+        <Option Name="TopModule" Val="fpu_double_tb"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TransportPathDelay" Val="0"/>
         <Option Name="TransportIntDelay" Val="0"/>

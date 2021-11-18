@@ -3,339 +3,205 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="uart_tb_behav.wdb" id="1">
+      <db_ref path="fpu_double_tb_behav.wdb" id="1">
          <top_modules>
+            <top_module name="fpu_double_tb" />
             <top_module name="glbl" />
-            <top_module name="ipif_pkg" />
-            <top_module name="lib_pkg" />
-            <top_module name="uart_tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="264748166fs"></ZoomStartTime>
-      <ZoomEndTime time="264960367fs"></ZoomEndTime>
-      <Cursor1Time time="264925000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="2678001fs"></ZoomEndTime>
+      <Cursor1Time time="2595000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="451"></NameColumnWidth>
-      <ValueColumnWidth column_width="143"></ValueColumnWidth>
+      <NameColumnWidth column_width="488"></NameColumnWidth>
+      <ValueColumnWidth column_width="236"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="79" />
-   <wvobject fp_name="/uart_tb/uart1/interrupt" type="logic">
-      <obj_property name="ElementShortName">interrupt</obj_property>
-      <obj_property name="ObjectShortName">interrupt</obj_property>
+   <WVObjectSize size="46" />
+   <wvobject fp_name="/fpu_double_tb/enable" type="logic">
+      <obj_property name="ElementShortName">enable</obj_property>
+      <obj_property name="ObjectShortName">enable</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/r_Clock" type="logic">
-      <obj_property name="ElementShortName">r_Clock</obj_property>
-      <obj_property name="ObjectShortName">r_Clock</obj_property>
+   <wvobject fp_name="/fpu_double_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_BVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_BVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_BVALID</obj_property>
+   <wvobject fp_name="/fpu_double_tb/rmode" type="array">
+      <obj_property name="ElementShortName">rmode[1:0]</obj_property>
+      <obj_property name="ObjectShortName">rmode[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_BVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_BVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_BVALID</obj_property>
+   <wvobject fp_name="/fpu_double_tb/fpu_op" type="array">
+      <obj_property name="ElementShortName">fpu_op[2:0]</obj_property>
+      <obj_property name="ObjectShortName">fpu_op[2:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0/inst/state" type="array">
-      <obj_property name="ElementShortName">state[7:0]</obj_property>
-      <obj_property name="ObjectShortName">state[7:0]</obj_property>
+   <wvobject fp_name="/fpu_double_tb/opa" type="array">
+      <obj_property name="ElementShortName">opa[63:0]</obj_property>
+      <obj_property name="ObjectShortName">opa[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/din" type="array">
-      <obj_property name="ElementShortName">din[7:0]</obj_property>
-      <obj_property name="ObjectShortName">din[7:0]</obj_property>
+   <wvobject fp_name="/fpu_double_tb/opb" type="array">
+      <obj_property name="ElementShortName">opb[63:0]</obj_property>
+      <obj_property name="ObjectShortName">opb[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/dout" type="array">
-      <obj_property name="ElementShortName">dout[7:0]</obj_property>
-      <obj_property name="ObjectShortName">dout[7:0]</obj_property>
+   <wvobject fp_name="/fpu_double_tb/out_fp" type="array">
+      <obj_property name="ElementShortName">out_fp[63:0]</obj_property>
+      <obj_property name="ObjectShortName">out_fp[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/o_valid" type="logic">
-      <obj_property name="ElementShortName">o_valid</obj_property>
-      <obj_property name="ObjectShortName">o_valid</obj_property>
+   <wvobject fp_name="/fpu_double_tb/idle" type="logic">
+      <obj_property name="ElementShortName">idle</obj_property>
+      <obj_property name="ObjectShortName">idle</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/i_RX_Serial" type="logic">
-      <obj_property name="ElementShortName">i_RX_Serial</obj_property>
-      <obj_property name="ObjectShortName">i_RX_Serial</obj_property>
+   <wvobject fp_name="/fpu_double_tb/valid" type="logic">
+      <obj_property name="ElementShortName">valid</obj_property>
+      <obj_property name="ObjectShortName">valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/o_TX_Serial" type="logic">
-      <obj_property name="ElementShortName">o_TX_Serial</obj_property>
-      <obj_property name="ObjectShortName">o_TX_Serial</obj_property>
+   <wvobject fp_name="/fpu_double_tb/ack" type="logic">
+      <obj_property name="ElementShortName">ack</obj_property>
+      <obj_property name="ObjectShortName">ack</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/rd_en" type="logic">
-      <obj_property name="ElementShortName">rd_en</obj_property>
-      <obj_property name="ObjectShortName">rd_en</obj_property>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/op_a" type="array">
+      <obj_property name="ElementShortName">op_a[63:0]</obj_property>
+      <obj_property name="ObjectShortName">op_a[63:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/reset_n" type="logic">
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/op_b" type="array">
+      <obj_property name="ElementShortName">op_b[63:0]</obj_property>
+      <obj_property name="ObjectShortName">op_b[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/mode" type="logic">
+      <obj_property name="ElementShortName">mode</obj_property>
+      <obj_property name="ObjectShortName">mode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/result" type="array">
+      <obj_property name="ElementShortName">result[63:0]</obj_property>
+      <obj_property name="ObjectShortName">result[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/valid_i" type="logic">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/ready_o" type="logic">
+      <obj_property name="ElementShortName">ready_o</obj_property>
+      <obj_property name="ObjectShortName">ready_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_a_tvalid" type="logic">
+      <obj_property name="ElementShortName">s_axis_a_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_a_tready" type="logic">
+      <obj_property name="ElementShortName">s_axis_a_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_a_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_a_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_b_tvalid" type="logic">
+      <obj_property name="ElementShortName">s_axis_b_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_b_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_b_tready" type="logic">
+      <obj_property name="ElementShortName">s_axis_b_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_b_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_b_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_b_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_b_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_c_tvalid" type="logic">
+      <obj_property name="ElementShortName">s_axis_c_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_c_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_c_tready" type="logic">
+      <obj_property name="ElementShortName">s_axis_c_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_c_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_c_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_c_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_c_tdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/m_axis_result_tvalid" type="logic">
+      <obj_property name="ElementShortName">m_axis_result_tvalid</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/m_axis_result_tready" type="logic">
+      <obj_property name="ElementShortName">m_axis_result_tready</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/m_axis_result_tdata" type="array">
+      <obj_property name="ElementShortName">m_axis_result_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/fpu_state" type="array">
+      <obj_property name="ElementShortName">fpu_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">fpu_state[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/clock_i" type="logic">
+      <obj_property name="ElementShortName">clock_i</obj_property>
+      <obj_property name="ObjectShortName">clock_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/reset_n" type="logic">
       <obj_property name="ElementShortName">reset_n</obj_property>
       <obj_property name="ObjectShortName">reset_n</obj_property>
    </wvobject>
-   <wvobject fp_name="/uart_tb/rts" type="logic">
-      <obj_property name="ElementShortName">rts</obj_property>
-      <obj_property name="ObjectShortName">rts</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/wr_ack" type="logic">
-      <obj_property name="ElementShortName">wr_ack</obj_property>
-      <obj_property name="ObjectShortName">wr_ack</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/full" type="logic">
-      <obj_property name="ElementShortName">full</obj_property>
-      <obj_property name="ObjectShortName">full</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/wr_en" type="logic">
-      <obj_property name="ElementShortName">wr_en</obj_property>
-      <obj_property name="ObjectShortName">wr_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/o_ready" type="logic">
-      <obj_property name="ElementShortName">o_ready</obj_property>
-      <obj_property name="ObjectShortName">o_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/i_cen" type="logic">
-      <obj_property name="ElementShortName">i_cen</obj_property>
-      <obj_property name="ObjectShortName">i_cen</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/i_regsel" type="logic">
-      <obj_property name="ElementShortName">i_regsel</obj_property>
-      <obj_property name="ObjectShortName">i_regsel</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/i_valid" type="logic">
-      <obj_property name="ElementShortName">i_valid</obj_property>
-      <obj_property name="ObjectShortName">i_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/rd_data" type="array">
-      <obj_property name="ElementShortName">rd_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_data[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/rx_in" type="logic">
-      <obj_property name="ElementShortName">rx_in</obj_property>
-      <obj_property name="ObjectShortName">rx_in</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/sys_clock" type="logic">
-      <obj_property name="ElementShortName">sys_clock</obj_property>
-      <obj_property name="ObjectShortName">sys_clock</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/sys_resetn" type="logic">
-      <obj_property name="ElementShortName">sys_resetn</obj_property>
-      <obj_property name="ObjectShortName">sys_resetn</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/tx_out" type="logic">
-      <obj_property name="ElementShortName">tx_out</obj_property>
-      <obj_property name="ObjectShortName">tx_out</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/wr_ack" type="logic">
-      <obj_property name="ElementShortName">wr_ack</obj_property>
-      <obj_property name="ObjectShortName">wr_ack</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/wr_data" type="array">
-      <obj_property name="ElementShortName">wr_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_data[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/axi_uartlite_0_interrupt" type="logic">
-      <obj_property name="ElementShortName">axi_uartlite_0_interrupt</obj_property>
-      <obj_property name="ObjectShortName">axi_uartlite_0_interrupt</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/axi_uartlite_0_tx" type="logic">
-      <obj_property name="ElementShortName">axi_uartlite_0_tx</obj_property>
-      <obj_property name="ObjectShortName">axi_uartlite_0_tx</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/sys_resetn_0_1" type="logic">
-      <obj_property name="ElementShortName">sys_resetn_0_1</obj_property>
-      <obj_property name="ObjectShortName">sys_resetn_0_1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_ARADDR" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_ARADDR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_ARADDR[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_ARREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_ARREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_ARREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_ARVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_ARVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_ARVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_AWADDR" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_AWADDR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_AWADDR[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_AWREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_AWREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_AWREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_AWVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_AWVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_AWVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_BREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_BREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_BREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_BRESP" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_BRESP[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_BRESP[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_BVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_BVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_BVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_RDATA" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_RDATA[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_RDATA[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_RREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_RREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_RREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_RRESP" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_RRESP[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_RRESP[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_RVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_RVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_RVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_WDATA" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_WDATA[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_WDATA[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_WREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_WREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_WREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_WSTRB" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_WSTRB[3:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_WSTRB[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_axi_periph_M00_AXI_WVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_axi_periph_M00_AXI_WVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_axi_periph_M00_AXI_WVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_o_ready" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_o_ready</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_o_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_o_valid" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_o_valid</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_o_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_rd_data" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_rd_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_rd_data[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_ARADDR" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_ARADDR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_ARADDR[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_ARBURST" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_ARBURST[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_ARBURST[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_ARCACHE" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_ARCACHE[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_ARCACHE[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_ARLEN" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_ARLEN[7:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_ARLEN[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_ARREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_ARREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_ARREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_ARSIZE" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_ARSIZE[2:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_ARSIZE[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_ARVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_ARVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_ARVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_AWADDR" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_AWADDR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_AWADDR[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_AWBURST" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_AWBURST[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_AWBURST[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_AWCACHE" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_AWCACHE[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_AWCACHE[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_AWLEN" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_AWLEN[7:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_AWLEN[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_AWREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_AWREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_AWREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_AWSIZE" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_AWSIZE[2:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_AWSIZE[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_AWVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_AWVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_AWVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_BREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_BREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_BREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_BRESP" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_BRESP[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_BRESP[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_BVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_BVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_BVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_RDATA" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_RDATA[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_RDATA[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_RLAST" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_RLAST</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_RLAST</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_RREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_RREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_RREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_RRESP" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_RRESP[1:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_RRESP[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_RVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_RVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_RVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_WDATA" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_WDATA[31:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_WDATA[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_WLAST" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_WLAST</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_WLAST</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_WREADY" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_WREADY</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_WREADY</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_WSTRB" type="array">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_WSTRB[3:0]</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_WSTRB[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_s_axi_WVALID" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_s_axi_WVALID</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_s_axi_WVALID</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/uart_axi_control_0_wr_ack" type="logic">
-      <obj_property name="ElementShortName">uart_axi_control_0_wr_ack</obj_property>
-      <obj_property name="ObjectShortName">uart_axi_control_0_wr_ack</obj_property>
-   </wvobject>
-   <wvobject fp_name="/uart_tb/uart1/uart_i/wr_data_0_1" type="array">
-      <obj_property name="ElementShortName">wr_data_0_1[7:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_data_0_1[7:0]</obj_property>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/op_a" type="array">
+      <obj_property name="ElementShortName">op_a[63:0]</obj_property>
+      <obj_property name="ObjectShortName">op_a[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/op_b" type="array">
+      <obj_property name="ElementShortName">op_b[63:0]</obj_property>
+      <obj_property name="ObjectShortName">op_b[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/result" type="array">
+      <obj_property name="ElementShortName">result[63:0]</obj_property>
+      <obj_property name="ObjectShortName">result[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/valid_i" type="logic">
+      <obj_property name="ElementShortName">valid_i</obj_property>
+      <obj_property name="ObjectShortName">valid_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/ready_o" type="logic">
+      <obj_property name="ElementShortName">ready_o</obj_property>
+      <obj_property name="ObjectShortName">ready_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_a_tvalid" type="logic">
+      <obj_property name="ElementShortName">s_axis_a_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_a_tready" type="logic">
+      <obj_property name="ElementShortName">s_axis_a_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_a_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_a_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_a_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_b_tvalid" type="logic">
+      <obj_property name="ElementShortName">s_axis_b_tvalid</obj_property>
+      <obj_property name="ObjectShortName">s_axis_b_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_b_tready" type="logic">
+      <obj_property name="ElementShortName">s_axis_b_tready</obj_property>
+      <obj_property name="ObjectShortName">s_axis_b_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_b_tdata" type="array">
+      <obj_property name="ElementShortName">s_axis_b_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">s_axis_b_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/m_axis_result_tvalid" type="logic">
+      <obj_property name="ElementShortName">m_axis_result_tvalid</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/m_axis_result_tready" type="logic">
+      <obj_property name="ElementShortName">m_axis_result_tready</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/m_axis_result_tdata" type="array">
+      <obj_property name="ElementShortName">m_axis_result_tdata[63:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_result_tdata[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/fpu_state" type="array">
+      <obj_property name="ElementShortName">fpu_state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">fpu_state[2:0]</obj_property>
    </wvobject>
 </wave_config>

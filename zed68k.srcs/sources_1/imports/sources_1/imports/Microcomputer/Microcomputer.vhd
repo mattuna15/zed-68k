@@ -91,20 +91,17 @@ architecture struct of Microcomputer is
 	component fpu_double IS
 
    PORT( 
-      clk, rst, enable : IN     std_logic;
+      clk, rst, enable, ack : IN     std_logic;
       rmode : IN     std_logic_vector (1 DOWNTO 0);
       fpu_op : IN     std_logic_vector (2 DOWNTO 0);
       opa, opb : IN     std_logic_vector (63 DOWNTO 0);
       out_fp: OUT    std_logic_vector (63 DOWNTO 0);
-      ready : OUT  std_logic
-      --underflow, overflow, inexact : OUT    std_logic;
-      --exception, invalid : OUT    std_logic
+      idle, valid : OUT  std_logic
    );
 
 	END component;
 
     signal monRomData					: std_logic_vector(15 downto 0);
-	signal n_externalRamCS			: std_logic :='1';
 
 	signal n_basRom1CS					: std_logic :='1';
     signal n_basRom2CS					: std_logic :='1';
@@ -128,23 +125,27 @@ architecture struct of Microcomputer is
 
     signal sd_rden : std_logic;
     signal sd_wren : std_logic;
-	signal n_sdCardCS : std_logic;
 	
-		signal timerCS : std_logic;
+	signal timerCS : std_logic;
 	signal milliseconds: std_logic_vector(31 downto 0);
 	--fpu
 	
 signal opa_i, opb_i : std_logic_vector(63 downto 0);
 signal fpu_op_i		: std_logic_vector(2 downto 0);
 signal rmode_i : std_logic_vector(1 downto 0);
-signal result_o : std_logic_vector(63 downto 0);
-signal start_i, ready_o, rd_en : std_logic ; 
+signal result_o, result_reg : std_logic_vector(63 downto 0);
+signal start_i, idle_o, rd_en, valid_o : std_logic ; 
 signal error: std_logic;
 signal fpu_sts, fpu_ctl : std_logic_vector(7 downto 0);
 
 signal timer_in1, timer_clk_en, keyb_int : std_logic ;
 signal keyb_data : std_logic_vector(7 downto 0);
 signal uartIrqEn : std_logic := '0';
+
+signal hiMem,  spiMem, ethMem, uartMem, fpuMem, ioMem : std_logic := '0';
+signal hiMemRegAddr : std_logic_vector(7 downto 0);
+signal auto_iack :std_logic;
+signal fpuAck : std_logic;
 
 component keyboard is
    port (
@@ -162,10 +163,10 @@ component keyboard is
    );
 end component;
 	
-    attribute dont_touch : string;
-    attribute dont_touch of rtc : label is "true";
-    attribute dont_touch of interrupts : label is "true";
-    signal auto_iack :std_logic;
+	attribute dont_touch : string; 
+    attribute dont_touch of sdAddress : signal is "true";
+    attribute dont_touch of sdCardDataIn : signal is "true";
+    attribute dont_touch of sdCardDataOut : signal is "true";
     
 begin
 
@@ -271,9 +272,11 @@ cpu1 : entity work.TG68
 			rmode => rmode_i,	
 			out_fp => result_o,  
         	enable => start_i,
-        	ready => ready_o 
+        	idle => idle_o,
+        	valid => valid_o,
+        	ack => fpuAck
    );
-	
+
 	-- rom address
     memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
     
@@ -301,6 +304,10 @@ cpu1 : entity work.TG68
         clk_i => sys_clk,
         data_o => monRomData(7 downto 0)
     );
+	
+	-- rom address
+    memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
+-- 
 
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
@@ -308,8 +315,21 @@ cpu1 : entity work.TG68
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; --E00000-E0FFFF
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1';       
 
+hiMem <= '1' when cpuAddress(23 downto 20) = "1111" else '0';
+hiMemRegAddr <= cpuAddress(7 downto 0);
+
+spiMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"4" and hiMemRegAddr(7 downto 4) /= x"4"  else '0';  --f4
+ethMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"4" and hiMemRegAddr(7 downto 4) = x"4" else '0';  --f4
+timerCS  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"3" and hiMemRegAddr(7 downto 4) = x"3" else '0'; -- timer f3003
+rtcCS <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"3" and hiMemRegAddr(7 downto 4) = x"4" else '0';  -- f3004
+fpuMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"5" else '0'; --f5 
+ioMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"2" else '0';  --f2
+uartMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = "0000" else '0'; --f0
+
+
+-- ____________________________________________________________________________________
 -- RAM
-ram_cen <= '0' when  cpuAddress < X"E00000" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
+ram_cen <= '0' when  cpuAddress(23 downto 20)  < X"E" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
 ram_a <= cpuAddress(26 downto 0) when ram_cen ='0' else (others => '0'); -- address
@@ -319,66 +339,59 @@ ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
 
 -- spi
 
-spi_ctrl(4)     <= cpuDataOut(4) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0';  --cont                  
-spi_ctrl(3)     <= cpuDataOut(3) when (cpuAddress = X"f40008" or cpuAddress = X"f40009")  and cpu_lds = '0' and cpu_r_w = '0'; -- enable
-spi_ctrl(2 downto 0) <= cpuDataOut(2 downto 0) when (cpuAddress = X"f40008" or cpuAddress = X"f40009") and cpu_lds = '0' and cpu_r_w = '0';                   
-spi_dataOut <= cpuDataOut(7 downto 0) when (cpuAddress = X"f4000A" or cpuAddress = X"f4000B") and cpu_lds = '0' and cpu_r_w = '0'; 
+spi_ctrl(4) <= cpuDataOut(4) when spiMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09")  and cpu_lds = '0' and cpu_r_w = '0';  --cont                  
+spi_ctrl(3) <= cpuDataOut(3) when spiMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09")  and cpu_lds = '0' and cpu_r_w = '0'; -- enable
+spi_ctrl(2 downto 0) <= cpuDataOut(2 downto 0) when spiMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09") and cpu_lds = '0' and cpu_r_w = '0';                   
+spi_dataOut <= cpuDataOut(7 downto 0) when spiMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_lds = '0' and cpu_r_w = '0'; 
 gd_gpu_sel <= not spi_ctrl(0);
 gd_sd_sel <= not spi_ctrl(1);
 gd_daz_sel <= not spi_ctrl(2);
 
-opl3_ctl(5 downto 0) <= cpuDataout(5 downto 0) when (cpuAddress = X"f40010" or cpuAddress = X"f40011") and cpu_lds = '0' and cpu_r_w = '0'; 
-opl3_DataOut <= cpuDataout(7 downto 0) when (cpuAddress = X"f40012" or cpuAddress = X"f40013") and cpu_lds = '0' and cpu_r_w = '0'; 
+opl3_ctl(5 downto 0) <= cpuDataout(5 downto 0) when spiMem = '1' and (hiMemRegAddr = x"10" or hiMemRegAddr = x"11") and cpu_lds = '0' and cpu_r_w = '0'; 
+opl3_DataOut <= cpuDataout(7 downto 0) when spiMem = '1' and (hiMemRegAddr = x"12" or hiMemRegAddr = x"13") and cpu_lds = '0' and cpu_r_w = '0'; 
 
 -- timer
-rtcCS <= '1' when cpuAddress >= x"f30040" and cpuAddress < x"f30048" else '0';
-timerCS <= '1' when cpuAddress >= x"f30030" and cpuAddress <= x"f30033" else '0';
-timer_clk_en <= cpuDataOut(0) when (cpuAddress = x"f30034" or cpuAddress = x"f30035") and cpu_lds = '0' and cpu_r_w = '0'; 
+timer_clk_en <= cpuDataOut(0) when timerCS = '1' and (hiMemRegAddr = x"34" or hiMemRegAddr = x"35") and cpu_lds = '0' and cpu_r_w = '0'; 
 
 -- sd 
-n_sdCardCS <= '0' when cpuAddress >= x"f40020" and cpuAddress <= x"f40030" else '1';
-sdAddress(31 downto 16) <= cpuDataOut when cpuAddress = x"f40022" and cpu_r_w = '0';
-sdAddress(15 downto 0) <= cpuDataOut when cpuAddress = x"f40024" and cpu_r_w = '0';
-sdControl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40020" or cpuAddress = x"f40021") and cpu_r_w = '0' and cpu_lds = '0';
-sdCardDataIn <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '0' and cpu_lds = '0';
-sdEraseCount <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40028" or cpuAddress = x"f40029") and cpu_r_w = '0' and cpu_lds = '0';
+sdAddress(31 downto 16) <= cpuDataOut when spiMem = '1' and hiMemRegAddr = x"22" and cpu_r_w = '0';
+sdAddress(15 downto 0) <= cpuDataOut  when spiMem = '1' and hiMemRegAddr = x"24" and cpu_r_w = '0';
+sdControl <= cpuDataOut(7 downto 0) when spiMem = '1' and (hiMemRegAddr = x"20" or hiMemRegAddr = x"21") and cpu_r_w = '0' and cpu_lds = '0';
+sdCardDataIn <= cpuDataOut(7 downto 0) when spiMem = '1' and (hiMemRegAddr = x"26" or hiMemRegAddr = x"27") and cpu_r_w = '0' and cpu_lds = '0';
+sdEraseCount <= cpuDataOut(7 downto 0) when spiMem = '1' and (hiMemRegAddr = x"28" or hiMemRegAddr = x"29") and cpu_r_w = '0' and cpu_lds = '0';
 sd_rden <= sdControl(2);
 sd_wren <= sdControl(3);
 
 --net 
-eth_data_in(7 downto 0) <= cpuDataOut(7 downto 0) when (cpuAddress = x"f40040" or cpuAddress = x"f40041") 
-                            and cpu_r_w = '0' and cpu_lds = '0';
-
-eth_ctl(6 downto 5) <= cpuDataOut(6 downto 5) when cpuAddress = x"f40045" and cpu_r_w = '0' and cpu_lds = '0';
-
+eth_data_in(7 downto 0) <= cpuDataOut(7 downto 0) when ethMem = '1' and (hiMemRegAddr = x"40" or hiMemRegAddr = x"41") and cpu_r_w = '0' and cpu_lds = '0';
+eth_ctl(6 downto 5) <= cpuDataOut(6 downto 5) when ethMem = '1' and hiMemRegAddr = x"45" and cpu_r_w = '0' and cpu_lds = '0';
 
 --FPU
+opa_i(63 downto 48) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"00" and cpu_r_w = '0';
+opa_i(47 downto 32) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"02" and cpu_r_w = '0';
+opa_i(31 downto 16) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"04" and cpu_r_w = '0';
+opa_i(15 downto 0) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"06" and cpu_r_w = '0';
 
+opb_i(63 downto 48) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"08" and cpu_r_w = '0';
+opb_i(47 downto 32) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"0a" and cpu_r_w = '0';
+opb_i(31 downto 16) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"0c" and cpu_r_w = '0';
+opb_i(15 downto 0) <= cpuDataOut when fpuMem = '1' and hiMemRegAddr = x"0e" and cpu_r_w = '0';
 
-opa_i(63 downto 48) <= cpuDataOut when cpuAddress = x"f50000" and cpu_r_w = '0';
-opa_i(47 downto 32) <= cpuDataOut when cpuAddress = x"f50002" and cpu_r_w = '0';
-opa_i(31 downto 16) <= cpuDataOut when cpuAddress = x"f50004" and cpu_r_w = '0';
-opa_i(15 downto 0) <= cpuDataOut when cpuAddress  = x"f50006" and cpu_r_w = '0';
-
-opb_i(63 downto 48) <= cpuDataOut when cpuAddress = x"f50008" and cpu_r_w = '0';
-opb_i(47 downto 32) <= cpuDataOut when cpuAddress = x"f5000a" and cpu_r_w = '0';
-opb_i(31 downto 16) <= cpuDataOut when cpuAddress = x"f5000c" and cpu_r_w = '0';
-opb_i(15 downto 0) <= cpuDataOut when cpuAddress  = x"f5000e" and cpu_r_w = '0';
-
-fpu_ctl <= cpuDataOut(7 downto 0) when (cpuAddress = x"f50018" or cpuAddress = x"f50019") 
+fpu_ctl <= cpuDataOut(7 downto 0) when fpuMem = '1' and (hiMemRegAddr = x"18" or hiMemRegAddr = x"19") 
             and cpu_r_w = '0' and cpu_lds = '0';
             
 start_i <= fpu_ctl(0);
 fpu_op_i <= fpu_ctl(3 downto 1);
 rmode_i <= fpu_ctl(5 downto 4);
+fpuAck <= fpu_ctl(6);
 
-fpu_sts(0) <= '1' when  ready_o = '1' else '0' ;
-fpu_sts(1) <= error;
+fpu_sts(0) <= idle_o ;
+fpu_sts(1) <= valid_o;
 
-uartRDn <= '0' when (cpuAddress = x"f0000a" or cpuAddress = x"f0000b") and cpu_r_w = '1' and cpu_lds = '0' else '1';
-uartWRn <= '0' when (cpuAddress = x"f0000a" or cpuAddress = x"f0000b") and cpu_r_w = '0' and cpu_lds = '0' else '1';
-uartRegSel <= '1' when (cpuAddress = x"f00008" or cpuAddress = x"f00009")  and cpu_lds = '0' else '0'; -- 2 bytes 
-uartDataOut <= cpuDataOut(7 downto 0) when (cpuAddress = x"f0000a" or cpuAddress = x"f0000b") and cpu_r_w = '0' and cpu_lds = '0';
+uartRDn <= '0' when uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_r_w = '1' and cpu_lds = '0' else '1';
+uartWRn <= '0' when uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_r_w = '0' and cpu_lds = '0' else '1';
+uartRegSel <= '1' when uartMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09")  and cpu_lds = '0' else '0'; -- 2 bytes 
+uartDataOut <= cpuDataOut(7 downto 0) when uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_r_w = '0' and cpu_lds = '0';
                 
 uartIrqEn <= uartDataOut(2) when uartRegSel='1' and cpu_r_w = '0' and cpu_lds = '0';
 -- ____________________________________________________________________________________
@@ -389,58 +402,60 @@ auto_iack <= '1' when cpu_fc = "111" else '0';
 -- upper
 cpuDataIn(15 downto 8) 
 <= 
-X"00" 
-when cpuAddress = X"f30000" and cpu_uds = '0' else
 x"00" 
-when  (cpuAddress >= X"F00008" and cpuAddress <= X"F0000B") and cpu_r_w = '1' and cpu_uds = '0' else
+when uartMem = '1' and cpu_r_w = '1' and cpu_uds = '0' else
 monRomData(15 downto 8)
 when n_basRom1CS = '0' else
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
-x"00"
-when cpuAddress >= x"f40008" and cpuAddress <= x"f4000d" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when rtcCS = '1' and cpuAddress = X"f30046" and cpu_r_w ='1' and cpu_uds = '0' else
-rtc_data(47 downto 40)
-when rtcCS = '1' and cpuAddress = X"f30044" and cpu_r_w ='1' and cpu_uds = '0' else
-rtc_data(31 downto 24)
-when rtcCS = '1' and cpuAddress = X"f30042" and cpu_r_w ='1' and cpu_uds = '0' else
-rtc_data(15 downto 8)
-when rtcCS = '1' and cpuAddress = X"f30040" and cpu_r_w ='1' and cpu_uds = '0' else
-sdAddress(31 downto 24)
-when cpuAddress = x"f40022" and cpu_r_w = '1' and cpu_uds = '0' else 
-sdAddress(15 downto 8)
-when cpuAddress = x"f40024" and cpu_r_w = '1' and cpu_uds = '0' else 
-sdStatus
-when cpuAddress = x"f40020" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when cpuAddress = x"f40026" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when cpuAddress = x"f40028" and cpu_r_w = '1' and cpu_uds = '0' else
-x"00"
-when cpuAddress = x"f00018" and cpu_r_w = '1' and cpu_uds = '0' else
-eth_tx_free(15 downto 8)
-when cpuAddress = x"f40046" and cpu_r_w = '1' and cpu_uds = '0' else
-eth_rx_count(15 downto 8)
-when cpuAddress = x"f40048" and cpu_r_w = '1' and cpu_uds = '0' else 
+
 X"00"
-when (cpuAddress >= x"f40040" and cpuAddress <= x"f40045") and cpu_r_w = '1' and cpu_uds = '0' else  
+when ethMem = '1' and hiMemRegAddr >= X"40" and hiMemRegAddr <= x"45" and cpu_r_w = '1' and cpu_uds = '0' else
+eth_tx_free(15 downto 8)
+when ethMem = '1' and hiMemRegAddr = X"46" and cpu_r_w = '1' and cpu_uds = '0' else
+eth_rx_count(15 downto 8)
+when ethMem = '1' and hiMemRegAddr = X"48" and cpu_r_w = '1' and cpu_uds = '0' else   
+
+x"00"
+when spiMem = '1' and hiMemRegAddr >= x"08" and hiMemRegAddr <= x"0d" and cpu_r_w = '1' and cpu_uds = '0' else
+sdStatus
+when spiMem = '1' and hiMemRegAddr = X"20" and cpu_r_w = '1' and cpu_uds = '0' else
+sdAddress(31 downto 24)
+when spiMem = '1' and hiMemRegAddr = X"22" and cpu_r_w = '1' and cpu_uds = '0' else 
+sdAddress(15 downto 8)
+when spiMem = '1' and hiMemRegAddr = X"24" and cpu_r_w = '1' and cpu_uds = '0' else 
+x"00"
+when spiMem = '1' and hiMemRegAddr = X"26" and cpu_r_w = '1' and cpu_uds = '0' else
+x"00"
+when spiMem = '1' and hiMemRegAddr = X"28" and cpu_r_w = '1' and cpu_uds = '0' else
+
+
+opa_i(63 downto 56) when fpuMem = '1' and hiMemRegAddr = X"00" and cpu_r_w = '1' and cpu_uds = '0' else
+opa_i(47 downto 40) when fpuMem = '1' and hiMemRegAddr = X"02" and cpu_r_w = '1' and cpu_uds = '0' else
+opa_i(31 downto 24) when fpuMem = '1' and hiMemRegAddr = X"04" and cpu_r_w = '1' and cpu_uds = '0' else
+opa_i(15 downto 8) when fpuMem = '1' and hiMemRegAddr = X"06"   and cpu_r_w = '1' and cpu_uds = '0' else
+opb_i(63 downto 56) when fpuMem = '1' and hiMemRegAddr = X"08" and cpu_r_w = '1' and cpu_uds = '0' else
+opb_i(47 downto 40) when fpuMem = '1' and hiMemRegAddr = X"0a" and cpu_r_w = '1' and cpu_uds = '0' else
+opb_i(31 downto 24) when fpuMem = '1' and hiMemRegAddr = X"0c" and cpu_r_w = '1' and cpu_uds = '0' else
+opb_i(15 downto 8) when fpuMem = '1' and hiMemRegAddr = X"0e" and cpu_r_w = '1' and cpu_uds = '0' else
+result_o(63 downto 56) when fpuMem = '1' and hiMemRegAddr = X"10" and cpu_r_w = '1' and cpu_uds = '0' else
+result_o(47 downto 40) when fpuMem = '1' and hiMemRegAddr = X"12" and cpu_r_w = '1' and cpu_uds = '0' else
+result_o(31 downto 24) when fpuMem = '1' and hiMemRegAddr = X"14" and cpu_r_w = '1' and cpu_uds = '0' else
+result_o(15 downto 8) when fpuMem = '1' and hiMemRegAddr = X"16" and cpu_r_w = '1' and cpu_uds = '0' else
+
 milliseconds(31 downto 24)
-when timerCS = '1' and cpuAddress = X"f30030" and cpu_r_w ='1' and cpu_uds = '0' else
+when timerCS = '1' and hiMemRegAddr = X"30" and cpu_r_w ='1' and cpu_uds = '0' else
 milliseconds(15 downto 8)
-when timerCS = '1' and cpuAddress = X"f30032" and cpu_r_w ='1' and cpu_uds = '0' else
-opa_i(63 downto 56) when cpuAddress = x"f50000" and cpu_r_w = '1' and cpu_uds = '0' else
-opa_i(47 downto 40) when cpuAddress = x"f50002" and cpu_r_w = '1' and cpu_uds = '0' else
-opa_i(31 downto 24) when cpuAddress = x"f50004" and cpu_r_w = '1' and cpu_uds = '0' else
-opa_i(15 downto 8) when cpuAddress = x"f50006"   and cpu_r_w = '1' and cpu_uds = '0' else
-opb_i(63 downto 56) when cpuAddress = x"f50008" and cpu_r_w = '1' and cpu_uds = '0' else
-opb_i(47 downto 40) when cpuAddress = x"f5000a" and cpu_r_w = '1' and cpu_uds = '0' else
-opb_i(31 downto 24) when cpuAddress = x"f5000c" and cpu_r_w = '1' and cpu_uds = '0' else
-opb_i(15 downto 8) when cpuAddress = x"f5000e" and cpu_r_w = '1' and cpu_uds = '0' else
-result_o(63 downto 56) when cpuAddress = x"f50010" and cpu_r_w = '1' and cpu_uds = '0' else
-result_o(47 downto 40) when cpuAddress = x"f50012" and cpu_r_w = '1'and cpu_uds = '0' else
-result_o(31 downto 24) when cpuAddress = x"f50014" and cpu_r_w = '1' and cpu_uds = '0' else
-result_o(15 downto 8) when cpuAddress = x"f50016" and cpu_r_w = '1'and cpu_uds = '0' else
+when timerCS = '1' and hiMemRegAddr = X"32" and cpu_r_w ='1' and cpu_uds = '0' else
+
+x"00"
+when rtcCS = '1' and hiMemRegAddr = X"46" and cpu_r_w ='1' and cpu_uds = '0' else
+rtc_data(47 downto 40)
+when rtcCS = '1' and hiMemRegAddr = X"44" and cpu_r_w ='1' and cpu_uds = '0' else
+rtc_data(31 downto 24)
+when rtcCS = '1' and hiMemRegAddr = X"42" and cpu_r_w ='1' and cpu_uds = '0' else
+rtc_data(15 downto 8)
+when rtcCS = '1' and hiMemRegAddr = X"40" and cpu_r_w ='1' and cpu_uds = '0' else
 X"00" when cpu_uds = '1';
 
 --lower
@@ -449,75 +464,84 @@ cpuDataIn(7 downto 0)
 monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
 ram_dq_o(7 downto 0)
-when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress < x"E00000" else
-uartDataIn 
-when  (cpuAddress = X"F0000A" or cpuAddress = X"F0000B") and cpu_r_w = '1' and cpu_lds = '0' else
-"00000" & uartIrqEn & uartIdle & uartDataAvail  
-when  (cpuAddress = X"F00008" or cpuAddress = X"F00009") and cpu_r_w = '1' and cpu_lds = '0' else
-spi_DataIn
-when (cpuAddress = X"F4000C" or cpuAddress = X"F4000D") and cpu_r_w = '1' and cpu_lds = '0' else
-spi_DataOut
-when (cpuAddress = X"F4000A" or cpuAddress = X"F4000B") and cpu_r_w = '1' and cpu_lds = '0' else
-spi_ctrl
-when (cpuAddress = X"F40008" or cpuAddress = X"F40009") and cpu_r_w = '1' and cpu_lds = '0' else
-opl3_DataOut
-when (cpuAddress = X"F40012" or cpuAddress = X"F40013") and cpu_r_w = '1' and cpu_lds = '0' else
-opl3_ctl
-when (cpuAddress = X"F40010" or cpuAddress = X"F40011") and cpu_r_w = '1' and cpu_lds = '0' else
-rtc_data(55 downto 48)
-when rtcCS = '1' and (cpuAddress = X"f30046" or cpuAddress = X"F30047") and cpu_r_w ='1' and cpu_lds = '0' else
-rtc_data(39 downto 32)
-when rtcCS = '1' and (cpuAddress = X"f30044" or cpuAddress = X"F30045") and cpu_r_w ='1' and cpu_lds = '0' else
-rtc_data(23 downto 16)
-when rtcCS = '1' and (cpuAddress = X"f30042" or cpuAddress = X"F30043") and cpu_r_w ='1' and cpu_lds = '0' else
-rtc_data(7 downto 0)
-when rtcCS = '1' and (cpuAddress = X"f30040" or cpuAddress = X"F30041") and cpu_r_w ='1' and cpu_lds = '0' else
-sdEraseCount
-when (cpuAddress = x"f40028" or cpuAddress = x"f40029") and cpu_r_w = '1' and cpu_lds = '0' else
-sdCardDataOut
-when (cpuAddress = x"f40026" or cpuAddress = x"f40027") and cpu_r_w = '1' and cpu_lds = '0' else
-sdControl
-when (cpuAddress = x"f40020" or cpuAddress = x"f40021") and cpu_r_w = '1' and cpu_lds = '0' else
-sdAddress(23 downto 16)
-when (cpuAddress = x"f40022" or cpuAddress = x"f40023")  and cpu_r_w = '1' and cpu_lds = '0' else 
-sdAddress(7 downto 0)
-when (cpuAddress = x"f40024" or cpuAddress = x"f40025") and cpu_r_w = '1' and cpu_lds = '0' else 
+when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress(23 downto 20)  < X"E" else
+
 eth_data_in(7 downto 0)
-when (cpuAddress = x"f40040" or cpuAddress = x"f40041") and cpu_r_w = '1' and cpu_lds = '0' else 
+when ethMem = '1' and (hiMemRegAddr = x"40" or hiMemRegAddr = x"41") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_data_out(7 downto 0)
-when (cpuAddress = x"f40042" or cpuAddress = x"f40043") and cpu_r_w = '1' and cpu_lds = '0' else 
+when ethMem = '1' and (hiMemRegAddr = x"42" or hiMemRegAddr = x"43") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_ctl(7 downto 0)
-when (cpuAddress = x"f40044" or cpuAddress = x"f40045") and cpu_r_w = '1' and cpu_lds = '0' else
+when ethMem = '1' and (hiMemRegAddr = x"44" or hiMemRegAddr = x"45") and cpu_r_w = '1' and cpu_lds = '0' else
 eth_tx_free(7 downto 0)
-when (cpuAddress = x"f40046" or cpuAddress = x"f40047") and cpu_r_w = '1' and cpu_lds = '0' else
+when ethMem = '1' and (hiMemRegAddr = x"46" or hiMemRegAddr = x"47") and cpu_r_w = '1' and cpu_lds = '0' else
 eth_rx_count(7 downto 0)
-when (cpuAddress = x"f40048" or cpuAddress = x"f40049") and cpu_r_w = '1' and cpu_lds = '0' else
+when ethMem = '1' and (hiMemRegAddr = x"48" or hiMemRegAddr = x"49") and cpu_r_w = '1' and cpu_lds = '0' else
+
+
+sdControl
+when spiMem = '1' and (hiMemRegAddr = x"20" or hiMemRegAddr = x"21") and cpu_r_w = '1' and cpu_lds = '0' else
+sdAddress(23 downto 16)
+when spiMem = '1' and (hiMemRegAddr = x"22" or hiMemRegAddr = x"23")  and cpu_r_w = '1' and cpu_lds = '0' else 
+sdAddress(7 downto 0)
+when spiMem = '1' and (hiMemRegAddr = x"24" or hiMemRegAddr = x"25") and cpu_r_w = '1' and cpu_lds = '0' else 
+sdCardDataOut
+when spiMem = '1' and (hiMemRegAddr = x"26" or hiMemRegAddr = x"27") and cpu_r_w = '1' and cpu_lds = '0' else
+sdEraseCount
+when spiMem = '1' and (hiMemRegAddr = x"28" or hiMemRegAddr = x"29") and cpu_r_w = '1' and cpu_lds = '0' else
+
+spi_DataOut
+when spiMem = '1' and (hiMemRegAddr = x"0A" or hiMemRegAddr = x"0B")and cpu_r_w = '1' and cpu_lds = '0' else
+spi_DataIn
+when spiMem = '1' and (hiMemRegAddr = x"0C" or hiMemRegAddr = x"0D") and cpu_r_w = '1' and cpu_lds = '0' else
+spi_ctrl
+when spiMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09") and cpu_r_w = '1' and cpu_lds = '0' else
+opl3_ctl
+when spiMem = '1' and (hiMemRegAddr = x"10" or hiMemRegAddr = x"11") and cpu_r_w = '1' and cpu_lds = '0' else
+opl3_DataOut
+when spiMem = '1' and (hiMemRegAddr = x"12" or hiMemRegAddr = x"13") and cpu_r_w = '1' and cpu_lds = '0' else
+
+
+opa_i(55 downto 48) when fpuMem = '1' and (hiMemRegAddr = x"00" or hiMemRegAddr = x"01") and cpu_r_w = '1' and cpu_lds = '0' else
+opa_i(39 downto 32) when fpuMem = '1' and (hiMemRegAddr = x"02" or hiMemRegAddr = x"03") and cpu_r_w = '1' and cpu_lds = '0' else
+opa_i(23 downto 16) when fpuMem = '1' and (hiMemRegAddr = x"04" or hiMemRegAddr = x"05") and cpu_r_w = '1' and cpu_lds = '0' else
+opa_i(7 downto 0) when fpuMem = '1' and (hiMemRegAddr = x"06" or hiMemRegAddr = x"07")   and cpu_r_w = '1' and cpu_lds = '0' else
+opb_i(55 downto 48) when fpuMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09") and cpu_r_w = '1' and cpu_lds = '0' else
+opb_i(39 downto 32) when fpuMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_r_w = '1' and cpu_lds = '0' else
+opb_i(23 downto 16) when fpuMem = '1' and (hiMemRegAddr = x"0c"or hiMemRegAddr = x"0d") and cpu_r_w = '1' and cpu_lds = '0' else
+opb_i(7 downto 0) when fpuMem = '1' and (hiMemRegAddr = x"0e" or hiMemRegAddr = x"0f") and cpu_r_w = '1' and cpu_lds = '0' else
+result_o(55 downto 48) when fpuMem = '1' and (hiMemRegAddr = x"10" or hiMemRegAddr = x"11") and cpu_r_w = '1' and cpu_lds = '0' else
+result_o(39 downto 32) when fpuMem = '1' and (hiMemRegAddr = x"12" or hiMemRegAddr = x"13") and cpu_r_w = '1'and cpu_lds = '0' else
+result_o(23 downto 16) when fpuMem = '1' and (hiMemRegAddr = x"14" or hiMemRegAddr = x"15") and cpu_r_w = '1' and cpu_lds = '0' else
+result_o(7 downto 0) when fpuMem = '1' and  (hiMemRegAddr = x"16" or hiMemRegAddr = x"17") and cpu_r_w = '1'and cpu_lds = '0' else
+fpu_ctl when  fpuMem = '1' and (hiMemRegAddr = x"18" or hiMemRegAddr = x"19") and cpu_r_w = '1' and cpu_lds = '0' else
+fpu_sts when fpuMem = '1' and (hiMemRegAddr = x"1a" or hiMemRegAddr = x"1b") and cpu_r_w = '1' and cpu_lds = '0' else
+
 milliseconds(23 downto 16)
-when timerCS = '1' and (cpuAddress = X"f30030" or cpuAddress = X"f30031") and cpu_r_w ='1' and cpu_lds = '0' else
+when timerCS = '1' and (hiMemRegAddr = x"30" or hiMemRegAddr = x"31") and cpu_r_w ='1' and cpu_lds = '0' else
 milliseconds(7 downto 0)
-when timerCS = '1' and (cpuAddress = X"f30032" or cpuAddress = X"f30033") and cpu_r_w ='1' and cpu_lds = '0' else
-opa_i(55 downto 48) when (cpuAddress = x"f50000" or cpuAddress = X"f50001") and cpu_r_w = '1' and cpu_lds = '0' else
-opa_i(39 downto 32) when (cpuAddress = x"f50002" or cpuAddress = X"f50003") and cpu_r_w = '1' and cpu_lds = '0' else
-opa_i(23 downto 16) when (cpuAddress = x"f50004" or cpuAddress = X"f50005") and cpu_r_w = '1' and cpu_lds = '0' else
-opa_i(7 downto 0) when (cpuAddress = x"f50006" or cpuAddress = X"f50007")   and cpu_r_w = '1' and cpu_lds = '0' else
-opb_i(55 downto 48) when (cpuAddress = x"f50008" or cpuAddress = X"f50009") and cpu_r_w = '1' and cpu_lds = '0' else
-opb_i(39 downto 32) when (cpuAddress = x"f5000a" or cpuAddress = X"f50000b") and cpu_r_w = '1' and cpu_lds = '0' else
-opb_i(23 downto 16) when (cpuAddress = x"f5000c"or cpuAddress = X"f5000d") and cpu_r_w = '1' and cpu_lds = '0' else
-opb_i(7 downto 0) when (cpuAddress = x"f5000e" or cpuAddress = X"f5000f") and cpu_r_w = '1' and cpu_lds = '0' else
-result_o(55 downto 48) when (cpuAddress = x"f50010" or cpuAddress = X"f50011") and cpu_r_w = '1' and cpu_lds = '0' else
-result_o(39 downto 32) when (cpuAddress = x"f50012" or cpuAddress = X"f50013") and cpu_r_w = '1'and cpu_lds = '0' else
-result_o(23 downto 16) when (cpuAddress = x"f50014" or cpuAddress = X"f50015") and cpu_r_w = '1' and cpu_lds = '0' else
-result_o(7 downto 0) when (cpuAddress = x"f50016" or cpuAddress = X"f50017") and cpu_r_w = '1'and cpu_lds = '0' else
-fpu_ctl when (cpuAddress = x"f50018" or cpuAddress = x"f50019") and cpu_r_w = '1' and cpu_lds = '0' else
-fpu_sts when (cpuAddress = x"f5001a" or cpuAddress = x"f5001b") and cpu_r_w = '1' and cpu_lds = '0' else
-"0000000" & timer_clk_en when (cpuAddress = x"f30034" or cpuAddress = x"f30035") and cpu_lds = '0' and cpu_r_w = '1' else
-keyb_data when (cpuAddress = x"f20000" or cpuAddress = x"f20001") and cpu_lds = '0' and cpu_r_w = '1' else
+when timerCS = '1' and (hiMemRegAddr = x"32" or hiMemRegAddr = x"33") and cpu_r_w ='1' and cpu_lds = '0' else
+
+uartDataIn 
+when  uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b")and cpu_r_w = '1' and cpu_lds = '0' else
+"00000" & uartIrqEn & uartIdle & uartDataAvail  
+when uartMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09") and cpu_r_w = '1' and cpu_lds = '0' else
+"0000000" & timer_clk_en when timerCS = '1' and (hiMemRegAddr = x"34" or hiMemRegAddr = x"35") and cpu_lds = '0' and cpu_r_w = '1' else
+
+rtc_data(55 downto 48)
+when rtcCS = '1' and (hiMemRegAddr = x"46" or hiMemRegAddr = x"47") and cpu_r_w ='1' and cpu_lds = '0' else
+rtc_data(39 downto 32)
+when rtcCS = '1' and (hiMemRegAddr = x"44" or hiMemRegAddr = x"45") and cpu_r_w ='1' and cpu_lds = '0' else
+rtc_data(23 downto 16)
+when rtcCS = '1' and (hiMemRegAddr = x"42" or hiMemRegAddr = x"43") and cpu_r_w ='1' and cpu_lds = '0' else
+rtc_data(7 downto 0)
+when rtcCS = '1' and (hiMemRegAddr = x"40" or hiMemRegAddr = x"41") and cpu_r_w ='1' and cpu_lds = '0' else
+keyb_data when ioMem = '1' and (hiMemRegAddr = x"00" or hiMemRegAddr = x"01") and cpu_lds = '0' and cpu_r_w = '1' else
 X"00" when cpu_lds = '1' ;
 
 cpu_dtack <= 
 not ram_ack when ram_cen = '0' else 
 not rtc_ack when rtcCS = '1' else
-NOT eth_ack_rx when (cpuAddress = x"f40042" or cpuAddress = x"f40043") else
+NOT eth_ack_rx when ethMem = '1' and (hiMemRegAddr = x"42" or hiMemRegAddr = x"43") else
 '0';
     
 end;

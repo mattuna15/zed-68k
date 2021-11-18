@@ -311,6 +311,7 @@ end component;
       rd_data : out std_logic_vector(7 downto 0)
   );
   end component;
+ 
     
 attribute dont_touch : string; 
 
@@ -321,15 +322,15 @@ attribute dont_touch of mem_i_valid_p : signal is "true";
 attribute dont_touch of gameduino_spi : label is "true";
 attribute dont_touch of opl3_spi : label is "true";
 
-attribute dont_touch of uartIrq   : signal is "true";
-attribute dont_touch of uartDataOut : signal is "true";
-attribute dont_touch of uartDataIn  : signal is "true";
-attribute dont_touch of uartRegSel : signal is "true";
-attribute dont_touch of uartWRn : signal is "true";
-attribute dont_touch of uartRDn : signal is "true";
-attribute dont_touch of uartIdle : signal is "true";
-attribute dont_touch of uartDataAvail : signal is "true";
-attribute dont_touch of uartDataCount : signal is "true";
+--attribute dont_touch of uartIrq   : signal is "true";
+--attribute dont_touch of uartDataOut : signal is "true";
+--attribute dont_touch of uartDataIn  : signal is "true";
+--attribute dont_touch of uartRegSel : signal is "true";
+--attribute dont_touch of uartWRn : signal is "true";
+--attribute dont_touch of uartRDn : signal is "true";
+--attribute dont_touch of uartIdle : signal is "true";
+--attribute dont_touch of uartDataAvail : signal is "true";
+--attribute dont_touch of uartDataCount : signal is "true";
 
 signal cpu_clock : std_logic;
 
@@ -478,11 +479,12 @@ end process;
         uartWRn => uartWRn,
         uartIdle => not uartIdle,
         uartDataAvail => uartDataAvail
-		
+        
     );
     
     sda_pup <= '1';
     scl_pup <= '1';
+    
 
     --serial
     
