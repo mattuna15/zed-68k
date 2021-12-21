@@ -46,9 +46,8 @@ use IEEE.numeric_std.all;
       rmode : IN     std_logic_vector (1 DOWNTO 0);
       fpu_op : IN     std_logic_vector (2 DOWNTO 0);
       opa, opb : IN     std_logic_vector (63 DOWNTO 0);
-      out_fp: OUT    std_logic_vector (63 DOWNTO 0);
-      idle, valid : OUT  std_logic;
-      ack : in std_logic
+      out_fp_reg: OUT    std_logic_vector (63 DOWNTO 0);
+      idle, valid : OUT  std_logic
    );
 
 	END fpu_double;
@@ -94,7 +93,7 @@ use IEEE.numeric_std.all;
 	signal out_add : std_logic_vector(63 downto 0);
     signal out_sub : std_logic_vector(63 downto 0);
 	signal out_mul : std_logic_vector(63 downto 0);
-    signal out_div : std_logic_vector(63 downto 0);
+    signal out_div, out_fp : std_logic_vector(63 downto 0);
 	
 	signal add_ready, sub_ready, mul_ready, div_ready, out_valid : std_logic;
 	
@@ -114,6 +113,7 @@ use IEEE.numeric_std.all;
     idle <= not in_progress;
     valid <= out_valid;
     reset_n <= not rst;
+    out_fp_reg <= out_fp when valid = '1';
     
     i_fpu_add : entity work.fpaddsub 
     Port map ( 
@@ -167,37 +167,37 @@ use IEEE.numeric_std.all;
     
     );
 		
-    i_fpu_sqrt : entity work.fpsqrt 
-    Port map ( 
-        clock_i => clk,
-        reset_n => reset_n,
-        op_a => opa_reg, 
-        result => out_sqrt,
-        valid_i => sqrt_enable,
-        ready_o => sqrt_ready
-    );
+--    i_fpu_sqrt : entity work.fpsqrt 
+--    Port map ( 
+--        clock_i => clk,
+--        reset_n => reset_n,
+--        op_a => opa_reg, 
+--        result => out_sqrt,
+--        valid_i => sqrt_enable,
+--        ready_o => sqrt_ready
+--    );
     
     
-    i_fpu_sgldbl : entity work.fpsgldbl
-    Port map ( 
-        clock_i => clk,
-        reset_n => reset_n,
-        op_a => opa_reg(63 downto 32), 
-        result => out_sgldbl,
-        valid_i => sgldbl_enable,
-        ready_o => sgldbl_ready
-    );
+--    i_fpu_sgldbl : entity work.fpsgldbl
+--    Port map ( 
+--        clock_i => clk,
+--        reset_n => reset_n,
+--        op_a => opa_reg(63 downto 32), 
+--        result => out_sgldbl,
+--        valid_i => sgldbl_enable,
+--        ready_o => sgldbl_ready
+--    );
     
     
-   i_fpu_dblsgl : entity work.fpdblsgl
-    Port map ( 
-        clock_i => clk,
-        reset_n => reset_n,
-        op_a => opa_reg, 
-        result => out_dblsgl,
-        valid_i => dblsgl_enable,
-        ready_o => dblsgl_ready
-    );
+--   i_fpu_dblsgl : entity work.fpdblsgl
+--    Port map ( 
+--        clock_i => clk,
+--        reset_n => reset_n,
+--        op_a => opa_reg, 
+--        result => out_dblsgl,
+--        valid_i => dblsgl_enable,
+--        ready_o => dblsgl_ready
+--    );
 	
 	process
 	begin
@@ -287,6 +287,8 @@ use IEEE.numeric_std.all;
 			fpu_op_reg <= fpu_op; 
 			rmode_reg <= rmode;
 			op_enable <= '1';
+		elsif enable_reg_3 = '1' then
+		    op_enable <= '0';
 		end if; 
 	end process;
 	
@@ -300,13 +302,13 @@ use IEEE.numeric_std.all;
 		elsif (enable_reg_1 = '1') then
             in_progress <= '1';
             out_valid <= '0';
-		elsif (fpu_op_reg = "000" and add_ready = '1'  and in_progress = '1')
-		      or (fpu_op_reg = "001" and sub_ready = '1'  and in_progress = '1')
-		      or (fpu_op_reg = "010" and mul_ready = '1'  and in_progress = '1')  
-		      or (fpu_op_reg = "011" and div_ready = '1'  and in_progress = '1') 
-		      or (fpu_op_reg = "100" and sqrt_ready = '1'  and in_progress = '1')
-		      or (fpu_op_reg = "101" and sgldbl_ready = '1'  and in_progress = '1')
-		      or (fpu_op_reg = "110" and dblsgl_ready = '1'  and in_progress = '1') then  
+		elsif (fpu_op_reg = "000" and add_ready = '1'  and in_progress = '1' )
+		      or (fpu_op_reg = "001" and sub_ready = '1'  and in_progress = '1'  )
+		      or (fpu_op_reg = "010" and mul_ready = '1'  and in_progress = '1'  )  
+		      or (fpu_op_reg = "011" and div_ready = '1'  and in_progress = '1'  ) then
+		   --   or (fpu_op_reg = "100" and sqrt_ready = '1'  and in_progress = '1'  )
+		   --   or (fpu_op_reg = "101" and sgldbl_ready = '1'  and in_progress = '1' )
+		   --   or (fpu_op_reg = "110" and dblsgl_ready = '1'  and in_progress = '1' ) then  
            if fpu_op_reg = "000" then
 	           out_fp <= out_add;
 	       elsif fpu_op_reg = "001" then
@@ -315,19 +317,18 @@ use IEEE.numeric_std.all;
 	           out_fp <= out_mul;
 	       elsif fpu_op_reg = "011" then
 	           out_fp <= out_div;
-	       elsif fpu_op_reg = "100" then
-	           out_fp <= out_sqrt;
-	       elsif fpu_op_reg = "101" then
-	           out_fp <= out_sgldbl;
-	       elsif fpu_op_reg = "110" then
-	           out_fp(63 downto 32) <= out_dblsgl;
-	           out_fp(31 downto 0) <= (others => '0');
+--	       elsif fpu_op_reg = "100" then
+--	           out_fp <= out_sqrt;
+--	       elsif fpu_op_reg = "101" then
+--	           out_fp <= out_sgldbl;
+--	       elsif fpu_op_reg = "110" then
+--	           out_fp(63 downto 32) <= out_dblsgl;
+--	           out_fp(31 downto 0) <= (others => '0');
 	       end if;
 	       
 	       out_valid <= '1';
-	    elsif out_valid = '1' and ack = '1' then
+	    elsif out_valid = '1'  then
 	       in_progress <= '0';
-	       out_valid <= '0';
 		end if; 
 	end process;
 

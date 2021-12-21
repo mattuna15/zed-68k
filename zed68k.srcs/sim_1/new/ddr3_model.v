@@ -1,11 +1,10 @@
-`define MAX_MEM
 /****************************************************************************************
 *
 *    File Name:  ddr3.v
-*      Version:  1.74
+*      Version:  1.61
 *        Model:  BUS Functional
 *
-* Dependencies:  ddr3_parameters.vh
+* Dependencies:  ddr3_model_parameters.vh
 *
 *  Description:  Micron SDRAM DDR3 (Double Data Rate 3)
 *
@@ -74,29 +73,15 @@
 * 1.50  JMK      05/04/08    Added 1866 and 2133 speed grades.
 * 1.60  MYY      07/10/09    Merging of 1.50 version and pre-1.0 version changes
 * 1.61  SPH      12/10/09    Only check tIH for cmd_addr if CS# LOW
-* 1.62  SPH      10/26/10    Added 4Gb DDR3 SDRAM support
-* 1.63  MYY      11/09/10    Added Dll Disable mode
-* 1.64  MYY      07/28/11    Check dqs_in for dqs timing check
-* 1.65  MYY      09/19/11    Widen internal bus width         
-* 1.66  MYY      01/20/12    Support ODT tied high feature
-* 1.67  MYY      02/03/12    Added TJIT_PER margin for timing checks
-* 1.68  SPH      04/02/12    Added memory preload
-* 1.69  SPH      03/19/13    Update tZQCS, tZQinit, tZQoper timing parameters
-* 1.70  SPH      04/08/14    Update tRFC to PRECHARGE check
-* 1.71  SPH      04/21/14    Added 8Gb mono die parameters
-*                            Remove strict CL check
-* 1.72  DLH      06/18/15    calculate TZQCS from current tCK
-* 1.73  SPH      08/20/15    calculate TZQINIT/TZQOPER from current tCK
-* 1.74  SPH      09/08/15    Fix CWL 9 check to use 1071ps instead of 15e3/14 (round up error)
-*                            Fix tIS don't care for Bank and Address when DES / NOP
 *****************************************************************************************/
-
 // DO NOT CHANGE THE TIMESCALE
 // MAKE SURE YOUR SIMULATOR USES "PS" RESOLUTION
 `timescale 1ps / 1ps
 
+// model flags
+// `define MODEL_PASR
 
-module ddr3 (
+module ddr3_model (
     rst_n,
     ck,
     ck_n,
@@ -110,31 +95,17 @@ module ddr3 (
     addr,
     dq,
     dqs,
-    dqs_n,
+    dqs_n, 
     tdqs_n,
     odt
 );
 
-//`ifdef den1024Mb
-    `include "1024Mb_ddr3_parameters.vh"
-//`elsif den2048Mb
- //   `include "2048Mb_ddr3_parameters.vh"
-///`elsif den4096Mb
-//    `include "4096Mb_ddr3_parameters.vh"
-///`elsif den8192Mb
-//    `include "8192Mb_ddr3_parameters.vh"
-//`else
-    // NOTE: Intentionally cause a compile fail here to force the users
-    //       to select the correct component density before continuing
-//   ERROR: You must specify component density with +define+den____Mb.
-//`endif
-
+    `include "D:/code/zed-68k/zed68k.srcs/sim_1/new/ddr3_model_parameters.vh"
+ 
     parameter check_strict_mrbits = 1;
     parameter check_strict_timing = 1;
     parameter feature_pasr = 1;
     parameter feature_truebl4 = 0;
-    parameter feature_odt_hi = 0;
-    parameter PERTCKAVG=TDLLK;
    
     // text macros
     `define DQ_PER_DQS DQ_BITS/DQS_BITS
@@ -153,20 +124,20 @@ module ddr3 (
     input   ras_n;
     input   cas_n;
     input   we_n;
-    inout   [DM_BITS-1:0]   dm_tdqs;
-    input   [BA_BITS-1:0]   ba;
-    input   [ADDR_BITS-1:0] addr;
-    inout   [DQ_BITS-1:0]   dq;
-    inout   [DQS_BITS-1:0]  dqs;
-    inout   [DQS_BITS-1:0]  dqs_n;
-    output  [DQS_BITS-1:0]  tdqs_n;
+    inout   [1:0]   dm_tdqs;
+    input   [2:0]   ba;
+    input   [13:0] addr;
+    inout   [15:0]   dq;
+    inout   [1:0]  dqs;
+    inout   [1:0]  dqs_n;
+    output  [1:0]  tdqs_n;
     input   odt;
 
     // clock jitter
     real    tck_avg;
-    time    tck_sample [PERTCKAVG-1:0];
-    time    tch_sample [PERTCKAVG:0];
-    time    tcl_sample [PERTCKAVG:0];
+    time    tck_sample [TDLLK-1:0];
+    time    tch_sample [TDLLK-1:0];
+    time    tcl_sample [TDLLK-1:0];
     time    tck_i;
     time    tch_i;
     time    tcl_i;
@@ -179,10 +150,10 @@ module ddr3 (
     real    terr_nper_rtime;
     //DDR3 clock jitter variables
     real    tjit_ch_rtime;
-    integer duty_cycle;
+    real    duty_cycle;
 
     // clock skew
-    integer out_delay;
+    real    out_delay;
     integer dqsck [DQS_BITS-1:0];
     integer dqsck_min;
     integer dqsck_max;
@@ -336,38 +307,32 @@ module ddr3 (
     reg     [COL_BITS-1:0] col_pipeline [`MAX_PIPE:0];
     reg     prev_cke;
 
-    reg [5:0] cmd_tran_index, cmd_tran_i;
-    reg [63:0] cmd_tran_pipeline;
-    reg [2:0]  cmd_n_in_pipeline  [63:0];
-    reg [BA_BITS-1:0] ba_in_pipeline [63:0];
-    reg [ADDR_BITS-1:0] addr_in_pipeline [63:0];
-		  
     // data state
     reg     [BL_MAX*DQ_BITS-1:0] memory_data;
     reg     [BL_MAX*DQ_BITS-1:0] bit_mask;
     reg     [BL_BITS-1:0]        burst_position;
     reg     [BL_BITS:0]          burst_cntr;
     reg     [DQ_BITS-1:0]        dq_temp;
-    reg     [63:0] check_write_postamble;
-    reg     [63:0] check_write_preamble;
-    reg     [63:0] check_write_dqs_high;
-    reg     [63:0] check_write_dqs_low;
-    reg     [31:0] check_dm_tdipw;
-    reg     [127:0] check_dq_tdipw;
+    reg     [31:0] check_write_postamble;
+    reg     [31:0] check_write_preamble;
+    reg     [31:0] check_write_dqs_high;
+    reg     [31:0] check_write_dqs_low;
+    reg     [15:0] check_dm_tdipw;
+    reg     [63:0] check_dq_tdipw;
 
     // data timers/counters
     time    tm_rst_n;
     time    tm_cke;
     time    tm_odt;
     time    tm_tdqss;
-    time    tm_dm       [31:0];
-    time    tm_dqs      [31:0];
-    time    tm_dqs_pos  [63:0];
-    time    tm_dqss_pos [63:0];
-    time    tm_dqs_neg  [63:0];
-    time    tm_dq       [127:0];
-    time    tm_cmd_addr [23:0];
-    reg [8*7-1:0] cmd_addr_string [23:0];
+    time    tm_dm       [15:0];
+    time    tm_dqs      [15:0];
+    time    tm_dqs_pos  [31:0];
+    time    tm_dqss_pos [31:0];
+    time    tm_dqs_neg  [31:0];
+    time    tm_dq       [63:0];
+    time    tm_cmd_addr [22:0];
+    reg [8*7-1:0] cmd_addr_string [22:0];
     initial begin
         cmd_addr_string[ 0] = "CS_N   ";
         cmd_addr_string[ 1] = "RAS_N  ";
@@ -392,7 +357,6 @@ module ddr3 (
         cmd_addr_string[20] = "ADDR 13";
         cmd_addr_string[21] = "ADDR 14";
         cmd_addr_string[22] = "ADDR 15";
-        cmd_addr_string[23] = "ADDR 16";
     end
 
     reg [8*5-1:0] dqs_string [1:0];
@@ -409,16 +373,9 @@ module ddr3 (
     reg [1024:1] tmp_model_dir;
     integer memfd[`BANKS-1:0];
 
-
     initial
     begin : file_io_open
-        reg [BA_BITS - 1 : 0] bank;
-        reg [ROW_BITS - 1 : 0] row;
-        reg [COL_BITS - 1 : 0] col;
-        reg [BA_BITS + ROW_BITS + COL_BITS - 1 : 0] addr;
-        reg [BL_MAX * DQ_BITS - 1 : 0] data;
-        string _char;
-        integer in, fio_status;
+        integer bank;
 
         if (!$value$plusargs("model_data+%s", tmp_model_dir))
         begin
@@ -429,29 +386,8 @@ module ddr3 (
             );
         end
 
-        for (integer i = 0; i < `BANKS; i = i + 1)
-            memfd[i] = open_bank_file(i);
-
-        // Preload section
-    `ifdef mem_init
-        in = $fopen("mem_init.txt","r");
-        while (! $feof(in)) begin
-            fio_status = $fscanf(in, "%h %s %h", addr, _char, data);
-            if (fio_status != -1) begin // Check for blank line or EOF
-                bank = addr [BA_BITS + ROW_BITS + COL_BITS - 1 : ROW_BITS + COL_BITS];
-                row = addr [ROW_BITS + COL_BITS - 1 : COL_BITS];
-                col = addr [COL_BITS - 1 : 0];
-                memory_write (bank, row, col, data);
-                // Next 4 lines are for debug only
-                $display ("MEMORY_WRITE: Bank = %h, Row = %h, Col = %h, Data = %h", bank, row, col, data);
-                data = 'hx; // This is to reset data to verify memory_read
-                memory_read(bank, row, col, data);
-                $display ("MEMORY_READ: Bank = %h, Row = %h, Col = %h, Data = %h", bank, row, col, data);
-            end
-        end
-        $fclose(in);
-        //$finish;
-    `endif
+        for (bank = 0; bank < `BANKS; bank = bank + 1)
+            memfd[bank] = open_bank_file(bank);
     end
 `else
     reg     [BL_MAX*DQ_BITS-1:0] memory  [0:`MEM_SIZE-1];
@@ -469,34 +405,31 @@ module ddr3 (
     reg            ras_n_in;
     reg            cas_n_in;
     reg            we_n_in;
-    reg     [31:0] dm_in;
+    reg     [15:0] dm_in;
     reg     [2:0]  ba_in;
-    reg     [16:0] addr_in;
-    reg     [127:0] dq_in;
-    reg     [63:0] dqs_in;
+    reg     [15:0] addr_in;
+    reg     [63:0] dq_in;
+    reg     [31:0] dqs_in;
     reg            odt_in;
 
-    reg     [31:0] dm_in_pos;
-    reg     [31:0] dm_in_neg;
-    reg     [127:0] dq_in_pos;
-    reg     [127:0] dq_in_neg;
+    reg     [15:0] dm_in_pos;
+    reg     [15:0] dm_in_neg;
+    reg     [63:0] dq_in_pos;
+    reg     [63:0] dq_in_neg;
     reg            dq_in_valid;
     reg            dqs_in_valid;
     integer        wdqs_cntr;
     integer        wdq_cntr;
-    integer        wdqs_pos_cntr [63:0];
+    integer        wdqs_pos_cntr [31:0];
     reg            b2b_write;
     reg [BL_BITS:0] wr_burst_length;
-    reg     [63:0] prev_dqs_in;
+    reg     [31:0] prev_dqs_in;
     reg            diff_ck;
 
     always @(rst_n  ) rst_n_in   <= #BUS_DELAY rst_n;
     always @(ck     ) ck_in      <= #BUS_DELAY ck;
     always @(ck_n   ) ck_n_in    <= #BUS_DELAY ck_n;
-
-    always @(cke    ) 
-      cke_in     <= #BUS_DELAY cke;
-
+    always @(cke    ) cke_in     <= #BUS_DELAY cke;
     always @(cs_n   ) cs_n_in    <= #BUS_DELAY cs_n;
     always @(ras_n  ) ras_n_in   <= #BUS_DELAY ras_n;
     always @(cas_n  ) cas_n_in   <= #BUS_DELAY cas_n;
@@ -505,21 +438,16 @@ module ddr3 (
     always @(ba     ) ba_in      <= #BUS_DELAY ba;
     always @(addr   ) addr_in    <= #BUS_DELAY addr;
     always @(dq     ) dq_in      <= #BUS_DELAY dq;
-    always @(dqs or dqs_n) dqs_in <= #BUS_DELAY (dqs_n<<32) | dqs;
-    always @(odt    ) if (!feature_odt_hi) odt_in     <= #BUS_DELAY odt;
+    always @(dqs or dqs_n) dqs_in <= #BUS_DELAY (dqs_n<<16) | dqs;
+    always @(odt    ) odt_in     <= #BUS_DELAY odt;
     // create internal clock
     always @(posedge ck_in) diff_ck <= ck_in;
     always @(posedge ck_n_in) diff_ck <= ~ck_n_in;
     
-   
-    wire    [31:0] dqs_even = dqs_in[31:0];
-    wire    [31:0] dqs_odd  = dqs_in[63:32];
+    wire    [15:0] dqs_even = dqs_in[15:0];
+    wire    [15:0] dqs_odd  = dqs_in[31:16];
+    wire    [3:0]  cmd_n_in = !cs_n_in ? {ras_n_in, cas_n_in, we_n_in} : NOP;  //deselect = nop 
 
-    // wire    [3:0]  cmd_n_in = !cs_n_in ? {ras_n_in, cas_n_in, we_n_in} : NOP;  //deselect = nop 
-    reg  [3:0]  cmd_n_in;
-    always @(cs_n_in or ras_n_in or cas_n_in or we_n_in)
-      cmd_n_in = !cs_n_in ? {ras_n_in, cas_n_in, we_n_in} : NOP;
-   
     // transmit
     reg                    dqs_out_en;
     reg     [DQS_BITS-1:0] dqs_out_en_dly;
@@ -538,10 +466,6 @@ module ddr3 (
     bufif1 buf_dqs_n  [DQS_BITS-1:0] (dqs_n,   ~dqs_out_dly, dqs_out_en_dly & {DQS_BITS{out_en}});
     bufif1 buf_dq     [DQ_BITS-1:0]  (dq,      dq_out_dly,   dq_out_en_dly  & {DQ_BITS {out_en}});
     assign tdqs_n = {DQS_BITS{1'bz}};
-
-    assign TZQCS   = max( 64, ceil( 80000/tck_avg));
-    assign TZQINIT =  max(512, ceil(640000/tck_avg));
-    assign TZQOPER =  max(256, ceil(320000/tck_avg));
 
     initial begin
         if (BL_MAX < 2) 
@@ -614,14 +538,6 @@ module ddr3 (
             floor = number;
     endfunction
 
-    function int max( input int a, b );
-        max = (a < b) ? b : a;
-    endfunction
-
-    function int min( input int a, b );
-        min = (a > b) ? b : a;
-    endfunction
-
 `ifdef MAX_MEM
 
     function integer open_bank_file( input integer bank );
@@ -630,7 +546,7 @@ module ddr3 (
         begin 
             $sformat( filename, "%0s/%m.%0d", tmp_model_dir, bank );
 
-            fd = $fopen(filename, "wb+");
+            fd = $fopen(filename, "w+");
             if (fd == 0)
             begin
                 $display("%m: at time %0t ERROR: failed to open %0s.", $time, filename);
@@ -791,10 +707,7 @@ module ddr3 (
             end else begin
                 additive_latency = cas_latency - al;
             end
-            if (dll_en)
-                read_latency = cas_latency + additive_latency;
-            else
-                read_latency = cas_latency + additive_latency - 1;
+            read_latency = cas_latency + additive_latency;
             write_latency = cas_write_latency + additive_latency;
         end
     endtask
@@ -845,13 +758,13 @@ module ddr3 (
         input [ADDR_BITS-1:0] mode_reg3;
         begin
             if (DEBUG) $display ("%m: at time %t INFO: Performing Initialization Sequence", $time);
-            cmd_task(prev_cke, 1,       NOP, 'bx, 'bx);
-            cmd_task(prev_cke, 1,        ZQ, 'bx, 'h400); //ZQCL
-            cmd_task(prev_cke, 1, LOAD_MODE, 3, mode_reg3);
-            cmd_task(prev_cke, 1, LOAD_MODE, 2, mode_reg2);
-            cmd_task(prev_cke, 1, LOAD_MODE, 1, mode_reg1);
-            cmd_task(prev_cke, 1, LOAD_MODE, 0, mode_reg0 | 'h100); // DLL Reset
-            cmd_task(prev_cke, 0,       NOP, 'bx, 'bx);
+            cmd_task(1,       NOP, 'bx, 'bx);
+            cmd_task(1,        ZQ, 'bx, 'h400); //ZQCL
+            cmd_task(1, LOAD_MODE, 3, mode_reg3);
+            cmd_task(1, LOAD_MODE, 2, mode_reg2);
+            cmd_task(1, LOAD_MODE, 1, mode_reg1);
+            cmd_task(1, LOAD_MODE, 0, mode_reg0 | 'h100); // DLL Reset
+            cmd_task(0,       NOP, 'bx, 'bx);
         end
     endtask
     
@@ -863,7 +776,7 @@ module ddr3 (
             dqs_in_valid       <= 0;
             wdqs_cntr           = 0;
             wdq_cntr            = 0;
-            for (i=0; i<64; i=i+1) begin
+            for (i=0; i<31; i=i+1) begin
                 wdqs_pos_cntr[i]    <= 0;
             end
             b2b_write           <= 0;
@@ -905,8 +818,6 @@ module ddr3 (
             rd_pipeline         = 0;
             odt_pipeline        = 0;
             dyn_odt_pipeline    = 0;
-	    cmd_tran_pipeline   = 0;
-	    cmd_tran_index      = 0;
         end
     endtask
 
@@ -925,13 +836,13 @@ module ddr3 (
         casex ({truebl4, relationship, fromcmd, cmd})
             // load mode
             {1'bx, DIFF_BANK , LOAD_MODE, LOAD_MODE} : begin if (ck_cntr - ck_load_mode < TMRD)                                                                                $display ("%m: at time %t ERROR:  tMRD violation during %s", $time, cmd_string[cmd]);                         end
-            {1'bx, DIFF_BANK , LOAD_MODE, READ     } : begin if (($time - tm_load_mode < TMOD-TJIT_PER) || (ck_cntr - ck_load_mode < TMOD_TCK))                                $display ("%m: at time %t ERROR:  tMOD violation during %s", $time, cmd_string[cmd]);                         end
+            {1'bx, DIFF_BANK , LOAD_MODE, READ     } : begin if (($time - tm_load_mode < TMOD) || (ck_cntr - ck_load_mode < TMOD_TCK))                                         $display ("%m: at time %t ERROR:  tMOD violation during %s", $time, cmd_string[cmd]);                         end
             {1'bx, DIFF_BANK , LOAD_MODE, REFRESH  } ,
             {1'bx, DIFF_BANK , LOAD_MODE, PRECHARGE} ,
             {1'bx, DIFF_BANK , LOAD_MODE, ACTIVATE } ,
             {1'bx, DIFF_BANK , LOAD_MODE, ZQ       } ,
             {1'bx, DIFF_BANK , LOAD_MODE, PWR_DOWN } ,
-            {1'bx, DIFF_BANK , LOAD_MODE, SELF_REF } : begin if (($time - tm_load_mode < TMOD-TJIT_PER) || (ck_cntr - ck_load_mode < TMOD_TCK))                                $display ("%m: at time %t ERROR:  tMOD violation during %s", $time, cmd_string[cmd]);                         end
+            {1'bx, DIFF_BANK , LOAD_MODE, SELF_REF } : begin if (($time - tm_load_mode < TMOD) || (ck_cntr - ck_load_mode < TMOD_TCK))                                         $display ("%m: at time %t ERROR:  tMOD violation during %s", $time, cmd_string[cmd]);                         end
 
             // refresh
             {1'bx, DIFF_BANK , REFRESH  , LOAD_MODE} ,
@@ -943,38 +854,37 @@ module ddr3 (
             {1'bx, DIFF_BANK , REFRESH  , PWR_DOWN } : begin if (ck_cntr - ck_refresh < TREFPDEN)                                                                              $display ("%m: at time %t ERROR:  tREFPDEN violation during %s", $time, cmd_string[cmd]);                     end
 
             // precharge
-            {1'bx, SAME_BANK , PRECHARGE, ACTIVATE } : begin if ($time - tm_bank_precharge[bank] < TRP-TJIT_PER)                                                               $display ("%m: at time %t ERROR:   tRP violation during %s to bank %d", $time, cmd_string[cmd], bank);        end 
+            {1'bx, SAME_BANK , PRECHARGE, ACTIVATE } : begin if ($time - tm_bank_precharge[bank] < TRP)                                                                        $display ("%m: at time %t ERROR:   tRP violation during %s to bank %d", $time, cmd_string[cmd], bank);        end 
             {1'bx, DIFF_BANK , PRECHARGE, LOAD_MODE} ,
             {1'bx, DIFF_BANK , PRECHARGE, REFRESH  } ,
-            {1'bx, DIFF_BANK , PRECHARGE, SELF_REF } : begin if ($time - tm_precharge < TRP-TJIT_PER)                                                                          $display ("%m: at time %t ERROR:   tRP violation during %s", $time, cmd_string[cmd]);                         end
-            {1'bx, DIFF_BANK , PRECHARGE, ZQ       } : 
-	      begin if ($time - tm_precharge < TRP)                                                                                   $display ("%m: at time %t ERROR:   tRP violation during %s", $time, cmd_string[cmd]);                         end
+            {1'bx, DIFF_BANK , PRECHARGE, ZQ       } ,
+            {1'bx, DIFF_BANK , PRECHARGE, SELF_REF } : begin if ($time - tm_precharge < TRP)                                                                                   $display ("%m: at time %t ERROR:   tRP violation during %s", $time, cmd_string[cmd]);                         end
             {1'bx, DIFF_BANK , PRECHARGE, PWR_DOWN } : ; //tPREPDEN = 1 tCK, can be concurrent with auto precharge
 
             // activate
             {1'bx, SAME_BANK , ACTIVATE , PRECHARGE} : begin if ($time - tm_bank_activate[bank] > TRAS_MAX)                                                                    $display ("%m: at time %t ERROR:  tRAS maximum violation during %s to bank %d", $time, cmd_string[cmd], bank);
-                                                             if ($time - tm_bank_activate[bank] < TRAS_MIN-TJIT_PER)                                                           $display ("%m: at time %t ERROR:  tRAS minimum violation during %s to bank %d", $time, cmd_string[cmd], bank);end
-            {1'bx, SAME_BANK , ACTIVATE , ACTIVATE } : begin if ($time - tm_bank_activate[bank] < TRC-TJIT_PER)                                                                $display ("%m: at time %t ERROR:   tRC violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
+                                                             if ($time - tm_bank_activate[bank] < TRAS_MIN)                                                                    $display ("%m: at time %t ERROR:  tRAS minimum violation during %s to bank %d", $time, cmd_string[cmd], bank);end
+            {1'bx, SAME_BANK , ACTIVATE , ACTIVATE } : begin if ($time - tm_bank_activate[bank] < TRC)                                                                         $display ("%m: at time %t ERROR:   tRC violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'bx, SAME_BANK , ACTIVATE , WRITE    } ,
             {1'bx, SAME_BANK , ACTIVATE , READ     } : ; // tRCD is checked outside this task
             {1'b0, DIFF_BANK , ACTIVATE , ACTIVATE } : begin if (($time - tm_activate < TRRD) || (ck_cntr - ck_activate < TRRD_TCK))                                           $display ("%m: at time %t ERROR:  tRRD violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b1, DIFF_BANK , ACTIVATE , ACTIVATE } : begin if (($time - tm_group_activate[bank[1]] < TRRD) || (ck_cntr - ck_group_activate[bank[1]] < TRRD_TCK))             $display ("%m: at time %t ERROR:  tRRD violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b1, DIFF_GROUP, ACTIVATE , ACTIVATE } : begin if (($time - tm_activate < TRRD_DG) || (ck_cntr - ck_activate < TRRD_DG_TCK))                                     $display ("%m: at time %t ERROR:  tRRD_DG violation during %s to bank %d", $time, cmd_string[cmd], bank);     end
-            {1'bx, DIFF_BANK , ACTIVATE , REFRESH  } : begin if ($time - tm_activate < TRC-TJIT_PER)                                                                           $display ("%m: at time %t ERROR:   tRC violation during %s", $time, cmd_string[cmd]);                         end
+            {1'bx, DIFF_BANK , ACTIVATE , REFRESH  } : begin if ($time - tm_activate < TRC)                                                                                    $display ("%m: at time %t ERROR:   tRC violation during %s", $time, cmd_string[cmd]);                         end
             {1'bx, DIFF_BANK , ACTIVATE , PWR_DOWN } : begin if (ck_cntr - ck_activate < TACTPDEN)                                                                             $display ("%m: at time %t ERROR:  tACTPDEN violation during %s", $time, cmd_string[cmd]);                     end
 
             // write
-            {1'bx, SAME_BANK , WRITE    , PRECHARGE} : begin if (($time - tm_bank_write_end[bank] < TWR-TJIT_PER) || (ck_cntr - ck_bank_write[bank] <= write_latency + burst_length/2)) $display ("%m: at time %t ERROR:   tWR violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
+            {1'bx, SAME_BANK , WRITE    , PRECHARGE} : begin if (($time - tm_bank_write_end[bank] < TWR) || (ck_cntr - ck_bank_write[bank] <= write_latency + burst_length/2)) $display ("%m: at time %t ERROR:   tWR violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b0, DIFF_BANK , WRITE    , WRITE    } : begin if (ck_cntr - ck_write < TCCD)                                                                                    $display ("%m: at time %t ERROR:  tCCD violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b1, DIFF_BANK , WRITE    , WRITE    } : begin if (ck_cntr - ck_group_write[bank[1]] < TCCD)                                                                     $display ("%m: at time %t ERROR:  tCCD violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b0, DIFF_BANK , WRITE    , READ     } : begin if (ck_cntr - ck_write < write_latency + burst_length/2 + TWTR_TCK - additive_latency)                            $display ("%m: at time %t ERROR:  tWTR violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b1, DIFF_BANK , WRITE    , READ     } : begin if (ck_cntr - ck_group_write[bank[1]] < write_latency + burst_length/2 + TWTR_TCK - additive_latency)             $display ("%m: at time %t ERROR:  tWTR violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b1, DIFF_GROUP, WRITE    , WRITE    } : begin if (ck_cntr - ck_write < TCCD_DG)                                                                                 $display ("%m: at time %t ERROR:  tCCD_DG violation during %s to bank %d", $time, cmd_string[cmd], bank);     end
             {1'b1, DIFF_GROUP, WRITE    , READ     } : begin if (ck_cntr - ck_write < write_latency + burst_length/2 + TWTR_DG_TCK - additive_latency)                         $display ("%m: at time %t ERROR:  tWTR_DG violation during %s to bank %d", $time, cmd_string[cmd], bank);     end
-            {1'bx, DIFF_BANK , WRITE    , PWR_DOWN } : begin if (($time - tm_write_end < TWR-TJIT_PER) || (ck_cntr - ck_write < write_latency + burst_length/2))               $display ("%m: at time %t ERROR:  tWRPDEN violation during %s", $time, cmd_string[cmd]);                      end
+            {1'bx, DIFF_BANK , WRITE    , PWR_DOWN } : begin if (($time - tm_write_end < TWR) || (ck_cntr - ck_write < write_latency + burst_length/2))                        $display ("%m: at time %t ERROR:  tWRPDEN violation during %s", $time, cmd_string[cmd]);                      end
 
             // read
-            {1'bx, SAME_BANK , READ     , PRECHARGE} : begin if (($time - tm_bank_read_end[bank] < TRTP-TJIT_PER) || (ck_cntr - ck_bank_read[bank] < additive_latency + TRTP_TCK)) $display ("%m: at time %t ERROR:  tRTP violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
+            {1'bx, SAME_BANK , READ     , PRECHARGE} : begin if (($time - tm_bank_read_end[bank] < TRTP) || (ck_cntr - ck_bank_read[bank] < additive_latency + TRTP_TCK))      $display ("%m: at time %t ERROR:  tRTP violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
             {1'b0, DIFF_BANK , READ     , WRITE    } : ; // tRTW is checked outside this task
             {1'b1, DIFF_BANK , READ     , WRITE    } : ; // tRTW is checked outside this task
             {1'b0, DIFF_BANK , READ     , READ     } : begin if (ck_cntr - ck_read < TCCD)                                                                                     $display ("%m: at time %t ERROR:  tCCD violation during %s to bank %d", $time, cmd_string[cmd], bank);        end
@@ -1025,7 +935,6 @@ module ddr3 (
     endtask
 
     task cmd_task;
-        inout prev_cke;
         input cke;
         input [2:0] cmd;
         input [BA_BITS-1:0] bank;
@@ -1057,7 +966,7 @@ module ddr3 (
                     LOAD_MODE : begin
                         if (|odt_pipeline)
                             $display ("%m: at time %t ERROR: ODTL violation during %s", $time, cmd_string[cmd]);
-                        if (odt_state && !feature_odt_hi)
+                        if (odt_state)
                             $display ("%m: at time %t ERROR: ODT must be off prior to %s", $time, cmd_string[cmd]);
 
                         if (|active_bank) begin
@@ -1079,11 +988,18 @@ module ddr3 (
                                     end else if (addr[1:0] == 2'b01) begin
                                         burst_length = 8;
                                         blotf = 1;
+                                        truebl4 = 0;
                                         if (DEBUG) $display ("%m: at time %t INFO: %s %d Burst Length = Select via A12", $time, cmd_string[cmd], bank);
                                     end else if (addr[1:0] == 2'b10) begin
                                         burst_length = 4;
                                         blotf = 0;
+                                        truebl4 = 0;
                                         if (DEBUG) $display ("%m: at time %t INFO: %s %d Burst Length = Fixed %d (chop)", $time, cmd_string[cmd], bank, burst_length);
+                                    end else if (feature_truebl4 && (addr[1:0] == 2'b11)) begin
+                                        burst_length = 4;
+                                        blotf = 0;
+                                        truebl4 = 1;
+                                        if (DEBUG) $display ("%m: at time %t INFO: %s %d Burst Length = True %d", $time, cmd_string[cmd], bank, burst_length);
                                     end else begin
                                         $display ("%m: at time %t ERROR: %s %d Illegal Burst Length = %d", $time, cmd_string[cmd], bank, addr[1:0]);
                                     end
@@ -1154,7 +1070,7 @@ module ddr3 (
                                     dll_en = !addr[0];
                                     if (!dll_en) begin
                                         if (DEBUG) $display ("%m: at time %t INFO: %s %d DLL Enable = Disabled", $time, cmd_string[cmd], bank);
-                                        if (check_strict_mrbits) $display ("%m: at time %t WARNING: %s %d DLL off mode is not fully modeled", $time, cmd_string[cmd], bank);
+                                        if (check_strict_mrbits) $display ("%m: at time %t WARNING: %s %d DLL off mode is not modeled", $time, cmd_string[cmd], bank);
                                     end else if (dll_en) begin
                                         if (DEBUG) $display ("%m: at time %t INFO: %s %d DLL Enable = Enabled", $time, cmd_string[cmd], bank);
                                     end else begin
@@ -1326,14 +1242,6 @@ module ddr3 (
                                     end else begin
                                         $display ("%m: at time %t ERROR: %s %d Illegal MultiPurpose Register Enable = %d", $time, cmd_string[cmd], bank, mpr_en);
                                     end 
-
-                                    if (feature_truebl4 && (addr[11] == 1'b1)) begin
-                                     if (addr[11] == 1'b1) begin
-                                        truebl4 = 1;
-                                        $display(" EMRS3 Set True Bl4 mode only ");
-                                     end
-                                    end
-
                                     // Reserved
                                     if (ADDR_BITS>13 && addr[13:3] !== 0 && check_strict_mrbits) begin
                                         $display ("%m: at time %t ERROR: %s %d Illegal value.  Reserved address bits must be programmed to zero", $time, cmd_string[cmd], bank);
@@ -1344,9 +1252,6 @@ module ddr3 (
                                 $display ("%m: at time %t ERROR: Dynamic ODT is not available during Write Leveling mode.", $time);
                             init_mode_reg[bank] = 1;
                             mode_reg[bank] = addr;
-			    // dll_reset bit self clear
-			    if(bank==0 && addr[8]==1'b1)
-			      mode_reg[0][8] <= #($rtoi(tck_avg)) 1'b0;
                             tm_load_mode <= $time;
                             ck_load_mode <= ck_cntr;
                         end
@@ -1402,9 +1307,6 @@ module ddr3 (
                                     end
                                 end
                             end
-                        end // if (|active_bank)
-                        else begin
-                            chk_err(DIFF_BANK, 0, REFRESH, PRECHARGE);
                         end
                     end
                     ACTIVATE : begin
@@ -1469,7 +1371,7 @@ module ddr3 (
                         end else if (auto_precharge_bank[bank]) begin
                             $display ("%m: at time %t ERROR: %s Failure.  Auto Precharge is scheduled to bank %d.", $time, cmd_string[cmd], bank);
                             if (STOP_ON_ERROR) $stop(0);
-                        end else if ((ck_cntr - ck_write < burst_length/2) && (truebl4 == 0)) begin
+                        end else if (ck_cntr - ck_write < burst_length/2) begin
                             $display ("%m: at time %t ERROR: %s Failure.  Illegal burst interruption.", $time, cmd_string[cmd]);
                             if (STOP_ON_ERROR) $stop(0);
                         end else begin
@@ -1477,11 +1379,7 @@ module ddr3 (
                                 auto_precharge_bank[bank] = 1'b1;
                                 write_precharge_bank[bank] = 1'b1;
                             end
-`ifdef CA14PLUS
-                            col = {addr[COL_BITS-1:BC+1], addr[BC-1:AP+1], addr[AP-1:0]}; // assume BC > AP
-`else
                             col = {addr[BC-1:AP+1], addr[AP-1:0]}; // assume BC > AP
-`endif
                             if (col >= 1<<COL_BITS) begin
                                 $display ("%m: at time %t WARNING: col = %h does not exist.  Maximum col = %h", $time, col, (1<<COL_BITS)-1);
                             end
@@ -1506,7 +1404,7 @@ module ddr3 (
                                     ck_odth8 <= ck_cntr;
                                 end
                             end
-                            for (j=0; j<(bl_pipeline[2*write_latency + 1] + 4); j=j+1) begin
+                            for (j=0; j<(burst_length + 4); j=j+1) begin
                                 dyn_odt_pipeline[2*(write_latency - 2) + j] = 1'b1; // ODTLcnw = WL - 2, ODTLcwn = BL/2 + 2
                             end
                             ck_bank_write[bank] <= ck_cntr;
@@ -1529,7 +1427,7 @@ module ddr3 (
                         end else if (auto_precharge_bank[bank]) begin
                             $display ("%m: at time %t ERROR: %s Failure.  Auto Precharge is scheduled to bank %d.", $time, cmd_string[cmd], bank);
                             if (STOP_ON_ERROR) $stop(0);
-                        end else if ((ck_cntr - ck_read < burst_length/2) && (truebl4 == 0)) begin
+                        end else if (ck_cntr - ck_read < burst_length/2) begin
                             $display ("%m: at time %t ERROR: %s Failure.  Illegal burst interruption.", $time, cmd_string[cmd]);
                             if (STOP_ON_ERROR) $stop(0);
                         end else begin
@@ -1537,11 +1435,7 @@ module ddr3 (
                                 auto_precharge_bank[bank] = 1'b1;
                                 read_precharge_bank[bank] = 1'b1;
                             end
-`ifdef CA14PLUS
-                            col = {addr[COL_BITS-1:BC+1], addr[BC-1:AP+1], addr[AP-1:0]}; // assume BC > AP
-`else
                             col = {addr[BC-1:AP+1], addr[AP-1:0]}; // assume BC > AP
-`endif
                             if (col >= 1<<COL_BITS) begin
                                 $display ("%m: at time %t WARNING: col = %h does not exist.  Maximum col = %h", $time, col, (1<<COL_BITS)-1);
                             end
@@ -1634,9 +1528,7 @@ module ddr3 (
                             ck_txpr <= ck_cntr;
                             init_step = init_step + 1;
                         end
-                        1 : begin 
-                           if (dll_en) init_step = init_step + 1;
-                        end
+                        1 : if (dll_en) init_step = init_step + 1;
                         2 : begin
                             if (&init_mode_reg && init_dll_reset && zq_set) begin
                                 if (DEBUG) $display ("%m: at time %t INFO: Initialization Sequence is complete", $time);
@@ -1737,22 +1629,22 @@ module ddr3 (
         begin
 
             if (diff_ck) begin
-                for (i=0; i<64; i=i+1) begin
+                for (i=0; i<32; i=i+1) begin
                     if (dq_in_valid && dll_locked && ($time - tm_dqs_neg[i] < $rtoi(TDSS*tck_avg)))
-                        $display ("%m: at time %t ERROR: tDSS violation on %s bit %d", $time, dqs_string[i/32], i%32);
+                        $display ("%m: at time %t ERROR: tDSS violation on %s bit %d", $time, dqs_string[i/16], i%16);
                     if (check_write_dqs_high[i])
-                        $display ("%m: at time %t ERROR: %s bit %d latching edge required during the preceding clock period.", $time, dqs_string[i/32], i%32);
+                        $display ("%m: at time %t ERROR: %s bit %d latching edge required during the preceding clock period.", $time, dqs_string[i/16], i%16);
                 end
                 check_write_dqs_high <= 0;
             end else begin
-                for (i=0; i<64; i=i+1) begin
+                for (i=0; i<32; i=i+1) begin
                     if (dll_locked && dq_in_valid) begin
                         tm_tdqss = abs_value(1.0*tm_ck_pos - tm_dqss_pos[i]);
                         if ((tm_tdqss < tck_avg/2.0) && (tm_tdqss > TDQSS*tck_avg))
-                            $display ("%m: at time %t ERROR: tDQSS violation on %s bit %d", $time, dqs_string[i/32], i%32); 
+                            $display ("%m: at time %t ERROR: tDQSS violation on %s bit %d", $time, dqs_string[i/16], i%16); 
                     end
                     if (check_write_dqs_low[i])
-                        $display ("%m: at time %t ERROR: %s bit %d latching edge required during the preceding clock period", $time, dqs_string[i/32], i%32);
+                        $display ("%m: at time %t ERROR: %s bit %d latching edge required during the preceding clock period", $time, dqs_string[i/16], i%16);
                 end
                 check_write_preamble <= 0;
                 check_write_postamble <= 0;
@@ -1782,17 +1674,17 @@ module ddr3 (
             end
             // write dqs
             if ((wr_pipeline[2]) && (wdq_cntr == 0)) begin //write preamble
-                check_write_preamble <= ({DQS_BITS{1'b1}}<<32) | {DQS_BITS{1'b1}};
+                check_write_preamble <= ({DQS_BITS{1'b1}}<<16) | {DQS_BITS{1'b1}};
             end
             if (wdqs_cntr > 1) begin  // write data
                 if ((wdqs_cntr - WDQS_PST)%2) begin
-                    check_write_dqs_high <= ({DQS_BITS{1'b1}}<<32) | {DQS_BITS{1'b1}};
+                    check_write_dqs_high <= ({DQS_BITS{1'b1}}<<16) | {DQS_BITS{1'b1}};
                 end else begin
-                    check_write_dqs_low <= ({DQS_BITS{1'b1}}<<32) | {DQS_BITS{1'b1}};
+                    check_write_dqs_low <= ({DQS_BITS{1'b1}}<<16) | {DQS_BITS{1'b1}};
                 end
             end
             if (wdqs_cntr == WDQS_PST) begin // write postamble
-                check_write_postamble <= ({DQS_BITS{1'b1}}<<32) | {DQS_BITS{1'b1}};
+                check_write_postamble <= ({DQS_BITS{1'b1}}<<16) | {DQS_BITS{1'b1}};
             end 
             if (wdqs_cntr > 0) begin
                 wdqs_cntr = wdqs_cntr - 1;
@@ -1827,7 +1719,7 @@ module ddr3 (
             end else begin
                 dq_in_valid = 1'b0;
                 dqs_in_valid <= 1'b0;
-                for (i=0; i<63; i=i+1) begin
+                for (i=0; i<31; i=i+1) begin
                     wdqs_pos_cntr[i]    <= 0;
                 end
             end
@@ -1960,16 +1852,7 @@ module ddr3 (
                     end
                 end
             end else begin
-                if (dll_en)
-                  if(diff_ck)
-               	    out_delay = ($rtoi(tch_avg) > 50000) ? 0 : $rtoi(tch_avg);
-                  else
-               	    out_delay = ($rtoi(tcl_avg) > 50000) ? 0 : $rtoi(tcl_avg);
-                else
-                  if(diff_ck)
-               	    out_delay = ($rtoi(tch_avg) > 50000) ? 0 : $rtoi(tch_avg) + TDQSCK_DLLDIS;
-                  else
-               	    out_delay = ($rtoi(tcl_avg) > 50000) ? 0 : $rtoi(tcl_avg) + TDQSCK_DLLDIS;
+                out_delay = tck_avg/2;
                 dqs_out_en_dly <= #(out_delay) {DQS_BITS{dqs_out_en}};
                 dqs_out_dly    <= #(out_delay) {DQS_BITS{dqs_out   }};
                 if (write_levelization !== 1'b1) begin
@@ -2043,14 +1926,8 @@ module ddr3 (
                     if ($time - tm_cke < TIS) 
                         $display ("%m: at time %t ERROR:   tIS violation on CKE by %t", $time, tm_cke + TIS - $time);
                     if (cke_in) begin
-                        for (i=0; i<3; i=i+1) begin
+                        for (i=0; i<22; i=i+1) begin
                             if ($time - tm_cmd_addr[i] < TIS) 
-                                $display ("%m: at time %t ERROR:   tIS violation on %s by %t", $time, cmd_addr_string[i], tm_cmd_addr[i] + TIS - $time);
-                        end
-                    end
-                    if (cke_in & !(cs_n_in | (ras_n_in & cas_n_in & we_n_in))) begin // Bank and Address are don't care when DES or NOP
-                        for (i=4; i<23; i=i+1) begin
-                            if ($time - tm_cmd_addr[i] < TIS)
                                 $display ("%m: at time %t ERROR:   tIS violation on %s by %t", $time, cmd_addr_string[i], tm_cmd_addr[i] + TIS - $time);
                         end
                     end
@@ -2062,6 +1939,8 @@ module ddr3 (
                         mr_chk = 1;
                     end else if (init_mode_reg[0] && (mr_chk == 1)) begin
                         // check CL value against the clock frequency
+                        if (cas_latency*tck_avg < CL_TIME && check_strict_timing)
+                            $display ("%m: at time %t ERROR: CAS Latency = %d is illegal @tCK(avg) = %f", $time, cas_latency, tck_avg);
                         // check WR value against the clock frequency
                         if (ceil(write_recovery*tck_avg) < TWR)
                             $display ("%m: at time %t ERROR: Write Recovery = %d is illegal @tCK(avg) = %f", $time, write_recovery, tck_avg);
@@ -2072,8 +1951,8 @@ module ddr3 (
                                 6 : if ((tck_avg < 1875.0) || (tck_avg >= 2500.0)) $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
                                 7 : if ((tck_avg < 1500.0) || (tck_avg >= 1875.0)) $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
                                 8 : if ((tck_avg < 1250.0) || (tck_avg >= 1500.0)) $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
-                                9 : if ((tck_avg < 1071.0) || (tck_avg >= 1250.0)) $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
-                                10: if ((tck_avg < 937.5) || (tck_avg >= 1071.0)) $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
+                                9 : if ((tck_avg < 15e3/14) || (tck_avg >= 1250.0)) $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
+                                10: if ((tck_avg < 937.5) || (tck_avg >= 15e3/14)) $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
                                 default :                                          $display ("%m: at time %t ERROR: CWL = %d is illegal @tCK(avg) = %f", $time, cas_write_latency, tck_avg);
                             endcase
                             // check the CL value against the clock frequency
@@ -2136,19 +2015,17 @@ module ddr3 (
                     end
                 end
 
-	       
                 // respond to incoming command
                 if (cke_in ^ prev_cke) begin
                     tm_cke_cmd <= $time;
                     ck_cke_cmd <= ck_cntr;
                 end
 
-
-                cmd_task(prev_cke, cke_in, cmd_n_in, ba_in, addr_in);								       
-                if ((cmd_n_in == WRITE) || (cmd_n_in == READ)) begin								       
-                    al_pipeline[2*additive_latency] = 1'b1;									       
-                end														       
-                if (al_pipeline[0]) begin                                          
+                cmd_task(cke_in, cmd_n_in, ba_in, addr_in);
+                if ((cmd_n_in == WRITE) || (cmd_n_in == READ)) begin
+                    al_pipeline[2*additive_latency] = 1'b1;
+                end
+                if (al_pipeline[0]) begin
                     // check tRCD after additive latency
                     if ((rd_pipeline[2*cas_latency - 1]) && ($time - tm_bank_activate[ba_pipeline[2*cas_latency - 1]] < TRCD))
                         $display ("%m: at time %t ERROR:  tRCD violation during %s", $time, cmd_string[READ]);
@@ -2185,9 +2062,9 @@ module ddr3 (
                 if (!in_self_refresh && tm_ck_pos ) begin
                     tjit_cc_time = $time - tm_ck_pos - tck_i;
                     tck_i   = $time - tm_ck_pos;
-                    tck_avg = tck_avg - tck_sample[ck_cntr%PERTCKAVG]/$itor(PERTCKAVG);
-                    tck_avg = tck_avg + tck_i/$itor(PERTCKAVG);
-                    tck_sample[ck_cntr%PERTCKAVG] = tck_i;
+                    tck_avg = tck_avg - tck_sample[ck_cntr%TDLLK]/$itor(TDLLK);
+                    tck_avg = tck_avg + tck_i/$itor(TDLLK);
+                    tck_sample[ck_cntr%TDLLK] = tck_i;
                     tjit_per_rtime = tck_i - tck_avg;
 
                     if (dll_locked && check_strict_timing) begin
@@ -2232,11 +2109,11 @@ module ddr3 (
                     end
 
                     // calculate the tch avg jitter
-                    tch_avg = tch_avg - tch_sample[ck_cntr%PERTCKAVG]/$itor(PERTCKAVG);
-                    tch_avg = tch_avg + tch_i/$itor(PERTCKAVG);
-                    tch_sample[ck_cntr%PERTCKAVG] = tch_i;
+                    tch_avg = tch_avg - tch_sample[ck_cntr%TDLLK]/$itor(TDLLK);
+                    tch_avg = tch_avg + tch_i/$itor(TDLLK);
+                    tch_sample[ck_cntr%TDLLK] = tch_i;
                     tjit_ch_rtime = tch_i - tch_avg;
-                    duty_cycle = $rtoi(tch_avg*100/tck_avg);
+                    duty_cycle = tch_avg/tck_avg;
 
                     // update timers/counters
                     tcl_i <= $time - tm_ck_neg;
@@ -2259,9 +2136,9 @@ module ddr3 (
                     end
 				   
                     // calculate the tcl avg jitter
-                    tcl_avg = tcl_avg - tcl_sample[ck_cntr%PERTCKAVG]/$itor(PERTCKAVG);
-                    tcl_avg = tcl_avg + tcl_i/$itor(PERTCKAVG);
-                    tcl_sample[ck_cntr%PERTCKAVG] = tcl_i;
+                    tcl_avg = tcl_avg - tcl_sample[ck_cntr%TDLLK]/$itor(TDLLK);
+                    tcl_avg = tcl_avg + tcl_i/$itor(TDLLK);
+                    tcl_sample[ck_cntr%TDLLK] = tcl_i;
 
                     // update timers/counters
                     tch_i <= $time - tm_ck_pos;
@@ -2334,12 +2211,12 @@ module ddr3 (
                     odt_cntr = 1 + RDQSEN_PRE + bl_pipeline[RDQSEN_PRE] + RDQSEN_PST - 1;
                 end
                 if (odt_cntr > 0) begin
-                    if ((get_rtt_nom(odt_rtt_nom) > 0) && odt_state) begin
+                    if (odt_state) begin
                         $display ("%m: at time %t ERROR: On Die Termination must be OFF during Read data transfer.", $time);
                     end
                     odt_cntr = odt_cntr - 1;
                 end
-                if (dyn_odt_en && ( odt_state || feature_odt_hi) ) begin
+                if (dyn_odt_en && odt_state) begin
                     if (DEBUG && (dyn_odt_state ^ dyn_odt_pipeline[0]))
                         $display ("%m: at time %t INFO: Sync On Die Termination Rtt_WR = %d Ohm", $time, {32{dyn_odt_pipeline[0]}} & get_rtt_wr(odt_rtt_wr));
                     dyn_odt_state = dyn_odt_pipeline[0];
@@ -2375,8 +2252,8 @@ module ddr3 (
 
     // receiver(s)
     task dqs_even_receiver;
-        input [4:0] i;
-        reg [127:0] bit_mask;
+        input [3:0] i;
+        reg [63:0] bit_mask;
         begin
             bit_mask = {`DQ_PER_DQS{1'b1}}<<(i*`DQ_PER_DQS);
             if (dqs_even[i]) begin
@@ -2408,8 +2285,8 @@ module ddr3 (
     always @(posedge dqs_even[15]) dqs_even_receiver(15);
 
     task dqs_odd_receiver;
-        input [4:0] i;
-        reg [127:0] bit_mask;
+        input [3:0] i;
+        reg [63:0] bit_mask;
         begin
             bit_mask = {`DQ_PER_DQS{1'b1}}<<(i*`DQ_PER_DQS);
             if (dqs_odd[i]) begin
@@ -2478,9 +2355,7 @@ module ddr3 (
                 $display ("%m: at time %t ERROR:  tIH violation on %s by %t", $time, cmd_addr_string[i], tm_ck_pos + TIH - $time);
             if ((i > 0) && (cs_n_in == 0) &&($time - tm_ck_pos < TIH)) // Only check tIH for cmd_addr if CS# is low
                 $display ("%m: at time %t ERROR:  tIH violation on %s by %t", $time, cmd_addr_string[i], tm_ck_pos + TIH - $time);
-            if ((i == 0) && ($time - tm_cmd_addr[i] < TIPW))           // always check tIPW for CS#
-                $display ("%m: at time %t ERROR: tIPW violation on %s by %t", $time, cmd_addr_string[i], tm_cmd_addr[i] + TIPW - $time);
-            if ((i > 0) && (cs_n_in == 0) && ($time - tm_cmd_addr[i] < TIPW))
+            if ($time - tm_cmd_addr[i] < TIPW)
                 $display ("%m: at time %t ERROR: tIPW violation on %s by %t", $time, cmd_addr_string[i], tm_cmd_addr[i] + TIPW - $time);
         end
         tm_cmd_addr[i] = $time;
@@ -2510,12 +2385,11 @@ module ddr3 (
     always @(addr_in[13]) cmd_addr_timing_check(20);
     always @(addr_in[14]) cmd_addr_timing_check(21);
     always @(addr_in[15]) cmd_addr_timing_check(22);
-    always @(addr_in[16]) cmd_addr_timing_check(23);
 
     // Processes to check setup and hold of data signals
     task dm_timing_check;
     input i;
-    reg [4:0] i;
+    reg [3:0] i;
     begin
         if (dqs_in_valid) begin
             if ($time - tm_dqs[i] < TDH) 
@@ -2547,29 +2421,12 @@ module ddr3 (
     always @(dm_in[14]) dm_timing_check(14);
     always @(dm_in[15]) dm_timing_check(15);
 
-    always @(dm_in[16]) dm_timing_check(16);
-    always @(dm_in[17]) dm_timing_check(17);
-    always @(dm_in[18]) dm_timing_check(18);
-    always @(dm_in[19]) dm_timing_check(19);
-    always @(dm_in[20]) dm_timing_check(20);
-    always @(dm_in[21]) dm_timing_check(21);
-    always @(dm_in[22]) dm_timing_check(22);
-    always @(dm_in[23]) dm_timing_check(23);
-    always @(dm_in[24]) dm_timing_check(24);
-    always @(dm_in[25]) dm_timing_check(25);
-    always @(dm_in[26]) dm_timing_check(26);
-    always @(dm_in[27]) dm_timing_check(27);
-    always @(dm_in[28]) dm_timing_check(28);
-    always @(dm_in[29]) dm_timing_check(29);
-    always @(dm_in[30]) dm_timing_check(30);
-    always @(dm_in[31]) dm_timing_check(31);
-
     task dq_timing_check;
     input i;
-    reg [6:0] i;
+    reg [5:0] i;
     begin
         if (dqs_in_valid) begin
-            if ($time - tm_dqs[i/(`DQ_PER_DQS)] < TDH) 
+            if ($time - tm_dqs[i/`DQ_PER_DQS] < TDH) 
                 $display ("%m: at time %t ERROR:   tDH violation on DQ bit %d by %t", $time, i, tm_dqs[i/`DQ_PER_DQS] + TDH - $time);
             if (check_dq_tdipw[i]) begin
                 if ($time - tm_dq[i] < TDIPW)
@@ -2646,77 +2503,12 @@ module ddr3 (
     always @(dq_in[62]) dq_timing_check(62);
     always @(dq_in[63]) dq_timing_check(63);
 
-    always @(dq_in[64]) dq_timing_check(64);
-    always @(dq_in[65]) dq_timing_check(65);
-    always @(dq_in[66]) dq_timing_check(66);
-    always @(dq_in[67]) dq_timing_check(67);
-    always @(dq_in[68]) dq_timing_check(68);
-    always @(dq_in[69]) dq_timing_check(69);
-    always @(dq_in[70]) dq_timing_check(70);
-    always @(dq_in[71]) dq_timing_check(71);
-    always @(dq_in[72]) dq_timing_check(72);
-    always @(dq_in[73]) dq_timing_check(73);
-    always @(dq_in[74]) dq_timing_check(74);
-    always @(dq_in[75]) dq_timing_check(75);
-    always @(dq_in[76]) dq_timing_check(76);
-    always @(dq_in[77]) dq_timing_check(77);
-    always @(dq_in[78]) dq_timing_check(78);
-    always @(dq_in[79]) dq_timing_check(79);
-    always @(dq_in[80]) dq_timing_check(80);
-    always @(dq_in[81]) dq_timing_check(81);
-    always @(dq_in[82]) dq_timing_check(82);
-    always @(dq_in[83]) dq_timing_check(83);
-    always @(dq_in[84]) dq_timing_check(84);
-    always @(dq_in[85]) dq_timing_check(85);
-    always @(dq_in[86]) dq_timing_check(86);
-    always @(dq_in[87]) dq_timing_check(87);
-    always @(dq_in[88]) dq_timing_check(88);
-    always @(dq_in[89]) dq_timing_check(89);
-    always @(dq_in[90]) dq_timing_check(90);
-    always @(dq_in[91]) dq_timing_check(91);
-    always @(dq_in[92]) dq_timing_check(92);
-    always @(dq_in[93]) dq_timing_check(93);
-    always @(dq_in[94]) dq_timing_check(94);
-    always @(dq_in[95]) dq_timing_check(95);
-    always @(dq_in[96]) dq_timing_check(96);
-    always @(dq_in[97]) dq_timing_check(97);
-    always @(dq_in[98]) dq_timing_check(98);
-    always @(dq_in[99]) dq_timing_check(99);
-    always @(dq_in[100]) dq_timing_check(100);
-    always @(dq_in[101]) dq_timing_check(101);
-    always @(dq_in[102]) dq_timing_check(102);
-    always @(dq_in[103]) dq_timing_check(103);
-    always @(dq_in[104]) dq_timing_check(104);
-    always @(dq_in[105]) dq_timing_check(105);
-    always @(dq_in[106]) dq_timing_check(106);
-    always @(dq_in[107]) dq_timing_check(107);
-    always @(dq_in[108]) dq_timing_check(108);
-    always @(dq_in[109]) dq_timing_check(109);
-    always @(dq_in[110]) dq_timing_check(110);
-    always @(dq_in[111]) dq_timing_check(111);
-    always @(dq_in[112]) dq_timing_check(112);
-    always @(dq_in[113]) dq_timing_check(113);
-    always @(dq_in[114]) dq_timing_check(114);
-    always @(dq_in[115]) dq_timing_check(115);
-    always @(dq_in[116]) dq_timing_check(116);
-    always @(dq_in[117]) dq_timing_check(117);
-    always @(dq_in[118]) dq_timing_check(118);
-    always @(dq_in[119]) dq_timing_check(119);
-    always @(dq_in[120]) dq_timing_check(120);
-    always @(dq_in[121]) dq_timing_check(121);
-    always @(dq_in[122]) dq_timing_check(122);
-    always @(dq_in[123]) dq_timing_check(123);
-    always @(dq_in[124]) dq_timing_check(124);
-    always @(dq_in[125]) dq_timing_check(125);
-    always @(dq_in[126]) dq_timing_check(126);
-    always @(dq_in[127]) dq_timing_check(127);
-   
     task dqs_pos_timing_check;
     input i;
-    reg [5:0] i;
-    reg [4:0] j;
+    reg [4:0] i;
+    reg [3:0] j;
     begin
-        if (write_levelization && i<32) begin
+        if (write_levelization && i<16) begin
             if (ck_cntr - ck_load_mode < TWLMRD) 
                 $display ("%m: at time %t ERROR: tWLMRD violation on DQS bit %d positive edge.", $time, i);
             if (($time - tm_ck_pos < TWLS) || ($time - tm_ck_neg < TWLS))
@@ -2725,39 +2517,32 @@ module ddr3 (
                 $display ("%m: at time %t Write Leveling @ DQS ck = %b", $time, diff_ck);
             dq_out_en_dly[i*`DQ_PER_DQS] <= #(TWLO) 1'b1;
             dq_out_dly[i*`DQ_PER_DQS] <= #(TWLO) diff_ck;
-`ifdef WL_ALLDQ
-            for (j=1; j<`DQ_PER_DQS; j=j+1) begin
-                dq_out_en_dly[i*`DQ_PER_DQS+j] <= #(TWLO) 1'b1;
-                dq_out_dly[i*`DQ_PER_DQS+j] <= #(TWLO) diff_ck;
-            end
-`else
             for (j=1; j<`DQ_PER_DQS; j=j+1) begin
                 dq_out_en_dly[i*`DQ_PER_DQS+j] <= #(TWLO + TWLOE) 1'b1;
                 dq_out_dly[i*`DQ_PER_DQS+j] <= #(TWLO + TWLOE) 1'b0;
             end
-`endif
         end
         if (dqs_in_valid && ((wdqs_pos_cntr[i] < wr_burst_length/2) || b2b_write)) begin
             if (dqs_in[i] ^ prev_dqs_in[i]) begin
                 if (dll_locked) begin
                     if (check_write_preamble[i]) begin
                         if ($time - tm_dqs_pos[i] < $rtoi(TWPRE*tck_avg))
-                            $display ("%m: at time %t ERROR: tWPRE violation on %s bit %d", $time, dqs_string[i/32], i%32);
+                            $display ("%m: at time %t ERROR: tWPRE violation on &s bit %d", $time, dqs_string[i/16], i%16);
                     end else if (check_write_postamble[i]) begin
                         if ($time - tm_dqs_neg[i] < $rtoi(TWPST*tck_avg))
-                            $display ("%m: at time %t ERROR: tWPST violation on %s bit %d", $time, dqs_string[i/32], i%32);
+                            $display ("%m: at time %t ERROR: tWPST violation on %s bit %d", $time, dqs_string[i/16], i%16);
                     end else begin
                         if ($time - tm_dqs_neg[i] < $rtoi(TDQSL*tck_avg))
-                            $display ("%m: at time %t ERROR: tDQSL violation on %s bit %d", $time, dqs_string[i/32], i%32);
+                            $display ("%m: at time %t ERROR: tDQSL violation on %s bit %d", $time, dqs_string[i/16], i%16);
                     end
                 end
-                if ($time - tm_dm[i%32] < TDS) 
-                    $display ("%m: at time %t ERROR: tDS violation on DM bit %d by %t", $time, i,  tm_dm[i%32] + TDS - $time);
+                if ($time - tm_dm[i%16] < TDS) 
+                    $display ("%m: at time %t ERROR: tDS violation on DM bit %d by %t", $time, i,  tm_dm[i%16] + TDS - $time);
                 if (!dq_out_en) begin
                     for (j=0; j<`DQ_PER_DQS; j=j+1) begin
-                        if ($time - tm_dq[(i%32)*`DQ_PER_DQS+j] < TDS) 
-                            $display ("%m: at time %t ERROR: tDS violation on DQ bit %d by %t", $time, i*`DQ_PER_DQS+j, tm_dq[(i%32)*`DQ_PER_DQS+j] + TDS - $time);
-                        check_dq_tdipw[(i%32)*`DQ_PER_DQS+j] <= 1'b1;
+                        if ($time - tm_dq[(i%16)*`DQ_PER_DQS+j] < TDS) 
+                            $display ("%m: at time %t ERROR: tDS violation on DQ bit %d by %t", $time, i*`DQ_PER_DQS+j, tm_dq[(i%16)*`DQ_PER_DQS+j] + TDS - $time);
+                        check_dq_tdipw[(i%16)*`DQ_PER_DQS+j] <= 1'b1;
                     end
                 end
                 if ((wdqs_pos_cntr[i] < wr_burst_length/2) && !b2b_write) begin
@@ -2765,13 +2550,13 @@ module ddr3 (
                 end else begin
                     wdqs_pos_cntr[i] <= 1;
                 end
-                check_dm_tdipw[i%32] <= 1'b1;
+                check_dm_tdipw[i%16] <= 1'b1;
                 check_write_preamble[i] <= 1'b0;
                 check_write_postamble[i] <= 1'b0;
                 check_write_dqs_low[i] <= 1'b0;
-                tm_dqs[i%32] <= $time;
+                tm_dqs[i%16] <= $time;
             end else begin
-                $display ("%m: at time %t ERROR: Invalid latching edge on %s bit %d", $time, dqs_string[i/32], i%32);
+                $display ("%m: at time %t ERROR: Invalid latching edge on %s bit %d", $time, dqs_string[i/16], i%16);
             end
         end
         tm_dqss_pos[i] <= $time;
@@ -2780,78 +2565,45 @@ module ddr3 (
     end
     endtask
 
-    always @(posedge dqs_in[ 0]) if ( dqs_in[ 0]) dqs_pos_timing_check( 0);
-    always @(posedge dqs_in[ 1]) if ( dqs_in[ 1]) dqs_pos_timing_check( 1);
-    always @(posedge dqs_in[ 2]) if ( dqs_in[ 2]) dqs_pos_timing_check( 2);
-    always @(posedge dqs_in[ 3]) if ( dqs_in[ 3]) dqs_pos_timing_check( 3);
-    always @(posedge dqs_in[ 4]) if ( dqs_in[ 4]) dqs_pos_timing_check( 4);
-    always @(posedge dqs_in[ 5]) if ( dqs_in[ 5]) dqs_pos_timing_check( 5);
-    always @(posedge dqs_in[ 6]) if ( dqs_in[ 6]) dqs_pos_timing_check( 6);
-    always @(posedge dqs_in[ 7]) if ( dqs_in[ 7]) dqs_pos_timing_check( 7);
-    always @(posedge dqs_in[ 8]) if ( dqs_in[ 8]) dqs_pos_timing_check( 8);
-    always @(posedge dqs_in[ 9]) if ( dqs_in[ 9]) dqs_pos_timing_check( 9);
-    always @(posedge dqs_in[10]) if ( dqs_in[10]) dqs_pos_timing_check(10);
-    always @(posedge dqs_in[11]) if ( dqs_in[11]) dqs_pos_timing_check(11);
-    always @(posedge dqs_in[12]) if ( dqs_in[12]) dqs_pos_timing_check(12);
-    always @(posedge dqs_in[13]) if ( dqs_in[13]) dqs_pos_timing_check(13);
-    always @(posedge dqs_in[14]) if ( dqs_in[14]) dqs_pos_timing_check(14);
-    always @(posedge dqs_in[15]) if ( dqs_in[15]) dqs_pos_timing_check(15);
-    always @(posedge dqs_in[16]) if ( dqs_in[16]) dqs_pos_timing_check(16);
-    always @(posedge dqs_in[17]) if ( dqs_in[17]) dqs_pos_timing_check(17);
-    always @(posedge dqs_in[18]) if ( dqs_in[18]) dqs_pos_timing_check(18);
-    always @(posedge dqs_in[19]) if ( dqs_in[19]) dqs_pos_timing_check(19);
-    always @(posedge dqs_in[20]) if ( dqs_in[20]) dqs_pos_timing_check(20);
-    always @(posedge dqs_in[21]) if ( dqs_in[21]) dqs_pos_timing_check(21);
-    always @(posedge dqs_in[22]) if ( dqs_in[22]) dqs_pos_timing_check(22);
-    always @(posedge dqs_in[23]) if ( dqs_in[23]) dqs_pos_timing_check(23);
-    always @(posedge dqs_in[24]) if ( dqs_in[24]) dqs_pos_timing_check(24);
-    always @(posedge dqs_in[25]) if ( dqs_in[25]) dqs_pos_timing_check(25);
-    always @(posedge dqs_in[26]) if ( dqs_in[26]) dqs_pos_timing_check(26);
-    always @(posedge dqs_in[27]) if ( dqs_in[27]) dqs_pos_timing_check(27);
-    always @(posedge dqs_in[28]) if ( dqs_in[28]) dqs_pos_timing_check(28);
-    always @(posedge dqs_in[29]) if ( dqs_in[29]) dqs_pos_timing_check(29);
-    always @(posedge dqs_in[30]) if ( dqs_in[30]) dqs_pos_timing_check(30);
-    always @(posedge dqs_in[31]) if ( dqs_in[31]) dqs_pos_timing_check(31);
+    always @(posedge dqs_in[ 0]) dqs_pos_timing_check( 0);
+    always @(posedge dqs_in[ 1]) dqs_pos_timing_check( 1);
+    always @(posedge dqs_in[ 2]) dqs_pos_timing_check( 2);
+    always @(posedge dqs_in[ 3]) dqs_pos_timing_check( 3);
+    always @(posedge dqs_in[ 4]) dqs_pos_timing_check( 4);
+    always @(posedge dqs_in[ 5]) dqs_pos_timing_check( 5);
+    always @(posedge dqs_in[ 6]) dqs_pos_timing_check( 6);
+    always @(posedge dqs_in[ 7]) dqs_pos_timing_check( 7);
+    always @(posedge dqs_in[ 8]) dqs_pos_timing_check( 8);
+    always @(posedge dqs_in[ 9]) dqs_pos_timing_check( 9);
+    always @(posedge dqs_in[10]) dqs_pos_timing_check(10);
+    always @(posedge dqs_in[11]) dqs_pos_timing_check(11);
+    always @(posedge dqs_in[12]) dqs_pos_timing_check(12);
+    always @(posedge dqs_in[13]) dqs_pos_timing_check(13);
+    always @(posedge dqs_in[14]) dqs_pos_timing_check(14);
+    always @(posedge dqs_in[15]) dqs_pos_timing_check(15);
+    always @(negedge dqs_in[16]) dqs_pos_timing_check(16);
+    always @(negedge dqs_in[17]) dqs_pos_timing_check(17);
+    always @(negedge dqs_in[18]) dqs_pos_timing_check(18);
+    always @(negedge dqs_in[19]) dqs_pos_timing_check(19);
+    always @(negedge dqs_in[20]) dqs_pos_timing_check(20);
+    always @(negedge dqs_in[21]) dqs_pos_timing_check(21);
+    always @(negedge dqs_in[22]) dqs_pos_timing_check(22);
+    always @(negedge dqs_in[23]) dqs_pos_timing_check(23);
+    always @(negedge dqs_in[24]) dqs_pos_timing_check(24);
+    always @(negedge dqs_in[25]) dqs_pos_timing_check(25);
+    always @(negedge dqs_in[26]) dqs_pos_timing_check(26);
+    always @(negedge dqs_in[27]) dqs_pos_timing_check(27);
+    always @(negedge dqs_in[28]) dqs_pos_timing_check(28);
+    always @(negedge dqs_in[29]) dqs_pos_timing_check(29);
+    always @(negedge dqs_in[30]) dqs_pos_timing_check(30);
+    always @(negedge dqs_in[31]) dqs_pos_timing_check(31);
 
-    always @(negedge dqs_in[32]) if (!dqs_in[32]) dqs_pos_timing_check(32);
-    always @(negedge dqs_in[33]) if (!dqs_in[33]) dqs_pos_timing_check(33);
-    always @(negedge dqs_in[34]) if (!dqs_in[34]) dqs_pos_timing_check(34);
-    always @(negedge dqs_in[35]) if (!dqs_in[35]) dqs_pos_timing_check(35);
-    always @(negedge dqs_in[36]) if (!dqs_in[36]) dqs_pos_timing_check(36);
-    always @(negedge dqs_in[37]) if (!dqs_in[37]) dqs_pos_timing_check(37);
-    always @(negedge dqs_in[38]) if (!dqs_in[38]) dqs_pos_timing_check(38);
-    always @(negedge dqs_in[39]) if (!dqs_in[39]) dqs_pos_timing_check(39);
-    always @(negedge dqs_in[40]) if (!dqs_in[40]) dqs_pos_timing_check(40);
-    always @(negedge dqs_in[41]) if (!dqs_in[41]) dqs_pos_timing_check(41);
-    always @(negedge dqs_in[42]) if (!dqs_in[42]) dqs_pos_timing_check(42);
-    always @(negedge dqs_in[43]) if (!dqs_in[43]) dqs_pos_timing_check(43);
-    always @(negedge dqs_in[44]) if (!dqs_in[44]) dqs_pos_timing_check(44);
-    always @(negedge dqs_in[45]) if (!dqs_in[45]) dqs_pos_timing_check(45);
-    always @(negedge dqs_in[46]) if (!dqs_in[46]) dqs_pos_timing_check(46);
-    always @(negedge dqs_in[47]) if (!dqs_in[47]) dqs_pos_timing_check(47);
-    always @(negedge dqs_in[48]) if (!dqs_in[48]) dqs_pos_timing_check(48);
-    always @(negedge dqs_in[49]) if (!dqs_in[49]) dqs_pos_timing_check(49);
-    always @(negedge dqs_in[50]) if (!dqs_in[50]) dqs_pos_timing_check(50);
-    always @(negedge dqs_in[51]) if (!dqs_in[51]) dqs_pos_timing_check(51);
-    always @(negedge dqs_in[52]) if (!dqs_in[52]) dqs_pos_timing_check(52);
-    always @(negedge dqs_in[53]) if (!dqs_in[53]) dqs_pos_timing_check(53);
-    always @(negedge dqs_in[54]) if (!dqs_in[54]) dqs_pos_timing_check(54);
-    always @(negedge dqs_in[55]) if (!dqs_in[55]) dqs_pos_timing_check(55);
-    always @(negedge dqs_in[56]) if (!dqs_in[56]) dqs_pos_timing_check(56);
-    always @(negedge dqs_in[57]) if (!dqs_in[57]) dqs_pos_timing_check(57);
-    always @(negedge dqs_in[58]) if (!dqs_in[58]) dqs_pos_timing_check(58);
-    always @(negedge dqs_in[59]) if (!dqs_in[59]) dqs_pos_timing_check(59);
-    always @(negedge dqs_in[60]) if (!dqs_in[60]) dqs_pos_timing_check(60);
-    always @(negedge dqs_in[61]) if (!dqs_in[61]) dqs_pos_timing_check(61);
-    always @(negedge dqs_in[62]) if (!dqs_in[62]) dqs_pos_timing_check(62);
-    always @(negedge dqs_in[63]) if (!dqs_in[63]) dqs_pos_timing_check(63);
-   
     task dqs_neg_timing_check;
     input i;
-    reg [5:0] i;
-    reg [4:0] j;
+    reg [4:0] i;
+    reg [3:0] j;
     begin
-        if (write_levelization && i<32) begin
+        if (write_levelization && i<16) begin
             if (ck_cntr - ck_load_mode < TWLDQSEN)
                 $display ("%m: at time %t ERROR: tWLDQSEN violation on DQS bit %d.", $time, i);
             if ($time - tm_dqs_pos[i] < $rtoi(TDQSH*tck_avg))
@@ -2861,23 +2613,23 @@ module ddr3 (
             if (dqs_in[i] ^ prev_dqs_in[i]) begin
                 if (dll_locked) begin
                     if ($time - tm_dqs_pos[i] < $rtoi(TDQSH*tck_avg))
-                        $display ("%m: at time %t ERROR: tDQSH violation on %s bit %d", $time, dqs_string[i/32], i%32);
+                        $display ("%m: at time %t ERROR: tDQSH violation on %s bit %d", $time, dqs_string[i/16], i%16);
                     if ($time - tm_ck_pos < $rtoi(TDSH*tck_avg))
-                        $display ("%m: at time %t ERROR: tDSH violation on %s bit %d", $time, dqs_string[i/32], i%32); 
+                        $display ("%m: at time %t ERROR: tDSH violation on %s bit %d", $time, dqs_string[i/16], i%16); 
                 end
-                if ($time - tm_dm[i%32] < TDS) 
-                    $display ("%m: at time %t ERROR: tDS violation on DM bit %d by %t", $time, i,  tm_dm[i%32] + TDS - $time);
+                if ($time - tm_dm[i%16] < TDS) 
+                    $display ("%m: at time %t ERROR: tDS violation on DM bit %d by %t", $time, i,  tm_dm[i%16] + TDS - $time);
                 if (!dq_out_en) begin
                     for (j=0; j<`DQ_PER_DQS; j=j+1) begin
-                        if ($time - tm_dq[(i%32)*`DQ_PER_DQS+j] < TDS) 
-                            $display ("%m: at time %t ERROR: tDS violation on DQ bit %d by %t", $time, i*`DQ_PER_DQS+j, tm_dq[(i%32)*`DQ_PER_DQS+j] + TDS - $time);
-                        check_dq_tdipw[(i%32)*`DQ_PER_DQS+j] <= 1'b1;
+                        if ($time - tm_dq[(i%16)*`DQ_PER_DQS+j] < TDS) 
+                            $display ("%m: at time %t ERROR: tDS violation on DQ bit %d by %t", $time, i*`DQ_PER_DQS+j, tm_dq[(i%16)*`DQ_PER_DQS+j] + TDS - $time);
+                        check_dq_tdipw[(i%16)*`DQ_PER_DQS+j] <= 1'b1;
                     end
                 end
-                check_dm_tdipw[i%32] <= 1'b1;
-                tm_dqs[i%32] <= $time;
+                check_dm_tdipw[i%16] <= 1'b1;
+                tm_dqs[i%16] <= $time;
             end else begin
-                $display ("%m: at time %t ERROR: Invalid latching edge on %s bit %d", $time, dqs_string[i/32], i%32);
+                $display ("%m: at time %t ERROR: Invalid latching edge on %s bit %d", $time, dqs_string[i/16], i%16);
             end
         end
         check_write_dqs_high[i] <= 1'b0;
@@ -2886,70 +2638,37 @@ module ddr3 (
     end
     endtask
 
-    always @(negedge dqs_in[ 0]) if (!dqs_in[ 0]) dqs_neg_timing_check( 0);
-    always @(negedge dqs_in[ 1]) if (!dqs_in[ 1]) dqs_neg_timing_check( 1);
-    always @(negedge dqs_in[ 2]) if (!dqs_in[ 2]) dqs_neg_timing_check( 2);
-    always @(negedge dqs_in[ 3]) if (!dqs_in[ 3]) dqs_neg_timing_check( 3);
-    always @(negedge dqs_in[ 4]) if (!dqs_in[ 4]) dqs_neg_timing_check( 4);
-    always @(negedge dqs_in[ 5]) if (!dqs_in[ 5]) dqs_neg_timing_check( 5);
-    always @(negedge dqs_in[ 6]) if (!dqs_in[ 6]) dqs_neg_timing_check( 6);
-    always @(negedge dqs_in[ 7]) if (!dqs_in[ 7]) dqs_neg_timing_check( 7);
-    always @(negedge dqs_in[ 8]) if (!dqs_in[ 8]) dqs_neg_timing_check( 8);
-    always @(negedge dqs_in[ 9]) if (!dqs_in[ 9]) dqs_neg_timing_check( 9);
-    always @(negedge dqs_in[10]) if (!dqs_in[10]) dqs_neg_timing_check(10);
-    always @(negedge dqs_in[11]) if (!dqs_in[11]) dqs_neg_timing_check(11);
-    always @(negedge dqs_in[12]) if (!dqs_in[12]) dqs_neg_timing_check(12);
-    always @(negedge dqs_in[13]) if (!dqs_in[13]) dqs_neg_timing_check(13);
-    always @(negedge dqs_in[14]) if (!dqs_in[14]) dqs_neg_timing_check(14);
-    always @(negedge dqs_in[15]) if (!dqs_in[15]) dqs_neg_timing_check(15);
-    always @(negedge dqs_in[16]) if (!dqs_in[16]) dqs_neg_timing_check(16);
-    always @(negedge dqs_in[17]) if (!dqs_in[17]) dqs_neg_timing_check(17);
-    always @(negedge dqs_in[18]) if (!dqs_in[18]) dqs_neg_timing_check(18);
-    always @(negedge dqs_in[19]) if (!dqs_in[19]) dqs_neg_timing_check(19);
-    always @(negedge dqs_in[20]) if (!dqs_in[20]) dqs_neg_timing_check(20);
-    always @(negedge dqs_in[21]) if (!dqs_in[21]) dqs_neg_timing_check(21);
-    always @(negedge dqs_in[22]) if (!dqs_in[22]) dqs_neg_timing_check(22);
-    always @(negedge dqs_in[23]) if (!dqs_in[23]) dqs_neg_timing_check(23);
-    always @(negedge dqs_in[24]) if (!dqs_in[24]) dqs_neg_timing_check(24);
-    always @(negedge dqs_in[25]) if (!dqs_in[25]) dqs_neg_timing_check(25);
-    always @(negedge dqs_in[26]) if (!dqs_in[26]) dqs_neg_timing_check(26);
-    always @(negedge dqs_in[27]) if (!dqs_in[27]) dqs_neg_timing_check(27);
-    always @(negedge dqs_in[28]) if (!dqs_in[28]) dqs_neg_timing_check(28);
-    always @(negedge dqs_in[29]) if (!dqs_in[29]) dqs_neg_timing_check(29);
-    always @(negedge dqs_in[30]) if (!dqs_in[30]) dqs_neg_timing_check(30);
-    always @(negedge dqs_in[31]) if (!dqs_in[31]) dqs_neg_timing_check(31);
-
-    always @(posedge dqs_in[32]) if ( dqs_in[32]) dqs_neg_timing_check(32);
-    always @(posedge dqs_in[33]) if ( dqs_in[33]) dqs_neg_timing_check(33);
-    always @(posedge dqs_in[34]) if ( dqs_in[34]) dqs_neg_timing_check(34);
-    always @(posedge dqs_in[35]) if ( dqs_in[35]) dqs_neg_timing_check(35);
-    always @(posedge dqs_in[36]) if ( dqs_in[36]) dqs_neg_timing_check(36);
-    always @(posedge dqs_in[37]) if ( dqs_in[37]) dqs_neg_timing_check(37);
-    always @(posedge dqs_in[38]) if ( dqs_in[38]) dqs_neg_timing_check(38);
-    always @(posedge dqs_in[39]) if ( dqs_in[39]) dqs_neg_timing_check(39);
-    always @(posedge dqs_in[40]) if ( dqs_in[40]) dqs_neg_timing_check(40);
-    always @(posedge dqs_in[41]) if ( dqs_in[41]) dqs_neg_timing_check(41);
-    always @(posedge dqs_in[42]) if ( dqs_in[42]) dqs_neg_timing_check(42);
-    always @(posedge dqs_in[43]) if ( dqs_in[43]) dqs_neg_timing_check(43);
-    always @(posedge dqs_in[44]) if ( dqs_in[44]) dqs_neg_timing_check(44);
-    always @(posedge dqs_in[45]) if ( dqs_in[45]) dqs_neg_timing_check(45);
-    always @(posedge dqs_in[46]) if ( dqs_in[46]) dqs_neg_timing_check(46);
-    always @(posedge dqs_in[47]) if ( dqs_in[47]) dqs_neg_timing_check(47);
-    always @(posedge dqs_in[48]) if ( dqs_in[48]) dqs_neg_timing_check(48);
-    always @(posedge dqs_in[49]) if ( dqs_in[49]) dqs_neg_timing_check(49);
-    always @(posedge dqs_in[50]) if ( dqs_in[50]) dqs_neg_timing_check(50);
-    always @(posedge dqs_in[51]) if ( dqs_in[51]) dqs_neg_timing_check(51);
-    always @(posedge dqs_in[52]) if ( dqs_in[52]) dqs_neg_timing_check(52);
-    always @(posedge dqs_in[53]) if ( dqs_in[53]) dqs_neg_timing_check(53);
-    always @(posedge dqs_in[54]) if ( dqs_in[54]) dqs_neg_timing_check(54);
-    always @(posedge dqs_in[55]) if ( dqs_in[55]) dqs_neg_timing_check(55);
-    always @(posedge dqs_in[56]) if ( dqs_in[56]) dqs_neg_timing_check(56);
-    always @(posedge dqs_in[57]) if ( dqs_in[57]) dqs_neg_timing_check(57);
-    always @(posedge dqs_in[58]) if ( dqs_in[58]) dqs_neg_timing_check(58);
-    always @(posedge dqs_in[59]) if ( dqs_in[59]) dqs_neg_timing_check(59);
-    always @(posedge dqs_in[60]) if ( dqs_in[60]) dqs_neg_timing_check(60);
-    always @(posedge dqs_in[61]) if ( dqs_in[61]) dqs_neg_timing_check(61);
-    always @(posedge dqs_in[62]) if ( dqs_in[62]) dqs_neg_timing_check(62);
-    always @(posedge dqs_in[63]) if ( dqs_in[63]) dqs_neg_timing_check(63);
+    always @(negedge dqs_in[ 0]) dqs_neg_timing_check( 0);
+    always @(negedge dqs_in[ 1]) dqs_neg_timing_check( 1);
+    always @(negedge dqs_in[ 2]) dqs_neg_timing_check( 2);
+    always @(negedge dqs_in[ 3]) dqs_neg_timing_check( 3);
+    always @(negedge dqs_in[ 4]) dqs_neg_timing_check( 4);
+    always @(negedge dqs_in[ 5]) dqs_neg_timing_check( 5);
+    always @(negedge dqs_in[ 6]) dqs_neg_timing_check( 6);
+    always @(negedge dqs_in[ 7]) dqs_neg_timing_check( 7);
+    always @(negedge dqs_in[ 8]) dqs_neg_timing_check( 8);
+    always @(negedge dqs_in[ 9]) dqs_neg_timing_check( 9);
+    always @(negedge dqs_in[10]) dqs_neg_timing_check(10);
+    always @(negedge dqs_in[11]) dqs_neg_timing_check(11);
+    always @(negedge dqs_in[12]) dqs_neg_timing_check(12);
+    always @(negedge dqs_in[13]) dqs_neg_timing_check(13);
+    always @(negedge dqs_in[14]) dqs_neg_timing_check(14);
+    always @(negedge dqs_in[15]) dqs_neg_timing_check(15);
+    always @(posedge dqs_in[16]) dqs_neg_timing_check(16);
+    always @(posedge dqs_in[17]) dqs_neg_timing_check(17);
+    always @(posedge dqs_in[18]) dqs_neg_timing_check(18);
+    always @(posedge dqs_in[19]) dqs_neg_timing_check(19);
+    always @(posedge dqs_in[20]) dqs_neg_timing_check(20);
+    always @(posedge dqs_in[21]) dqs_neg_timing_check(21);
+    always @(posedge dqs_in[22]) dqs_neg_timing_check(22);
+    always @(posedge dqs_in[23]) dqs_neg_timing_check(23);
+    always @(posedge dqs_in[24]) dqs_neg_timing_check(24);
+    always @(posedge dqs_in[25]) dqs_neg_timing_check(25);
+    always @(posedge dqs_in[26]) dqs_neg_timing_check(26);
+    always @(posedge dqs_in[27]) dqs_neg_timing_check(27);
+    always @(posedge dqs_in[28]) dqs_neg_timing_check(28);
+    always @(posedge dqs_in[29]) dqs_neg_timing_check(29);
+    always @(posedge dqs_in[30]) dqs_neg_timing_check(30);
+    always @(posedge dqs_in[31]) dqs_neg_timing_check(31);
 
 endmodule

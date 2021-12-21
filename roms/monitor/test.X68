@@ -4,17 +4,17 @@
 * Date       :
 * Description:
 *-----------------------------------------------------------
-    ORG    $1000
+    ORG    $E40000
 START:                  ; first instruction of program
 
 * Put program code here
 
-        ;movea.l #$faa, a0
-		move.l	#$faa, $6c
+		move.l	#$faa, $A00000
 
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~

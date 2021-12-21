@@ -23,16 +23,6 @@ use  IEEE.STD_LOGIC_ARITH.all;
 use  IEEE.STD_LOGIC_UNSIGNED.all;
 use IEEE.numeric_std.all;
 
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity multicomp_wrapper is
 port(
         sys_clock   : in std_logic;
@@ -114,7 +104,17 @@ port(
     esp_cts : in std_logic;
     esp_txd : out std_logic;
     esp_rxd : in std_logic;
-    esp_rts : out std_logic
+    esp_rts : out std_logic;
+    
+    fram_sck1 : out std_logic;
+    fram_miso1 : in std_logic;
+    fram_mosi1 : out std_logic;
+    fram_cs1 : out std_logic;
+    
+    fram_sck2 : out std_logic;
+    fram_miso2 : in std_logic;
+    fram_mosi2 : out std_logic;
+    fram_cs2 : out std_logic
       
 	);
 end multicomp_wrapper;
@@ -139,6 +139,11 @@ architecture Behavioral of multicomp_wrapper is
       signal cpuUpper               :     std_logic;
       signal cpuLower               :     std_logic;
       signal mem_ready              :     std_logic := '0';
+      
+      	
+    signal    cpu_uds :  std_logic; -- upper data strobe
+    signal    cpu_lds :  std_logic; -- lower data strobe
+    signal    cpu_r_w :   std_logic; -- read(high)/write(low)
       
     signal ddr_cke : std_logic_vector(0 downto 0);
     signal ddr_rstn : std_logic;
@@ -182,6 +187,18 @@ architecture Behavioral of multicomp_wrapper is
     signal sdEraseCount: std_logic_vector(7 downto 0);
     signal sd_rden : std_logic;
     signal sd_wren : std_logic;
+    
+    -- spi ram
+    
+    signal fram_spi_ctl :  std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+    signal fram_spi_DataIn : std_logic_vector(7 downto 0);
+    signal fram_spi_DataOut : std_logic_vector(7 downto 0);
+    
+    signal fram_spi_ctl2 :  std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+    signal fram_spi_DataIn2 : std_logic_vector(7 downto 0);
+    signal fram_spi_DataOut2 : std_logic_vector(7 downto 0);
+    
+    signal memAddress : std_logic_vector(23 downto 0);
 
 --net
       signal eth_ack_rx: std_logic;
@@ -312,6 +329,30 @@ end component;
   );
   end component;
  
+component fram_control is
+Port (
+
+    cpu_clock : in std_logic;
+    reset : in std_logic;
+    
+    -- cpu interface
+    
+    address : in std_logic_vector(23 downto 0);
+    sel : in std_logic;
+    ready : out std_logic;
+    valid_o : out std_logic;
+    rw : in std_logic;
+    data_in : in std_logic_vector(7 downto 0);
+    data_out : out std_logic_vector(7 downto 0); 
+    
+    -- spi
+    
+    sck : out std_logic;
+    mosi : out std_logic;
+    miso : in std_logic;
+    cs_n : out std_logic
+ );
+end component;
     
 attribute dont_touch : string; 
 
@@ -322,15 +363,7 @@ attribute dont_touch of mem_i_valid_p : signal is "true";
 attribute dont_touch of gameduino_spi : label is "true";
 attribute dont_touch of opl3_spi : label is "true";
 
---attribute dont_touch of uartIrq   : signal is "true";
---attribute dont_touch of uartDataOut : signal is "true";
---attribute dont_touch of uartDataIn  : signal is "true";
---attribute dont_touch of uartRegSel : signal is "true";
---attribute dont_touch of uartWRn : signal is "true";
---attribute dont_touch of uartRDn : signal is "true";
---attribute dont_touch of uartIdle : signal is "true";
---attribute dont_touch of uartDataAvail : signal is "true";
---attribute dont_touch of uartDataCount : signal is "true";
+
 
 signal cpu_clock : std_logic;
 
@@ -478,7 +511,20 @@ end process;
 		uartRDn => uartRDn,
         uartWRn => uartWRn,
         uartIdle => not uartIdle,
-        uartDataAvail => uartDataAvail
+        uartDataAvail => uartDataAvail,
+        
+        fram_spi_ctrl => fram_spi_ctl,
+        fram_spi_DataIn => fram_spi_DataIn,
+        fram_spi_DataOut => fram_spi_DataOut,
+        
+        fram_spi_ctrl2 => fram_spi_ctl2,
+        fram_spi_DataIn2 => fram_spi_DataIn2,
+        fram_spi_DataOut2 => fram_spi_DataOut2,
+        
+        	
+        cpu_uds => cpu_uds, -- upper data strobe
+        cpu_lds => cpu_lds,  -- lower data strobe
+        cpu_r_w => cpu_r_w -- read(high)/write(low)
         
     );
     
@@ -530,6 +576,61 @@ end process;
    op_wr <= opl3_ctl(4);
    
    
+
+fram1: fram_control 
+port map (
+    cpu_clock => cpu_clock,
+    reset => not sys_resetn,
+    
+    -- cpu interface
+    
+    address => "000000" & memAddress(17 downto 0),
+    sel => fram_spi_ctl(0),
+    ready => open,
+    valid_o => fram_spi_ctl(5),
+    rw => cpu_r_w,
+    data_in => fram_spi_DataOut,
+    data_out => fram_spi_DataIn,
+    
+    -- spi
+    
+    sck => fram_sck1, 
+    mosi => fram_mosi1,
+    miso => fram_miso1 ,
+    cs_n => fram_cs1
+    );
+    
+    fram2: fram_control 
+port map (
+    cpu_clock => cpu_clock,
+    reset => not sys_resetn,
+    
+    -- cpu interface
+    
+    address => "000000" & memAddress(17 downto 0),
+    sel => fram_spi_ctl2(0),
+    ready => open,
+    valid_o => fram_spi_ctl2(5),
+    rw => cpu_r_w,
+    data_in => fram_spi_DataOut2,
+    data_out => fram_spi_DataIn2,
+    
+    -- spi
+    
+    sck => fram_sck2, 
+    mosi => fram_mosi2,
+    miso => fram_miso2 ,
+    cs_n => fram_cs2
+    );
+
+
+	-- rom address
+    memAddress(17 downto 0) <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(17 downto 0)) / 2, 18));
+
+   
+   led(2) <= not fram_cs1;
+   led(3) <= not fram_cs2;
+   
       -- sd 
       sd_rden <= sdControl(2);
       sd_wren <= sdControl(3);       
@@ -537,7 +638,7 @@ end process;
          
        SD_DAT1 <= '1';
        SD_DAT2 <= '1';
-       LED(1) <= not SD_CD; -- disk light
+       LED(1) <= sdStatus(5); -- disk light
 
 
 sdcard: entity work.sd_controller 
@@ -684,21 +785,9 @@ Port map (
     
     
    led(0) <= mem_ready;
-   
-  
-   
+
    -- uart 
-   
-   	--uart
---		uartIrq    => uartIrq,
---		uartCSn    => uartCSn,
---		uartDataOut => uartDataOut,
---		uartDataIn  => uartDataIn,
---		uartRegSel => uartRegsel,
---		uartRDn => uartRDn,
---        uartWRn => uartWRn,
---        uartIdle => uartIdle,
---        uartAck => uartAck
+ 
 
    io_serial_term_tx: entity work.serial_wrapper 
         port map (

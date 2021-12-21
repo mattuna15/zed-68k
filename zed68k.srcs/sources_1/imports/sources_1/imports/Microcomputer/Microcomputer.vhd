@@ -69,7 +69,16 @@ entity Microcomputer is
         opl3_ctl : inout std_logic_vector(7 downto 0);
         opl3_DataOut : inout std_logic_vector(7 downto 0);
         
-
+        -- fram
+        
+        fram_spi_ctrl : inout std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+        fram_spi_DataIn :  in std_logic_vector(7 downto 0);
+        fram_spi_DataOut : out std_logic_vector(7 downto 0);
+        
+        fram_spi_ctrl2 : inout std_logic_vector(7 downto 0); -- 0-2 address - 3 enable - 4 busy/ready
+        fram_spi_DataIn2 :  in std_logic_vector(7 downto 0);
+        fram_spi_DataOut2 : out std_logic_vector(7 downto 0);
+        
 		-- PS/2 keyboard / mouse
 		ps2k_clk_in : inout std_logic;
 		ps2k_dat_in : inout std_logic;
@@ -81,7 +90,12 @@ entity Microcomputer is
 		uartWRn    : out std_logic;
 		uartRDn    : out std_logic;
         uartIdle : in std_logic;
-        uartDataAvail : in std_logic
+        uartDataAvail : in std_logic;
+        
+        cpu_r_w : out std_logic;
+        cpu_uds : out std_logic;
+        cpu_lds : out std_logic
+        
 	);
 	
 end Microcomputer;
@@ -91,11 +105,11 @@ architecture struct of Microcomputer is
 	component fpu_double IS
 
    PORT( 
-      clk, rst, enable, ack : IN     std_logic;
+      clk, rst, enable : IN     std_logic;
       rmode : IN     std_logic_vector (1 DOWNTO 0);
       fpu_op : IN     std_logic_vector (2 DOWNTO 0);
       opa, opb : IN     std_logic_vector (63 DOWNTO 0);
-      out_fp: OUT    std_logic_vector (63 DOWNTO 0);
+      out_fp_reg: OUT    std_logic_vector (63 DOWNTO 0);
       idle, valid : OUT  std_logic
    );
 
@@ -110,10 +124,7 @@ architecture struct of Microcomputer is
 	signal	  cpuDataOut		:  std_logic_vector(15 downto 0);
 	signal    cpuDataIn		:  std_logic_vector(15 downto 0);
 	signal    memAddress		:  std_logic_vector(15 downto 0);
-	
-    signal    cpu_uds :  std_logic; -- upper data strobe
-    signal    cpu_lds :  std_logic; -- lower data strobe
-    signal    cpu_r_w :   std_logic; -- read(high)/write(low)
+
     signal    cpu_dtack :  std_logic; -- data transfer acknowledge
     signal    cpu_fc : std_logic_vector(2 downto 0);
 
@@ -142,10 +153,9 @@ signal timer_in1, timer_clk_en, keyb_int : std_logic ;
 signal keyb_data : std_logic_vector(7 downto 0);
 signal uartIrqEn : std_logic := '0';
 
-signal hiMem,  spiMem, ethMem, uartMem, fpuMem, ioMem : std_logic := '0';
+signal hiMem,  spiMem, ethMem, uartMem, fpuMem, ioMem, fram1Mem, fram2Mem : std_logic := '0';
 signal hiMemRegAddr : std_logic_vector(7 downto 0);
 signal auto_iack :std_logic;
-signal fpuAck : std_logic;
 
 component keyboard is
    port (
@@ -167,6 +177,11 @@ end component;
     attribute dont_touch of sdAddress : signal is "true";
     attribute dont_touch of sdCardDataIn : signal is "true";
     attribute dont_touch of sdCardDataOut : signal is "true";
+    
+    attribute dont_touch of hiMem : signal is "true";
+    attribute dont_touch of fpuMem : signal is "true";
+    attribute dont_touch of ethMem : signal is "true";
+    attribute dont_touch of spiMem : signal is "true";
     
 begin
 
@@ -270,11 +285,10 @@ cpu1 : entity work.TG68
 			opb => opb_i,
 			fpu_op =>	fpu_op_i,
 			rmode => rmode_i,	
-			out_fp => result_o,  
+			out_fp_reg => result_o,  
         	enable => start_i,
         	idle => idle_o,
-        	valid => valid_o,
-        	ack => fpuAck
+        	valid => valid_o
    );
 
 	-- rom address
@@ -312,17 +326,17 @@ cpu1 : entity work.TG68
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
 
-n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 20) = "1110" else '1'; --E00000-E0FFFF
-n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 20) = "1110" else '1';       
+n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 16) = x"E0" else '1'; --E00000-E0FFFF
+n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 16) = x"E0" else '1';       
 
 hiMem <= '1' when cpuAddress(23 downto 20) = "1111" else '0';
 hiMemRegAddr <= cpuAddress(7 downto 0);
 
-spiMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"4" and hiMemRegAddr(7 downto 4) /= x"4"  else '0';  --f4
+fpuMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"5" else '0'; --f5 
 ethMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"4" and hiMemRegAddr(7 downto 4) = x"4" else '0';  --f4
+spiMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"4" and hiMemRegAddr(7 downto 4) /= x"4"  else '0';  --f4
 timerCS  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"3" and hiMemRegAddr(7 downto 4) = x"3" else '0'; -- timer f3003
 rtcCS <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"3" and hiMemRegAddr(7 downto 4) = x"4" else '0';  -- f3004
-fpuMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"5" else '0'; --f5 
 ioMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = x"2" else '0';  --f2
 uartMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = "0000" else '0'; --f0
 
@@ -332,7 +346,7 @@ uartMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = "0000" else '0';
 ram_cen <= '0' when  cpuAddress(23 downto 20)  < X"E" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
-ram_a <= cpuAddress(26 downto 0) when ram_cen ='0' else (others => '0'); -- address
+ram_a <= cpuAddress(26 downto 0); -- address
 ram_ub <= cpu_uds;
 ram_lb <= cpu_lds;
 ram_dq_i <= cpuDataOut when ram_wen = '0' else (others => '0') ;
@@ -349,6 +363,16 @@ gd_daz_sel <= not spi_ctrl(2);
 
 opl3_ctl(5 downto 0) <= cpuDataout(5 downto 0) when spiMem = '1' and (hiMemRegAddr = x"10" or hiMemRegAddr = x"11") and cpu_lds = '0' and cpu_r_w = '0'; 
 opl3_DataOut <= cpuDataout(7 downto 0) when spiMem = '1' and (hiMemRegAddr = x"12" or hiMemRegAddr = x"13") and cpu_lds = '0' and cpu_r_w = '0'; 
+
+--fram_spi_ctrl(4 downto 0) <= cpuDataOut(4 downto 0) when spiMem = '1' and (hiMemRegAddr = x"38" or hiMemRegAddr = x"39") and cpu_lds = '0' and cpu_r_w = '0';                   
+--fram_spi_dataOut <= cpuDataOut(7 downto 0) when spiMem = '1' and (hiMemRegAddr = x"3a" or hiMemRegAddr = x"3b") and cpu_lds = '0' and cpu_r_w = '0'; 
+fram1Mem <= '1' when cpuAddress(23 downto 16) >= X"E4" and cpuAddress(23 downto 16) < x"E8" and cpu_lds = '0' else  '0';
+fram2Mem <= '1' when cpuAddress(23 downto 16) >= X"E4" and cpuAddress(23 downto 16) < x"E8" and cpu_uds = '0' else '0';
+
+fram_spi_ctrl(0) <= fram1Mem;
+fram_spi_ctrl2(0) <= fram2Mem;
+fram_spi_dataOut <= cpuDataOut(7 downto 0) when fram1Mem = '1';
+fram_spi_dataOut2 <= cpuDataOut(15 downto 8) when fram2Mem = '1';
 
 -- timer
 timer_clk_en <= cpuDataOut(0) when timerCS = '1' and (hiMemRegAddr = x"34" or hiMemRegAddr = x"35") and cpu_lds = '0' and cpu_r_w = '0'; 
@@ -383,10 +407,12 @@ fpu_ctl <= cpuDataOut(7 downto 0) when fpuMem = '1' and (hiMemRegAddr = x"18" or
 start_i <= fpu_ctl(0);
 fpu_op_i <= fpu_ctl(3 downto 1);
 rmode_i <= fpu_ctl(5 downto 4);
-fpuAck <= fpu_ctl(6);
+
+--fpu_clock_en <= fpu_ctl(7);
 
 fpu_sts(0) <= idle_o ;
 fpu_sts(1) <= valid_o;
+--fpu_sts(2) <= fpu_ready;
 
 uartRDn <= '0' when uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_r_w = '1' and cpu_lds = '0' else '1';
 uartWRn <= '0' when uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_r_w = '0' and cpu_lds = '0' else '1';
@@ -409,6 +435,9 @@ when n_basRom1CS = '0' else
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
 
+fram_spi_DataIn2 
+when fram2Mem = '1' and cpu_r_w = '1' and cpu_uds = '0' else
+
 X"00"
 when ethMem = '1' and hiMemRegAddr >= X"40" and hiMemRegAddr <= x"45" and cpu_r_w = '1' and cpu_uds = '0' else
 eth_tx_free(15 downto 8)
@@ -429,6 +458,8 @@ when spiMem = '1' and hiMemRegAddr = X"26" and cpu_r_w = '1' and cpu_uds = '0' e
 x"00"
 when spiMem = '1' and hiMemRegAddr = X"28" and cpu_r_w = '1' and cpu_uds = '0' else
 
+--x"00"
+--when spiMem = '1' and hiMemRegAddr >= x"30" and hiMemRegAddr <= x"3d" and cpu_r_w = '1' and cpu_uds = '0' else
 
 opa_i(63 downto 56) when fpuMem = '1' and hiMemRegAddr = X"00" and cpu_r_w = '1' and cpu_uds = '0' else
 opa_i(47 downto 40) when fpuMem = '1' and hiMemRegAddr = X"02" and cpu_r_w = '1' and cpu_uds = '0' else
@@ -466,6 +497,9 @@ when n_basRom2CS = '0' else
 ram_dq_o(7 downto 0)
 when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress(23 downto 20)  < X"E" else
 
+fram_spi_DataIn 
+when fram1Mem = '1' and cpu_r_w = '1' and cpu_lds = '0' else
+
 eth_data_in(7 downto 0)
 when ethMem = '1' and (hiMemRegAddr = x"40" or hiMemRegAddr = x"41") and cpu_r_w = '1' and cpu_lds = '0' else 
 eth_data_out(7 downto 0)
@@ -500,6 +534,12 @@ when spiMem = '1' and (hiMemRegAddr = x"10" or hiMemRegAddr = x"11") and cpu_r_w
 opl3_DataOut
 when spiMem = '1' and (hiMemRegAddr = x"12" or hiMemRegAddr = x"13") and cpu_r_w = '1' and cpu_lds = '0' else
 
+--fram_spi_DataOut
+--when spiMem = '1' and (hiMemRegAddr = x"3A" or hiMemRegAddr = x"3B")and cpu_r_w = '1' and cpu_lds = '0' else
+--fram_spi_DataIn
+--when spiMem = '1' and (hiMemRegAddr = x"3C" or hiMemRegAddr = x"3D") and cpu_r_w = '1' and cpu_lds = '0' else
+--fram_spi_ctrl
+--when spiMem = '1' and (hiMemRegAddr = x"38" or hiMemRegAddr = x"39") and cpu_r_w = '1' and cpu_lds = '0' else
 
 opa_i(55 downto 48) when fpuMem = '1' and (hiMemRegAddr = x"00" or hiMemRegAddr = x"01") and cpu_r_w = '1' and cpu_lds = '0' else
 opa_i(39 downto 32) when fpuMem = '1' and (hiMemRegAddr = x"02" or hiMemRegAddr = x"03") and cpu_r_w = '1' and cpu_lds = '0' else
@@ -542,6 +582,8 @@ cpu_dtack <=
 not ram_ack when ram_cen = '0' else 
 not rtc_ack when rtcCS = '1' else
 NOT eth_ack_rx when ethMem = '1' and (hiMemRegAddr = x"42" or hiMemRegAddr = x"43") else
+NOT fram_spi_ctrl(5) when fram1Mem = '1' else
+NOT fram_spi_ctrl2(5) when fram2Mem = '1' else
 '0';
     
 end;

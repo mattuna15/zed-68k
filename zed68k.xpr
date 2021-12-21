@@ -48,20 +48,20 @@
     <Option Name="DSADesignIntentExternalHost" Val="false"/>
     <Option Name="DSADesignIntentEmbedded" Val="true"/>
     <Option Name="DSADesignIntentDatacenter" Val="false"/>
-    <Option Name="WTXSimLaunchSim" Val="1302"/>
+    <Option Name="WTXSimLaunchSim" Val="1450"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="313"/>
-    <Option Name="WTModelSimExportSim" Val="312"/>
-    <Option Name="WTQuestaExportSim" Val="312"/>
-    <Option Name="WTIesExportSim" Val="312"/>
-    <Option Name="WTVcsExportSim" Val="312"/>
-    <Option Name="WTRivieraExportSim" Val="312"/>
-    <Option Name="WTActivehdlExportSim" Val="312"/>
+    <Option Name="WTXSimExportSim" Val="315"/>
+    <Option Name="WTModelSimExportSim" Val="314"/>
+    <Option Name="WTQuestaExportSim" Val="314"/>
+    <Option Name="WTIesExportSim" Val="314"/>
+    <Option Name="WTVcsExportSim" Val="314"/>
+    <Option Name="WTRivieraExportSim" Val="314"/>
+    <Option Name="WTActivehdlExportSim" Val="314"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -101,11 +101,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0.xci">
-          <Proxy FileSetName="design_1_fifo_generator_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0.xci">
           <Proxy FileSetName="design_1_UART_FIFO_IO_cntl_pr_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0.xci">
+          <Proxy FileSetName="design_1_fifo_generator_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="design_1.bd" FileRelPathName="ip/design_1_UART_RX_0_0/design_1_UART_RX_0_0.xci">
           <Proxy FileSetName="design_1_UART_RX_0_0"/>
@@ -136,6 +136,7 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/memory/memory.bd">
@@ -147,8 +148,8 @@
         <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_util_vector_logic_0_0/memory_util_vector_logic_0_0.xci">
           <Proxy FileSetName="memory_util_vector_logic_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_system_cache_0_0/memory_system_cache_0_0.xci">
-          <Proxy FileSetName="memory_system_cache_0_0"/>
+        <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_mig_7series_0_2/memory_mig_7series_0_2.xci">
+          <Proxy FileSetName="memory_mig_7series_0_2"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_proc_sys_reset_0_0/memory_proc_sys_reset_0_0.xci">
           <Proxy FileSetName="memory_proc_sys_reset_0_0"/>
@@ -156,23 +157,9 @@
         <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_util_vector_logic_1_0/memory_util_vector_logic_1_0.xci">
           <Proxy FileSetName="memory_util_vector_logic_1_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_mig_7series_0_2/memory_mig_7series_0_2.xci">
-          <Proxy FileSetName="memory_mig_7series_0_2"/>
+        <CompFileExtendedInfo CompFileName="memory.bd" FileRelPathName="ip/memory_system_cache_0_0/memory_system_cache_0_0.xci">
+          <Proxy FileSetName="memory_system_cache_0_0"/>
         </CompFileExtendedInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/double_single_1/double_single.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/single_double_1/single_double.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/ip_repo/RetroRecv_1.0/axis_register.v">
         <FileInfo>
@@ -180,6 +167,7 @@
           <Attr Name="ImportTime" Val="1615906988"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/design_1/hdl/design_1_wrapper.v">
@@ -216,12 +204,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/fpdblsgl.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/new/fpdiv.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -234,29 +216,12 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/fpsgldbl.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/new/fpsqrt.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_double.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/imports/downloads/i2c_master.vhd">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/i2c_master.vhd"/>
           <Attr Name="ImportTime" Val="1618056806"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/timer.vhd">
@@ -268,6 +233,7 @@
       <File Path="$PSRCDIR/sources_1/new/interrupt_controller.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/downloads/pmod_real_time_clock.vhd">
@@ -275,6 +241,7 @@
           <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/pmod_real_time_clock.vhd"/>
           <Attr Name="ImportTime" Val="1618056805"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RTL/TG68K_Pack.vhd">
@@ -288,6 +255,7 @@
           <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/DE1_TG68Test_newcore_68kSig/DE1_TG68Test_newcore_68kSig/RTL/TG68KdotC_Kernel.vhd"/>
           <Attr Name="ImportTime" Val="1592561307"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RTL/TG68_minimal.vhd">
@@ -295,11 +263,13 @@
           <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/DE1_TG68Test_newcore_68kSig/DE1_TG68Test_newcore_68kSig/RTL/TG68_minimal.vhd"/>
           <Attr Name="ImportTime" Val="1592561307"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/sources_1/imports/mem/rom.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/sources_1/imports/Microcomputer/Microcomputer.vhd">
@@ -307,6 +277,7 @@
           <Attr Name="ImportPath" Val="$PPRDIR/../multicomp/zedmulti/zedmulti.srcs/sources_1/imports/Microcomputer/Microcomputer.vhd"/>
           <Attr Name="ImportTime" Val="1592496288"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/RTL/TG68K_ALU.vhd">
@@ -314,32 +285,19 @@
           <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/DE1_TG68Test_newcore_68kSig/DE1_TG68Test_newcore_68kSig/RTL/TG68K_ALU.vhd"/>
           <Attr Name="ImportTime" Val="1592561307"/>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/new/ethernet.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/keyboard/ps2.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_double.vhd">
         <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/ps2.vhd"/>
-          <Attr Name="ImportTime" Val="1586464696"/>
           <Attr Name="UsedIn" Val="synthesis"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/keyboard/scancode.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/scancode.vhd"/>
-          <Attr Name="ImportTime" Val="1586464696"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/keyboard/keyboard.vhd">
-        <FileInfo SFType="VHDL2008">
-          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/keyboard.vhd"/>
-          <Attr Name="ImportTime" Val="1586464696"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/downloads/spi_master.vhd">
@@ -349,14 +307,96 @@
           <Attr Name="UsedIn" Val="synthesis"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/new/fram_control.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="UsedIn" Val="synthesis"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/keyboard/ps2.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/ps2.vhd"/>
+          <Attr Name="ImportTime" Val="1586464696"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/keyboard/scancode.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/scancode.vhd"/>
+          <Attr Name="ImportTime" Val="1586464696"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/keyboard/keyboard.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="ImportPath" Val="$PPRDIR/../../xilinx/Downloads/nexys4ddr-master/dyoc/Episodes/ep24_-_Keyboard/fpga/keyboard/keyboard.vhd"/>
+          <Attr Name="ImportTime" Val="1586464696"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/new/sd_spi.vhdl">
         <FileInfo SFType="VHDL2008">
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/sources_1/new/multicomp_wrapper.vhd">
         <FileInfo SFType="VHDL2008">
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/double_single_1/double_single.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/single_double_1/single_double.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/fpdblsgl.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/fpsgldbl.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/fpsqrt.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/cache.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/sources_1/imports/mem/ram.vhd">
+        <FileInfo SFType="VHDL2008">
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/Documents/float_pkg.vhdl">
@@ -382,12 +422,6 @@
           <Attr Name="ImportPath" Val="$PPRDIR/../vhdl-extras-master/rtl/extras/sizing.vhdl"/>
           <Attr Name="ImportTime" Val="1603442604"/>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/fpu_double-master/fpu_double_TB.vhd">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -515,14 +549,36 @@
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/sim_1/imports/fpu_double-master/fpu_double_TB.vhd">
-        <FileInfo>
+        <FileInfo RelPath="fpu_double_TB.vhd">
           <Attr Name="ImportPath" Val="$PPRDIR/../fpu_double-master/fpu_double_TB.vhd"/>
           <Attr Name="ImportTime" Val="1626894725"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sim_1/new/uart_tb.vhd">
+      <File Path="$PSRCDIR/sim_1/new/ddr3_model_parameters.vh">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sim_1/new/ddr3_model.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sim_1/new/cache_tb.vhd">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sim_1/new/system_tb.vhd">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -531,13 +587,6 @@
       </File>
       <File Path="$PSRCDIR/sim_1/new/timer_tb.vhd">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/imports/ddr3_model_parameters.vh">
-        <FileInfo RelPath="ddr3_model_parameters.vh">
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -568,15 +617,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sim_1/imports/DDR3 SDRAM Verilog Model/2048Mb_ddr3_parameters.vh">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/DDR3 SDRAM Verilog Model/2048Mb_ddr3_parameters.vh"/>
-          <Attr Name="ImportTime" Val="1617100502"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sim_1/imports/DDR3 SDRAM Verilog Model/1024Mb_ddr3_parameters.vh">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
@@ -586,28 +626,10 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sim_1/imports/DDR3 SDRAM Verilog Model/4096Mb_ddr3_parameters.vh">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/DDR3 SDRAM Verilog Model/4096Mb_ddr3_parameters.vh"/>
-          <Attr Name="ImportTime" Val="1617100502"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sim_1/imports/DDR3 SDRAM Verilog Model/subtest.vh">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/DDR3 SDRAM Verilog Model/subtest.vh"/>
-          <Attr Name="ImportTime" Val="1617100502"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sim_1/imports/DDR3 SDRAM Verilog Model/8192Mb_ddr3_parameters.vh">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../downloads/DDR3 SDRAM Verilog Model/8192Mb_ddr3_parameters.vh"/>
           <Attr Name="ImportTime" Val="1617100502"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -680,6 +702,7 @@
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <Config>
@@ -729,6 +752,7 @@
     <FileSet Name="fp_sqrt" Type="BlockSrcs" RelSrcDir="$PSRCDIR/fp_sqrt">
       <File Path="$PSRCDIR/sources_1/ip/fp_sqrt_1/fp_sqrt.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>

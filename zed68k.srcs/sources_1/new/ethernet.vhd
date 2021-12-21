@@ -166,6 +166,10 @@ end component;
     signal reg_rx_valid: std_logic;
     signal reg_rx_data: std_logic_vector(7 downto 0);
     
+   signal  fifo_tx_data : std_logic_vector(7 downto 0); --Receive data
+   signal  fifo_tx_valid : std_logic; --Receive data valid
+   signal  fifo_tx_ready : std_logic; --Receive data ready
+    
     signal reg_tx_ready: std_logic;
     signal reg_tx_valid: std_logic;
     signal reg_tx_data: std_logic_vector(7 downto 0);
@@ -180,12 +184,12 @@ end component;
    signal eth_tx_first : std_logic :='1';
    
    
-   attribute dont_touch : string;
+--   attribute dont_touch : string;
 
-   attribute dont_touch of rx_proc : label is "true";
-   attribute dont_touch of rx_register : label is "true";
-   attribute dont_touch of tx_proc : label is "true";
-   attribute dont_touch of tx_register : label is "true";
+--   attribute dont_touch of rx_proc : label is "true";
+--   attribute dont_touch of rx_register : label is "true";
+--   attribute dont_touch of tx_proc : label is "true";
+--   attribute dont_touch of tx_register : label is "true";
 
 begin
 
@@ -270,6 +274,19 @@ begin
     end if;
 
 end process;
+
+--tx_fifo: axis_rx_fifo
+--port map (
+
+--  s_axis_aresetn => sys_resetn,
+--  s_axis_aclk => eth_clk,
+--  s_axis_tvalid => axis_rx_valid,
+--  s_axis_tready => axis_rx_ready,
+--  s_axis_tdata => axis_rx_data,
+--  m_axis_tvalid => axis_tx_valid,
+--  m_axis_tready => axis_tx_ready,
+--  m_axis_tdata => axis_tx_data
+--);
 	
 tx_register: axis_register
 port map (
@@ -291,7 +308,7 @@ begin
 
     if rising_edge(eth_clk) then
     
-        if eth_ctl(6) = '1' and reg_tx_valid = '0' and eth_tx_first = '1' then
+        if eth_ctl(6) = '1' and reg_tx_valid = '0' and eth_tx_first = '1' and reg_tx_ready = '1' then
             reg_tx_data <= eth_data_in;
             reg_tx_valid <= '1';
             eth_tx_first <= '0';

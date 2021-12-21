@@ -15,7 +15,8 @@ entity ram is
    generic (
       -- Number of bits in the address bus. The size of the memory will
       -- be 2**G_ADDR_BITS bytes.
-      G_ADDR_BITS : integer
+      G_ADDR_BITS : integer;
+      G_DATA_LEN : integer
    );
    port (
       clk_i  : in  std_logic;
@@ -25,11 +26,12 @@ entity ram is
 
       -- Data contents at the selected address.
       -- Valid in same clock cycle.
-      data_o : out std_logic_vector(7 downto 0);
+      data_o : out std_logic_vector(G_DATA_LEN-1 downto 0);
 
       -- New data to (optionally) be written to the selected address.
-      data_i : in  std_logic_vector(7 downto 0);
+      data_i : in  std_logic_vector(G_DATA_LEN-1 downto 0);
 
+      bytemask_i : in std_logic_vector(1 downto 0);
       -- '1' indicates we wish to perform a write at the selected address.
       wren_i : in  std_logic
    );
@@ -38,13 +40,13 @@ end ram;
 architecture structural of ram is
 
    -- This defines a type containing an array of bytes
-   type mem_t is array (0 to 2**G_ADDR_BITS-1) of std_logic_vector(7 downto 0);
+   type mem_t is array (0 to 2**G_ADDR_BITS-1) of std_logic_vector(G_DATA_LEN-1 downto 0);
 
    -- Initialize memory contents
    signal mem : mem_t := (others => (others => '0'));
 
    -- Data read from memory.
-   signal data : std_logic_vector(7 downto 0);
+   signal data : std_logic_vector(G_DATA_LEN-1 downto 0);
 
 begin
 
@@ -53,17 +55,22 @@ begin
    begin
       if rising_edge(clk_i) then
          if wren_i = '1' then
-            mem(to_integer(addr_i)) <= data_i;
+            if bytemask_i = "01" then
+                mem(to_integer(addr_i))(7 downto 0) <= data_i(7 downto 0);
+            elsif bytemask_i = "10" then
+                mem(to_integer(addr_i))(15 downto 8) <= data_i(15 downto 8);
+            else
+                mem(to_integer(addr_i)) <= data_i;
+            end if;
          end if;
       end if;
    end process mem_proc;
 
    -- Read process.
-   -- Triggered on the *falling* clock edge in order to mimick an asynchronous
    -- memory.
    data_proc : process (clk_i)
    begin
-      if falling_edge(clk_i) then
+      if rising_edge(clk_i) and wren_i = '0' then
          data <= mem(to_integer(addr_i));
       end if;
    end process data_proc;

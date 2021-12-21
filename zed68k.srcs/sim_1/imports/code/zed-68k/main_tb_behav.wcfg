@@ -11,26 +11,22 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="2678001fs"></ZoomEndTime>
-      <Cursor1Time time="2595000fs"></Cursor1Time>
+      <ZoomStartTime time="25000fs"></ZoomStartTime>
+      <ZoomEndTime time="381482fs"></ZoomEndTime>
+      <Cursor1Time time="42910fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="488"></NameColumnWidth>
-      <ValueColumnWidth column_width="236"></ValueColumnWidth>
+      <ValueColumnWidth column_width="132"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="46" />
-   <wvobject fp_name="/fpu_double_tb/enable" type="logic">
-      <obj_property name="ElementShortName">enable</obj_property>
-      <obj_property name="ObjectShortName">enable</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
+   <WVObjectSize size="28" />
    <wvobject fp_name="/fpu_double_tb/rmode" type="array">
       <obj_property name="ElementShortName">rmode[1:0]</obj_property>
       <obj_property name="ObjectShortName">rmode[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/fpu_double_tb/fpu_op" type="array">
       <obj_property name="ElementShortName">fpu_op[2:0]</obj_property>
@@ -60,6 +56,62 @@
       <obj_property name="ElementShortName">ack</obj_property>
       <obj_property name="ObjectShortName">ack</obj_property>
    </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/enable" type="logic">
+      <obj_property name="ElementShortName">enable</obj_property>
+      <obj_property name="ObjectShortName">enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/add_enable" type="logic">
+      <obj_property name="ElementShortName">add_enable</obj_property>
+      <obj_property name="ObjectShortName">add_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/sub_enable" type="logic">
+      <obj_property name="ElementShortName">sub_enable</obj_property>
+      <obj_property name="ObjectShortName">sub_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/mul_enable" type="logic">
+      <obj_property name="ElementShortName">mul_enable</obj_property>
+      <obj_property name="ObjectShortName">mul_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/div_enable" type="logic">
+      <obj_property name="ElementShortName">div_enable</obj_property>
+      <obj_property name="ObjectShortName">div_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/in_progress" type="logic">
+      <obj_property name="ElementShortName">in_progress</obj_property>
+      <obj_property name="ObjectShortName">in_progress</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/out_add" type="array">
+      <obj_property name="ElementShortName">out_add[63:0]</obj_property>
+      <obj_property name="ObjectShortName">out_add[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/out_sub" type="array">
+      <obj_property name="ElementShortName">out_sub[63:0]</obj_property>
+      <obj_property name="ObjectShortName">out_sub[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/out_mul" type="array">
+      <obj_property name="ElementShortName">out_mul[63:0]</obj_property>
+      <obj_property name="ObjectShortName">out_mul[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/out_div" type="array">
+      <obj_property name="ElementShortName">out_div[63:0]</obj_property>
+      <obj_property name="ObjectShortName">out_div[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/add_ready" type="logic">
+      <obj_property name="ElementShortName">add_ready</obj_property>
+      <obj_property name="ObjectShortName">add_ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/sub_ready" type="logic">
+      <obj_property name="ElementShortName">sub_ready</obj_property>
+      <obj_property name="ObjectShortName">sub_ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/mul_ready" type="logic">
+      <obj_property name="ElementShortName">mul_ready</obj_property>
+      <obj_property name="ObjectShortName">mul_ready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/fpu_double_tb/UUT/div_ready" type="logic">
+      <obj_property name="ElementShortName">div_ready</obj_property>
+      <obj_property name="ObjectShortName">div_ready</obj_property>
+   </wvobject>
    <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/op_a" type="array">
       <obj_property name="ElementShortName">op_a[63:0]</obj_property>
       <obj_property name="ObjectShortName">op_a[63:0]</obj_property>
@@ -67,10 +119,6 @@
    <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/op_b" type="array">
       <obj_property name="ElementShortName">op_b[63:0]</obj_property>
       <obj_property name="ObjectShortName">op_b[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/mode" type="logic">
-      <obj_property name="ElementShortName">mode</obj_property>
-      <obj_property name="ObjectShortName">mode</obj_property>
    </wvobject>
    <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/result" type="array">
       <obj_property name="ElementShortName">result[63:0]</obj_property>
@@ -83,125 +131,5 @@
    <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/ready_o" type="logic">
       <obj_property name="ElementShortName">ready_o</obj_property>
       <obj_property name="ObjectShortName">ready_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_a_tvalid" type="logic">
-      <obj_property name="ElementShortName">s_axis_a_tvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axis_a_tvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_a_tready" type="logic">
-      <obj_property name="ElementShortName">s_axis_a_tready</obj_property>
-      <obj_property name="ObjectShortName">s_axis_a_tready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_a_tdata" type="array">
-      <obj_property name="ElementShortName">s_axis_a_tdata[63:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axis_a_tdata[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_b_tvalid" type="logic">
-      <obj_property name="ElementShortName">s_axis_b_tvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axis_b_tvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_b_tready" type="logic">
-      <obj_property name="ElementShortName">s_axis_b_tready</obj_property>
-      <obj_property name="ObjectShortName">s_axis_b_tready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_b_tdata" type="array">
-      <obj_property name="ElementShortName">s_axis_b_tdata[63:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axis_b_tdata[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_c_tvalid" type="logic">
-      <obj_property name="ElementShortName">s_axis_c_tvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axis_c_tvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_c_tready" type="logic">
-      <obj_property name="ElementShortName">s_axis_c_tready</obj_property>
-      <obj_property name="ObjectShortName">s_axis_c_tready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/s_axis_c_tdata" type="array">
-      <obj_property name="ElementShortName">s_axis_c_tdata[7:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axis_c_tdata[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/m_axis_result_tvalid" type="logic">
-      <obj_property name="ElementShortName">m_axis_result_tvalid</obj_property>
-      <obj_property name="ObjectShortName">m_axis_result_tvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/m_axis_result_tready" type="logic">
-      <obj_property name="ElementShortName">m_axis_result_tready</obj_property>
-      <obj_property name="ObjectShortName">m_axis_result_tready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/m_axis_result_tdata" type="array">
-      <obj_property name="ElementShortName">m_axis_result_tdata[63:0]</obj_property>
-      <obj_property name="ObjectShortName">m_axis_result_tdata[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/fpu_state" type="array">
-      <obj_property name="ElementShortName">fpu_state[2:0]</obj_property>
-      <obj_property name="ObjectShortName">fpu_state[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/clock_i" type="logic">
-      <obj_property name="ElementShortName">clock_i</obj_property>
-      <obj_property name="ObjectShortName">clock_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/reset_n" type="logic">
-      <obj_property name="ElementShortName">reset_n</obj_property>
-      <obj_property name="ObjectShortName">reset_n</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/op_a" type="array">
-      <obj_property name="ElementShortName">op_a[63:0]</obj_property>
-      <obj_property name="ObjectShortName">op_a[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/op_b" type="array">
-      <obj_property name="ElementShortName">op_b[63:0]</obj_property>
-      <obj_property name="ObjectShortName">op_b[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/result" type="array">
-      <obj_property name="ElementShortName">result[63:0]</obj_property>
-      <obj_property name="ObjectShortName">result[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/valid_i" type="logic">
-      <obj_property name="ElementShortName">valid_i</obj_property>
-      <obj_property name="ObjectShortName">valid_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/ready_o" type="logic">
-      <obj_property name="ElementShortName">ready_o</obj_property>
-      <obj_property name="ObjectShortName">ready_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_a_tvalid" type="logic">
-      <obj_property name="ElementShortName">s_axis_a_tvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axis_a_tvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_a_tready" type="logic">
-      <obj_property name="ElementShortName">s_axis_a_tready</obj_property>
-      <obj_property name="ObjectShortName">s_axis_a_tready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_a_tdata" type="array">
-      <obj_property name="ElementShortName">s_axis_a_tdata[63:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axis_a_tdata[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_b_tvalid" type="logic">
-      <obj_property name="ElementShortName">s_axis_b_tvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axis_b_tvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_b_tready" type="logic">
-      <obj_property name="ElementShortName">s_axis_b_tready</obj_property>
-      <obj_property name="ObjectShortName">s_axis_b_tready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/s_axis_b_tdata" type="array">
-      <obj_property name="ElementShortName">s_axis_b_tdata[63:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axis_b_tdata[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/m_axis_result_tvalid" type="logic">
-      <obj_property name="ElementShortName">m_axis_result_tvalid</obj_property>
-      <obj_property name="ObjectShortName">m_axis_result_tvalid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/m_axis_result_tready" type="logic">
-      <obj_property name="ElementShortName">m_axis_result_tready</obj_property>
-      <obj_property name="ObjectShortName">m_axis_result_tready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/m_axis_result_tdata" type="array">
-      <obj_property name="ElementShortName">m_axis_result_tdata[63:0]</obj_property>
-      <obj_property name="ObjectShortName">m_axis_result_tdata[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_mul/fpu_state" type="array">
-      <obj_property name="ElementShortName">fpu_state[2:0]</obj_property>
-      <obj_property name="ObjectShortName">fpu_state[2:0]</obj_property>
    </wvobject>
 </wave_config>
