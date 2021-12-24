@@ -145,10 +145,10 @@ begin
             elsif valid_i = '1' and ready_o= '0' and in_progress = '0' then
                 valid_i <= '0';
                 in_progress <= '1';
-            elsif ready_o= '1' and valid_i = '0' and in_progress = '1' and pause_count < 20 then
+            elsif ready_o= '1' and valid_i = '0' and in_progress = '1' and pause_count < 3 then
                 cs_n <= '1';
                 pause_count <= pause_count + 1;
-            elsif pause_count = 20 then
+            elsif pause_count = 3 then
                 in_progress <= '0';
                 pause_count <= 0;
                 state <= "0010";
@@ -252,7 +252,7 @@ begin
             
             pause_count <= pause_count + 1;
             
-            if pause_count = 20 then
+            if pause_count = 3 then
                 state <= "0000";
                 pause_count <= 0;
             end if;
