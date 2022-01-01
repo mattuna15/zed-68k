@@ -9,3 +9,5 @@ m68.prm
 *.layout
 zed68k.hw/
 roms/monitor/monitor.S68
+zed68k.srcs/sources_1/bd/design_1/design_1.bxml
+zed68k.srcs/sources_1/bd/memory/memory.bxml
