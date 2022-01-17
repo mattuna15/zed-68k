@@ -40,7 +40,7 @@ architecture Behavioral of cache_tb is
 component cache is
     Port ( 
     clock : in std_logic;
-    address: in std_logic_vector(27 downto 0);   -- // Address bus (Upper part not used)
+    address: in std_logic_vector(23 downto 0);   -- // Address bus (Upper part not used)
 
     wr_byte_mask : in std_logic_vector(1 downto 0);
     i_valid : in std_logic;
@@ -115,9 +115,7 @@ main_ram: ram
     cache_ram : cache 
     Port map ( 
     clock => r_clock,
-    address(27) => '0',  -- // Address bus (Upper part not used)
-    address(26 downto 4) => address(23 downto 1), --ignore last digit. always 0
-    address(3 downto 0) => "0000",   -- // Address bus (Upper part not used
+    address => address,   -- // Address bus (Upper part not used
     wr_byte_mask => byte_mask,
     i_valid => valid,
     i_wren => wren, --     // Write enable

@@ -157,6 +157,10 @@ signal hiMem,  spiMem, ethMem, uartMem, fpuMem, ioMem, fram1Mem, fram2Mem : std_
 signal hiMemRegAddr : std_logic_vector(7 downto 0);
 signal auto_iack :std_logic;
 
+ signal monRamData					: std_logic_vector(15 downto 0);
+     signal n_basRam1CS					: std_logic :='1';
+     signal n_basRam2CS					: std_logic :='1';
+
 component keyboard is
    port (
       clk_i      : in std_logic;
@@ -174,6 +178,7 @@ component keyboard is
 end component;
 	
 	attribute dont_touch : string; 
+	
     attribute dont_touch of sdAddress : signal is "true";
     attribute dont_touch of sdCardDataIn : signal is "true";
     attribute dont_touch of sdCardDataOut : signal is "true";
@@ -182,6 +187,9 @@ end component;
     attribute dont_touch of fpuMem : signal is "true";
     attribute dont_touch of ethMem : signal is "true";
     attribute dont_touch of spiMem : signal is "true";
+    
+    attribute dont_touch of n_basRam1CS : signal is "true";
+    attribute dont_touch of n_basRam2CS : signal is "true";
     
 begin
 
@@ -318,14 +326,44 @@ cpu1 : entity work.TG68
         clk_i => sys_clk,
         data_o => monRomData(7 downto 0)
     );
-	
-	-- rom address
+    
+   ram1 : entity work.ram -- 8 
+	generic map (
+	   G_ADDR_BITS => 15,
+	   G_INIT_FILE => "D:/code/zed-68k/roms/empty_1.hex",
+	   G_DATA_LEN => 8
+	)
+    port map(
+        addr_i => memAddress(14 downto 0),
+        clk_i => sys_clk,
+        data_i => cpuDataOut(15 downto 8),
+        data_o => monRamData(15 downto 8),
+        wren_i => (not cpu_r_w) and (not n_basRam1CS) and (not cpu_uds)
+    );
+    
+      ram2 : entity work.ram -- 8 
+	generic map (
+	   G_ADDR_BITS => 15,
+	   G_INIT_FILE => "D:/code/zed-68k/roms/empty_2.hex",
+	   G_DATA_LEN => 8
+	)
+    port map(
+        addr_i => memAddress(14 downto 0),
+        clk_i => sys_clk,
+        data_i => cpuDataOut(7 downto 0),
+        data_o => monRamData(7 downto 0),
+        wren_i => (not cpu_r_w) and (not n_basRam2CS)  and (not cpu_lds)
+    );
+ 
+ 
+ -- rom address
     memAddress <= std_logic_vector(to_unsigned(conv_integer(cpuAddress(15 downto 0)) / 2, memAddress'length)) ;
 -- 
 
 -- ____________________________________________________________________________________
 -- CHIP SELECTS GO HERE
-
+n_basRam1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 16) = x"DF" else '1';
+n_basRam2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 16) = x"DF" else '1';  
 n_basRom1CS <= '0' when cpu_uds = '0' and cpuAddress(23 downto 16) = x"E0" else '1'; --E00000-E0FFFF
 n_basRom2CS <= '0' when cpu_lds = '0' and cpuAddress(23 downto 16) = x"E0" else '1';       
 
@@ -343,7 +381,7 @@ uartMem  <= '1' when hiMem = '1' and cpuAddress(19 downto 16) = "0000" else '0';
 
 -- ____________________________________________________________________________________
 -- RAM
-ram_cen <= '0' when  cpuAddress(23 downto 20)  < X"E" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
+ram_cen <= '0' when n_basRam1CS = '1' and n_basRam2CS = '1' and cpuAddress(23 downto 16)  < X"DF" and n_reset = '1' else '1'; --n_internalRam1CS = '1' andand 
 ram_oen <= ram_cen or (not cpu_r_w); -- ram read
 ram_wen <= ram_cen or cpu_r_w; -- ram write
 ram_a <= cpuAddress(26 downto 0); -- address
@@ -428,15 +466,21 @@ auto_iack <= '1' when cpu_fc = "111" else '0';
 -- upper
 cpuDataIn(15 downto 8) 
 <= 
-x"00" 
-when uartMem = '1' and cpu_r_w = '1' and cpu_uds = '0' else
+
+monRamData(15 downto 8)
+when n_basRam1CS = '0' and cpu_r_w = '1'   else
+
 monRomData(15 downto 8)
 when n_basRom1CS = '0' else
+
 ram_dq_o(15 downto 8)
 when ram_oen = '0' and ram_cen = '0' and cpu_uds = '0' else
 
 fram_spi_DataIn2 
 when fram2Mem = '1' and cpu_r_w = '1' and cpu_uds = '0' else
+
+x"00" 
+when uartMem = '1' and cpu_r_w = '1' and cpu_uds = '0' else
 
 X"00"
 when ethMem = '1' and hiMemRegAddr >= X"40" and hiMemRegAddr <= x"45" and cpu_r_w = '1' and cpu_uds = '0' else
@@ -494,8 +538,10 @@ cpuDataIn(7 downto 0)
 <= 
 monRomData(7 downto 0)
 when n_basRom2CS = '0' else 
+monRamData(7 downto 0)
+when n_basRam2CS = '0' and cpu_r_w = '1' else
 ram_dq_o(7 downto 0)
-when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0' and cpuAddress(23 downto 20)  < X"E" else
+when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0'  else
 
 fram_spi_DataIn 
 when fram1Mem = '1' and cpu_r_w = '1' and cpu_lds = '0' else

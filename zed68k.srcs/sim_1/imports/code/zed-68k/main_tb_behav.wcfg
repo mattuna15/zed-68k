@@ -3,133 +3,53 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="fpu_double_tb_behav.wdb" id="1">
+      <db_ref path="cache_tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="fpu_double_tb" />
+            <top_module name="cache_tb" />
             <top_module name="glbl" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="25000fs"></ZoomStartTime>
-      <ZoomEndTime time="381482fs"></ZoomEndTime>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="408135fs"></ZoomEndTime>
       <Cursor1Time time="42910fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="488"></NameColumnWidth>
-      <ValueColumnWidth column_width="132"></ValueColumnWidth>
+      <ValueColumnWidth column_width="124"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="28" />
-   <wvobject fp_name="/fpu_double_tb/rmode" type="array">
-      <obj_property name="ElementShortName">rmode[1:0]</obj_property>
-      <obj_property name="ObjectShortName">rmode[1:0]</obj_property>
+   <WVObjectSize size="8" />
+   <wvobject fp_name="/cache_tb/wren" type="logic">
+      <obj_property name="ElementShortName">wren</obj_property>
+      <obj_property name="ObjectShortName">wren</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/state" type="array">
-      <obj_property name="ElementShortName">state[3:0]</obj_property>
-      <obj_property name="ObjectShortName">state[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/fpu_op" type="array">
-      <obj_property name="ElementShortName">fpu_op[2:0]</obj_property>
-      <obj_property name="ObjectShortName">fpu_op[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/opa" type="array">
-      <obj_property name="ElementShortName">opa[63:0]</obj_property>
-      <obj_property name="ObjectShortName">opa[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/opb" type="array">
-      <obj_property name="ElementShortName">opb[63:0]</obj_property>
-      <obj_property name="ObjectShortName">opb[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/out_fp" type="array">
-      <obj_property name="ElementShortName">out_fp[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_fp[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/idle" type="logic">
-      <obj_property name="ElementShortName">idle</obj_property>
-      <obj_property name="ObjectShortName">idle</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/valid" type="logic">
+   <wvobject fp_name="/cache_tb/valid" type="logic">
       <obj_property name="ElementShortName">valid</obj_property>
       <obj_property name="ObjectShortName">valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/ack" type="logic">
-      <obj_property name="ElementShortName">ack</obj_property>
-      <obj_property name="ObjectShortName">ack</obj_property>
+   <wvobject fp_name="/cache_tb/hit" type="logic">
+      <obj_property name="ElementShortName">hit</obj_property>
+      <obj_property name="ObjectShortName">hit</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/enable" type="logic">
-      <obj_property name="ElementShortName">enable</obj_property>
-      <obj_property name="ObjectShortName">enable</obj_property>
+   <wvobject fp_name="/cache_tb/complete" type="logic">
+      <obj_property name="ElementShortName">complete</obj_property>
+      <obj_property name="ObjectShortName">complete</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/add_enable" type="logic">
-      <obj_property name="ElementShortName">add_enable</obj_property>
-      <obj_property name="ObjectShortName">add_enable</obj_property>
+   <wvobject fp_name="/cache_tb/address" type="array">
+      <obj_property name="ElementShortName">address[23:0]</obj_property>
+      <obj_property name="ObjectShortName">address[23:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/sub_enable" type="logic">
-      <obj_property name="ElementShortName">sub_enable</obj_property>
-      <obj_property name="ObjectShortName">sub_enable</obj_property>
+   <wvobject fp_name="/cache_tb/main_rd_data" type="array">
+      <obj_property name="ElementShortName">main_rd_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">main_rd_data[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/mul_enable" type="logic">
-      <obj_property name="ElementShortName">mul_enable</obj_property>
-      <obj_property name="ObjectShortName">mul_enable</obj_property>
+   <wvobject fp_name="/cache_tb/main_wr_data" type="array">
+      <obj_property name="ElementShortName">main_wr_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">main_wr_data[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/div_enable" type="logic">
-      <obj_property name="ElementShortName">div_enable</obj_property>
-      <obj_property name="ObjectShortName">div_enable</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/in_progress" type="logic">
-      <obj_property name="ElementShortName">in_progress</obj_property>
-      <obj_property name="ObjectShortName">in_progress</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/out_add" type="array">
-      <obj_property name="ElementShortName">out_add[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_add[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/out_sub" type="array">
-      <obj_property name="ElementShortName">out_sub[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_sub[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/out_mul" type="array">
-      <obj_property name="ElementShortName">out_mul[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_mul[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/out_div" type="array">
-      <obj_property name="ElementShortName">out_div[63:0]</obj_property>
-      <obj_property name="ObjectShortName">out_div[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/add_ready" type="logic">
-      <obj_property name="ElementShortName">add_ready</obj_property>
-      <obj_property name="ObjectShortName">add_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/sub_ready" type="logic">
-      <obj_property name="ElementShortName">sub_ready</obj_property>
-      <obj_property name="ObjectShortName">sub_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/mul_ready" type="logic">
-      <obj_property name="ElementShortName">mul_ready</obj_property>
-      <obj_property name="ObjectShortName">mul_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/div_ready" type="logic">
-      <obj_property name="ElementShortName">div_ready</obj_property>
-      <obj_property name="ObjectShortName">div_ready</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/op_a" type="array">
-      <obj_property name="ElementShortName">op_a[63:0]</obj_property>
-      <obj_property name="ObjectShortName">op_a[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/op_b" type="array">
-      <obj_property name="ElementShortName">op_b[63:0]</obj_property>
-      <obj_property name="ObjectShortName">op_b[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/result" type="array">
-      <obj_property name="ElementShortName">result[63:0]</obj_property>
-      <obj_property name="ObjectShortName">result[63:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/valid_i" type="logic">
-      <obj_property name="ElementShortName">valid_i</obj_property>
-      <obj_property name="ObjectShortName">valid_i</obj_property>
-   </wvobject>
-   <wvobject fp_name="/fpu_double_tb/UUT/i_fpu_add/ready_o" type="logic">
-      <obj_property name="ElementShortName">ready_o</obj_property>
-      <obj_property name="ObjectShortName">ready_o</obj_property>
+   <wvobject fp_name="/cache_tb/byte_mask" type="array">
+      <obj_property name="ElementShortName">byte_mask[1:0]</obj_property>
+      <obj_property name="ObjectShortName">byte_mask[1:0]</obj_property>
    </wvobject>
 </wave_config>

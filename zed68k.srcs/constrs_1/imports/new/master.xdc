@@ -413,52 +413,75 @@ connect_debug_port u_ila_0/probe4 [get_nets [list computer/ack]]
 
 
 
+
+connect_debug_port u_ila_0/probe5 [get_nets [list {cpuDataIn[0]} {cpuDataIn[1]} {cpuDataIn[2]} {cpuDataIn[3]} {cpuDataIn[4]} {cpuDataIn[5]} {cpuDataIn[6]} {cpuDataIn[7]} {cpuDataIn[8]} {cpuDataIn[9]} {cpuDataIn[10]} {cpuDataIn[11]} {cpuDataIn[12]} {cpuDataIn[13]} {cpuDataIn[14]} {cpuDataIn[15]}]]
+
+
+
+connect_debug_port u_ila_0/probe5 [get_nets [list {computer/ram1/WEA[0]} {computer/ram1/WEA[1]}]]
+connect_debug_port u_ila_0/probe6 [get_nets [list {computer/ram1/D[0]} {computer/ram1/D[1]} {computer/ram1/D[2]} {computer/ram1/D[3]} {computer/ram1/D[4]} {computer/ram1/D[5]} {computer/ram1/D[6]} {computer/ram1/D[7]} {computer/ram1/D[8]} {computer/ram1/D[9]} {computer/ram1/D[10]} {computer/ram1/D[11]} {computer/ram1/D[12]} {computer/ram1/D[13]} {computer/ram1/D[14]} {computer/ram1/D[15]}]]
+connect_debug_port u_ila_0/probe7 [get_nets [list {computer/ram1/data[0]} {computer/ram1/data[1]} {computer/ram1/data[2]} {computer/ram1/data[3]} {computer/ram1/data[4]} {computer/ram1/data[5]} {computer/ram1/data[6]} {computer/ram1/data[7]} {computer/ram1/data[8]} {computer/ram1/data[9]} {computer/ram1/data[10]} {computer/ram1/data[11]} {computer/ram1/data[12]} {computer/ram1/data[13]} {computer/ram1/data[14]} {computer/ram1/data[15]}]]
+
+
+connect_debug_port u_ila_0/probe5 [get_nets [list {computer/ram1/bytemask_i[0]} {computer/ram1/bytemask_i[1]}]]
+
+
+connect_debug_port u_ila_0/probe3 [get_nets [list {computer/ram2/data_i[0]} {computer/ram2/data_i[1]} {computer/ram2/data_i[2]} {computer/ram2/data_i[3]} {computer/ram2/data_i[4]} {computer/ram2/data_i[5]} {computer/ram2/data_i[6]} {computer/ram2/data_i[7]}]]
+connect_debug_port u_ila_0/probe4 [get_nets [list {computer/ram2/data_o[0]} {computer/ram2/data_o[1]} {computer/ram2/data_o[2]} {computer/ram2/data_o[3]} {computer/ram2/data_o[4]} {computer/ram2/data_o[5]} {computer/ram2/data_o[6]} {computer/ram2/data_o[7]}]]
+connect_debug_port u_ila_0/probe6 [get_nets [list {computer/ram1/data_i[0]} {computer/ram1/data_i[1]} {computer/ram1/data_i[2]} {computer/ram1/data_i[3]} {computer/ram1/data_i[4]} {computer/ram1/data_i[5]} {computer/ram1/data_i[6]} {computer/ram1/data_i[7]}]]
+connect_debug_port u_ila_0/probe7 [get_nets [list {computer/ram1/data_o[0]} {computer/ram1/data_o[1]} {computer/ram1/data_o[2]} {computer/ram1/data_o[3]} {computer/ram1/data_o[4]} {computer/ram1/data_o[5]} {computer/ram1/data_o[6]} {computer/ram1/data_o[7]}]]
+connect_debug_port u_ila_0/probe12 [get_nets [list computer/cpu1/cpu_as]]
+connect_debug_port u_ila_0/probe23 [get_nets [list computer/ram2/wren_i]]
+
+
+connect_debug_port u_ila_0/probe5 [get_nets [list {computer/ram2/WEA[0]}]]
+
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 4 [get_debug_cores u_ila_0]
 set_property C_ADV_TRIGGER true [get_debug_cores u_ila_0]
 set_property C_DATA_DEPTH 1024 [get_debug_cores u_ila_0]
 set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
-set_property C_INPUT_PIPE_STAGES 2 [get_debug_cores u_ila_0]
+set_property C_INPUT_PIPE_STAGES 1 [get_debug_cores u_ila_0]
 set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
 set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
 set_property port_width 1 [get_debug_ports u_ila_0/clk]
 connect_debug_port u_ila_0/clk [get_nets [list pll2/inst/eth_clk]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 3 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {ethernet_FSM/eth_state[0]} {ethernet_FSM/eth_state[1]} {ethernet_FSM/eth_state[2]}]]
+set_property port_width 16 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {cpuDataOut[0]} {cpuDataOut[1]} {cpuDataOut[2]} {cpuDataOut[3]} {cpuDataOut[4]} {cpuDataOut[5]} {cpuDataOut[6]} {cpuDataOut[7]} {cpuDataOut[8]} {cpuDataOut[9]} {cpuDataOut[10]} {cpuDataOut[11]} {cpuDataOut[12]} {cpuDataOut[13]} {cpuDataOut[14]} {cpuDataOut[15]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
-set_property port_width 8 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list {ethernet_FSM/axis_tx_data[0]} {ethernet_FSM/axis_tx_data[1]} {ethernet_FSM/axis_tx_data[2]} {ethernet_FSM/axis_tx_data[3]} {ethernet_FSM/axis_tx_data[4]} {ethernet_FSM/axis_tx_data[5]} {ethernet_FSM/axis_tx_data[6]} {ethernet_FSM/axis_tx_data[7]}]]
+set_property port_width 27 [get_debug_ports u_ila_0/probe1]
+connect_debug_port u_ila_0/probe1 [get_nets [list {cpuAddress[0]} {cpuAddress[1]} {cpuAddress[2]} {cpuAddress[3]} {cpuAddress[4]} {cpuAddress[5]} {cpuAddress[6]} {cpuAddress[7]} {cpuAddress[8]} {cpuAddress[9]} {cpuAddress[10]} {cpuAddress[11]} {cpuAddress[12]} {cpuAddress[13]} {cpuAddress[14]} {cpuAddress[15]} {cpuAddress[16]} {cpuAddress[17]} {cpuAddress[18]} {cpuAddress[19]} {cpuAddress[20]} {cpuAddress[21]} {cpuAddress[22]} {cpuAddress[23]} {cpuAddress[24]} {cpuAddress[25]} {cpuAddress[26]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 8 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list {ethernet_FSM/axis_rx_data[0]} {ethernet_FSM/axis_rx_data[1]} {ethernet_FSM/axis_rx_data[2]} {ethernet_FSM/axis_rx_data[3]} {ethernet_FSM/axis_rx_data[4]} {ethernet_FSM/axis_rx_data[5]} {ethernet_FSM/axis_rx_data[6]} {ethernet_FSM/axis_rx_data[7]}]]
+set_property port_width 4 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {computer/fpu1/Q[0]} {computer/fpu1/Q[1]} {computer/fpu1/Q[2]} {computer/fpu1/Q[3]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
-set_property port_width 64 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list {computer/fpu1/opb_reg[0]} {computer/fpu1/opb_reg[1]} {computer/fpu1/opb_reg[2]} {computer/fpu1/opb_reg[3]} {computer/fpu1/opb_reg[4]} {computer/fpu1/opb_reg[5]} {computer/fpu1/opb_reg[6]} {computer/fpu1/opb_reg[7]} {computer/fpu1/opb_reg[8]} {computer/fpu1/opb_reg[9]} {computer/fpu1/opb_reg[10]} {computer/fpu1/opb_reg[11]} {computer/fpu1/opb_reg[12]} {computer/fpu1/opb_reg[13]} {computer/fpu1/opb_reg[14]} {computer/fpu1/opb_reg[15]} {computer/fpu1/opb_reg[16]} {computer/fpu1/opb_reg[17]} {computer/fpu1/opb_reg[18]} {computer/fpu1/opb_reg[19]} {computer/fpu1/opb_reg[20]} {computer/fpu1/opb_reg[21]} {computer/fpu1/opb_reg[22]} {computer/fpu1/opb_reg[23]} {computer/fpu1/opb_reg[24]} {computer/fpu1/opb_reg[25]} {computer/fpu1/opb_reg[26]} {computer/fpu1/opb_reg[27]} {computer/fpu1/opb_reg[28]} {computer/fpu1/opb_reg[29]} {computer/fpu1/opb_reg[30]} {computer/fpu1/opb_reg[31]} {computer/fpu1/opb_reg[32]} {computer/fpu1/opb_reg[33]} {computer/fpu1/opb_reg[34]} {computer/fpu1/opb_reg[35]} {computer/fpu1/opb_reg[36]} {computer/fpu1/opb_reg[37]} {computer/fpu1/opb_reg[38]} {computer/fpu1/opb_reg[39]} {computer/fpu1/opb_reg[40]} {computer/fpu1/opb_reg[41]} {computer/fpu1/opb_reg[42]} {computer/fpu1/opb_reg[43]} {computer/fpu1/opb_reg[44]} {computer/fpu1/opb_reg[45]} {computer/fpu1/opb_reg[46]} {computer/fpu1/opb_reg[47]} {computer/fpu1/opb_reg[48]} {computer/fpu1/opb_reg[49]} {computer/fpu1/opb_reg[50]} {computer/fpu1/opb_reg[51]} {computer/fpu1/opb_reg[52]} {computer/fpu1/opb_reg[53]} {computer/fpu1/opb_reg[54]} {computer/fpu1/opb_reg[55]} {computer/fpu1/opb_reg[56]} {computer/fpu1/opb_reg[57]} {computer/fpu1/opb_reg[58]} {computer/fpu1/opb_reg[59]} {computer/fpu1/opb_reg[60]} {computer/fpu1/opb_reg[61]} {computer/fpu1/opb_reg[62]} {computer/fpu1/opb_reg[63]}]]
+set_property port_width 16 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list {computer/cpuDataIn[0]} {computer/cpuDataIn[1]} {computer/cpuDataIn[2]} {computer/cpuDataIn[3]} {computer/cpuDataIn[4]} {computer/cpuDataIn[5]} {computer/cpuDataIn[6]} {computer/cpuDataIn[7]} {computer/cpuDataIn[8]} {computer/cpuDataIn[9]} {computer/cpuDataIn[10]} {computer/cpuDataIn[11]} {computer/cpuDataIn[12]} {computer/cpuDataIn[13]} {computer/cpuDataIn[14]} {computer/cpuDataIn[15]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
-set_property port_width 64 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list {computer/fpu1/opa_reg[0]} {computer/fpu1/opa_reg[1]} {computer/fpu1/opa_reg[2]} {computer/fpu1/opa_reg[3]} {computer/fpu1/opa_reg[4]} {computer/fpu1/opa_reg[5]} {computer/fpu1/opa_reg[6]} {computer/fpu1/opa_reg[7]} {computer/fpu1/opa_reg[8]} {computer/fpu1/opa_reg[9]} {computer/fpu1/opa_reg[10]} {computer/fpu1/opa_reg[11]} {computer/fpu1/opa_reg[12]} {computer/fpu1/opa_reg[13]} {computer/fpu1/opa_reg[14]} {computer/fpu1/opa_reg[15]} {computer/fpu1/opa_reg[16]} {computer/fpu1/opa_reg[17]} {computer/fpu1/opa_reg[18]} {computer/fpu1/opa_reg[19]} {computer/fpu1/opa_reg[20]} {computer/fpu1/opa_reg[21]} {computer/fpu1/opa_reg[22]} {computer/fpu1/opa_reg[23]} {computer/fpu1/opa_reg[24]} {computer/fpu1/opa_reg[25]} {computer/fpu1/opa_reg[26]} {computer/fpu1/opa_reg[27]} {computer/fpu1/opa_reg[28]} {computer/fpu1/opa_reg[29]} {computer/fpu1/opa_reg[30]} {computer/fpu1/opa_reg[31]} {computer/fpu1/opa_reg[32]} {computer/fpu1/opa_reg[33]} {computer/fpu1/opa_reg[34]} {computer/fpu1/opa_reg[35]} {computer/fpu1/opa_reg[36]} {computer/fpu1/opa_reg[37]} {computer/fpu1/opa_reg[38]} {computer/fpu1/opa_reg[39]} {computer/fpu1/opa_reg[40]} {computer/fpu1/opa_reg[41]} {computer/fpu1/opa_reg[42]} {computer/fpu1/opa_reg[43]} {computer/fpu1/opa_reg[44]} {computer/fpu1/opa_reg[45]} {computer/fpu1/opa_reg[46]} {computer/fpu1/opa_reg[47]} {computer/fpu1/opa_reg[48]} {computer/fpu1/opa_reg[49]} {computer/fpu1/opa_reg[50]} {computer/fpu1/opa_reg[51]} {computer/fpu1/opa_reg[52]} {computer/fpu1/opa_reg[53]} {computer/fpu1/opa_reg[54]} {computer/fpu1/opa_reg[55]} {computer/fpu1/opa_reg[56]} {computer/fpu1/opa_reg[57]} {computer/fpu1/opa_reg[58]} {computer/fpu1/opa_reg[59]} {computer/fpu1/opa_reg[60]} {computer/fpu1/opa_reg[61]} {computer/fpu1/opa_reg[62]} {computer/fpu1/opa_reg[63]}]]
+set_property port_width 3 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list {ethernet_FSM/eth_state[0]} {ethernet_FSM/eth_state[1]} {ethernet_FSM/eth_state[2]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
-set_property port_width 4 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list {computer/fpu1/Q[0]} {computer/fpu1/Q[1]} {computer/fpu1/Q[2]} {computer/fpu1/Q[3]}]]
+set_property port_width 8 [get_debug_ports u_ila_0/probe5]
+connect_debug_port u_ila_0/probe5 [get_nets [list {ethernet_FSM/axis_rx_data[0]} {ethernet_FSM/axis_rx_data[1]} {ethernet_FSM/axis_rx_data[2]} {ethernet_FSM/axis_rx_data[3]} {ethernet_FSM/axis_rx_data[4]} {ethernet_FSM/axis_rx_data[5]} {ethernet_FSM/axis_rx_data[6]} {ethernet_FSM/axis_rx_data[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 27 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list {cpuAddress[0]} {cpuAddress[1]} {cpuAddress[2]} {cpuAddress[3]} {cpuAddress[4]} {cpuAddress[5]} {cpuAddress[6]} {cpuAddress[7]} {cpuAddress[8]} {cpuAddress[9]} {cpuAddress[10]} {cpuAddress[11]} {cpuAddress[12]} {cpuAddress[13]} {cpuAddress[14]} {cpuAddress[15]} {cpuAddress[16]} {cpuAddress[17]} {cpuAddress[18]} {cpuAddress[19]} {cpuAddress[20]} {cpuAddress[21]} {cpuAddress[22]} {cpuAddress[23]} {cpuAddress[24]} {cpuAddress[25]} {cpuAddress[26]}]]
+set_property port_width 8 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list {ethernet_FSM/axis_tx_data[0]} {ethernet_FSM/axis_tx_data[1]} {ethernet_FSM/axis_tx_data[2]} {ethernet_FSM/axis_tx_data[3]} {ethernet_FSM/axis_tx_data[4]} {ethernet_FSM/axis_tx_data[5]} {ethernet_FSM/axis_tx_data[6]} {ethernet_FSM/axis_tx_data[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
-set_property port_width 16 [get_debug_ports u_ila_0/probe7]
-connect_debug_port u_ila_0/probe7 [get_nets [list {cpuDataIn[0]} {cpuDataIn[1]} {cpuDataIn[2]} {cpuDataIn[3]} {cpuDataIn[4]} {cpuDataIn[5]} {cpuDataIn[6]} {cpuDataIn[7]} {cpuDataIn[8]} {cpuDataIn[9]} {cpuDataIn[10]} {cpuDataIn[11]} {cpuDataIn[12]} {cpuDataIn[13]} {cpuDataIn[14]} {cpuDataIn[15]}]]
+set_property port_width 1 [get_debug_ports u_ila_0/probe7]
+connect_debug_port u_ila_0/probe7 [get_nets [list computer/cpu1/TG68_inst/cpuLower]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
-set_property port_width 16 [get_debug_ports u_ila_0/probe8]
-connect_debug_port u_ila_0/probe8 [get_nets [list {cpuDataOut[0]} {cpuDataOut[1]} {cpuDataOut[2]} {cpuDataOut[3]} {cpuDataOut[4]} {cpuDataOut[5]} {cpuDataOut[6]} {cpuDataOut[7]} {cpuDataOut[8]} {cpuDataOut[9]} {cpuDataOut[10]} {cpuDataOut[11]} {cpuDataOut[12]} {cpuDataOut[13]} {cpuDataOut[14]} {cpuDataOut[15]}]]
+set_property port_width 1 [get_debug_ports u_ila_0/probe8]
+connect_debug_port u_ila_0/probe8 [get_nets [list computer/cpu1/TG68_inst/cpuUpper]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
 set_property port_width 1 [get_debug_ports u_ila_0/probe9]
@@ -478,11 +501,19 @@ connect_debug_port u_ila_0/probe12 [get_nets [list computer/fpu1/enable_reg_3]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe13]
 set_property port_width 1 [get_debug_ports u_ila_0/probe13]
-connect_debug_port u_ila_0/probe13 [get_nets [list computer/fpu1/op_enable]]
+connect_debug_port u_ila_0/probe13 [get_nets [list computer/n_basRam1CS]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe14]
 set_property port_width 1 [get_debug_ports u_ila_0/probe14]
-connect_debug_port u_ila_0/probe14 [get_nets [list computer/fpu1/ready_o]]
+connect_debug_port u_ila_0/probe14 [get_nets [list computer/n_basRam2CS]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe15]
+set_property port_width 1 [get_debug_ports u_ila_0/probe15]
+connect_debug_port u_ila_0/probe15 [get_nets [list computer/fpu1/op_enable]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe16]
+set_property port_width 1 [get_debug_ports u_ila_0/probe16]
+connect_debug_port u_ila_0/probe16 [get_nets [list computer/fpu1/ready_o]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
