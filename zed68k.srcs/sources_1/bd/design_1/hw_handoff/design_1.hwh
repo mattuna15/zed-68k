@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Sun Oct 31 17:37:16 2021" VIVADOVERSION="2020.1">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue Jan 25 08:59:13 2022" VIVADOVERSION="2020.1">
 
   <SYSTEMINFO ARCH="artix7" BOARD="digilentinc.com:arty-a7-100:part0:1.0" DEVICE="7a100t" NAME="design_1" PACKAGE="csg324" SPEEDGRADE="-1"/>
 
@@ -37,8 +37,8 @@
     <PORT CLKFREQUENCY="100000000" DIR="I" NAME="clk100_i" SIGIS="clk" SIGNAME="External_Ports_clk100_i">
       <CONNECTIONS>
         <CONNECTION INSTANCE="UART_RX_0" PORT="i_Clk"/>
-        <CONNECTION INSTANCE="UART_FIFO_IO_cntl_pr_0" PORT="clk"/>
         <CONNECTION INSTANCE="fifo_generator_0" PORT="clk"/>
+        <CONNECTION INSTANCE="UART_FIFO_IO_cntl_pr_0" PORT="clk"/>
       </CONNECTIONS>
     </PORT>
     <PORT DIR="O" NAME="valid" SIGIS="undef" SIGNAME="fifo_generator_0_valid">

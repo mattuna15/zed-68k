@@ -176,28 +176,6 @@ use IEEE.numeric_std.all;
         valid_i => sqrt_enable,
         ready_o => sqrt_ready
     );
-    
-    
---    i_fpu_sgldbl : entity work.fpsgldbl
---    Port map ( 
---        clock_i => clk,
---        reset_n => reset_n,
---        op_a => opa_reg(63 downto 32), 
---        result => out_sgldbl,
---        valid_i => sgldbl_enable,
---        ready_o => sgldbl_ready
---    );
-    
-    
---   i_fpu_dblsgl : entity work.fpdblsgl
---    Port map ( 
---        clock_i => clk,
---        reset_n => reset_n,
---        op_a => opa_reg, 
---        result => out_dblsgl,
---        valid_i => dblsgl_enable,
---        ready_o => dblsgl_ready
---    );
 	
 	process
 	begin
@@ -307,8 +285,6 @@ use IEEE.numeric_std.all;
 		      or (fpu_op_reg = "010" and mul_ready = '1'  and in_progress = '1'  )  
 		      or (fpu_op_reg = "011" and div_ready = '1'  and in_progress = '1'  ) 
 		      or (fpu_op_reg = "100" and sqrt_ready = '1' and in_progress = '1'  ) then
-		   --   or (fpu_op_reg = "101" and sgldbl_ready = '1'  and in_progress = '1' )
-		   --   or (fpu_op_reg = "110" and dblsgl_ready = '1'  and in_progress = '1' ) then  
            if fpu_op_reg = "000" then
 	           out_fp <= out_add;
 	       elsif fpu_op_reg = "001" then
@@ -319,11 +295,6 @@ use IEEE.numeric_std.all;
 	           out_fp <= out_div;
 	       elsif fpu_op_reg = "100" then
 	           out_fp <= out_sqrt;
---	       elsif fpu_op_reg = "101" then
---	           out_fp <= out_sgldbl;
---	       elsif fpu_op_reg = "110" then
---	           out_fp(63 downto 32) <= out_dblsgl;
---	           out_fp(31 downto 0) <= (others => '0');
 	       end if;
 	       
 	       out_valid <= '1';

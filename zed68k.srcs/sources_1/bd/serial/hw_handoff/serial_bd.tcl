@@ -170,7 +170,7 @@ proc create_root_design { parentCell } {
   set rts [ create_bd_port -dir O rts ]
   set sys_clk [ create_bd_port -dir I -type clk sys_clk ]
   set tx_data [ create_bd_port -dir I -from 7 -to 0 tx_data ]
-  set tx_send_active [ create_bd_port -dir O tx_send_active ]
+  set tx_send_active [ create_bd_port -dir O -from 0 -to 0 tx_send_active ]
   set tx_wr_en [ create_bd_port -dir I tx_wr_en ]
   set txd [ create_bd_port -dir O txd ]
 
@@ -219,19 +219,37 @@ proc create_root_design { parentCell } {
    CONFIG.Write_Data_Count_Width {5} \
  ] $fifo_generator_0
 
+  # Create instance: util_vector_logic_0, and set properties
+  set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
+  set_property -dict [ list \
+   CONFIG.C_OPERATION {not} \
+   CONFIG.C_SIZE {1} \
+   CONFIG.LOGO_FILE {data/sym_notgate.png} \
+ ] $util_vector_logic_0
+
+  # Create instance: util_vector_logic_1, and set properties
+  set util_vector_logic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_1 ]
+  set_property -dict [ list \
+   CONFIG.C_OPERATION {not} \
+   CONFIG.C_SIZE {1} \
+   CONFIG.LOGO_FILE {data/sym_notgate.png} \
+ ] $util_vector_logic_1
+
   # Create port connections
   connect_bd_net -net UART_FIFO_IO_cntl_pr_0_fifoM_rd_en [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_rd_en] [get_bd_pins fifo_generator_0/rd_en]
   connect_bd_net -net UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en [get_bd_ports cts] [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_rx_rd_en]
   connect_bd_net -net UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en [get_bd_ports rts] [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_tx_wr_en]
-  connect_bd_net -net UART_TX_0_o_TX_Done [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_tx_rfd] [get_bd_pins UART_TX_0/o_TX_Done]
+  connect_bd_net -net UART_TX_0_o_TX_Active [get_bd_pins UART_TX_0/o_TX_Active] [get_bd_pins util_vector_logic_1/Op1]
   connect_bd_net -net UART_TX_0_o_TX_Serial [get_bd_ports txd] [get_bd_pins UART_TX_0/o_TX_Serial]
   connect_bd_net -net clk_0_1 [get_bd_ports sys_clk] [get_bd_pins UART_FIFO_IO_cntl_pr_0/clk] [get_bd_pins UART_TX_0/i_Clk] [get_bd_pins fifo_generator_0/clk]
   connect_bd_net -net din_0_1 [get_bd_ports tx_data] [get_bd_pins fifo_generator_0/din]
   connect_bd_net -net fifo_generator_0_dout [get_bd_pins UART_TX_0/i_TX_Byte] [get_bd_pins fifo_generator_0/dout]
-  connect_bd_net -net fifo_generator_0_full [get_bd_ports tx_send_active] [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_full] [get_bd_pins fifo_generator_0/full]
+  connect_bd_net -net fifo_generator_0_full [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_full] [get_bd_pins fifo_generator_0/full] [get_bd_pins util_vector_logic_0/Op1]
   connect_bd_net -net fifo_generator_0_valid [get_bd_pins UART_TX_0/i_TX_DV] [get_bd_pins fifo_generator_0/valid]
   connect_bd_net -net fifo_generator_0_wr_ack [get_bd_pins UART_FIFO_IO_cntl_pr_0/fifoM_wr_ack] [get_bd_pins fifo_generator_0/wr_ack]
   connect_bd_net -net rst_0_1 [get_bd_ports reset_n] [get_bd_pins UART_FIFO_IO_cntl_pr_0/rst]
+  connect_bd_net -net util_vector_logic_0_Res [get_bd_ports tx_send_active] [get_bd_pins util_vector_logic_0/Res]
+  connect_bd_net -net util_vector_logic_1_Res [get_bd_pins UART_FIFO_IO_cntl_pr_0/uart_tx_rfd] [get_bd_pins util_vector_logic_1/Res]
   connect_bd_net -net wr_en_0_1 [get_bd_ports tx_wr_en] [get_bd_pins fifo_generator_0/wr_en]
 
   # Create address segments

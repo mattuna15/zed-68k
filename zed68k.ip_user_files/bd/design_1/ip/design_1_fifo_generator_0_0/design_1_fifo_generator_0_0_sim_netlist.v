@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sun Oct 31 05:51:20 2021
+// Date        : Sun Oct 31 17:39:30 2021
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_fifo_generator_0_0/design_1_fifo_generator_0_0_sim_netlist.v
@@ -23,7 +23,8 @@ module design_1_fifo_generator_0_0
     full,
     wr_ack,
     empty,
-    valid);
+    valid,
+    data_count);
   (* x_interface_info = "xilinx.com:signal:clock:1.0 core_clk CLK" *) (* x_interface_parameter = "XIL_INTERFACENAME core_clk, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_clk100_i, INSERT_VIP 0" *) input clk;
   (* x_interface_info = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE WR_DATA" *) input [7:0]din;
   (* x_interface_info = "xilinx.com:interface:fifo_write:1.0 FIFO_WRITE WR_EN" *) input wr_en;
@@ -33,8 +34,10 @@ module design_1_fifo_generator_0_0
   output wr_ack;
   (* x_interface_info = "xilinx.com:interface:fifo_read:1.0 FIFO_READ EMPTY" *) output empty;
   output valid;
+  output [8:0]data_count;
 
   wire clk;
+  wire [8:0]data_count;
   wire [7:0]din;
   wire [7:0]dout;
   wire empty;
@@ -122,7 +125,6 @@ module design_1_fifo_generator_0_0
   wire [10:0]NLW_U0_axis_data_count_UNCONNECTED;
   wire [10:0]NLW_U0_axis_rd_data_count_UNCONNECTED;
   wire [10:0]NLW_U0_axis_wr_data_count_UNCONNECTED;
-  wire [8:0]NLW_U0_data_count_UNCONNECTED;
   wire [31:0]NLW_U0_m_axi_araddr_UNCONNECTED;
   wire [1:0]NLW_U0_m_axi_arburst_UNCONNECTED;
   wire [3:0]NLW_U0_m_axi_arcache_UNCONNECTED;
@@ -234,7 +236,7 @@ module design_1_fifo_generator_0_0
   (* C_HAS_AXI_WR_CHANNEL = "1" *) 
   (* C_HAS_AXI_WUSER = "0" *) 
   (* C_HAS_BACKUP = "0" *) 
-  (* C_HAS_DATA_COUNT = "0" *) 
+  (* C_HAS_DATA_COUNT = "1" *) 
   (* C_HAS_DATA_COUNTS_AXIS = "0" *) 
   (* C_HAS_DATA_COUNTS_RACH = "0" *) 
   (* C_HAS_DATA_COUNTS_RDCH = "0" *) 
@@ -452,7 +454,7 @@ module design_1_fifo_generator_0_0
         .backup(1'b0),
         .backup_marker(1'b0),
         .clk(clk),
-        .data_count(NLW_U0_data_count_UNCONNECTED[8:0]),
+        .data_count(data_count),
         .dbiterr(NLW_U0_dbiterr_UNCONNECTED),
         .din(din),
         .dout(dout),
@@ -1193,35 +1195,66 @@ module design_1_fifo_generator_0_0_compare_2
         .O(rd_en_0));
 endmodule
 
+(* ORIG_REF_NAME = "dc_ss" *) 
+module design_1_fifo_generator_0_0_dc_ss
+   (Q,
+    out,
+    rd_en,
+    \count_reg[8] ,
+    clk);
+  output [8:0]Q;
+  input out;
+  input rd_en;
+  input [0:0]\count_reg[8] ;
+  input clk;
+
+  wire [8:0]Q;
+  wire clk;
+  wire [0:0]\count_reg[8] ;
+  wire out;
+  wire rd_en;
+
+  design_1_fifo_generator_0_0_updn_cntr \gsym_dc.dc 
+       (.Q(Q),
+        .clk(clk),
+        .\count_reg[8]_0 (\count_reg[8] ),
+        .out(out),
+        .rd_en(rd_en));
+endmodule
+
 (* ORIG_REF_NAME = "fifo_generator_ramfifo" *) 
 module design_1_fifo_generator_0_0_fifo_generator_ramfifo
-   (dout,
+   (data_count,
+    dout,
     empty,
     full,
     valid,
     wr_ack,
+    rd_en,
     clk,
     din,
-    rd_en,
     wr_en);
+  output [8:0]data_count;
   output [7:0]dout;
   output empty;
   output full;
   output valid;
   output wr_ack;
+  input rd_en;
   input clk;
   input [7:0]din;
-  input rd_en;
   input wr_en;
 
   wire clk;
+  wire [8:0]data_count;
   wire [7:0]din;
   wire [7:0]dout;
   wire empty;
   wire empty_fb_i;
   wire full;
   wire \gntv_or_sync_fifo.gl0.wr_n_0 ;
-  wire \gntv_or_sync_fifo.gl0.wr_n_22 ;
+  wire \gntv_or_sync_fifo.gl0.wr_n_23 ;
+  wire \grss.gdc.dc/cntr_en ;
   wire [4:4]\grss.rsts/c2/v1_reg ;
   wire [3:0]\gwss.wsts/c0/v1_reg ;
   wire [3:0]\gwss.wsts/c1/v1_reg ;
@@ -1238,14 +1271,16 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
 
   design_1_fifo_generator_0_0_rd_logic \gntv_or_sync_fifo.gl0.rd 
        (.E(ram_rd_en_i),
-        .Q(rd_pntr_plus1),
+        .Q(data_count),
         .clk(clk),
+        .\count_reg[8] (\grss.gdc.dc/cntr_en ),
         .empty(empty),
         .\gc0.count_d1_reg[8] (rd_pntr),
+        .\gc0.count_reg[8] (rd_pntr_plus1),
         .\gmux.gm[3].gms.ms (wr_pntr[7:0]),
         .\gmux.gm[3].gms.ms_0 (wr_pntr_plus1),
         .out(empty_fb_i),
-        .ram_empty_i_reg(\gntv_or_sync_fifo.gl0.wr_n_22 ),
+        .ram_empty_i_reg(\gntv_or_sync_fifo.gl0.wr_n_23 ),
         .ram_empty_i_reg_0(\grss.rsts/c2/v1_reg ),
         .ram_empty_i_reg_1(\gntv_or_sync_fifo.gl0.wr_n_0 ),
         .rd_en(rd_en),
@@ -1260,12 +1295,13 @@ module design_1_fifo_generator_0_0_fifo_generator_ramfifo
         .full(full),
         .\gcc0.gc0.count_d1_reg[8] (wr_pntr),
         .\gcc0.gc0.count_d1_reg[8]_0 (\grss.rsts/c2/v1_reg ),
-        .\gcc0.gc0.count_d1_reg[8]_1 (\gntv_or_sync_fifo.gl0.wr_n_22 ),
+        .\gcc0.gc0.count_d1_reg[8]_1 (\gntv_or_sync_fifo.gl0.wr_n_23 ),
         .\gmux.gm[4].gms.ms (\gwss.wsts/c0/v1_reg ),
         .\gmux.gm[4].gms.ms_0 (\gwss.wsts/c1/v1_reg ),
         .\gmux.gm[4].gms.ms_1 (rd_pntr[8]),
         .\gmux.gm[4].gms.ms_2 (rd_pntr_plus1),
         .out(\gntv_or_sync_fifo.gl0.wr_n_0 ),
+        .ram_full_fb_i_reg(\grss.gdc.dc/cntr_en ),
         .ram_full_i_reg(empty_fb_i),
         .rd_en(rd_en),
         .wr_ack(wr_ack),
@@ -1282,25 +1318,28 @@ endmodule
 
 (* ORIG_REF_NAME = "fifo_generator_top" *) 
 module design_1_fifo_generator_0_0_fifo_generator_top
-   (dout,
+   (DATA_COUNT,
+    dout,
     empty,
     full,
     valid,
     wr_ack,
+    rd_en,
     clk,
     din,
-    rd_en,
     wr_en);
+  output [8:0]DATA_COUNT;
   output [7:0]dout;
   output empty;
   output full;
   output valid;
   output wr_ack;
+  input rd_en;
   input clk;
   input [7:0]din;
-  input rd_en;
   input wr_en;
 
+  wire [8:0]DATA_COUNT;
   wire clk;
   wire [7:0]din;
   wire [7:0]dout;
@@ -1313,6 +1352,7 @@ module design_1_fifo_generator_0_0_fifo_generator_top
 
   design_1_fifo_generator_0_0_fifo_generator_ramfifo \grf.rf 
        (.clk(clk),
+        .data_count(DATA_COUNT),
         .din(din),
         .dout(dout),
         .empty(empty),
@@ -1346,7 +1386,7 @@ endmodule
 (* C_HAS_AXI_ARUSER = "0" *) (* C_HAS_AXI_AWUSER = "0" *) (* C_HAS_AXI_BUSER = "0" *) 
 (* C_HAS_AXI_ID = "0" *) (* C_HAS_AXI_RD_CHANNEL = "1" *) (* C_HAS_AXI_RUSER = "0" *) 
 (* C_HAS_AXI_WR_CHANNEL = "1" *) (* C_HAS_AXI_WUSER = "0" *) (* C_HAS_BACKUP = "0" *) 
-(* C_HAS_DATA_COUNT = "0" *) (* C_HAS_DATA_COUNTS_AXIS = "0" *) (* C_HAS_DATA_COUNTS_RACH = "0" *) 
+(* C_HAS_DATA_COUNT = "1" *) (* C_HAS_DATA_COUNTS_AXIS = "0" *) (* C_HAS_DATA_COUNTS_RACH = "0" *) 
 (* C_HAS_DATA_COUNTS_RDCH = "0" *) (* C_HAS_DATA_COUNTS_WACH = "0" *) (* C_HAS_DATA_COUNTS_WDCH = "0" *) 
 (* C_HAS_DATA_COUNTS_WRCH = "0" *) (* C_HAS_INT_CLK = "0" *) (* C_HAS_MASTER_CE = "0" *) 
 (* C_HAS_MEMINIT_FILE = "0" *) (* C_HAS_OVERFLOW = "0" *) (* C_HAS_PROG_FLAGS_AXIS = "0" *) 
@@ -1858,6 +1898,7 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5
   wire \<const0> ;
   wire \<const1> ;
   wire clk;
+  wire [8:0]data_count;
   wire [7:0]din;
   wire [7:0]dout;
   wire empty;
@@ -2049,15 +2090,6 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5
   assign axis_wr_data_count[2] = \<const0> ;
   assign axis_wr_data_count[1] = \<const0> ;
   assign axis_wr_data_count[0] = \<const0> ;
-  assign data_count[8] = \<const0> ;
-  assign data_count[7] = \<const0> ;
-  assign data_count[6] = \<const0> ;
-  assign data_count[5] = \<const0> ;
-  assign data_count[4] = \<const0> ;
-  assign data_count[3] = \<const0> ;
-  assign data_count[2] = \<const0> ;
-  assign data_count[1] = \<const0> ;
-  assign data_count[0] = \<const0> ;
   assign dbiterr = \<const0> ;
   assign m_axi_araddr[31] = \<const0> ;
   assign m_axi_araddr[30] = \<const0> ;
@@ -2393,6 +2425,7 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5
        (.P(\<const1> ));
   design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth inst_fifo_gen
        (.clk(clk),
+        .data_count(data_count),
         .din(din),
         .dout(dout),
         .empty(empty),
@@ -2405,26 +2438,29 @@ endmodule
 
 (* ORIG_REF_NAME = "fifo_generator_v13_2_5_synth" *) 
 module design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth
-   (dout,
+   (data_count,
+    dout,
     empty,
     full,
     valid,
     wr_ack,
+    rd_en,
     clk,
     din,
-    rd_en,
     wr_en);
+  output [8:0]data_count;
   output [7:0]dout;
   output empty;
   output full;
   output valid;
   output wr_ack;
+  input rd_en;
   input clk;
   input [7:0]din;
-  input rd_en;
   input wr_en;
 
   wire clk;
+  wire [8:0]data_count;
   wire [7:0]din;
   wire [7:0]dout;
   wire empty;
@@ -2435,7 +2471,8 @@ module design_1_fifo_generator_0_0_fifo_generator_v13_2_5_synth
   wire wr_en;
 
   design_1_fifo_generator_0_0_fifo_generator_top \gconvfifo.rf 
-       (.clk(clk),
+       (.DATA_COUNT(data_count),
+        .clk(clk),
         .din(din),
         .dout(dout),
         .empty(empty),
@@ -2483,9 +2520,9 @@ endmodule
 
 (* ORIG_REF_NAME = "rd_bin_cntr" *) 
 module design_1_fifo_generator_0_0_rd_bin_cntr
-   (Q,
+   (\gc0.count_reg[8]_0 ,
     v1_reg,
-    \gc0.count_d1_reg[8]_0 ,
+    Q,
     v1_reg_1,
     v1_reg_0,
     \gc0.count_d1_reg[0]_0 ,
@@ -2496,9 +2533,9 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
     \gmux.gm[3].gms.ms_0 ,
     E,
     clk);
-  output [0:0]Q;
+  output [0:0]\gc0.count_reg[8]_0 ;
   output [3:0]v1_reg;
-  output [8:0]\gc0.count_d1_reg[8]_0 ;
+  output [8:0]Q;
   output [3:0]v1_reg_1;
   output [3:0]v1_reg_0;
   output \gc0.count_d1_reg[0]_0 ;
@@ -2511,14 +2548,14 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
   input clk;
 
   wire [0:0]E;
-  wire [0:0]Q;
+  wire [8:0]Q;
   wire clk;
   wire \gc0.count[8]_i_2_n_0 ;
   wire \gc0.count_d1_reg[0]_0 ;
   wire \gc0.count_d1_reg[2]_0 ;
   wire \gc0.count_d1_reg[4]_0 ;
   wire \gc0.count_d1_reg[6]_0 ;
-  wire [8:0]\gc0.count_d1_reg[8]_0 ;
+  wire [0:0]\gc0.count_reg[8]_0 ;
   wire [7:0]\gmux.gm[3].gms.ms ;
   wire [7:0]\gmux.gm[3].gms.ms_0 ;
   wire [8:0]plusOp;
@@ -2597,7 +2634,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.I0(rd_pntr_plus1[6]),
         .I1(\gc0.count[8]_i_2_n_0 ),
         .I2(rd_pntr_plus1[7]),
-        .I3(Q),
+        .I3(\gc0.count_reg[8]_0 ),
         .O(plusOp[8]));
   LUT6 #(
     .INIT(64'h8000000000000000)) 
@@ -2615,7 +2652,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[0]),
-        .Q(\gc0.count_d1_reg[8]_0 [0]),
+        .Q(Q[0]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
@@ -2623,7 +2660,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[1]),
-        .Q(\gc0.count_d1_reg[8]_0 [1]),
+        .Q(Q[1]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
@@ -2631,7 +2668,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[2]),
-        .Q(\gc0.count_d1_reg[8]_0 [2]),
+        .Q(Q[2]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
@@ -2639,7 +2676,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[3]),
-        .Q(\gc0.count_d1_reg[8]_0 [3]),
+        .Q(Q[3]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
@@ -2647,7 +2684,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[4]),
-        .Q(\gc0.count_d1_reg[8]_0 [4]),
+        .Q(Q[4]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
@@ -2655,7 +2692,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[5]),
-        .Q(\gc0.count_d1_reg[8]_0 [5]),
+        .Q(Q[5]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
@@ -2663,7 +2700,7 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[6]),
-        .Q(\gc0.count_d1_reg[8]_0 [6]),
+        .Q(Q[6]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
@@ -2671,15 +2708,15 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(rd_pntr_plus1[7]),
-        .Q(\gc0.count_d1_reg[8]_0 [7]),
+        .Q(Q[7]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b0)) 
     \gc0.count_d1_reg[8] 
        (.C(clk),
         .CE(E),
-        .D(Q),
-        .Q(\gc0.count_d1_reg[8]_0 [8]),
+        .D(\gc0.count_reg[8]_0 ),
+        .Q(Q[8]),
         .R(1'b0));
   FDRE #(
     .INIT(1'b1)) 
@@ -2751,14 +2788,14 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
        (.C(clk),
         .CE(E),
         .D(plusOp[8]),
-        .Q(Q),
+        .Q(\gc0.count_reg[8]_0 ),
         .R(1'b0));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[0].gm1.m1_i_1 
-       (.I0(\gc0.count_d1_reg[8]_0 [0]),
+       (.I0(Q[0]),
         .I1(\gmux.gm[3].gms.ms [0]),
-        .I2(\gc0.count_d1_reg[8]_0 [1]),
+        .I2(Q[1]),
         .I3(\gmux.gm[3].gms.ms [1]),
         .O(v1_reg[0]));
   LUT4 #(
@@ -2772,25 +2809,25 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[0].gm1.m1_i_1__1 
-       (.I0(\gc0.count_d1_reg[8]_0 [0]),
+       (.I0(Q[0]),
         .I1(\gmux.gm[3].gms.ms_0 [0]),
-        .I2(\gc0.count_d1_reg[8]_0 [1]),
+        .I2(Q[1]),
         .I3(\gmux.gm[3].gms.ms_0 [1]),
         .O(v1_reg_0[0]));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[0].gm1.m1_i_1__2 
-       (.I0(\gc0.count_d1_reg[8]_0 [0]),
+       (.I0(Q[0]),
         .I1(\gmux.gm[3].gms.ms [0]),
-        .I2(\gc0.count_d1_reg[8]_0 [1]),
+        .I2(Q[1]),
         .I3(\gmux.gm[3].gms.ms [1]),
         .O(\gc0.count_d1_reg[0]_0 ));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[1].gms.ms_i_1 
-       (.I0(\gc0.count_d1_reg[8]_0 [2]),
+       (.I0(Q[2]),
         .I1(\gmux.gm[3].gms.ms [2]),
-        .I2(\gc0.count_d1_reg[8]_0 [3]),
+        .I2(Q[3]),
         .I3(\gmux.gm[3].gms.ms [3]),
         .O(v1_reg[1]));
   LUT4 #(
@@ -2804,25 +2841,25 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[1].gms.ms_i_1__1 
-       (.I0(\gc0.count_d1_reg[8]_0 [2]),
+       (.I0(Q[2]),
         .I1(\gmux.gm[3].gms.ms_0 [2]),
-        .I2(\gc0.count_d1_reg[8]_0 [3]),
+        .I2(Q[3]),
         .I3(\gmux.gm[3].gms.ms_0 [3]),
         .O(v1_reg_0[1]));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[1].gms.ms_i_1__2 
-       (.I0(\gc0.count_d1_reg[8]_0 [2]),
+       (.I0(Q[2]),
         .I1(\gmux.gm[3].gms.ms [2]),
-        .I2(\gc0.count_d1_reg[8]_0 [3]),
+        .I2(Q[3]),
         .I3(\gmux.gm[3].gms.ms [3]),
         .O(\gc0.count_d1_reg[2]_0 ));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[2].gms.ms_i_1 
-       (.I0(\gc0.count_d1_reg[8]_0 [4]),
+       (.I0(Q[4]),
         .I1(\gmux.gm[3].gms.ms [4]),
-        .I2(\gc0.count_d1_reg[8]_0 [5]),
+        .I2(Q[5]),
         .I3(\gmux.gm[3].gms.ms [5]),
         .O(v1_reg[2]));
   LUT4 #(
@@ -2836,25 +2873,25 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[2].gms.ms_i_1__1 
-       (.I0(\gc0.count_d1_reg[8]_0 [4]),
+       (.I0(Q[4]),
         .I1(\gmux.gm[3].gms.ms_0 [4]),
-        .I2(\gc0.count_d1_reg[8]_0 [5]),
+        .I2(Q[5]),
         .I3(\gmux.gm[3].gms.ms_0 [5]),
         .O(v1_reg_0[2]));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[2].gms.ms_i_1__2 
-       (.I0(\gc0.count_d1_reg[8]_0 [4]),
+       (.I0(Q[4]),
         .I1(\gmux.gm[3].gms.ms [4]),
-        .I2(\gc0.count_d1_reg[8]_0 [5]),
+        .I2(Q[5]),
         .I3(\gmux.gm[3].gms.ms [5]),
         .O(\gc0.count_d1_reg[4]_0 ));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[3].gms.ms_i_1 
-       (.I0(\gc0.count_d1_reg[8]_0 [6]),
+       (.I0(Q[6]),
         .I1(\gmux.gm[3].gms.ms [6]),
-        .I2(\gc0.count_d1_reg[8]_0 [7]),
+        .I2(Q[7]),
         .I3(\gmux.gm[3].gms.ms [7]),
         .O(v1_reg[3]));
   LUT4 #(
@@ -2868,17 +2905,17 @@ module design_1_fifo_generator_0_0_rd_bin_cntr
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[3].gms.ms_i_1__1 
-       (.I0(\gc0.count_d1_reg[8]_0 [6]),
+       (.I0(Q[6]),
         .I1(\gmux.gm[3].gms.ms_0 [6]),
-        .I2(\gc0.count_d1_reg[8]_0 [7]),
+        .I2(Q[7]),
         .I3(\gmux.gm[3].gms.ms_0 [7]),
         .O(v1_reg_0[3]));
   LUT4 #(
     .INIT(16'h9009)) 
     \gmux.gm[3].gms.ms_i_1__2 
-       (.I0(\gc0.count_d1_reg[8]_0 [6]),
+       (.I0(Q[6]),
         .I1(\gmux.gm[3].gms.ms [6]),
-        .I2(\gc0.count_d1_reg[8]_0 [7]),
+        .I2(Q[7]),
         .I3(\gmux.gm[3].gms.ms [7]),
         .O(\gc0.count_d1_reg[6]_0 ));
 endmodule
@@ -2911,8 +2948,9 @@ module design_1_fifo_generator_0_0_rd_logic
    (out,
     empty,
     valid,
-    E,
     Q,
+    E,
+    \gc0.count_reg[8] ,
     v1_reg,
     \gc0.count_d1_reg[8] ,
     v1_reg_0,
@@ -2923,12 +2961,14 @@ module design_1_fifo_generator_0_0_rd_logic
     ram_empty_i_reg_1,
     wr_en,
     \gmux.gm[3].gms.ms ,
-    \gmux.gm[3].gms.ms_0 );
+    \gmux.gm[3].gms.ms_0 ,
+    \count_reg[8] );
   output out;
   output empty;
   output valid;
+  output [8:0]Q;
   output [0:0]E;
-  output [0:0]Q;
+  output [0:0]\gc0.count_reg[8] ;
   output [3:0]v1_reg;
   output [8:0]\gc0.count_d1_reg[8] ;
   output [3:0]v1_reg_0;
@@ -2940,13 +2980,16 @@ module design_1_fifo_generator_0_0_rd_logic
   input wr_en;
   input [7:0]\gmux.gm[3].gms.ms ;
   input [7:0]\gmux.gm[3].gms.ms_0 ;
+  input [0:0]\count_reg[8] ;
 
   wire [0:0]E;
-  wire [0:0]Q;
+  wire [8:0]Q;
   wire [3:0]\c2/v1_reg ;
   wire clk;
+  wire [0:0]\count_reg[8] ;
   wire empty;
   wire [8:0]\gc0.count_d1_reg[8] ;
+  wire [0:0]\gc0.count_reg[8] ;
   wire [7:0]\gmux.gm[3].gms.ms ;
   wire [7:0]\gmux.gm[3].gms.ms_0 ;
   wire out;
@@ -2968,6 +3011,12 @@ module design_1_fifo_generator_0_0_rd_logic
        (.clk(clk),
         .ram_valid_i(ram_valid_i),
         .valid(valid));
+  design_1_fifo_generator_0_0_dc_ss \grss.gdc.dc 
+       (.Q(Q),
+        .clk(clk),
+        .\count_reg[8] (\count_reg[8] ),
+        .out(out),
+        .rd_en(rd_en));
   design_1_fifo_generator_0_0_rd_status_flags_ss \grss.rsts 
        (.E(E),
         .clk(clk),
@@ -2986,13 +3035,13 @@ module design_1_fifo_generator_0_0_rd_logic
         .wr_en(wr_en));
   design_1_fifo_generator_0_0_rd_bin_cntr rpntr
        (.E(E),
-        .Q(Q),
+        .Q(\gc0.count_d1_reg[8] ),
         .clk(clk),
         .\gc0.count_d1_reg[0]_0 (rpntr_n_22),
         .\gc0.count_d1_reg[2]_0 (rpntr_n_23),
         .\gc0.count_d1_reg[4]_0 (rpntr_n_24),
         .\gc0.count_d1_reg[6]_0 (rpntr_n_25),
-        .\gc0.count_d1_reg[8]_0 (\gc0.count_d1_reg[8] ),
+        .\gc0.count_reg[8]_0 (\gc0.count_reg[8] ),
         .\gmux.gm[3].gms.ms (\gmux.gm[3].gms.ms ),
         .\gmux.gm[3].gms.ms_0 (\gmux.gm[3].gms.ms_0 ),
         .v1_reg(v1_reg),
@@ -3116,6 +3165,202 @@ module design_1_fifo_generator_0_0_reset_blk_ramfifo
     rstblki_0
        (.I0(1'b0),
         .O(rst_wr_reg2));
+endmodule
+
+(* ORIG_REF_NAME = "updn_cntr" *) 
+module design_1_fifo_generator_0_0_updn_cntr
+   (Q,
+    out,
+    rd_en,
+    \count_reg[8]_0 ,
+    clk);
+  output [8:0]Q;
+  input out;
+  input rd_en;
+  input [0:0]\count_reg[8]_0 ;
+  input clk;
+
+  wire [8:0]Q;
+  wire clk;
+  wire \count[0]_i_1_n_0 ;
+  wire \count[4]_i_2_n_0 ;
+  wire \count[4]_i_3_n_0 ;
+  wire \count[4]_i_4_n_0 ;
+  wire \count[4]_i_5_n_0 ;
+  wire \count[4]_i_6_n_0 ;
+  wire \count[8]_i_3_n_0 ;
+  wire \count[8]_i_4_n_0 ;
+  wire \count[8]_i_5_n_0 ;
+  wire \count[8]_i_6_n_0 ;
+  wire \count_reg[4]_i_1_n_0 ;
+  wire \count_reg[4]_i_1_n_1 ;
+  wire \count_reg[4]_i_1_n_2 ;
+  wire \count_reg[4]_i_1_n_3 ;
+  wire \count_reg[4]_i_1_n_4 ;
+  wire \count_reg[4]_i_1_n_5 ;
+  wire \count_reg[4]_i_1_n_6 ;
+  wire \count_reg[4]_i_1_n_7 ;
+  wire [0:0]\count_reg[8]_0 ;
+  wire \count_reg[8]_i_2_n_1 ;
+  wire \count_reg[8]_i_2_n_2 ;
+  wire \count_reg[8]_i_2_n_3 ;
+  wire \count_reg[8]_i_2_n_4 ;
+  wire \count_reg[8]_i_2_n_5 ;
+  wire \count_reg[8]_i_2_n_6 ;
+  wire \count_reg[8]_i_2_n_7 ;
+  wire out;
+  wire rd_en;
+  wire [3:3]\NLW_count_reg[8]_i_2_CO_UNCONNECTED ;
+
+  LUT1 #(
+    .INIT(2'h1)) 
+    \count[0]_i_1 
+       (.I0(Q[0]),
+        .O(\count[0]_i_1_n_0 ));
+  LUT1 #(
+    .INIT(2'h1)) 
+    \count[4]_i_2 
+       (.I0(Q[1]),
+        .O(\count[4]_i_2_n_0 ));
+  LUT2 #(
+    .INIT(4'h9)) 
+    \count[4]_i_3 
+       (.I0(Q[3]),
+        .I1(Q[4]),
+        .O(\count[4]_i_3_n_0 ));
+  LUT2 #(
+    .INIT(4'h9)) 
+    \count[4]_i_4 
+       (.I0(Q[2]),
+        .I1(Q[3]),
+        .O(\count[4]_i_4_n_0 ));
+  LUT2 #(
+    .INIT(4'h9)) 
+    \count[4]_i_5 
+       (.I0(Q[1]),
+        .I1(Q[2]),
+        .O(\count[4]_i_5_n_0 ));
+  LUT3 #(
+    .INIT(8'h9A)) 
+    \count[4]_i_6 
+       (.I0(Q[1]),
+        .I1(out),
+        .I2(rd_en),
+        .O(\count[4]_i_6_n_0 ));
+  LUT2 #(
+    .INIT(4'h9)) 
+    \count[8]_i_3 
+       (.I0(Q[7]),
+        .I1(Q[8]),
+        .O(\count[8]_i_3_n_0 ));
+  LUT2 #(
+    .INIT(4'h9)) 
+    \count[8]_i_4 
+       (.I0(Q[6]),
+        .I1(Q[7]),
+        .O(\count[8]_i_4_n_0 ));
+  LUT2 #(
+    .INIT(4'h9)) 
+    \count[8]_i_5 
+       (.I0(Q[5]),
+        .I1(Q[6]),
+        .O(\count[8]_i_5_n_0 ));
+  LUT2 #(
+    .INIT(4'h9)) 
+    \count[8]_i_6 
+       (.I0(Q[4]),
+        .I1(Q[5]),
+        .O(\count[8]_i_6_n_0 ));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[0] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count[0]_i_1_n_0 ),
+        .Q(Q[0]),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[1] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[4]_i_1_n_7 ),
+        .Q(Q[1]),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[2] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[4]_i_1_n_6 ),
+        .Q(Q[2]),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[3] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[4]_i_1_n_5 ),
+        .Q(Q[3]),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[4] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[4]_i_1_n_4 ),
+        .Q(Q[4]),
+        .R(1'b0));
+  (* ADDER_THRESHOLD = "35" *) 
+  (* METHODOLOGY_DRC_VIOS = "{SYNTH-8 {cell *THIS*}}" *) 
+  CARRY4 \count_reg[4]_i_1 
+       (.CI(1'b0),
+        .CO({\count_reg[4]_i_1_n_0 ,\count_reg[4]_i_1_n_1 ,\count_reg[4]_i_1_n_2 ,\count_reg[4]_i_1_n_3 }),
+        .CYINIT(Q[0]),
+        .DI({Q[3:1],\count[4]_i_2_n_0 }),
+        .O({\count_reg[4]_i_1_n_4 ,\count_reg[4]_i_1_n_5 ,\count_reg[4]_i_1_n_6 ,\count_reg[4]_i_1_n_7 }),
+        .S({\count[4]_i_3_n_0 ,\count[4]_i_4_n_0 ,\count[4]_i_5_n_0 ,\count[4]_i_6_n_0 }));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[5] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[8]_i_2_n_7 ),
+        .Q(Q[5]),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[6] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[8]_i_2_n_6 ),
+        .Q(Q[6]),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[7] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[8]_i_2_n_5 ),
+        .Q(Q[7]),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b0)) 
+    \count_reg[8] 
+       (.C(clk),
+        .CE(\count_reg[8]_0 ),
+        .D(\count_reg[8]_i_2_n_4 ),
+        .Q(Q[8]),
+        .R(1'b0));
+  (* ADDER_THRESHOLD = "35" *) 
+  (* METHODOLOGY_DRC_VIOS = "{SYNTH-8 {cell *THIS*}}" *) 
+  CARRY4 \count_reg[8]_i_2 
+       (.CI(\count_reg[4]_i_1_n_0 ),
+        .CO({\NLW_count_reg[8]_i_2_CO_UNCONNECTED [3],\count_reg[8]_i_2_n_1 ,\count_reg[8]_i_2_n_2 ,\count_reg[8]_i_2_n_3 }),
+        .CYINIT(1'b0),
+        .DI({1'b0,Q[6:4]}),
+        .O({\count_reg[8]_i_2_n_4 ,\count_reg[8]_i_2_n_5 ,\count_reg[8]_i_2_n_6 ,\count_reg[8]_i_2_n_7 }),
+        .S({\count[8]_i_3_n_0 ,\count[8]_i_4_n_0 ,\count[8]_i_5_n_0 ,\count[8]_i_6_n_0 }));
 endmodule
 
 (* ORIG_REF_NAME = "wr_bin_cntr" *) 
@@ -3434,6 +3679,7 @@ module design_1_fifo_generator_0_0_wr_logic
     full,
     wr_ack,
     E,
+    ram_full_fb_i_reg,
     Q,
     \gcc0.gc0.count_d1_reg[8] ,
     \gcc0.gc0.count_d1_reg[8]_0 ,
@@ -3450,6 +3696,7 @@ module design_1_fifo_generator_0_0_wr_logic
   output full;
   output wr_ack;
   output [0:0]E;
+  output [0:0]ram_full_fb_i_reg;
   output [7:0]Q;
   output [8:0]\gcc0.gc0.count_d1_reg[8] ;
   output [0:0]\gcc0.gc0.count_d1_reg[8]_0 ;
@@ -3477,6 +3724,7 @@ module design_1_fifo_generator_0_0_wr_logic
   wire [0:0]\gmux.gm[4].gms.ms_1 ;
   wire [0:0]\gmux.gm[4].gms.ms_2 ;
   wire out;
+  wire [0:0]ram_full_fb_i_reg;
   wire ram_full_i_reg;
   wire rd_en;
   wire wr_ack;
@@ -3493,6 +3741,7 @@ module design_1_fifo_generator_0_0_wr_logic
         .\gmux.gm[4].gms.ms (\gmux.gm[4].gms.ms ),
         .\gmux.gm[4].gms.ms_0 (\gmux.gm[4].gms.ms_0 ),
         .out(out),
+        .ram_full_fb_i_reg_0(ram_full_fb_i_reg),
         .ram_full_i_reg_0(ram_full_i_reg),
         .rd_en(rd_en),
         .v1_reg(\c0/v1_reg ),
@@ -3515,6 +3764,7 @@ endmodule
 module design_1_fifo_generator_0_0_wr_status_flags_ss
    (out,
     full,
+    ram_full_fb_i_reg_0,
     E,
     \gmux.gm[4].gms.ms ,
     v1_reg,
@@ -3526,6 +3776,7 @@ module design_1_fifo_generator_0_0_wr_status_flags_ss
     rd_en);
   output out;
   output full;
+  output [0:0]ram_full_fb_i_reg_0;
   output [0:0]E;
   input [3:0]\gmux.gm[4].gms.ms ;
   input [0:0]v1_reg;
@@ -3545,6 +3796,7 @@ module design_1_fifo_generator_0_0_wr_status_flags_ss
   (* DONT_TOUCH *) wire ram_afull_i;
   wire ram_full_comb;
   (* DONT_TOUCH *) wire ram_full_fb_i;
+  wire [0:0]ram_full_fb_i_reg_0;
   (* DONT_TOUCH *) wire ram_full_i;
   wire ram_full_i_reg_0;
   wire rd_en;
@@ -3573,6 +3825,14 @@ module design_1_fifo_generator_0_0_wr_status_flags_ss
         .rd_en(rd_en),
         .v1_reg_0(v1_reg_0),
         .wr_en(wr_en));
+  LUT4 #(
+    .INIT(16'h4B44)) 
+    \count[8]_i_1 
+       (.I0(ram_full_fb_i),
+        .I1(wr_en),
+        .I2(ram_full_i_reg_0),
+        .I3(rd_en),
+        .O(ram_full_fb_i_reg_0));
   LUT1 #(
     .INIT(2'h2)) 
     i_0

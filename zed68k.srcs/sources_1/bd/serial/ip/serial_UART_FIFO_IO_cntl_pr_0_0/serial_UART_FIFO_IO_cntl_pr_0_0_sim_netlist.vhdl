@@ -1,7 +1,7 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Sun Oct 31 06:50:13 2021
+-- Date        : Tue Jan 25 09:02:31 2022
 -- Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               d:/code/zed-68k/zed68k.srcs/sources_1/bd/serial/ip/serial_UART_FIFO_IO_cntl_pr_0_0/serial_UART_FIFO_IO_cntl_pr_0_0_sim_netlist.vhdl
@@ -16,30 +16,27 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity serial_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc is
   port (
+    fifoM_rd_en : out STD_LOGIC;
     uart_tx_wr_en : out STD_LOGIC;
     fifoM_wr_en : out STD_LOGIC;
-    uart_rx_rd_en : out STD_LOGIC;
+    uart_tx_rfd : in STD_LOGIC;
+    fifoM_empty : in STD_LOGIC;
     clk : in STD_LOGIC;
     fifoM_wr_ack : in STD_LOGIC;
     fifoM_full : in STD_LOGIC;
-    uart_rx_dv : in STD_LOGIC;
-    uart_tx_rfd : in STD_LOGIC;
-    fifoM_empty : in STD_LOGIC
+    uart_rx_dv : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of serial_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc : entity is "UART_FIFO_IO_cntl_proc";
 end serial_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc;
 
 architecture STRUCTURE of serial_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc is
+  signal \^fifom_rd_en\ : STD_LOGIC;
   signal \^fifom_wr_en\ : STD_LOGIC;
   signal fifoM_wr_en_i_1_n_0 : STD_LOGIC;
-  signal uart_rx_rd_en_i_1_n_0 : STD_LOGIC;
-  signal uart_tx_wr_en_next : STD_LOGIC;
-  signal uart_tx_wr_en_next0 : STD_LOGIC;
-  attribute SOFT_HLUTNM : string;
-  attribute SOFT_HLUTNM of fifoM_wr_en_i_1 : label is "soft_lutpair0";
-  attribute SOFT_HLUTNM of uart_rx_rd_en_i_1 : label is "soft_lutpair0";
+  signal \uart_tx_wr_en_next0__0\ : STD_LOGIC;
 begin
+  fifoM_rd_en <= \^fifom_rd_en\;
   fifoM_wr_en <= \^fifom_wr_en\;
 fifoM_wr_en_i_1: unisim.vcomponents.LUT4
     generic map(
@@ -63,44 +60,32 @@ fifoM_wr_en_reg: unisim.vcomponents.FDRE
       Q => \^fifom_wr_en\,
       R => '0'
     );
-uart_rx_rd_en_i_1: unisim.vcomponents.LUT1
+uart_tx_wr_en_next0: unisim.vcomponents.LUT3
     generic map(
-      INIT => X"1"
-    )
-        port map (
-      I0 => fifoM_full,
-      O => uart_rx_rd_en_i_1_n_0
-    );
-uart_rx_rd_en_reg: unisim.vcomponents.FDRE
-     port map (
-      C => clk,
-      CE => '1',
-      D => uart_rx_rd_en_i_1_n_0,
-      Q => uart_rx_rd_en,
-      R => '0'
-    );
-uart_tx_wr_en_next_i_1: unisim.vcomponents.LUT2
-    generic map(
-      INIT => X"2"
+      INIT => X"02"
     )
         port map (
       I0 => uart_tx_rfd,
       I1 => fifoM_empty,
-      O => uart_tx_wr_en_next0
+      I2 => \^fifom_rd_en\,
+      O => \uart_tx_wr_en_next0__0\
     );
 uart_tx_wr_en_next_reg: unisim.vcomponents.FDRE
-     port map (
+    generic map(
+      INIT => '0'
+    )
+        port map (
       C => clk,
       CE => '1',
-      D => uart_tx_wr_en_next0,
-      Q => uart_tx_wr_en_next,
+      D => \uart_tx_wr_en_next0__0\,
+      Q => \^fifom_rd_en\,
       R => '0'
     );
 uart_tx_wr_en_reg: unisim.vcomponents.FDRE
      port map (
       C => clk,
       CE => '1',
-      D => uart_tx_wr_en_next,
+      D => \^fifom_rd_en\,
       Q => uart_tx_wr_en,
       R => '0'
     );
@@ -136,7 +121,7 @@ entity serial_UART_FIFO_IO_cntl_pr_0_0 is
 end serial_UART_FIFO_IO_cntl_pr_0_0;
 
 architecture STRUCTURE of serial_UART_FIFO_IO_cntl_pr_0_0 is
-  signal \<const1>\ : STD_LOGIC;
+  signal \<const0>\ : STD_LOGIC;
   attribute X_INTERFACE_INFO : string;
   attribute X_INTERFACE_INFO of clk : signal is "xilinx.com:signal:clock:1.0 clk CLK";
   attribute X_INTERFACE_PARAMETER : string;
@@ -144,20 +129,20 @@ architecture STRUCTURE of serial_UART_FIFO_IO_cntl_pr_0_0 is
   attribute X_INTERFACE_INFO of rst : signal is "xilinx.com:signal:reset:1.0 rst RST";
   attribute X_INTERFACE_PARAMETER of rst : signal is "XIL_INTERFACENAME rst, POLARITY ACTIVE_LOW, INSERT_VIP 0";
 begin
-  fifoM_rd_en <= \<const1>\;
-VCC: unisim.vcomponents.VCC
+  uart_rx_rd_en <= \<const0>\;
+GND: unisim.vcomponents.GND
      port map (
-      P => \<const1>\
+      G => \<const0>\
     );
 inst: entity work.serial_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc
      port map (
       clk => clk,
       fifoM_empty => fifoM_empty,
       fifoM_full => fifoM_full,
+      fifoM_rd_en => fifoM_rd_en,
       fifoM_wr_ack => fifoM_wr_ack,
       fifoM_wr_en => fifoM_wr_en,
       uart_rx_dv => uart_rx_dv,
-      uart_rx_rd_en => uart_rx_rd_en,
       uart_tx_rfd => uart_tx_rfd,
       uart_tx_wr_en => uart_tx_wr_en
     );

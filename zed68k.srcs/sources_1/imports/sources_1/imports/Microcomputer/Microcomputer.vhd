@@ -83,6 +83,15 @@ entity Microcomputer is
 		ps2k_clk_in : inout std_logic;
 		ps2k_dat_in : inout std_logic;
 		
+		gduartDataOut : out std_logic_vector(7 downto 0);
+		gduartRegSel  : out std_logic;
+		gduartWRn    : out std_logic;
+		gduartRDn    : out std_logic;
+        gduartIdle : in std_logic;
+        gduartDataAvail : in std_logic;
+       -- gd_intn : in std_logic;
+		
+		
 		uartIrq     : in std_logic;
 		uartDataOut : out std_logic_vector(7 downto 0);
 		uartDataIn  : in std_logic_vector(7 downto 0);
@@ -94,7 +103,9 @@ entity Microcomputer is
         
         cpu_r_w : out std_logic;
         cpu_uds : out std_logic;
-        cpu_lds : out std_logic
+        cpu_lds : out std_logic;
+        
+        sw : in std_logic_vector(3 downto 0)
         
 	);
 	
@@ -112,8 +123,8 @@ architecture struct of Microcomputer is
       out_fp_reg: OUT    std_logic_vector (63 DOWNTO 0);
       idle, valid : OUT  std_logic
    );
+    END component;
 
-	END component;
 
     signal monRomData					: std_logic_vector(15 downto 0);
 
@@ -150,32 +161,19 @@ signal error: std_logic;
 signal fpu_sts, fpu_ctl : std_logic_vector(7 downto 0);
 
 signal timer_in1, timer_clk_en, keyb_int : std_logic ;
-signal keyb_data : std_logic_vector(7 downto 0);
 signal uartIrqEn : std_logic := '0';
 
 signal hiMem,  spiMem, ethMem, uartMem, fpuMem, ioMem, fram1Mem, fram2Mem : std_logic := '0';
 signal hiMemRegAddr : std_logic_vector(7 downto 0);
 signal auto_iack :std_logic;
+		
+		signal keybDataIn, keybDataOut  : std_logic_vector(7 downto 0);
+		signal keybRegSel, n_keybCS : std_logic;
+		
 
  signal monRamData					: std_logic_vector(15 downto 0);
      signal n_basRam1CS					: std_logic :='1';
      signal n_basRam2CS					: std_logic :='1';
-
-component keyboard is
-   port (
-      clk_i      : in std_logic;
-
-      -- From keyboard
-      ps2_clk_i  : in std_logic;
-      ps2_data_i : in std_logic;
-
-      -- To computer
-      data_o     : out std_logic_vector(7 downto 0);
-      irq_o      : out std_logic;
-
-      debug_o    : out std_logic_vector(15 downto 0)
-   );
-end component;
 	
 	attribute dont_touch : string; 
 	
@@ -191,14 +189,23 @@ end component;
     attribute dont_touch of n_basRam1CS : signal is "true";
     attribute dont_touch of n_basRam2CS : signal is "true";
     
+    attribute dont_touch of uartDataIn : signal is "true";
+    attribute dont_touch of uartDataOut : signal is "true";
+    attribute dont_touch of uartIdle : signal is "true";
+    attribute dont_touch of uartDataAvail : signal is "true";
+    
+--    attribute dont_touch of keyboard_1 : label  is "true";
+    
 begin
+
+
 
 interrupts: entity work.interrupt_controller
 	port map (
 		clk => sys_clk,
 		reset => n_reset,
 		int1 => timer_in1, -- 100hz
-		int2 => keyb_int, 
+		int2 => not keyb_int and sw(0) and sw(1), 
 		int3 => uartIrq and uartIrqEn,
 		int4 => '0',
 		int5 => '0',
@@ -211,25 +218,30 @@ interrupts: entity work.interrupt_controller
     
 timer_1 : entity work.timer
 port map (clk1 => sys_clk,
-      clk100hz => timer_in1,
+      clk60hz => timer_in1,   --screen refresh int.
       int_en => timer_clk_en,
       count_up_millis => milliseconds
      );
 
-keyboard_1 : keyboard 
-   port map (
-      clk_i     => sys_clk,
+      
+      
+keyboard_1:   entity work.MCKeyboard 
+	port map (
+		n_reset	=> n_reset,
+		clk    	=> sys_clk,
+        n_wr => n_keybCS or cpu_r_w or cpu_as,
+        n_rd => n_keybCS or (not cpu_r_w) or cpu_as,
+		n_rts  => open,
+		regSel	=> keybRegSel,
+		dataIn	=> keybDataIn,
+		dataOut	=> keybDataOut,
+		n_int	=> keyb_int, 
+		
+		-- Keyboard signals
+		ps2Clk	=> ps2k_clk_in,
+		ps2Data	=> ps2k_dat_in
+    );
 
-      -- From keyboard
-      ps2_clk_i  => ps2k_clk_in,
-      ps2_data_i => ps2k_dat_in,
-
-      -- To computer
-      data_o   => keyb_data,
-      irq_o    => keyb_int,
-
-      debug_o  => open
-   );
 
 --rtc
   rtc : ENTITY work.pmod_real_time_clock 
@@ -458,6 +470,15 @@ uartRegSel <= '1' when uartMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr =
 uartDataOut <= cpuDataOut(7 downto 0) when uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b") and cpu_r_w = '0' and cpu_lds = '0';
                 
 uartIrqEn <= uartDataOut(2) when uartRegSel='1' and cpu_r_w = '0' and cpu_lds = '0';
+
+gduartRDn <= '0' when uartMem = '1' and (hiMemRegAddr = x"1a" or hiMemRegAddr = x"1b") and cpu_r_w = '1' and cpu_lds = '0' else '1';
+gduartWRn <= '0' when uartMem = '1' and (hiMemRegAddr = x"1a" or hiMemRegAddr = x"1b") and cpu_r_w = '0' and cpu_lds = '0' else '1';
+gduartRegSel <= '1' when uartMem = '1' and (hiMemRegAddr = x"18" or hiMemRegAddr = x"19")  and cpu_lds = '0' else '0'; -- 2 bytes 
+gduartDataOut <= cpuDataOut(7 downto 0) when uartMem = '1' and (hiMemRegAddr = x"1a" or hiMemRegAddr = x"1b") and cpu_r_w = '0' and cpu_lds = '0';
+
+KeybDataIn <= cpuDataOut(7 downto 0) when ioMem = '1' and (hiMemRegAddr = x"02" or hiMemRegAddr = x"03") and cpu_lds = '0' and cpu_r_w = '0';
+n_keybCS <= '0' when ioMem = '1' and (hiMemRegAddr >= x"00" and hiMemRegAddr <= x"03") else '1';
+keybRegSel <= '0' when ioMem = '1' and (hiMemRegAddr = x"02" or hiMemRegAddr = x"03") and cpu_lds = '0' else '1';
 -- ____________________________________________________________________________________
 -- BUS ISOLATION GOES HERE
 
@@ -531,6 +552,7 @@ rtc_data(31 downto 24)
 when rtcCS = '1' and hiMemRegAddr = X"42" and cpu_r_w ='1' and cpu_uds = '0' else
 rtc_data(15 downto 8)
 when rtcCS = '1' and hiMemRegAddr = X"40" and cpu_r_w ='1' and cpu_uds = '0' else
+
 X"00" when cpu_uds = '1';
 
 --lower
@@ -545,6 +567,16 @@ when ram_oen = '0' and ram_cen = '0' and cpu_lds = '0'  else
 
 fram_spi_DataIn 
 when fram1Mem = '1' and cpu_r_w = '1' and cpu_lds = '0' else
+
+uartDataIn 
+when  uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b")and cpu_r_w = '1' and cpu_lds = '0' else
+"00000" & uartIrqEn & uartIdle & uartDataAvail  
+when uartMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09") and cpu_r_w = '1' and cpu_lds = '0' else
+
+gduartDataOut 
+when  uartMem = '1' and (hiMemRegAddr = x"1a" or hiMemRegAddr = x"1b")and cpu_r_w = '1' and cpu_lds = '0' else
+"000000" &  gduartIdle & sw(0)  
+when uartMem = '1' and (hiMemRegAddr = x"18" or hiMemRegAddr = x"19") and cpu_r_w = '1' and cpu_lds = '0' else
 
 eth_data_in(7 downto 0)
 when ethMem = '1' and (hiMemRegAddr = x"40" or hiMemRegAddr = x"41") and cpu_r_w = '1' and cpu_lds = '0' else 
@@ -607,10 +639,6 @@ when timerCS = '1' and (hiMemRegAddr = x"30" or hiMemRegAddr = x"31") and cpu_r_
 milliseconds(7 downto 0)
 when timerCS = '1' and (hiMemRegAddr = x"32" or hiMemRegAddr = x"33") and cpu_r_w ='1' and cpu_lds = '0' else
 
-uartDataIn 
-when  uartMem = '1' and (hiMemRegAddr = x"0a" or hiMemRegAddr = x"0b")and cpu_r_w = '1' and cpu_lds = '0' else
-"00000" & uartIrqEn & uartIdle & uartDataAvail  
-when uartMem = '1' and (hiMemRegAddr = x"08" or hiMemRegAddr = x"09") and cpu_r_w = '1' and cpu_lds = '0' else
 "0000000" & timer_clk_en when timerCS = '1' and (hiMemRegAddr = x"34" or hiMemRegAddr = x"35") and cpu_lds = '0' and cpu_r_w = '1' else
 
 rtc_data(55 downto 48)
@@ -621,7 +649,10 @@ rtc_data(23 downto 16)
 when rtcCS = '1' and (hiMemRegAddr = x"42" or hiMemRegAddr = x"43") and cpu_r_w ='1' and cpu_lds = '0' else
 rtc_data(7 downto 0)
 when rtcCS = '1' and (hiMemRegAddr = x"40" or hiMemRegAddr = x"41") and cpu_r_w ='1' and cpu_lds = '0' else
-keyb_data when ioMem = '1' and (hiMemRegAddr = x"00" or hiMemRegAddr = x"01") and cpu_lds = '0' and cpu_r_w = '1' else
+
+KeybDataOut when ioMem = '1' and (hiMemRegAddr = x"00" or hiMemRegAddr = x"01") and cpu_lds = '0' and cpu_r_w = '1' and keybRegSel = '1' else
+KeybDataOut when ioMem = '1' and (hiMemRegAddr = x"02" or hiMemRegAddr = x"03") and cpu_lds = '0' and cpu_r_w = '1' and keybRegSel = '0' else
+
 X"00" when cpu_lds = '1' ;
 
 cpu_dtack <= 

@@ -50,7 +50,7 @@ port(
       ddr3_reset_n :out std_logic;
       
       --dazzler
-      
+       -- gd_intn : in std_logic;
         gd_uart_txd_out : out   std_logic;                  -- gd uart out
         gd_gpu_sel : out std_logic;
         gd_sd_sel : out std_logic;
@@ -101,10 +101,10 @@ port(
     ps2_data : inout std_logic;
     ps2_clock : inout std_logic;
     
-    esp_cts : in std_logic;
-    esp_txd : out std_logic;
-    esp_rxd : in std_logic;
-    esp_rts : out std_logic;
+--    esp_cts : in std_logic;
+--    esp_txd : out std_logic;
+--    esp_rxd : in std_logic;
+--    esp_rts : out std_logic;
     
     fram_sck1 : out std_logic;
     fram_miso1 : in std_logic;
@@ -114,7 +114,10 @@ port(
     fram_sck2 : out std_logic;
     fram_miso2 : in std_logic;
     fram_mosi2 : out std_logic;
-    fram_cs2 : out std_logic
+    fram_cs2 : out std_logic;
+    
+    uart_rxd_out : out std_logic;
+    uart_txd_in : in std_logic
       
 	);
 end multicomp_wrapper;
@@ -155,7 +158,7 @@ architecture Behavioral of multicomp_wrapper is
 
       signal ramDataOut: std_logic_vector(15 downto 0);
       signal initial_stack: std_logic_vector(31 downto 0) := x"00DFFFFE";
-      signal initial_pc: std_logic_vector(31 downto 0) := x"00E40000";
+      signal initial_pc: std_logic_vector(31 downto 0) := x"00E00BC0";
       
       signal memDataOut: std_logic_vector(15 downto 0);
       signal mem_ack:std_logic;
@@ -228,6 +231,14 @@ architecture Behavioral of multicomp_wrapper is
 	signal  uartIdle : std_logic;
 	signal uartDataAvail :  std_logic;
 	signal uartDataCount : std_logic_vector(8 downto 0);
+	
+	signal	gduartDataOut :  std_logic_vector(7 downto 0);
+	signal  gduartRegSel  :  std_logic;
+	signal  gduartWRn : std_logic;
+	signal  gduartRDn : std_logic;
+	signal  gduartIdle : std_logic;
+	signal  gduartDataAvail :  std_logic;
+	signal  gduartDataCount : std_logic_vector(8 downto 0);
 
    -- components
    
@@ -445,6 +456,10 @@ begin
     end if;
 
     end if;
+    
+    if sys_resetn = '0' then
+       boot_rom <= '1';
+    end if;
 
 end process;
 
@@ -470,6 +485,7 @@ end process;
         gd_gpu_sel => gd_gpu_sel,
         gd_sd_sel => open,
         gd_daz_sel => gd_daz_sel,
+       -- gd_intn => gd_intn,
         
         sda => ck_sda, --        // I2C Serial data line, pulled high at board level
         scl => ck_scl,
@@ -503,6 +519,16 @@ end process;
         ps2k_clk_in => ps2_clock,
 		ps2k_dat_in => ps2_data,
 		
+		-- gd uart
+		
+        gduartDataOut => gduartDataOut,
+		gduartRegSel  => gduartRegSel,
+		gduartWRn    => gduartWRn,
+		gduartRDn    => gduartRDn,
+        gduartIdle => gduartIdle,
+        gduartDataAvail => gduartDataAvail,
+        sw => sw,
+		
 		--uart
 		uartIrq    => uartIrq,
 		uartDataOut => uartDataOut,
@@ -510,7 +536,7 @@ end process;
 		uartRegSel => uartRegsel,
 		uartRDn => uartRDn,
         uartWRn => uartWRn,
-        uartIdle => not uartIdle,
+        uartIdle => uartIdle,
         uartDataAvail => uartDataAvail,
         
         fram_spi_ctrl => fram_spi_ctl,
@@ -788,6 +814,17 @@ Port map (
 
    -- uart 
  
+gd_serial_term_tx: entity work.serial_wrapper 
+        port map (
+        sys_clk => cpu_clock,
+        tx_data => gduartDataOut,
+        tx_wr_en => not gduartWRn,
+        cts => open,
+        rts => open,
+        reset_n => resetn and mem_ready and clk_locked,
+        txd => gd_uart_txd_out,
+        tx_send_active => gduartIdle
+  );
 
    io_serial_term_tx: entity work.serial_wrapper 
         port map (
@@ -797,7 +834,7 @@ Port map (
         cts => open,
         rts => open,
         reset_n => resetn and mem_ready and clk_locked,
-        txd => esp_txd,
+        txd => uart_rxd_out,
         tx_send_active => uartIdle
   );
   
@@ -806,7 +843,7 @@ Port map (
       rd_en => not uartRDn,
       m68_rxd => uartDataIn,
       reset_n => resetn and mem_ready and clk_locked,
-      rxd1 => esp_rxd,
+      rxd1 => uart_txd_in,
       valid => uartIrq,
       clk100_i => cpu_clock,
       cts => open,
@@ -814,7 +851,6 @@ Port map (
       rx_data_count => uartDataCount
     );  
     
-    esp_rts <= '0';
     uartDataAvail <= '1' when uartDataCount > 0 else '0';
     
 end Behavioral;

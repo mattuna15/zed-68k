@@ -28,7 +28,7 @@ architecture structural of ps2_tb is
 
    signal cnt    : integer range 0 to 11 := 0;
 
-   signal ps2_clk   : std_logic := '1';
+   signal ps2_clk   : std_logic := '1'; 
    signal ps2_clk_d : std_logic := '1';
    signal ps2_data  : std_logic := '0';
 

@@ -4,10 +4,12 @@ vlib modelsim_lib/msim
 vlib modelsim_lib/msim/xpm
 vlib modelsim_lib/msim/xil_defaultlib
 vlib modelsim_lib/msim/fifo_generator_v13_2_5
+vlib modelsim_lib/msim/util_vector_logic_v2_0_1
 
 vmap xpm modelsim_lib/msim/xpm
 vmap xil_defaultlib modelsim_lib/msim/xil_defaultlib
 vmap fifo_generator_v13_2_5 modelsim_lib/msim/fifo_generator_v13_2_5
+vmap util_vector_logic_v2_0_1 modelsim_lib/msim/util_vector_logic_v2_0_1
 
 vlog -work xpm  -incr -sv \
 "D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
@@ -32,6 +34,13 @@ vlog -work fifo_generator_v13_2_5  -incr \
 
 vlog -work xil_defaultlib  -incr \
 "../../../bd/serial/ip/serial_fifo_generator_0_0/sim/serial_fifo_generator_0_0.v" \
+
+vlog -work util_vector_logic_v2_0_1  -incr \
+"../../../../zed68k.srcs/sources_1/bd/serial/ipshared/2137/hdl/util_vector_logic_v2_0_vl_rfs.v" \
+
+vlog -work xil_defaultlib  -incr \
+"../../../bd/serial/ip/serial_util_vector_logic_0_0/sim/serial_util_vector_logic_0_0.v" \
+"../../../bd/serial/ip/serial_util_vector_logic_0_1/sim/serial_util_vector_logic_0_1.v" \
 "../../../bd/serial/sim/serial.v" \
 
 vlog -work xil_defaultlib \

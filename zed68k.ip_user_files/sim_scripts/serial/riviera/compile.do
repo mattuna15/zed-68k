@@ -4,10 +4,12 @@ vlib riviera
 vlib riviera/xpm
 vlib riviera/xil_defaultlib
 vlib riviera/fifo_generator_v13_2_5
+vlib riviera/util_vector_logic_v2_0_1
 
 vmap xpm riviera/xpm
 vmap xil_defaultlib riviera/xil_defaultlib
 vmap fifo_generator_v13_2_5 riviera/fifo_generator_v13_2_5
+vmap util_vector_logic_v2_0_1 riviera/util_vector_logic_v2_0_1
 
 vlog -work xpm  -sv2k12 \
 "D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
@@ -32,6 +34,13 @@ vlog -work fifo_generator_v13_2_5  -v2k5 \
 
 vlog -work xil_defaultlib  -v2k5 \
 "../../../bd/serial/ip/serial_fifo_generator_0_0/sim/serial_fifo_generator_0_0.v" \
+
+vlog -work util_vector_logic_v2_0_1  -v2k5 \
+"../../../../zed68k.srcs/sources_1/bd/serial/ipshared/2137/hdl/util_vector_logic_v2_0_vl_rfs.v" \
+
+vlog -work xil_defaultlib  -v2k5 \
+"../../../bd/serial/ip/serial_util_vector_logic_0_0/sim/serial_util_vector_logic_0_0.v" \
+"../../../bd/serial/ip/serial_util_vector_logic_0_1/sim/serial_util_vector_logic_0_1.v" \
 "../../../bd/serial/sim/serial.v" \
 
 vlog -work xil_defaultlib \

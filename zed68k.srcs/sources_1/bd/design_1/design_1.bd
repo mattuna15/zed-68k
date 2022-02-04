@@ -225,8 +225,8 @@
         "ports": [
           "clk100_i",
           "UART_RX_0/i_Clk",
-          "UART_FIFO_IO_cntl_pr_0/clk",
-          "fifo_generator_0/clk"
+          "fifo_generator_0/clk",
+          "UART_FIFO_IO_cntl_pr_0/clk"
         ]
       },
       "fifo_generator_0_dout": {

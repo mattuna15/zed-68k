@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sun Oct 31 14:17:33 2021
+// Date        : Tue Jan 25 07:03:26 2022
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/serial/ip/serial_UART_TX_0_0/serial_UART_TX_0_0_sim_netlist.v
@@ -50,20 +50,25 @@ module serial_UART_TX_0_0_UART_TX
    (o_TX_Active,
     o_TX_Serial,
     o_TX_Done,
-    i_TX_DV,
     i_Clk,
-    i_TX_Byte);
+    i_TX_Byte,
+    i_TX_DV);
   output o_TX_Active;
   output o_TX_Serial;
   output o_TX_Done;
-  input i_TX_DV;
   input i_Clk;
   input [7:0]i_TX_Byte;
+  input i_TX_DV;
 
-  wire \FSM_sequential_r_SM_Main[0]_i_1_n_0 ;
-  wire \FSM_sequential_r_SM_Main[0]_i_2_n_0 ;
-  wire \FSM_sequential_r_SM_Main[1]_i_1_n_0 ;
-  wire \FSM_sequential_r_SM_Main[2]_i_1_n_0 ;
+  wire \FSM_onehot_r_SM_Main[0]_i_1_n_0 ;
+  wire \FSM_onehot_r_SM_Main[1]_i_1_n_0 ;
+  wire \FSM_onehot_r_SM_Main[2]_i_1_n_0 ;
+  wire \FSM_onehot_r_SM_Main[3]_i_1_n_0 ;
+  wire \FSM_onehot_r_SM_Main[4]_i_1_n_0 ;
+  wire \FSM_onehot_r_SM_Main_reg_n_0_[1] ;
+  wire \FSM_onehot_r_SM_Main_reg_n_0_[2] ;
+  wire \FSM_onehot_r_SM_Main_reg_n_0_[3] ;
+  wire \FSM_onehot_r_SM_Main_reg_n_0_[4] ;
   wire i_Clk;
   wire [7:0]i_TX_Byte;
   wire i_TX_DV;
@@ -78,7 +83,6 @@ module serial_UART_TX_0_0_UART_TX
   wire \r_Bit_Index[0]_i_1_n_0 ;
   wire \r_Bit_Index[1]_i_1_n_0 ;
   wire \r_Bit_Index[2]_i_1_n_0 ;
-  wire \r_Bit_Index[2]_i_2_n_0 ;
   wire \r_Bit_Index_reg_n_0_[0] ;
   wire \r_Bit_Index_reg_n_0_[1] ;
   wire \r_Bit_Index_reg_n_0_[2] ;
@@ -86,85 +90,110 @@ module serial_UART_TX_0_0_UART_TX
   wire r_Clk_Count0;
   wire \r_Clk_Count[0]_i_1_n_0 ;
   wire \r_Clk_Count[5]_i_2_n_0 ;
-  wire \r_Clk_Count[9]_i_4_n_0 ;
-  wire r_Clk_Count_0;
+  wire \r_Clk_Count[9]_i_3_n_0 ;
+  wire r_Clk_Count_1;
   wire [9:0]r_Clk_Count_reg;
-  wire [2:0]r_SM_Main;
   wire [7:0]r_TX_Data;
-  wire r_TX_Data_1;
+  wire r_TX_Data_0;
   wire r_TX_Done_i_1_n_0;
   wire r_TX_Done_i_2_n_0;
   wire r_TX_Done_i_3_n_0;
 
-  LUT6 #(
-    .INIT(64'h00000000C0E2C3E2)) 
-    \FSM_sequential_r_SM_Main[0]_i_1 
-       (.I0(i_TX_DV),
-        .I1(r_SM_Main[0]),
-        .I2(r_TX_Done_i_2_n_0),
-        .I3(r_SM_Main[1]),
-        .I4(\FSM_sequential_r_SM_Main[0]_i_2_n_0 ),
-        .I5(r_SM_Main[2]),
-        .O(\FSM_sequential_r_SM_Main[0]_i_1_n_0 ));
+  (* SOFT_HLUTNM = "soft_lutpair5" *) 
   LUT3 #(
-    .INIT(8'h7F)) 
-    \FSM_sequential_r_SM_Main[0]_i_2 
-       (.I0(\r_Bit_Index_reg_n_0_[2] ),
-        .I1(\r_Bit_Index_reg_n_0_[1] ),
+    .INIT(8'hBA)) 
+    \FSM_onehot_r_SM_Main[0]_i_1 
+       (.I0(\FSM_onehot_r_SM_Main_reg_n_0_[4] ),
+        .I1(i_TX_DV),
+        .I2(r_Clk_Count0),
+        .O(\FSM_onehot_r_SM_Main[0]_i_1_n_0 ));
+  (* SOFT_HLUTNM = "soft_lutpair5" *) 
+  LUT4 #(
+    .INIT(16'hF888)) 
+    \FSM_onehot_r_SM_Main[1]_i_1 
+       (.I0(i_TX_DV),
+        .I1(r_Clk_Count0),
+        .I2(r_TX_Done_i_2_n_0),
+        .I3(\FSM_onehot_r_SM_Main_reg_n_0_[1] ),
+        .O(\FSM_onehot_r_SM_Main[1]_i_1_n_0 ));
+  LUT6 #(
+    .INIT(64'hEFFFFFFF22222222)) 
+    \FSM_onehot_r_SM_Main[2]_i_1 
+       (.I0(\FSM_onehot_r_SM_Main_reg_n_0_[1] ),
+        .I1(r_TX_Done_i_2_n_0),
         .I2(\r_Bit_Index_reg_n_0_[0] ),
-        .O(\FSM_sequential_r_SM_Main[0]_i_2_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair5" *) 
-  LUT4 #(
-    .INIT(16'h00D2)) 
-    \FSM_sequential_r_SM_Main[1]_i_1 
-       (.I0(r_SM_Main[0]),
-        .I1(r_TX_Done_i_2_n_0),
-        .I2(r_SM_Main[1]),
-        .I3(r_SM_Main[2]),
-        .O(\FSM_sequential_r_SM_Main[1]_i_1_n_0 ));
+        .I3(\r_Bit_Index_reg_n_0_[1] ),
+        .I4(\r_Bit_Index_reg_n_0_[2] ),
+        .I5(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
+        .O(\FSM_onehot_r_SM_Main[2]_i_1_n_0 ));
+  LUT6 #(
+    .INIT(64'hFFFF800000008000)) 
+    \FSM_onehot_r_SM_Main[3]_i_1 
+       (.I0(\r_Bit_Index_reg_n_0_[0] ),
+        .I1(\r_Bit_Index_reg_n_0_[1] ),
+        .I2(\r_Bit_Index_reg_n_0_[2] ),
+        .I3(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
+        .I4(r_TX_Done_i_2_n_0),
+        .I5(\FSM_onehot_r_SM_Main_reg_n_0_[3] ),
+        .O(\FSM_onehot_r_SM_Main[3]_i_1_n_0 ));
   (* SOFT_HLUTNM = "soft_lutpair4" *) 
-  LUT4 #(
-    .INIT(16'h0020)) 
-    \FSM_sequential_r_SM_Main[2]_i_1 
-       (.I0(r_SM_Main[0]),
+  LUT2 #(
+    .INIT(4'h2)) 
+    \FSM_onehot_r_SM_Main[4]_i_1 
+       (.I0(\FSM_onehot_r_SM_Main_reg_n_0_[3] ),
         .I1(r_TX_Done_i_2_n_0),
-        .I2(r_SM_Main[1]),
-        .I3(r_SM_Main[2]),
-        .O(\FSM_sequential_r_SM_Main[2]_i_1_n_0 ));
-  (* FSM_ENCODED_STATES = "s_idle:000,s_tx_start_bit:001,s_tx_data_bits:010,s_cleanup:100,s_tx_stop_bit:011" *) 
+        .O(\FSM_onehot_r_SM_Main[4]_i_1_n_0 ));
+  (* FSM_ENCODED_STATES = "s_idle:00001,s_tx_start_bit:00010,s_tx_data_bits:00100,s_cleanup:10000,s_tx_stop_bit:01000" *) 
   FDRE #(
-    .INIT(1'b0)) 
-    \FSM_sequential_r_SM_Main_reg[0] 
+    .INIT(1'b1)) 
+    \FSM_onehot_r_SM_Main_reg[0] 
        (.C(i_Clk),
         .CE(1'b1),
-        .D(\FSM_sequential_r_SM_Main[0]_i_1_n_0 ),
-        .Q(r_SM_Main[0]),
+        .D(\FSM_onehot_r_SM_Main[0]_i_1_n_0 ),
+        .Q(r_Clk_Count0),
         .R(1'b0));
-  (* FSM_ENCODED_STATES = "s_idle:000,s_tx_start_bit:001,s_tx_data_bits:010,s_cleanup:100,s_tx_stop_bit:011" *) 
+  (* FSM_ENCODED_STATES = "s_idle:00001,s_tx_start_bit:00010,s_tx_data_bits:00100,s_cleanup:10000,s_tx_stop_bit:01000" *) 
   FDRE #(
     .INIT(1'b0)) 
-    \FSM_sequential_r_SM_Main_reg[1] 
+    \FSM_onehot_r_SM_Main_reg[1] 
        (.C(i_Clk),
         .CE(1'b1),
-        .D(\FSM_sequential_r_SM_Main[1]_i_1_n_0 ),
-        .Q(r_SM_Main[1]),
+        .D(\FSM_onehot_r_SM_Main[1]_i_1_n_0 ),
+        .Q(\FSM_onehot_r_SM_Main_reg_n_0_[1] ),
         .R(1'b0));
-  (* FSM_ENCODED_STATES = "s_idle:000,s_tx_start_bit:001,s_tx_data_bits:010,s_cleanup:100,s_tx_stop_bit:011" *) 
+  (* FSM_ENCODED_STATES = "s_idle:00001,s_tx_start_bit:00010,s_tx_data_bits:00100,s_cleanup:10000,s_tx_stop_bit:01000" *) 
   FDRE #(
     .INIT(1'b0)) 
-    \FSM_sequential_r_SM_Main_reg[2] 
+    \FSM_onehot_r_SM_Main_reg[2] 
        (.C(i_Clk),
         .CE(1'b1),
-        .D(\FSM_sequential_r_SM_Main[2]_i_1_n_0 ),
-        .Q(r_SM_Main[2]),
+        .D(\FSM_onehot_r_SM_Main[2]_i_1_n_0 ),
+        .Q(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
         .R(1'b0));
-  (* SOFT_HLUTNM = "soft_lutpair5" *) 
+  (* FSM_ENCODED_STATES = "s_idle:00001,s_tx_start_bit:00010,s_tx_data_bits:00100,s_cleanup:10000,s_tx_stop_bit:01000" *) 
+  FDRE #(
+    .INIT(1'b0)) 
+    \FSM_onehot_r_SM_Main_reg[3] 
+       (.C(i_Clk),
+        .CE(1'b1),
+        .D(\FSM_onehot_r_SM_Main[3]_i_1_n_0 ),
+        .Q(\FSM_onehot_r_SM_Main_reg_n_0_[3] ),
+        .R(1'b0));
+  (* FSM_ENCODED_STATES = "s_idle:00001,s_tx_start_bit:00010,s_tx_data_bits:00100,s_cleanup:10000,s_tx_stop_bit:01000" *) 
+  FDRE #(
+    .INIT(1'b0)) 
+    \FSM_onehot_r_SM_Main_reg[4] 
+       (.C(i_Clk),
+        .CE(1'b1),
+        .D(\FSM_onehot_r_SM_Main[4]_i_1_n_0 ),
+        .Q(\FSM_onehot_r_SM_Main_reg_n_0_[4] ),
+        .R(1'b0));
   LUT4 #(
-    .INIT(16'hFA10)) 
+    .INIT(16'hABAA)) 
     o_TX_Active_i_1
-       (.I0(r_SM_Main[1]),
-        .I1(r_SM_Main[2]),
-        .I2(r_SM_Main[0]),
+       (.I0(\FSM_onehot_r_SM_Main_reg_n_0_[1] ),
+        .I1(r_Clk_Count0),
+        .I2(\FSM_onehot_r_SM_Main_reg_n_0_[4] ),
         .I3(o_TX_Active),
         .O(o_TX_Active_i_1_n_0));
   FDRE o_TX_Active_reg
@@ -173,15 +202,15 @@ module serial_UART_TX_0_0_UART_TX
         .D(o_TX_Active_i_1_n_0),
         .Q(o_TX_Active),
         .R(1'b0));
-  (* SOFT_HLUTNM = "soft_lutpair3" *) 
-  LUT5 #(
-    .INIT(32'hBB8BB88B)) 
+  LUT6 #(
+    .INIT(64'hFFECFFEFFFECFFEC)) 
     o_TX_Serial_i_1
-       (.I0(o_TX_Serial),
-        .I1(r_SM_Main[2]),
-        .I2(r_SM_Main[0]),
-        .I3(r_SM_Main[1]),
-        .I4(o_TX_Serial_reg_i_2_n_0),
+       (.I0(o_TX_Serial_reg_i_2_n_0),
+        .I1(\FSM_onehot_r_SM_Main_reg_n_0_[3] ),
+        .I2(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
+        .I3(r_Clk_Count0),
+        .I4(\FSM_onehot_r_SM_Main_reg_n_0_[1] ),
+        .I5(o_TX_Serial),
         .O(o_TX_Serial_i_1_n_0));
   LUT6 #(
     .INIT(64'hAFA0CFCFAFA0C0C0)) 
@@ -214,42 +243,35 @@ module serial_UART_TX_0_0_UART_TX
         .I1(o_TX_Serial_i_4_n_0),
         .O(o_TX_Serial_reg_i_2_n_0),
         .S(\r_Bit_Index_reg_n_0_[2] ));
-  LUT6 #(
-    .INIT(64'hAAAAAA98AAAAAA00)) 
+  (* SOFT_HLUTNM = "soft_lutpair0" *) 
+  LUT4 #(
+    .INIT(16'h009A)) 
     \r_Bit_Index[0]_i_1 
        (.I0(\r_Bit_Index_reg_n_0_[0] ),
         .I1(r_TX_Done_i_2_n_0),
-        .I2(\FSM_sequential_r_SM_Main[0]_i_2_n_0 ),
-        .I3(r_SM_Main[2]),
-        .I4(r_SM_Main[0]),
-        .I5(r_SM_Main[1]),
+        .I2(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
+        .I3(r_Clk_Count0),
         .O(\r_Bit_Index[0]_i_1_n_0 ));
+  (* SOFT_HLUTNM = "soft_lutpair0" *) 
   LUT5 #(
-    .INIT(32'hAA9AAA00)) 
+    .INIT(32'h00009AAA)) 
     \r_Bit_Index[1]_i_1 
        (.I0(\r_Bit_Index_reg_n_0_[1] ),
         .I1(r_TX_Done_i_2_n_0),
-        .I2(\r_Bit_Index_reg_n_0_[0] ),
-        .I3(\r_Bit_Index[2]_i_2_n_0 ),
-        .I4(r_SM_Main[1]),
+        .I2(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
+        .I3(\r_Bit_Index_reg_n_0_[0] ),
+        .I4(r_Clk_Count0),
         .O(\r_Bit_Index[1]_i_1_n_0 ));
   LUT6 #(
-    .INIT(64'hAAAA9AAAAAAA0000)) 
+    .INIT(64'h000000009AAAAAAA)) 
     \r_Bit_Index[2]_i_1 
        (.I0(\r_Bit_Index_reg_n_0_[2] ),
         .I1(r_TX_Done_i_2_n_0),
-        .I2(\r_Bit_Index_reg_n_0_[0] ),
-        .I3(\r_Bit_Index_reg_n_0_[1] ),
-        .I4(\r_Bit_Index[2]_i_2_n_0 ),
-        .I5(r_SM_Main[1]),
+        .I2(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
+        .I3(\r_Bit_Index_reg_n_0_[0] ),
+        .I4(\r_Bit_Index_reg_n_0_[1] ),
+        .I5(r_Clk_Count0),
         .O(\r_Bit_Index[2]_i_1_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair3" *) 
-  LUT2 #(
-    .INIT(4'hE)) 
-    \r_Bit_Index[2]_i_2 
-       (.I0(r_SM_Main[2]),
-        .I1(r_SM_Main[0]),
-        .O(\r_Bit_Index[2]_i_2_n_0 ));
   FDRE #(
     .INIT(1'b0)) 
     \r_Bit_Index_reg[0] 
@@ -289,7 +311,7 @@ module serial_UART_TX_0_0_UART_TX
         .I1(r_Clk_Count_reg[0]),
         .I2(r_TX_Done_i_2_n_0),
         .O(r_Clk_Count[1]));
-  (* SOFT_HLUTNM = "soft_lutpair0" *) 
+  (* SOFT_HLUTNM = "soft_lutpair1" *) 
   LUT4 #(
     .INIT(16'h6A00)) 
     \r_Clk_Count[2]_i_1 
@@ -298,7 +320,7 @@ module serial_UART_TX_0_0_UART_TX
         .I2(r_Clk_Count_reg[0]),
         .I3(r_TX_Done_i_2_n_0),
         .O(r_Clk_Count[2]));
-  (* SOFT_HLUTNM = "soft_lutpair0" *) 
+  (* SOFT_HLUTNM = "soft_lutpair1" *) 
   LUT5 #(
     .INIT(32'h6AAA0000)) 
     \r_Clk_Count[3]_i_1 
@@ -328,7 +350,7 @@ module serial_UART_TX_0_0_UART_TX
         .I4(r_Clk_Count_reg[3]),
         .I5(r_TX_Done_i_2_n_0),
         .O(r_Clk_Count[5]));
-  (* SOFT_HLUTNM = "soft_lutpair2" *) 
+  (* SOFT_HLUTNM = "soft_lutpair3" *) 
   LUT2 #(
     .INIT(4'h7)) 
     \r_Clk_Count[5]_i_2 
@@ -339,67 +361,60 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(8'h60)) 
     \r_Clk_Count[6]_i_1 
        (.I0(r_Clk_Count_reg[6]),
-        .I1(\r_Clk_Count[9]_i_4_n_0 ),
+        .I1(\r_Clk_Count[9]_i_3_n_0 ),
         .I2(r_TX_Done_i_2_n_0),
         .O(r_Clk_Count[6]));
-  (* SOFT_HLUTNM = "soft_lutpair1" *) 
+  (* SOFT_HLUTNM = "soft_lutpair2" *) 
   LUT4 #(
     .INIT(16'h6A00)) 
     \r_Clk_Count[7]_i_1 
        (.I0(r_Clk_Count_reg[7]),
         .I1(r_Clk_Count_reg[6]),
-        .I2(\r_Clk_Count[9]_i_4_n_0 ),
+        .I2(\r_Clk_Count[9]_i_3_n_0 ),
         .I3(r_TX_Done_i_2_n_0),
         .O(r_Clk_Count[7]));
-  (* SOFT_HLUTNM = "soft_lutpair1" *) 
+  (* SOFT_HLUTNM = "soft_lutpair2" *) 
   LUT5 #(
     .INIT(32'h6AAA0000)) 
     \r_Clk_Count[8]_i_1 
        (.I0(r_Clk_Count_reg[8]),
         .I1(r_Clk_Count_reg[7]),
-        .I2(\r_Clk_Count[9]_i_4_n_0 ),
+        .I2(\r_Clk_Count[9]_i_3_n_0 ),
         .I3(r_Clk_Count_reg[6]),
         .I4(r_TX_Done_i_2_n_0),
         .O(r_Clk_Count[8]));
   LUT3 #(
-    .INIT(8'h01)) 
+    .INIT(8'hFE)) 
     \r_Clk_Count[9]_i_1 
-       (.I0(r_SM_Main[1]),
-        .I1(r_SM_Main[0]),
-        .I2(r_SM_Main[2]),
-        .O(r_Clk_Count0));
-  LUT3 #(
-    .INIT(8'h54)) 
-    \r_Clk_Count[9]_i_2 
-       (.I0(r_SM_Main[2]),
-        .I1(r_SM_Main[1]),
-        .I2(r_SM_Main[0]),
-        .O(r_Clk_Count_0));
+       (.I0(\FSM_onehot_r_SM_Main_reg_n_0_[2] ),
+        .I1(\FSM_onehot_r_SM_Main_reg_n_0_[1] ),
+        .I2(\FSM_onehot_r_SM_Main_reg_n_0_[3] ),
+        .O(r_Clk_Count_1));
   LUT6 #(
     .INIT(64'h6AAAAAAA00000000)) 
-    \r_Clk_Count[9]_i_3 
+    \r_Clk_Count[9]_i_2 
        (.I0(r_Clk_Count_reg[9]),
         .I1(r_Clk_Count_reg[8]),
         .I2(r_Clk_Count_reg[6]),
-        .I3(\r_Clk_Count[9]_i_4_n_0 ),
+        .I3(\r_Clk_Count[9]_i_3_n_0 ),
         .I4(r_Clk_Count_reg[7]),
         .I5(r_TX_Done_i_2_n_0),
         .O(r_Clk_Count[9]));
   LUT6 #(
     .INIT(64'h8000000000000000)) 
-    \r_Clk_Count[9]_i_4 
+    \r_Clk_Count[9]_i_3 
        (.I0(r_Clk_Count_reg[5]),
         .I1(r_Clk_Count_reg[3]),
         .I2(r_Clk_Count_reg[1]),
         .I3(r_Clk_Count_reg[0]),
         .I4(r_Clk_Count_reg[2]),
         .I5(r_Clk_Count_reg[4]),
-        .O(\r_Clk_Count[9]_i_4_n_0 ));
+        .O(\r_Clk_Count[9]_i_3_n_0 ));
   FDRE #(
     .INIT(1'b0)) 
     \r_Clk_Count_reg[0] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(\r_Clk_Count[0]_i_1_n_0 ),
         .Q(r_Clk_Count_reg[0]),
         .R(r_Clk_Count0));
@@ -407,7 +422,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[1] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[1]),
         .Q(r_Clk_Count_reg[1]),
         .R(r_Clk_Count0));
@@ -415,7 +430,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[2] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[2]),
         .Q(r_Clk_Count_reg[2]),
         .R(r_Clk_Count0));
@@ -423,7 +438,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[3] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[3]),
         .Q(r_Clk_Count_reg[3]),
         .R(r_Clk_Count0));
@@ -431,7 +446,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[4] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[4]),
         .Q(r_Clk_Count_reg[4]),
         .R(r_Clk_Count0));
@@ -439,7 +454,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[5] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[5]),
         .Q(r_Clk_Count_reg[5]),
         .R(r_Clk_Count0));
@@ -447,7 +462,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[6] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[6]),
         .Q(r_Clk_Count_reg[6]),
         .R(r_Clk_Count0));
@@ -455,7 +470,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[7] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[7]),
         .Q(r_Clk_Count_reg[7]),
         .R(r_Clk_Count0));
@@ -463,7 +478,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[8] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[8]),
         .Q(r_Clk_Count_reg[8]),
         .R(r_Clk_Count0));
@@ -471,23 +486,21 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_Clk_Count_reg[9] 
        (.C(i_Clk),
-        .CE(r_Clk_Count_0),
+        .CE(r_Clk_Count_1),
         .D(r_Clk_Count[9]),
         .Q(r_Clk_Count_reg[9]),
         .R(r_Clk_Count0));
-  LUT4 #(
-    .INIT(16'h0010)) 
+  LUT2 #(
+    .INIT(4'h8)) 
     \r_TX_Data[7]_i_1 
-       (.I0(r_SM_Main[0]),
-        .I1(r_SM_Main[2]),
-        .I2(i_TX_DV),
-        .I3(r_SM_Main[1]),
-        .O(r_TX_Data_1));
+       (.I0(r_Clk_Count0),
+        .I1(i_TX_DV),
+        .O(r_TX_Data_0));
   FDRE #(
     .INIT(1'b0)) 
     \r_TX_Data_reg[0] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[0]),
         .Q(r_TX_Data[0]),
         .R(1'b0));
@@ -495,7 +508,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_TX_Data_reg[1] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[1]),
         .Q(r_TX_Data[1]),
         .R(1'b0));
@@ -503,7 +516,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_TX_Data_reg[2] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[2]),
         .Q(r_TX_Data[2]),
         .R(1'b0));
@@ -511,7 +524,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_TX_Data_reg[3] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[3]),
         .Q(r_TX_Data[3]),
         .R(1'b0));
@@ -519,7 +532,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_TX_Data_reg[4] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[4]),
         .Q(r_TX_Data[4]),
         .R(1'b0));
@@ -527,7 +540,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_TX_Data_reg[5] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[5]),
         .Q(r_TX_Data[5]),
         .R(1'b0));
@@ -535,7 +548,7 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_TX_Data_reg[6] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[6]),
         .Q(r_TX_Data[6]),
         .R(1'b0));
@@ -543,18 +556,18 @@ module serial_UART_TX_0_0_UART_TX
     .INIT(1'b0)) 
     \r_TX_Data_reg[7] 
        (.C(i_Clk),
-        .CE(r_TX_Data_1),
+        .CE(r_TX_Data_0),
         .D(i_TX_Byte[7]),
         .Q(r_TX_Data[7]),
         .R(1'b0));
   (* SOFT_HLUTNM = "soft_lutpair4" *) 
   LUT5 #(
-    .INIT(32'hFFFA100A)) 
+    .INIT(32'hCCDDCC8C)) 
     r_TX_Done_i_1
-       (.I0(r_SM_Main[2]),
-        .I1(r_TX_Done_i_2_n_0),
-        .I2(r_SM_Main[0]),
-        .I3(r_SM_Main[1]),
+       (.I0(r_Clk_Count0),
+        .I1(\FSM_onehot_r_SM_Main_reg_n_0_[3] ),
+        .I2(r_TX_Done_i_2_n_0),
+        .I3(\FSM_onehot_r_SM_Main_reg_n_0_[4] ),
         .I4(o_TX_Done),
         .O(r_TX_Done_i_1_n_0));
   LUT6 #(
@@ -567,7 +580,7 @@ module serial_UART_TX_0_0_UART_TX
         .I4(r_Clk_Count_reg[9]),
         .I5(r_Clk_Count_reg[8]),
         .O(r_TX_Done_i_2_n_0));
-  (* SOFT_HLUTNM = "soft_lutpair2" *) 
+  (* SOFT_HLUTNM = "soft_lutpair3" *) 
   LUT5 #(
     .INIT(32'h00000007)) 
     r_TX_Done_i_3

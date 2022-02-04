@@ -13,9 +13,16 @@ set_property CONFIG_VOLTAGE 3.3 [current_design]
 set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports sys_clock]
 create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_ports sys_clock]
 
+##USB-UART Interface
+
+set_property -dict {PACKAGE_PIN D10 IOSTANDARD LVCMOS33} [get_ports uart_rxd_out]
+set_property -dict {PACKAGE_PIN A9 IOSTANDARD LVCMOS33} [get_ports uart_txd_in]
 
 ## Switches
-
+set_property -dict {PACKAGE_PIN A8 IOSTANDARD LVCMOS33} [get_ports {sw[0]}]
+set_property -dict {PACKAGE_PIN C11 IOSTANDARD LVCMOS33} [get_ports {sw[1]}]
+set_property -dict {PACKAGE_PIN C10 IOSTANDARD LVCMOS33} [get_ports {sw[2]}]
+set_property -dict {PACKAGE_PIN A10 IOSTANDARD LVCMOS33} [get_ports {sw[3]}]
 
 ## RGB LEDs
 #set_property -dict { PACKAGE_PIN E1    IOSTANDARD LVCMOS33 } [get_ports { led0_b }]; #IO_L18N_T2_35 Sch=led0_b
@@ -87,12 +94,6 @@ set_property -dict { PACKAGE_PIN J15   IOSTANDARD LVCMOS33 } [get_ports { jb[7] 
 ## ChipKit Outer Digital Header
 set_property -dict {PACKAGE_PIN V15 IOSTANDARD LVCMOS33} [get_ports op_sck]
 set_property -dict {PACKAGE_PIN U16 IOSTANDARD LVCMOS33} [get_ports gd_uart_txd_out]
-set_property -dict {PACKAGE_PIN P14 IOSTANDARD LVCMOS33} [get_ports op_a0]
-set_property -dict {PACKAGE_PIN T11 IOSTANDARD LVCMOS33} [get_ports op_a1]
-set_property -dict {PACKAGE_PIN R12 IOSTANDARD LVCMOS33} [get_ports op_a2]
-set_property -dict {PACKAGE_PIN T14 IOSTANDARD LVCMOS33} [get_ports op_wr]
-set_property -dict {PACKAGE_PIN T15 IOSTANDARD LVCMOS33} [get_ports op_ic]
-set_property -dict {PACKAGE_PIN T16 IOSTANDARD LVCMOS33} [get_ports op_mosi]
 set_property -dict {PACKAGE_PIN N15 IOSTANDARD LVCMOS33} [get_ports gd_gpu_sel]
 set_property -dict {PACKAGE_PIN M16 IOSTANDARD LVCMOS33} [get_ports gd_sd_sel]
 set_property -dict {PACKAGE_PIN V17 IOSTANDARD LVCMOS33} [get_ports gd_daz_sel]
@@ -143,6 +144,12 @@ set_property -dict {PACKAGE_PIN P17 IOSTANDARD LVCMOS33} [get_ports gd_sclk]
 #set_property -dict { PACKAGE_PIN E7    IOSTANDARD LVCMOS33 } [get_ports { ck_a3 }]; #IO_L6P_T0_35      	Sch=ck_a[3]		ChipKit pin=A3
 #set_property -dict { PACKAGE_PIN D7    IOSTANDARD LVCMOS33 } [get_ports { ck_a4 }]; #IO_L6N_T0_VREF_35 	Sch=ck_a[4]		ChipKit pin=A4
 #set_property -dict { PACKAGE_PIN D5    IOSTANDARD LVCMOS33 } [get_ports { ck_a5 }]; #IO_L11P_T1_SRCC_35	Sch=ck_a[5]		ChipKit pin=A5
+set_property -dict {PACKAGE_PIN F5 IOSTANDARD LVCMOS33} [get_ports op_a0]
+set_property -dict {PACKAGE_PIN D8 IOSTANDARD LVCMOS33} [get_ports op_a1]
+set_property -dict {PACKAGE_PIN C7 IOSTANDARD LVCMOS33} [get_ports op_a2]
+set_property -dict {PACKAGE_PIN E7 IOSTANDARD LVCMOS33} [get_ports op_wr]
+set_property -dict {PACKAGE_PIN D7 IOSTANDARD LVCMOS33} [get_ports op_ic]
+set_property -dict {PACKAGE_PIN D5 IOSTANDARD LVCMOS33} [get_ports op_mosi]
 
 ## ChipKit Inner Analog Header - as Differential Analog Inputs
 ## NOTE: These ports can be used as differential analog inputs with voltages from 0-1.0V (ChipKit Analog pins A6-A11) or as digital I/O.
@@ -156,12 +163,7 @@ set_property -dict {PACKAGE_PIN P17 IOSTANDARD LVCMOS33} [get_ports gd_sclk]
 #set_property -dict { PACKAGE_PIN A3    IOSTANDARD LVCMOS33 } [get_ports { vaux14_n }]; #IO_L8N_T1_AD14N_35	Sch=ad_n[14]	ChipKit pin=A11
 ## ChipKit Inner Analog Header - as Digital I/O
 ## NOTE: the following constraints should be used when using the inner analog header ports as digital I/O.
-#set_property -dict { PACKAGE_PIN B7    IOSTANDARD LVCMOS33 } [get_ports { ck_io20 }]; #IO_L2P_T0_AD12P_35	Sch=ad_p[12]	ChipKit pin=A6
-#set_property -dict { PACKAGE_PIN B6    IOSTANDARD LVCMOS33 } [get_ports { ck_io21 }]; #IO_L2N_T0_AD12N_35	Sch=ad_n[12]	ChipKit pin=A7
-#set_property -dict { PACKAGE_PIN E6    IOSTANDARD LVCMOS33 } [get_ports { ck_io22 }]; #IO_L5P_T0_AD13P_35	Sch=ad_p[13]	ChipKit pin=A8
-#set_property -dict { PACKAGE_PIN E5    IOSTANDARD LVCMOS33 } [get_ports { ck_io23 }]; #IO_L5N_T0_AD13N_35	Sch=ad_n[13]	ChipKit pin=A9
-#set_property -dict { PACKAGE_PIN A4    IOSTANDARD LVCMOS33 } [get_ports { ck_io24 }]; #IO_L8P_T1_AD14P_35	Sch=ad_p[14]	ChipKit pin=A10
-#set_property -dict { PACKAGE_PIN A3    IOSTANDARD LVCMOS33 } [get_ports { ck_io25 }]; #IO_L8N_T1_AD14N_35	Sch=ad_n[14]	ChipKit pin=A11
+
 
 ## ChipKit SPI
 #set_property -dict { PACKAGE_PIN G1    IOSTANDARD LVCMOS33 } [get_ports { ck_miso }]; #IO_L17N_T2_35 Sch=ck_miso
@@ -436,84 +438,114 @@ connect_debug_port u_ila_0/probe23 [get_nets [list computer/ram2/wren_i]]
 
 connect_debug_port u_ila_0/probe5 [get_nets [list {computer/ram2/WEA[0]}]]
 
+
+connect_debug_port u_ila_0/probe18 [get_nets [list computer/fpu1/ready_o]]
+
+
+
+
+
+
+
+
+
+
+connect_debug_port u_ila_0/probe15 [get_nets [list gd_intn_IBUF]]
+
+
+
+
+
+
+
+
+
+
+connect_debug_port u_ila_0/probe2 [get_nets [list {computer/keyboard_1/ascii[0]} {computer/keyboard_1/ascii[1]} {computer/keyboard_1/ascii[2]} {computer/keyboard_1/ascii[3]} {computer/keyboard_1/ascii[4]} {computer/keyboard_1/ascii[5]} {computer/keyboard_1/ascii[6]}]]
+
+connect_debug_port u_ila_0/probe2 [get_nets [list {computer/keyboard_1/keybDataOut[0]} {computer/keyboard_1/keybDataOut[1]} {computer/keyboard_1/keybDataOut[2]} {computer/keyboard_1/keybDataOut[3]} {computer/keyboard_1/keybDataOut[4]} {computer/keyboard_1/keybDataOut[5]} {computer/keyboard_1/keybDataOut[6]} {computer/keyboard_1/keybDataOut[7]}]]
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/keyboard_1/keyb_int]]
+
+
+
+
+connect_debug_port u_ila_0/probe7 [get_nets [list {computer/keyboard_1/dataIn[5]} {computer/keyboard_1/dataIn[6]} {computer/keyboard_1/dataIn[7]}]]
+connect_debug_port u_ila_0/probe22 [get_nets [list computer/keyboard_1/n_wr]]
+
+
+
+
+
+connect_debug_port u_ila_0/probe7 [get_nets [list {computer/FNKeys[0]} {computer/FNKeys[1]} {computer/FNKeys[2]} {computer/FNKeys[3]} {computer/FNKeys[4]} {computer/FNKeys[5]} {computer/FNKeys[6]} {computer/FNKeys[7]} {computer/FNKeys[8]} {computer/FNKeys[9]} {computer/FNKeys[10]} {computer/FNKeys[11]} {computer/FNKeys[12]}]]
+connect_debug_port u_ila_0/probe8 [get_nets [list {computer/FNKeysToggle[0]} {computer/FNKeysToggle[1]} {computer/FNKeysToggle[2]} {computer/FNKeysToggle[3]} {computer/FNKeysToggle[4]} {computer/FNKeysToggle[5]} {computer/FNKeysToggle[6]} {computer/FNKeysToggle[7]} {computer/FNKeysToggle[8]} {computer/FNKeysToggle[9]} {computer/FNKeysToggle[10]} {computer/FNKeysToggle[11]} {computer/FNKeysToggle[12]}]]
+
+connect_debug_port u_ila_0/probe3 [get_nets [list {computer/keyboard_1/ps2Byte[0]} {computer/keyboard_1/ps2Byte[1]} {computer/keyboard_1/ps2Byte[2]} {computer/keyboard_1/ps2Byte[3]} {computer/keyboard_1/ps2Byte[4]} {computer/keyboard_1/ps2Byte[5]} {computer/keyboard_1/ps2Byte[6]} {computer/keyboard_1/ps2Byte[7]}]]
+connect_debug_port u_ila_0/probe4 [get_nets [list {computer/keyboard_1/dataOut[0]} {computer/keyboard_1/dataOut[1]} {computer/keyboard_1/dataOut[2]} {computer/keyboard_1/dataOut[3]} {computer/keyboard_1/dataOut[4]} {computer/keyboard_1/dataOut[5]} {computer/keyboard_1/dataOut[6]} {computer/keyboard_1/dataOut[7]}]]
+connect_debug_port u_ila_0/probe5 [get_nets [list {computer/keyboard_1/ps2ConvertedByte[0]} {computer/keyboard_1/ps2ConvertedByte[1]} {computer/keyboard_1/ps2ConvertedByte[2]} {computer/keyboard_1/ps2ConvertedByte[3]} {computer/keyboard_1/ps2ConvertedByte[4]} {computer/keyboard_1/ps2ConvertedByte[5]} {computer/keyboard_1/ps2ConvertedByte[6]}]]
+connect_debug_port u_ila_0/probe12 [get_nets [list computer/keyb_int]]
+connect_debug_port u_ila_0/probe13 [get_nets [list computer/keyboard_1/n_int]]
+connect_debug_port u_ila_0/probe14 [get_nets [list computer/keyboard_1/n_rd]]
+connect_debug_port u_ila_0/probe16 [get_nets [list computer/keyboard_1/regSel]]
+
+
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 4 [get_debug_cores u_ila_0]
 set_property C_ADV_TRIGGER true [get_debug_cores u_ila_0]
 set_property C_DATA_DEPTH 1024 [get_debug_cores u_ila_0]
 set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
-set_property C_INPUT_PIPE_STAGES 1 [get_debug_cores u_ila_0]
+set_property C_INPUT_PIPE_STAGES 2 [get_debug_cores u_ila_0]
 set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
 set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
 set_property port_width 1 [get_debug_ports u_ila_0/clk]
 connect_debug_port u_ila_0/clk [get_nets [list pll2/inst/eth_clk]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 16 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {cpuDataOut[0]} {cpuDataOut[1]} {cpuDataOut[2]} {cpuDataOut[3]} {cpuDataOut[4]} {cpuDataOut[5]} {cpuDataOut[6]} {cpuDataOut[7]} {cpuDataOut[8]} {cpuDataOut[9]} {cpuDataOut[10]} {cpuDataOut[11]} {cpuDataOut[12]} {cpuDataOut[13]} {cpuDataOut[14]} {cpuDataOut[15]}]]
+set_property port_width 27 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {cpuAddress[0]} {cpuAddress[1]} {cpuAddress[2]} {cpuAddress[3]} {cpuAddress[4]} {cpuAddress[5]} {cpuAddress[6]} {cpuAddress[7]} {cpuAddress[8]} {cpuAddress[9]} {cpuAddress[10]} {cpuAddress[11]} {cpuAddress[12]} {cpuAddress[13]} {cpuAddress[14]} {cpuAddress[15]} {cpuAddress[16]} {cpuAddress[17]} {cpuAddress[18]} {cpuAddress[19]} {cpuAddress[20]} {cpuAddress[21]} {cpuAddress[22]} {cpuAddress[23]} {cpuAddress[24]} {cpuAddress[25]} {cpuAddress[26]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
-set_property port_width 27 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list {cpuAddress[0]} {cpuAddress[1]} {cpuAddress[2]} {cpuAddress[3]} {cpuAddress[4]} {cpuAddress[5]} {cpuAddress[6]} {cpuAddress[7]} {cpuAddress[8]} {cpuAddress[9]} {cpuAddress[10]} {cpuAddress[11]} {cpuAddress[12]} {cpuAddress[13]} {cpuAddress[14]} {cpuAddress[15]} {cpuAddress[16]} {cpuAddress[17]} {cpuAddress[18]} {cpuAddress[19]} {cpuAddress[20]} {cpuAddress[21]} {cpuAddress[22]} {cpuAddress[23]} {cpuAddress[24]} {cpuAddress[25]} {cpuAddress[26]}]]
+set_property port_width 16 [get_debug_ports u_ila_0/probe1]
+connect_debug_port u_ila_0/probe1 [get_nets [list {cpuDataOut[0]} {cpuDataOut[1]} {cpuDataOut[2]} {cpuDataOut[3]} {cpuDataOut[4]} {cpuDataOut[5]} {cpuDataOut[6]} {cpuDataOut[7]} {cpuDataOut[8]} {cpuDataOut[9]} {cpuDataOut[10]} {cpuDataOut[11]} {cpuDataOut[12]} {cpuDataOut[13]} {cpuDataOut[14]} {cpuDataOut[15]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 4 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list {computer/fpu1/Q[0]} {computer/fpu1/Q[1]} {computer/fpu1/Q[2]} {computer/fpu1/Q[3]}]]
+set_property port_width 64 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {computer/fpu1/opa_reg[0]} {computer/fpu1/opa_reg[1]} {computer/fpu1/opa_reg[2]} {computer/fpu1/opa_reg[3]} {computer/fpu1/opa_reg[4]} {computer/fpu1/opa_reg[5]} {computer/fpu1/opa_reg[6]} {computer/fpu1/opa_reg[7]} {computer/fpu1/opa_reg[8]} {computer/fpu1/opa_reg[9]} {computer/fpu1/opa_reg[10]} {computer/fpu1/opa_reg[11]} {computer/fpu1/opa_reg[12]} {computer/fpu1/opa_reg[13]} {computer/fpu1/opa_reg[14]} {computer/fpu1/opa_reg[15]} {computer/fpu1/opa_reg[16]} {computer/fpu1/opa_reg[17]} {computer/fpu1/opa_reg[18]} {computer/fpu1/opa_reg[19]} {computer/fpu1/opa_reg[20]} {computer/fpu1/opa_reg[21]} {computer/fpu1/opa_reg[22]} {computer/fpu1/opa_reg[23]} {computer/fpu1/opa_reg[24]} {computer/fpu1/opa_reg[25]} {computer/fpu1/opa_reg[26]} {computer/fpu1/opa_reg[27]} {computer/fpu1/opa_reg[28]} {computer/fpu1/opa_reg[29]} {computer/fpu1/opa_reg[30]} {computer/fpu1/opa_reg[31]} {computer/fpu1/opa_reg[32]} {computer/fpu1/opa_reg[33]} {computer/fpu1/opa_reg[34]} {computer/fpu1/opa_reg[35]} {computer/fpu1/opa_reg[36]} {computer/fpu1/opa_reg[37]} {computer/fpu1/opa_reg[38]} {computer/fpu1/opa_reg[39]} {computer/fpu1/opa_reg[40]} {computer/fpu1/opa_reg[41]} {computer/fpu1/opa_reg[42]} {computer/fpu1/opa_reg[43]} {computer/fpu1/opa_reg[44]} {computer/fpu1/opa_reg[45]} {computer/fpu1/opa_reg[46]} {computer/fpu1/opa_reg[47]} {computer/fpu1/opa_reg[48]} {computer/fpu1/opa_reg[49]} {computer/fpu1/opa_reg[50]} {computer/fpu1/opa_reg[51]} {computer/fpu1/opa_reg[52]} {computer/fpu1/opa_reg[53]} {computer/fpu1/opa_reg[54]} {computer/fpu1/opa_reg[55]} {computer/fpu1/opa_reg[56]} {computer/fpu1/opa_reg[57]} {computer/fpu1/opa_reg[58]} {computer/fpu1/opa_reg[59]} {computer/fpu1/opa_reg[60]} {computer/fpu1/opa_reg[61]} {computer/fpu1/opa_reg[62]} {computer/fpu1/opa_reg[63]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
-set_property port_width 16 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list {computer/cpuDataIn[0]} {computer/cpuDataIn[1]} {computer/cpuDataIn[2]} {computer/cpuDataIn[3]} {computer/cpuDataIn[4]} {computer/cpuDataIn[5]} {computer/cpuDataIn[6]} {computer/cpuDataIn[7]} {computer/cpuDataIn[8]} {computer/cpuDataIn[9]} {computer/cpuDataIn[10]} {computer/cpuDataIn[11]} {computer/cpuDataIn[12]} {computer/cpuDataIn[13]} {computer/cpuDataIn[14]} {computer/cpuDataIn[15]}]]
+set_property port_width 64 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list {computer/fpu1/opb_reg[0]} {computer/fpu1/opb_reg[1]} {computer/fpu1/opb_reg[2]} {computer/fpu1/opb_reg[3]} {computer/fpu1/opb_reg[4]} {computer/fpu1/opb_reg[5]} {computer/fpu1/opb_reg[6]} {computer/fpu1/opb_reg[7]} {computer/fpu1/opb_reg[8]} {computer/fpu1/opb_reg[9]} {computer/fpu1/opb_reg[10]} {computer/fpu1/opb_reg[11]} {computer/fpu1/opb_reg[12]} {computer/fpu1/opb_reg[13]} {computer/fpu1/opb_reg[14]} {computer/fpu1/opb_reg[15]} {computer/fpu1/opb_reg[16]} {computer/fpu1/opb_reg[17]} {computer/fpu1/opb_reg[18]} {computer/fpu1/opb_reg[19]} {computer/fpu1/opb_reg[20]} {computer/fpu1/opb_reg[21]} {computer/fpu1/opb_reg[22]} {computer/fpu1/opb_reg[23]} {computer/fpu1/opb_reg[24]} {computer/fpu1/opb_reg[25]} {computer/fpu1/opb_reg[26]} {computer/fpu1/opb_reg[27]} {computer/fpu1/opb_reg[28]} {computer/fpu1/opb_reg[29]} {computer/fpu1/opb_reg[30]} {computer/fpu1/opb_reg[31]} {computer/fpu1/opb_reg[32]} {computer/fpu1/opb_reg[33]} {computer/fpu1/opb_reg[34]} {computer/fpu1/opb_reg[35]} {computer/fpu1/opb_reg[36]} {computer/fpu1/opb_reg[37]} {computer/fpu1/opb_reg[38]} {computer/fpu1/opb_reg[39]} {computer/fpu1/opb_reg[40]} {computer/fpu1/opb_reg[41]} {computer/fpu1/opb_reg[42]} {computer/fpu1/opb_reg[43]} {computer/fpu1/opb_reg[44]} {computer/fpu1/opb_reg[45]} {computer/fpu1/opb_reg[46]} {computer/fpu1/opb_reg[47]} {computer/fpu1/opb_reg[48]} {computer/fpu1/opb_reg[49]} {computer/fpu1/opb_reg[50]} {computer/fpu1/opb_reg[51]} {computer/fpu1/opb_reg[52]} {computer/fpu1/opb_reg[53]} {computer/fpu1/opb_reg[54]} {computer/fpu1/opb_reg[55]} {computer/fpu1/opb_reg[56]} {computer/fpu1/opb_reg[57]} {computer/fpu1/opb_reg[58]} {computer/fpu1/opb_reg[59]} {computer/fpu1/opb_reg[60]} {computer/fpu1/opb_reg[61]} {computer/fpu1/opb_reg[62]} {computer/fpu1/opb_reg[63]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
-set_property port_width 3 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list {ethernet_FSM/eth_state[0]} {ethernet_FSM/eth_state[1]} {ethernet_FSM/eth_state[2]}]]
+set_property port_width 16 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list {computer/cpuDataIn[0]} {computer/cpuDataIn[1]} {computer/cpuDataIn[2]} {computer/cpuDataIn[3]} {computer/cpuDataIn[4]} {computer/cpuDataIn[5]} {computer/cpuDataIn[6]} {computer/cpuDataIn[7]} {computer/cpuDataIn[8]} {computer/cpuDataIn[9]} {computer/cpuDataIn[10]} {computer/cpuDataIn[11]} {computer/cpuDataIn[12]} {computer/cpuDataIn[13]} {computer/cpuDataIn[14]} {computer/cpuDataIn[15]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
 set_property port_width 8 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list {ethernet_FSM/axis_rx_data[0]} {ethernet_FSM/axis_rx_data[1]} {ethernet_FSM/axis_rx_data[2]} {ethernet_FSM/axis_rx_data[3]} {ethernet_FSM/axis_rx_data[4]} {ethernet_FSM/axis_rx_data[5]} {ethernet_FSM/axis_rx_data[6]} {ethernet_FSM/axis_rx_data[7]}]]
+connect_debug_port u_ila_0/probe5 [get_nets [list {computer/keyboard_1/keybDataOut[0]} {computer/keyboard_1/keybDataOut[1]} {computer/keyboard_1/keybDataOut[2]} {computer/keyboard_1/keybDataOut[3]} {computer/keyboard_1/keybDataOut[4]} {computer/keyboard_1/keybDataOut[5]} {computer/keyboard_1/keybDataOut[6]} {computer/keyboard_1/keybDataOut[7]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 8 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list {ethernet_FSM/axis_tx_data[0]} {ethernet_FSM/axis_tx_data[1]} {ethernet_FSM/axis_tx_data[2]} {ethernet_FSM/axis_tx_data[3]} {ethernet_FSM/axis_tx_data[4]} {ethernet_FSM/axis_tx_data[5]} {ethernet_FSM/axis_tx_data[6]} {ethernet_FSM/axis_tx_data[7]}]]
+set_property port_width 1 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list computer/fpu1/enable_reg]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
 set_property port_width 1 [get_debug_ports u_ila_0/probe7]
-connect_debug_port u_ila_0/probe7 [get_nets [list computer/cpu1/TG68_inst/cpuLower]]
+connect_debug_port u_ila_0/probe7 [get_nets [list computer/fpu1/enable_reg_1]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
 set_property port_width 1 [get_debug_ports u_ila_0/probe8]
-connect_debug_port u_ila_0/probe8 [get_nets [list computer/cpu1/TG68_inst/cpuUpper]]
+connect_debug_port u_ila_0/probe8 [get_nets [list computer/fpu1/enable_reg_2]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
 set_property port_width 1 [get_debug_ports u_ila_0/probe9]
-connect_debug_port u_ila_0/probe9 [get_nets [list computer/fpu1/enable_reg]]
+connect_debug_port u_ila_0/probe9 [get_nets [list computer/fpu1/enable_reg_3]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe10]
 set_property port_width 1 [get_debug_ports u_ila_0/probe10]
-connect_debug_port u_ila_0/probe10 [get_nets [list computer/fpu1/enable_reg_1]]
+connect_debug_port u_ila_0/probe10 [get_nets [list computer/fpu1/op_enable]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe11]
 set_property port_width 1 [get_debug_ports u_ila_0/probe11]
-connect_debug_port u_ila_0/probe11 [get_nets [list computer/fpu1/enable_reg_2]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe12]
-set_property port_width 1 [get_debug_ports u_ila_0/probe12]
-connect_debug_port u_ila_0/probe12 [get_nets [list computer/fpu1/enable_reg_3]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe13]
-set_property port_width 1 [get_debug_ports u_ila_0/probe13]
-connect_debug_port u_ila_0/probe13 [get_nets [list computer/n_basRam1CS]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe14]
-set_property port_width 1 [get_debug_ports u_ila_0/probe14]
-connect_debug_port u_ila_0/probe14 [get_nets [list computer/n_basRam2CS]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe15]
-set_property port_width 1 [get_debug_ports u_ila_0/probe15]
-connect_debug_port u_ila_0/probe15 [get_nets [list computer/fpu1/op_enable]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe16]
-set_property port_width 1 [get_debug_ports u_ila_0/probe16]
-connect_debug_port u_ila_0/probe16 [get_nets [list computer/fpu1/ready_o]]
+connect_debug_port u_ila_0/probe11 [get_nets [list uartIrq]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]

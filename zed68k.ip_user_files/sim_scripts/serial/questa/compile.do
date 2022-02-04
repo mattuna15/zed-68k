@@ -4,10 +4,12 @@ vlib questa_lib/msim
 vlib questa_lib/msim/xpm
 vlib questa_lib/msim/xil_defaultlib
 vlib questa_lib/msim/fifo_generator_v13_2_5
+vlib questa_lib/msim/util_vector_logic_v2_0_1
 
 vmap xpm questa_lib/msim/xpm
 vmap xil_defaultlib questa_lib/msim/xil_defaultlib
 vmap fifo_generator_v13_2_5 questa_lib/msim/fifo_generator_v13_2_5
+vmap util_vector_logic_v2_0_1 questa_lib/msim/util_vector_logic_v2_0_1
 
 vlog -work xpm  -sv \
 "D:/xilinx/Vivado/2020.1/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
@@ -32,6 +34,13 @@ vlog -work fifo_generator_v13_2_5  \
 
 vlog -work xil_defaultlib  \
 "../../../bd/serial/ip/serial_fifo_generator_0_0/sim/serial_fifo_generator_0_0.v" \
+
+vlog -work util_vector_logic_v2_0_1  \
+"../../../../zed68k.srcs/sources_1/bd/serial/ipshared/2137/hdl/util_vector_logic_v2_0_vl_rfs.v" \
+
+vlog -work xil_defaultlib  \
+"../../../bd/serial/ip/serial_util_vector_logic_0_0/sim/serial_util_vector_logic_0_0.v" \
+"../../../bd/serial/ip/serial_util_vector_logic_0_1/sim/serial_util_vector_logic_0_1.v" \
 "../../../bd/serial/sim/serial.v" \
 
 vlog -work xil_defaultlib \

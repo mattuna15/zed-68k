@@ -53,11 +53,14 @@ RAM      EQU $000000            ; RAM START ADDRESS
 ACIAC    EQU $F00009
 ACIAD    EQU ACIAC+2
 
-ACIA2C    EQU $F20009
+ACIA2C    EQU $F00019
 ACIA2D    EQU ACIA2C+2
 
-ACIA3C    EQU $F30009
-ACIA3D    EQU ACIA3C+2
+KEYBC    EQU $F20003
+KEYBD    EQU $F20001
+*
+*ACIA3C    EQU $F30009
+*ACIA3D    EQU ACIA3C+2
 
 INT_ON   EQU  $2000    ; BOTH, SET SUPERVISOR MODE, S=1
 INT_OFF  EQU  $2700
@@ -1747,31 +1750,33 @@ NEXT18  BSR NEW_LINE
 
 INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
            MOVE.W #100,D0
-           DBRA  D0,*
-           MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
+*           DBRA  D0,*
+*           MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
            RTS
-
-COUT      BTST.B #TXRDY,DATA_CTL.L
-          BEQ.S  COUT
-          
-          MOVE.B D0,DATA_TX.L 
-          BSET.B #TXVL,DATA_CTL.L
-WRTS1     BCLR.B #TXVL,DATA_CTL.L 
-          RTS
-
-CIN      BTST.B #RXVLD,DATA_CTL.L
-         BEQ.S  CIN
-
-         BSET.B #RXRDY,DATA_CTL.L
-         MOVE.B DATA_RX.L,D0
-         BCLR.B #RXRDY,DATA_CTL.L
-         
-         BSR COUT
-
-WRTS2    RTS
-
-CINS     BTST.B #RXVLD,DATA_CTL.L
-         BEQ.S  CINS
+*
+*COUT      BTST.B #TXRDY,DATA_CTL.L
+*          BEQ.S  COUT
+*          
+*          MOVE.B D0,DATA_TX.L 
+*          BSET.B #TXVL,DATA_CTL.L
+*WRTS1     BCLR.B #TXVL,DATA_CTL.L 
+*          RTS
+*
+*CIN      BTST.B #RXVLD,DATA_CTL.L
+*         BEQ.S  CIN
+*
+*         BSET.B #RXRDY,DATA_CTL.L
+*         MOVE.B DATA_RX.L,D0
+*         BCLR.B #RXRDY,DATA_CTL.L
+*         
+*         BSR COUT
+*
+*WRTS2    RTS
+* LOAD DATA OVER ETHERNET (FASTER)
+*
+CINS_ETH     
+          BTST.B #RXVLD,DATA_CTL.L
+         BEQ.S  CINS_ETH
          
          BSET.B #RXRDY,DATA_CTL.L
          MOVE.B DATA_RX.L,D0
@@ -1779,23 +1784,43 @@ CINS     BTST.B #RXVLD,DATA_CTL.L
          
 WRTS3    RTS
 
-*COUT      BTST.B #TDRE,ACIAC.L
-*          BEQ.S  COUT
-*          MOVE.B D0,ACIAD.L
-*          RTS
-*
-*
-*CINS      BTST.B #RDRF,ACIA2C.L
-*          BEQ.S  CINS
-*          MOVE.B ACIA2D.L,D0
-*          RTS
-*
-*
-*CIN      BTST.B #RDRF,ACIAC.L
-*         BEQ.S  CIN
-*         MOVE.B ACIAD.L,D0
-*         BSR COUT
-*         RTS
+*TERMINAL
+
+COUT      BTST.B #0,ACIA2C.L
+          BNE.S GSERIALO  
+
+SERIALO   BTST.B #TDRE,ACIAC.L
+          BEQ.S  COUT
+          MOVE.B D0,ACIAD.L
+          BRA.S ENDSO
+          
+GSERIALO  BTST.B #TDRE,ACIA2C.L
+          BEQ.S  COUT  
+          MOVE.B D0,ACIA2D.L
+          
+ENDSO     RTS
+
+
+CINS      BTST.B #RDRF,ACIAC.L
+          BEQ.S  CINS
+          MOVE.B ACIAD.L,D0
+          RTS
+
+CIN      BTST.B #0,ACIA2C.L
+         BNE.S KEYBI 
+
+SERIALI  BTST.B #RDRF,ACIAC.L
+         BEQ.S  CIN
+         MOVE.B ACIAD.L,D0
+         BRA.S DCOUT    
+
+KEYBI    BTST.B #RDRF,KEYBC.L
+         BEQ.S  CIN
+         MOVE.B KEYBD.L,D0
+         
+DCOUT    BSR COUT
+         
+         RTS
 
 	ENDC
 
@@ -1924,11 +1949,11 @@ GET_HEX2 BSR TO_HEX
          RTS
 
 
-GET_HEXS   BSR CINS
+GET_HEXS   BSR CINS_ETH
          BSR TO_HEX
          ROL.B #4,D1
          MOVE.B D1,D2
-         BSR CINS
+         BSR CINS_ETH
          BSR TO_HEX
          ADD.B D2,D1
          RTS
@@ -1946,7 +1971,7 @@ READ_S_REC      LEA.L LOAD.L,A3
                 CLR.L D4     ; CLEAR NUMBER OF BYTE 
                 CLR.L D5     ; CLEAR CHECK SUM AND ERROR BYTE
 
-READ_S_REC1     BSR CINS
+READ_S_REC1     BSR CINS_ETH
                 CMP.B #'S',D0
                 BNE.S CHECK_ESC
                 BRA.S GET_TYPE
@@ -1958,14 +1983,14 @@ CHECK_ESC       CMP.B #ESC,D0
                 RTS
 
 
-GET_TYPE        BSR CINS
+GET_TYPE        BSR CINS_ETH
                 CMP.B #'9',D0
                 BEQ WAIT_CR
                 
                 CMP.B #'8',D0
                 BNE CHECK_START
 
-WAIT_CR         BSR CINS
+WAIT_CR         BSR CINS_ETH
                 CMP.B #CR,D0
                 BNE.S WAIT_CR
 

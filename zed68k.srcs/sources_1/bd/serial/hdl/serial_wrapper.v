@@ -1,7 +1,7 @@
 //Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-//Date        : Sun Oct 31 14:16:04 2021
+//Date        : Tue Jan 25 09:01:06 2022
 //Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 //Command     : generate_target serial_wrapper.bd
 //Design      : serial_wrapper
@@ -23,7 +23,7 @@ module serial_wrapper
   output rts;
   input sys_clk;
   input [7:0]tx_data;
-  output tx_send_active;
+  output [0:0]tx_send_active;
   input tx_wr_en;
   output txd;
 
@@ -32,7 +32,7 @@ module serial_wrapper
   wire rts;
   wire sys_clk;
   wire [7:0]tx_data;
-  wire tx_send_active;
+  wire [0:0]tx_send_active;
   wire tx_wr_en;
   wire txd;
 

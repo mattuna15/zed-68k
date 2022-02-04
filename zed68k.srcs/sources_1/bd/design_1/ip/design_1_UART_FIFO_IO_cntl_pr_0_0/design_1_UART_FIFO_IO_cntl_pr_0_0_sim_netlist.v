@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sun Oct 31 05:51:50 2021
+// Date        : Tue Jan 25 09:00:37 2022
 // Host        : DESKTOP-ID021MN running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/code/zed-68k/zed68k.srcs/sources_1/bd/design_1/ip/design_1_UART_FIFO_IO_cntl_pr_0_0/design_1_UART_FIFO_IO_cntl_pr_0_0_sim_netlist.v
@@ -39,68 +39,65 @@ module design_1_UART_FIFO_IO_cntl_pr_0_0
   output fifoM_wr_en;
   output fifoM_rd_en;
 
-  wire \<const1> ;
+  wire \<const0> ;
   wire clk;
   wire fifoM_empty;
   wire fifoM_full;
+  wire fifoM_rd_en;
   wire fifoM_wr_ack;
   wire fifoM_wr_en;
   wire uart_rx_dv;
-  wire uart_rx_rd_en;
   wire uart_tx_rfd;
   wire uart_tx_wr_en;
 
-  assign fifoM_rd_en = \<const1> ;
-  VCC VCC
-       (.P(\<const1> ));
+  assign uart_rx_rd_en = \<const0> ;
+  GND GND
+       (.G(\<const0> ));
   design_1_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc inst
        (.clk(clk),
         .fifoM_empty(fifoM_empty),
         .fifoM_full(fifoM_full),
+        .fifoM_rd_en(fifoM_rd_en),
         .fifoM_wr_ack(fifoM_wr_ack),
         .fifoM_wr_en(fifoM_wr_en),
         .uart_rx_dv(uart_rx_dv),
-        .uart_rx_rd_en(uart_rx_rd_en),
         .uart_tx_rfd(uart_tx_rfd),
         .uart_tx_wr_en(uart_tx_wr_en));
 endmodule
 
 (* ORIG_REF_NAME = "UART_FIFO_IO_cntl_proc" *) 
 module design_1_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc
-   (uart_tx_wr_en,
+   (fifoM_rd_en,
+    uart_tx_wr_en,
     fifoM_wr_en,
-    uart_rx_rd_en,
+    uart_tx_rfd,
+    fifoM_empty,
     clk,
     fifoM_wr_ack,
     fifoM_full,
-    uart_rx_dv,
-    uart_tx_rfd,
-    fifoM_empty);
+    uart_rx_dv);
+  output fifoM_rd_en;
   output uart_tx_wr_en;
   output fifoM_wr_en;
-  output uart_rx_rd_en;
+  input uart_tx_rfd;
+  input fifoM_empty;
   input clk;
   input fifoM_wr_ack;
   input fifoM_full;
   input uart_rx_dv;
-  input uart_tx_rfd;
-  input fifoM_empty;
 
   wire clk;
   wire fifoM_empty;
   wire fifoM_full;
+  wire fifoM_rd_en;
   wire fifoM_wr_ack;
   wire fifoM_wr_en;
   wire fifoM_wr_en_i_1_n_0;
   wire uart_rx_dv;
-  wire uart_rx_rd_en;
-  wire uart_rx_rd_en_i_1_n_0;
   wire uart_tx_rfd;
   wire uart_tx_wr_en;
-  wire uart_tx_wr_en_next;
-  wire uart_tx_wr_en_next0;
+  wire uart_tx_wr_en_next0__0;
 
-  (* SOFT_HLUTNM = "soft_lutpair0" *) 
   LUT4 #(
     .INIT(16'h4F44)) 
     fifoM_wr_en_i_1
@@ -117,34 +114,25 @@ module design_1_UART_FIFO_IO_cntl_pr_0_0_UART_FIFO_IO_cntl_proc
         .D(fifoM_wr_en_i_1_n_0),
         .Q(fifoM_wr_en),
         .R(1'b0));
-  (* SOFT_HLUTNM = "soft_lutpair0" *) 
-  LUT1 #(
-    .INIT(2'h1)) 
-    uart_rx_rd_en_i_1
-       (.I0(fifoM_full),
-        .O(uart_rx_rd_en_i_1_n_0));
-  FDRE uart_rx_rd_en_reg
-       (.C(clk),
-        .CE(1'b1),
-        .D(uart_rx_rd_en_i_1_n_0),
-        .Q(uart_rx_rd_en),
-        .R(1'b0));
-  LUT2 #(
-    .INIT(4'h2)) 
-    uart_tx_wr_en_next_i_1
+  LUT3 #(
+    .INIT(8'h02)) 
+    uart_tx_wr_en_next0
        (.I0(uart_tx_rfd),
         .I1(fifoM_empty),
-        .O(uart_tx_wr_en_next0));
-  FDRE uart_tx_wr_en_next_reg
+        .I2(fifoM_rd_en),
+        .O(uart_tx_wr_en_next0__0));
+  FDRE #(
+    .INIT(1'b0)) 
+    uart_tx_wr_en_next_reg
        (.C(clk),
         .CE(1'b1),
-        .D(uart_tx_wr_en_next0),
-        .Q(uart_tx_wr_en_next),
+        .D(uart_tx_wr_en_next0__0),
+        .Q(fifoM_rd_en),
         .R(1'b0));
   FDRE uart_tx_wr_en_reg
        (.C(clk),
         .CE(1'b1),
-        .D(uart_tx_wr_en_next),
+        .D(fifoM_rd_en),
         .Q(uart_tx_wr_en),
         .R(1'b0));
 endmodule

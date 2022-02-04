@@ -33,7 +33,7 @@ preplace netloc rd_en_0_1 1 0 2 NJ 210 NJ
 preplace netloc fifo_generator_0_valid 1 2 2 NJ 150 1060J
 preplace netloc fifo_generator_0_data_count 1 2 2 NJ 170 NJ
 levelinfo -pg 1 -100 150 590 910 1090
-pagesize -pg 1 -db -bbox -sgen -200 -90 1250 620
+pagesize -pg 1 -db -bbox -sgen -200 -90 1260 620
 "
 }
 0

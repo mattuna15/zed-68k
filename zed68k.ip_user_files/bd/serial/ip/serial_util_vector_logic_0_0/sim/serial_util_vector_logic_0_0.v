@@ -1,4 +1,4 @@
-// (c) Copyright 1995-2021 Xilinx, Inc. All rights reserved.
+// (c) Copyright 1995-2022 Xilinx, Inc. All rights reserved.
 // 
 // This file contains confidential and proprietary information
 // of Xilinx, Inc. and is protected under U.S. and
@@ -46,26 +46,27 @@
 // 
 // DO NOT MODIFY THIS FILE.
 
-// IP VLNV: xilinx.com:ip:floating_point:7.1
-// IP Revision: 10
 
-// The following must be inserted into your Verilog file for this
-// core to be instantiated. Change the instance name and port connections
-// (in parentheses) to your own signal names.
+// IP VLNV: xilinx.com:ip:util_vector_logic:2.0
+// IP Revision: 1
 
-//----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG
-double_single your_instance_name (
-  .aclk(aclk),                                  // input wire aclk
-  .s_axis_a_tvalid(s_axis_a_tvalid),            // input wire s_axis_a_tvalid
-  .s_axis_a_tready(s_axis_a_tready),            // output wire s_axis_a_tready
-  .s_axis_a_tdata(s_axis_a_tdata),              // input wire [63 : 0] s_axis_a_tdata
-  .m_axis_result_tvalid(m_axis_result_tvalid),  // output wire m_axis_result_tvalid
-  .m_axis_result_tready(m_axis_result_tready),  // input wire m_axis_result_tready
-  .m_axis_result_tdata(m_axis_result_tdata)    // output wire [31 : 0] m_axis_result_tdata
+`timescale 1ns/1ps
+
+(* DowngradeIPIdentifiedWarnings = "yes" *)
+module serial_util_vector_logic_0_0 (
+  Op1,
+  Res
 );
-// INST_TAG_END ------ End INSTANTIATION Template ---------
 
-// You must compile the wrapper file double_single.v when simulating
-// the core, double_single. When compiling the wrapper file, be sure to
-// reference the Verilog simulation library.
+input wire [0 : 0] Op1;
+output wire [0 : 0] Res;
 
+  util_vector_logic_v2_0_1_util_vector_logic #(
+    .C_OPERATION("not"),
+    .C_SIZE(1)
+  ) inst (
+    .Op1(Op1),
+    .Op2(1'B0),
+    .Res(Res)
+  );
+endmodule

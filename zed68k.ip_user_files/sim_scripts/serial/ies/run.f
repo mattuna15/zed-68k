@@ -21,6 +21,13 @@
 -endlib
 -makelib ies_lib/xil_defaultlib \
   "../../../bd/serial/ip/serial_fifo_generator_0_0/sim/serial_fifo_generator_0_0.v" \
+-endlib
+-makelib ies_lib/util_vector_logic_v2_0_1 \
+  "../../../../zed68k.srcs/sources_1/bd/serial/ipshared/2137/hdl/util_vector_logic_v2_0_vl_rfs.v" \
+-endlib
+-makelib ies_lib/xil_defaultlib \
+  "../../../bd/serial/ip/serial_util_vector_logic_0_0/sim/serial_util_vector_logic_0_0.v" \
+  "../../../bd/serial/ip/serial_util_vector_logic_0_1/sim/serial_util_vector_logic_0_1.v" \
   "../../../bd/serial/sim/serial.v" \
 -endlib
 -makelib ies_lib/xil_defaultlib \
