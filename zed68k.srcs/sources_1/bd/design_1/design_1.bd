@@ -1,0 +1,318 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0xCD780C8F96C0FC79",
+      "device": "xc7a100tcsg324-1",
+      "name": "design_1",
+      "rev_ctrl_bd_flag": "RevCtrlBdOff",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2020.1",
+      "validated": "true"
+    },
+    "design_tree": {
+      "fifo_generator_0": "",
+      "UART_RX_0": "",
+      "UART_FIFO_IO_cntl_pr_0": ""
+    },
+    "ports": {
+      "rxd1": {
+        "direction": "I"
+      },
+      "m68_rxd": {
+        "direction": "O",
+        "left": "7",
+        "right": "0"
+      },
+      "reset_n": {
+        "type": "rst",
+        "direction": "I",
+        "parameters": {
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default"
+          }
+        }
+      },
+      "cts": {
+        "direction": "O"
+      },
+      "rts": {
+        "direction": "O"
+      },
+      "rd_en": {
+        "direction": "I"
+      },
+      "clk100_i": {
+        "type": "clk",
+        "direction": "I",
+        "parameters": {
+          "ASSOCIATED_RESET": {
+            "value": "reset_n",
+            "value_src": "default"
+          },
+          "CLK_DOMAIN": {
+            "value": "design_1_clk100_i",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default"
+          }
+        }
+      },
+      "valid": {
+        "direction": "O"
+      },
+      "rx_data_count": {
+        "direction": "O",
+        "left": "8",
+        "right": "0"
+      }
+    },
+    "components": {
+      "fifo_generator_0": {
+        "vlnv": "xilinx.com:ip:fifo_generator:13.2",
+        "xci_name": "design_1_fifo_generator_0_0",
+        "parameters": {
+          "Data_Count": {
+            "value": "true"
+          },
+          "Data_Count_Width": {
+            "value": "9"
+          },
+          "Fifo_Implementation": {
+            "value": "Common_Clock_Block_RAM"
+          },
+          "Input_Data_Width": {
+            "value": "8"
+          },
+          "Input_Depth": {
+            "value": "512"
+          },
+          "Output_Data_Width": {
+            "value": "8"
+          },
+          "Overflow_Flag": {
+            "value": "false"
+          },
+          "Programmable_Empty_Type": {
+            "value": "No_Programmable_Empty_Threshold"
+          },
+          "Reset_Pin": {
+            "value": "false"
+          },
+          "Underflow_Flag": {
+            "value": "false"
+          },
+          "Use_Embedded_Registers": {
+            "value": "false"
+          },
+          "Valid_Flag": {
+            "value": "true"
+          },
+          "Write_Acknowledge_Flag": {
+            "value": "true"
+          }
+        }
+      },
+      "UART_RX_0": {
+        "vlnv": "xilinx.com:module_ref:UART_RX:1.0",
+        "xci_name": "design_1_UART_RX_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "UART_RX",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "i_Clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "CLK_DOMAIN": {
+                "value": "design_1_clk100_i",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "i_RX_Serial": {
+            "direction": "I"
+          },
+          "o_RX_DV": {
+            "direction": "O"
+          },
+          "o_RX_Byte": {
+            "direction": "O",
+            "left": "7",
+            "right": "0"
+          }
+        }
+      },
+      "UART_FIFO_IO_cntl_pr_0": {
+        "vlnv": "xilinx.com:module_ref:UART_FIFO_IO_cntl_proc:1.0",
+        "xci_name": "design_1_UART_FIFO_IO_cntl_pr_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "UART_FIFO_IO_cntl_proc",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_RESET": {
+                "value": "rst",
+                "value_src": "constant"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_clk100_i",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "rst": {
+            "type": "rst",
+            "direction": "I"
+          },
+          "uart_rx_dv": {
+            "direction": "I"
+          },
+          "uart_tx_rfd": {
+            "direction": "I"
+          },
+          "fifoM_full": {
+            "direction": "I"
+          },
+          "fifoM_empty": {
+            "direction": "I"
+          },
+          "fifoM_wr_ack": {
+            "direction": "I"
+          },
+          "uart_rx_rd_en": {
+            "direction": "O"
+          },
+          "uart_tx_wr_en": {
+            "direction": "O"
+          },
+          "fifoM_wr_en": {
+            "direction": "O"
+          },
+          "fifoM_rd_en": {
+            "direction": "O"
+          }
+        }
+      }
+    },
+    "nets": {
+      "clk_wiz_0_clk_out1": {
+        "ports": [
+          "clk100_i",
+          "UART_RX_0/i_Clk",
+          "fifo_generator_0/clk",
+          "UART_FIFO_IO_cntl_pr_0/clk"
+        ]
+      },
+      "fifo_generator_0_dout": {
+        "ports": [
+          "fifo_generator_0/dout",
+          "m68_rxd"
+        ]
+      },
+      "reset_n_1": {
+        "ports": [
+          "reset_n",
+          "UART_FIFO_IO_cntl_pr_0/rst"
+        ]
+      },
+      "rxd1_1": {
+        "ports": [
+          "rxd1",
+          "UART_RX_0/i_RX_Serial"
+        ]
+      },
+      "UART_RX_0_o_RX_Byte": {
+        "ports": [
+          "UART_RX_0/o_RX_Byte",
+          "fifo_generator_0/din"
+        ]
+      },
+      "UART_RX_0_o_RX_DV": {
+        "ports": [
+          "UART_RX_0/o_RX_DV",
+          "UART_FIFO_IO_cntl_pr_0/uart_rx_dv"
+        ]
+      },
+      "fifo_generator_0_full": {
+        "ports": [
+          "fifo_generator_0/full",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_full"
+        ]
+      },
+      "fifo_generator_0_empty": {
+        "ports": [
+          "fifo_generator_0/empty",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_empty"
+        ]
+      },
+      "UART_FIFO_IO_cntl_pr_0_fifoM_wr_en": {
+        "ports": [
+          "UART_FIFO_IO_cntl_pr_0/fifoM_wr_en",
+          "fifo_generator_0/wr_en"
+        ]
+      },
+      "fifo_generator_0_wr_ack": {
+        "ports": [
+          "fifo_generator_0/wr_ack",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_wr_ack"
+        ]
+      },
+      "UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en": {
+        "ports": [
+          "UART_FIFO_IO_cntl_pr_0/uart_rx_rd_en",
+          "cts"
+        ]
+      },
+      "UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en": {
+        "ports": [
+          "UART_FIFO_IO_cntl_pr_0/uart_tx_wr_en",
+          "rts"
+        ]
+      },
+      "rd_en_0_1": {
+        "ports": [
+          "rd_en",
+          "fifo_generator_0/rd_en"
+        ]
+      },
+      "fifo_generator_0_valid": {
+        "ports": [
+          "fifo_generator_0/valid",
+          "valid"
+        ]
+      },
+      "fifo_generator_0_data_count": {
+        "ports": [
+          "fifo_generator_0/data_count",
+          "rx_data_count"
+        ]
+      }
+    }
+  }
+}

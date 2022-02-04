@@ -16,7 +16,7 @@
 ;
 ; This program is free software; you can redistribute it and/or modify
 ; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation; either version 2 of the License, or
+; the Free Software Foundation; either version 2 of the License, orRAM
 ; (at your option) any later version.
 ;
 ; This program is distributed in the hope that it will be useful,
@@ -24,56 +24,43 @@
 ; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ; GNU General Public License for more details.
 ;
-;
-;
 
-;   CPU     "68000.TBL"      ; CPU TABLE
-;   HOF     "BIN16"          ; HEX OUTPUT FORMAT
-;   HOF     "MOT16"          ; OUTPUT MOTOROLA S-RECORD
+* MACROS
 
-;
-; MIC68K MEMORY MAP
-;
-; 000000-00FFFF RAM 32Kx2
-; 010000-9FFFFF -
-; A00000-A0FFFF ROM 32Kx2
-; A10000-DFFFFF -
-; F00009-0B     ACIA1 63B50 (IC6)
-; F20009-0B     ACIA2 63B50 (IC7)
-; F40009-0F     PIA (IC1)
-; F60009-1F     PTM (IC2)
-;
+
+ADDR2MEM MACRO
+      PEA     \1(PC)         MOVE ADDRESS TO MEMORY; POSITION
+      MOVE.L  (A7)+,\2       INDEPENDANT = TO "MOVE.L #\1,\2"
+      ENDM
+
+
+SAVEREGS MACRO
+      MOVE.L  A7,REGA7       SAVE STACK POINTER
+      LEA     SV\@(PC),A7    A7 = RETURN ADDRESS (FOR CALL TO SAVE)
+      MOVE.L  A7,TEMP        TEMP = RETURN ADDRESS
+      BRA     SAVE           BSR WITHOUT USING STACK
+SV\@  DS      0
+      ENDM
 
 ; Use EASy68k Simulator
 EASY68K_SIM	EQU 0		; set 0 to use ACIA1
 ;EASY68K_SIM	EQU 1		; set 1 to use EASy68K Sim68K I/O  
 
-BIT_ESC      EQU 0              ; ESC BIT POSITION #0
-
-;DCODE68K  EQU $400              ; DISASSEMBLER START ADDRESS (option)
-
+BIT_ESC      EQU 0              ; ESC BIT POSITION
 RAM      EQU $000000            ; RAM START ADDRESS
 
-;
-; MONITOR MEMORY MAP
-; $000000-$0003FF M68000 Exception Vector Table
-; $00E000         SUPER_STACK/RAMBASE
-; $00FFFF         RAM END
-;
-; $A00000         RESET Vector
-; $A00008         MAIN(Monitor start)
-;
-
-;DIN      EQU $300001 
-;DOUT     EQU $700001       
 
 ACIAC    EQU $F00009
 ACIAD    EQU ACIAC+2
 
-ACIA2C    EQU $F20009
+ACIA2C    EQU $F00019
 ACIA2D    EQU ACIA2C+2
 
-;PIT      EQU $700001
+KEYBC    EQU $F20003
+KEYBD    EQU $F20001
+*
+*ACIA3C    EQU $F30009
+*ACIA3D    EQU ACIA3C+2
 
 INT_ON   EQU  $2000    ; BOTH, SET SUPERVISOR MODE, S=1
 INT_OFF  EQU  $2700
@@ -92,8 +79,22 @@ BS      EQU 8
 RS      EQU $1E
 ESC     EQU $1B
 
-SUPER_STACK   EQU $00E000   ; SUPER STACK TOP Address
-RAMBASE_INIT  EQU $00E000
+DATA_TX EQU $F40041
+DATA_RX EQU $F40043
+DATA_CTL EQU $F40045
+
+* TCP0_TxValid    => eth_ctl(6), --Transmit data valid
+*        TCP0_TxReady    => eth_ctl(3), --Transmit data ready
+*        TCP0_RxValid    => eth_ctl(2), --Receive data valid
+*        TCP0_RxReady    => eth_ctl(5)  --Receive data ready
+
+TXVL EQU 6
+TXRDY EQU 3
+RXVLD EQU 2
+RXRDY EQU 5
+
+SUPER_STACK   EQU $DF0000   ; SUPER STACK TOP Address
+RAMBASE_INIT  EQU $DF0000   
 
 ;
 ; EXCEPTION VECTOR address
@@ -119,58 +120,21 @@ BUS_ERROR EQU RAM+8
 ADDRESS_ERROR EQU RAM+$C
 ILLEGAL_INSTRUCTION EQU RAM+$10
 
-   ORG $C0
-;RAMBASE  DC.L   $130000   ; RAM BASE ADDRESS
+         ORG $C0
 RAMBASE  DS.L   1          ; RAM BASE ADDRESS
 
 ;
 ; ROM START
 ;
-    ORG $A00000
+    ORG $E00000
    ; Reset start vector
    DC.L SUPER_STACK        ; TOP OF SUPERVISOR STACK $130000
    DC.L MAIN               ; MONITOR START
 
-;   DC.L BUS_ERROR
-;   DC.L ADDRESS_ERROR
-;   DC.L ILLEGAL_INSTRUCTION
+   DC.L BUS_ERROR
+   DC.L ADDRESS_ERROR
+   DC.L ILLEGAL_INSTRUCTION
 
-;   ORG $24
-;   DC.L SERVICE_TRAP0      ; TRACE THE SAME AS TRAP #0 
-
-;   ORG $80
-;   DC.L SERVICE_TRAP0      ; TRAP #0
-
-;   ORG $C0
-;RAMBASE  DC.L   $130000     ; RAM BASE ADDRESS
-
-
-; RESERVED SPACE FOR FILE DECODE68K DISASSEMBLER
-; RAM+$400 TO RAM+10E0
-; THE DISASSEMBLER MUST BE LOADED BEFORE USING 
-
-;   ORG $400
-;  INCL "DIS.IMG"
-;  INCLUDE "dis_mic68k.x68"
-
-;-------------------------------------------------------------------------
-; File DCODE68K  68K ONE LINE DISASSEMBLER                        07/28/82
-
-;        CALLING SEQUENCE:
-;   D0,D1,D2 = CODE TO BE DISASSEMBLED
-;   A4 = VALUE OF PROGRAM COUNTER FOR THE CODE
-;   A5 = POINTER TO STORE DATA (BUFSIZE = 80 ASSUMED)
-;        JSR       DCODE68K
-
-;        RETURN:
-;   A4 = VALUE OF PROGRAM COUNTER FOR NEXT INSTRUCTION
-;   A5 = POINTER TO LINE AS DISASSEMBLED
-;   A6 = POINTER TO END OF LINE
-;
-; 01234567890123456789012345678901234567890123456789
-; AAAAAA FDATA.DDDDDDDDDDDDDD FOC.... FOP.....
-
-;                ORG $400
 
 FDATA   EQU    10             ;OFFSET TO DATA
 FOC     EQU    31             ;OFFSET TO OP-CODE (NO LABEL FIELD)
@@ -1638,9 +1602,9 @@ OPCTBL   DS      0
 
 ;   ORG $2000
 
-MAIN MOVE.W #INT_OFF,SR  ; INTERRUPT OFF, SUPERVISOR MODE SET
+MAIN MOVE.W #INT_ON,SR  ; INTERRUPT OFF, SUPERVISOR MODE SET
 
-;      MOVE.L #RAMBASE+USER_STACK,SP ; INIT TOP OF USER STACK
+      MOVE.L #SUPER_STACK+USER_STACK,SP ; INIT TOP OF USER STACK
 ;      movea.l #DOUT,a1
 ;      move.b #$FF,d2    ; with cpld
 ;      MOVE.B D2,(A1)    ; OFF LEDS
@@ -1652,6 +1616,7 @@ MAIN MOVE.W #INT_OFF,SR  ; INTERRUPT OFF, SUPERVISOR MODE SET
       BSR SCROLL            ; NEW LINE
 
       BSR CLEAR_MON_RAM     ; Initialize 1Kbyte from RAMBASE with 0.
+      
 
       LEA.L TITLE1.L,A3     ; print START MESSAGE
       BSR PSTR
@@ -1665,7 +1630,11 @@ MAIN MOVE.W #INT_OFF,SR  ; INTERRUPT OFF, SUPERVISOR MODE SET
       MOVE.W D0,USER_SR(A6) 
 
       CLR.L FLAG(A6)         ; CLEAR SYSTEM MONITOR FLAG
-      MOVE.W #INT_ON,SR       ; ON INTERRUPT, SUPERVISOR MODE SET
+      
+      MOVE.L #SUPER_STACK+USER_STACK, $0000
+      MOVE.L #RAM+$400, $0004
+      
+      MOVE.W #INT_ON,SR       ; ON INTcoutERRUPT, SUPERVISOR MODE SET
 
 loop  BSR SEND_PROMPT
       BSR CIN
@@ -1781,14 +1750,55 @@ NEXT18  BSR NEW_LINE
 
 INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
            MOVE.W #100,D0
-           DBRA  D0,*
-           MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
+*           DBRA  D0,*
+*           MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
            RTS
+*
+*COUT      BTST.B #TXRDY,DATA_CTL.L
+*          BEQ.S  COUT
+*          
+*          MOVE.B D0,DATA_TX.L 
+*          BSET.B #TXVL,DATA_CTL.L
+*WRTS1     BCLR.B #TXVL,DATA_CTL.L 
+*          RTS
+*
+*CIN      BTST.B #RXVLD,DATA_CTL.L
+*         BEQ.S  CIN
+*
+*         BSET.B #RXRDY,DATA_CTL.L
+*         MOVE.B DATA_RX.L,D0
+*         BCLR.B #RXRDY,DATA_CTL.L
+*         
+*         BSR COUT
+*
+*WRTS2    RTS
+* LOAD DATA OVER ETHERNET (FASTER)
+*
+CINS_ETH     
+          BTST.B #RXVLD,DATA_CTL.L
+         BEQ.S  CINS_ETH
+         
+         BSET.B #RXRDY,DATA_CTL.L
+         MOVE.B DATA_RX.L,D0
+         BCLR.B #RXRDY,DATA_CTL.L
+         
+WRTS3    RTS
 
-COUT      BTST.B #TDRE,ACIAC.L
+*TERMINAL
+
+COUT      BTST.B #0,ACIA2C.L
+          BNE.S GSERIALO  
+
+SERIALO   BTST.B #TDRE,ACIAC.L
           BEQ.S  COUT
           MOVE.B D0,ACIAD.L
-          RTS
+          BRA.S ENDSO
+          
+GSERIALO  BTST.B #TDRE,ACIA2C.L
+          BEQ.S  COUT  
+          MOVE.B D0,ACIA2D.L
+          
+ENDSO     RTS
 
 
 CINS      BTST.B #RDRF,ACIAC.L
@@ -1796,11 +1806,20 @@ CINS      BTST.B #RDRF,ACIAC.L
           MOVE.B ACIAD.L,D0
           RTS
 
+CIN      BTST.B #0,ACIA2C.L
+         BNE.S KEYBI 
 
-CIN      BTST.B #RDRF,ACIAC.L
+SERIALI  BTST.B #RDRF,ACIAC.L
          BEQ.S  CIN
          MOVE.B ACIAD.L,D0
-         BSR COUT
+         BRA.S DCOUT    
+
+KEYBI    BTST.B #RDRF,KEYBC.L
+         BEQ.S  CIN
+         MOVE.B KEYBD.L,D0
+         
+DCOUT    BSR COUT
+         
          RTS
 
 	ENDC
@@ -1909,7 +1928,7 @@ ZERO_TO_NINE
 
 GET_HEX  BSR CIN
 
-         CMP.B #' ',D0         ; IF BIT_ESC PRESSED
+         CMP.B #'X',D0         ; IF BIT_ESC PRESSED
          BNE.S GET_HEX1
          BSET.B #BIT_ESC,FLAG(A6)
          RTS
@@ -1930,11 +1949,11 @@ GET_HEX2 BSR TO_HEX
          RTS
 
 
-GET_HEXS   BSR CINS
+GET_HEXS   BSR CINS_ETH
          BSR TO_HEX
          ROL.B #4,D1
          MOVE.B D1,D2
-         BSR CINS
+         BSR CINS_ETH
          BSR TO_HEX
          ADD.B D2,D1
          RTS
@@ -1952,7 +1971,7 @@ READ_S_REC      LEA.L LOAD.L,A3
                 CLR.L D4     ; CLEAR NUMBER OF BYTE 
                 CLR.L D5     ; CLEAR CHECK SUM AND ERROR BYTE
 
-READ_S_REC1     BSR CINS
+READ_S_REC1     BSR CINS_ETH
                 CMP.B #'S',D0
                 BNE.S CHECK_ESC
                 BRA.S GET_TYPE
@@ -1964,11 +1983,14 @@ CHECK_ESC       CMP.B #ESC,D0
                 RTS
 
 
-GET_TYPE        BSR CINS
+GET_TYPE        BSR CINS_ETH
+                CMP.B #'9',D0
+                BEQ WAIT_CR
+                
                 CMP.B #'8',D0
                 BNE CHECK_START
 
-WAIT_CR         BSR CINS
+WAIT_CR         BSR CINS_ETH
                 CMP.B #CR,D0
                 BNE.S WAIT_CR
 
@@ -2790,27 +2812,11 @@ WHAT3         RTS
 ; TRAP #N SERVICES
 ;
 
-SERVICE_TRAP0   MOVE.L A0,-(SP)      ; SAVE A0 BEFOREHAND
-                MOVEA.L RAMBASE.L,A0  ; USE A0 AS THE POINTER
-                LEA.L USER_DATA(A0),A0
-                MOVEM.L D0-D7/A0-A6,(A0)
-                MOVE.L (SP)+,32(A0)  ; RESTORE A0
-
-                MOVEA.L RAMBASE.L,A0
-                MOVE.W (SP)+,USER_SR(A0)
-                BCLR.B #TRACE_BIT,USER_SR(A0) ; TURN TRACE BIT OFF
-                MOVE.L (SP)+,USER_PC(A0)
-
-                MOVE.L USP,A2
-                MOVE.L A2,USER_USP(A0)
-
-                BSR DISPLAY_REG1
-
-                MOVE.L #SUPER_STACK,SP  ; REINIT SYSTEM STACK
+SERVICE_TRAP0   ;MOVE.B ACIA2D.L,D0
+                ;BSR COUT
                 MOVE.W #INT_ON,SR   ; REENTER SUPERVISOR MODE
 
                 JMP LOOP.L        ; GET BACK MONITOR
-
 
 ; DISASSEMBLE THE MACHNIE CODE INTO MNEMONIC
 
@@ -2942,6 +2948,108 @@ SKIP_PRINT_BLANK
 BOOT_RAM      MOVEA.L RAM.L,SP
               MOVEA.L 4+RAM.L,A0
               JMP     (A0)
+              
+              
+              
+
+***************************************
+ * STRLEN - RETURNS LENGTH OP NULL TERMINATED STRING IN D0
+ * A0 -> STRING
+STRLEN:   MOVE.L A0,-(SP) SAVE REG
+          CLR.L  D0       INITIALIZE
+STRLENI:  TST.B  (A0)+    NULL?
+          BEQ    STRLENR  YES, RETURN
+          ADDQ.L #1, D0   BUMP COUNT
+          BRA    STRLENI  LOOP
+STRLENR:  MOVE.L (SP)+,A0 RESTORE REG
+          RTS
+  
+  * STRCPY - COPY A NULL TERMINATED STRING
+  * A0 -> SOURCE STRING
+  * A1 -> DESTINATION STRING
+STRCPY:   MOVEM.L A0-A1,-(SP) SAVE REGS
+STRCPY1:  MOVE.B  (A0)+,(A1)+ MOVE A BYTE
+          BNE     STRCPY1     GET ANOTHER IF NOT NULL
+          MOVEM.L (SP)+,A0-A1 RESTORE REGS
+          RTS
+
+  
+  * STRCMP - COMPARE TWO NULL TERMINATED STRINGS
+  * A0 -> STRING 1
+  * A1 -> STRING 2
+STRCMP:   MOVEM.L A0-A1,-(SP)  SAVE REGS
+          CLR.L  D0       INITIALIZE
+          CLR.L  D1
+STRCMP1:  CMPM.B  (A0)+,(A1)+  COMPARE BYTES
+          BNE     STRRET       RETURN IF DIFFERENT
+          ADD     #1, D1
+          
+          CMP.L   #11, D1
+          BNE     STRCMP1      NOW MORE BYTES LEFT
+          
+          MOVE.B  #1, D0
+          
+STRRET:   MOVEM.L (SP)+,A0-A1  RESTORE REGS
+          RTS
+***************************************
+
+SWAPNUM     ROL.W #8,D0
+            SWAP     D0
+            ROL.W #8,D0
+            
+            RTS
+    
+********
+* memory copy
+******** 
+MOVE_b  
+        MOVE.B  (A0)+,(A1)+ ; do the long moves
+        DBRA    D0,MOVE_b
+        RTS
+        
+MOVE_w  
+        MOVE.W  (A0)+,(A1)+ ; do the long moves
+        DBRA    D0,MOVE_w
+        RTS  
+
+MOVE_l  
+        MOVE.l  (A0)+,(A1)+ ; do the long moves
+        DBRA    D0,MOVE_l
+        RTS   
+     
+*****************************************************
+
+*-------------------------------------------------------------------------
+* File X         COMMON I/O                                       05/17/82
+
+
+*
+*    OUTPUT BUFFER TO PORT1
+*
+OUTPUT   MOVEM.L D0-D3/A0-A1,-(A7) | GET SOME WORKING ROOM
+         CLR.L   D3            | D3 = NO OFFSET INTO NULL CHARACTERS
+         BRA    OUTP2
+         
+*
+*   SEND BUFFER TO PORT
+*
+OUTP2    CMP.L   A6,A5        | SEE IF AT OR BEYOND END OF LINE
+         BCS.S   OUTP3          | NO... KEEP GOING, ELSE
+         MOVEM.L (A7)+,D0-D3/A0-A1 | RESTORE REGISTERS
+         RTS                    | END OF ROUTINE
+
+OUTP3    MOVE.B  (A5)+,D0     | GRAB BYTE TO OUTPUT
+         BSR    COUT         | GO PRINT IT
+         BRA    OUTP2          | GO DO ANOTHER
+         
+         RTS
+         
+OUT1CR   MOVE.B  #CR,(A6)+
+         MOVE.B  #LF,(A6)+
+         BSR OUTPUT
+         RTS  
+
+*****************************************************
 
 ; SERVICE BUS ERROR
 SERVICE_BUSERROR MOVEA.L BUSERROR_MSG.L,A3
@@ -2975,7 +3083,7 @@ VECINIT2  MOVE.L    (a0)+,(a1)+
           MOVEA.W   #$C0,A1
           MOVE.L    #RAMBASE_INIT,(a1)
           RTS
-
+          
 ;----------------- M68000 EXCEPTION VECTOR TABLE -----------------------------
 VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_ADDRESSERR   ; 3 Address error
@@ -2989,8 +3097,8 @@ VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_TRAP0    ; 11 Line 1111 emulator
 
           DC.L  SERVICE_TRAP0    ; 24 Spurious Interupt
-          DC.L  SERVICE_TRAP0    ; 25 LEVEL 1 Interupt autovector
-          DC.L  SERVICE_TRAP0    ; 26 LEVEL 2 Interupt autovector
+          DC.L  SERVICE_TRAP0 ; 25 LEVEL 1 Interupt autovector
+          DC.L  SERVICE_TRAP0 ; 26 LEVEL 2 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 27 LEVEL 3 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 28 LEVEL 4 Interupt autovector
           DC.L  SERVICE_TRAP0    ; 29 LEVEL 5 Interupt autovector
@@ -3014,8 +3122,8 @@ VECTABLE  DC.L  SERVICE_BUSERROR     ; 2 Bus error
           DC.L  SERVICE_TRAP0    ; 47 TRAP #15
 ;----------------------- STRING CONSTANT -------------------------------------
 
-TITLE  DC.B 13,10,'zBug V1.0.1 for MIC68K',13,10,0
-TITLE1 DC.B 13,10,'zBug V1.0.1 for MIC68K (press ? for help)',13,10,0
+TITLE  DC.B 13,10,'zBug V1.0.3 for ARTY68K & GD DAZZLER',13,10,0
+TITLE1 DC.B 13,10,'zBug V1.0.3 for ARTY68K & GD DAZZLER (press ? for help)',13,10,0
 
 PROMPT DC.B '>',0
 
@@ -3025,7 +3133,7 @@ START  DC.B 13,10,10,'start address=',0
 STOP   DC.B 13,10,'stop  address=',0
 DONE   DC.B 13,10,'done...',0
 
-EDIT1  DC.B 'dit memory (quit: SPACE BAR, next address: ENTER)',0
+EDIT1  DC.B 'dit memory (quit: X, next address: ENTER)',0
 EDIT   DC.B 13,10,10,'Address=',0
 ROM    DC.B '  rom',0
 
@@ -3035,7 +3143,7 @@ QUICK  DC.B 'uick home, get back to start of RAM!',13,10,0
 HEX    DC.B 'ex dump memory',13,10,10
        DC.B 'ADDRESS  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F',0
 
-LOAD   DC.B 'oad Motorola s-record (accept s1,s2 and s8) quit: ESC',13,10,0
+LOAD   DC.B 'oad Motorola s-record (accept s1,s2,s8 and s9) quit: ESC',13,10,0
 
 NUMBER DC.B ' bytes loaded, ',0
 ERROR  DC.B ' records checksum error',13,10,0
@@ -3053,7 +3161,7 @@ STRING1 DC.B '  DFL ',0
 
 ABOUTZBUG DC.B 'bout zBuG V1.0',13,10,10
           DC.B 'zBug V1.0 Copyright (C) 2002 W.SIRICHOTE',13,10,10
-          DC.B 'zBug V1.0.1 MIC68K Version by @kanpapa',13,10,0
+          DC.B 'zBug V1.0.3 Arty68K Version by Matt Pearce',13,10,0
 
 TRACE_MSG DC.B 'race instruction',0
 
@@ -3123,11 +3231,24 @@ USER_PC     EQU  USER_SS+4
 
 STACK_AREA  EQU  USER_PC+4           ; 32kB USER STACK -> 2kB
 ;USER_STACK  EQU  STACK_AREA+$7000    ; TOP OF STACK
-USER_STACK  EQU  STACK_AREA+$1F00    ; TOP OF STACK
+USER_STACK  EQU  STACK_AREA+$FF00    ; TOP OF STACK
 
 
 
        END	MAIN
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

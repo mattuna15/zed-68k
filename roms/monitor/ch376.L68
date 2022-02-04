@@ -1,0 +1,187 @@
+000B0000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 27/07/2020 07:40:09
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+000B0000                             7      ORG    $B0000
+000B0000                             8      
+000B0000  =000000AA                  9  CH376_DETECTED        EQU $AA
+000B0000                            10  
+000B0000  =00000000                 11  CH376_CMD_NONE        EQU $00
+000B0000  =00000001                 12  CH376_GET_IC_VER      EQU $01
+000B0000  =00000002                 13  CH376_SET_BAUDRATE    EQU $02
+000B0000  =00000003                 14  CH376_GET_ENTER_SLEEP EQU $03
+000B0000  =00000005                 15  CH376_RESET_ALL       EQU $05
+000B0000  =00000006                 16  CH376_CHECK_EXIST     EQU $06
+000B0000  =0000000C                 17  CH376_GET_FILE_SIZE   EQU $0C ; Get the current file length
+000B0000  =00000015                 18  CH376_SET_USB_MODE    EQU $15
+000B0000  =00000022                 19  CH376_GET_STATUS      EQU $22
+000B0000  =00000027                 20  CH376_RD_USB_DATA     EQU $27
+000B0000  =0000002C                 21  CH376_WR_USB_DATA     EQU $2C
+000B0000  =0000002D                 22  CH376_CMD_WR_REQ_DATA EQU $2D
+000B0000  =0000002F                 23  CH376_SET_FILE_NAME   EQU $2F
+000B0000  =00000030                 24  CH376_DISK_CONNECT    EQU $30 ; check the disk connection status
+000B0000  =00000031                 25  CH376_DISK_MOUNT      EQU $31
+000B0000  =00000032                 26  CH376_FILE_OPEN       EQU $32
+000B0000  =00000033                 27  CH376_FILE_ENUM_GO    EQU $33
+000B0000  =00000034                 28  CH376_CMD_FILE_CREATE EQU $34
+000B0000  =00000035                 29  CH376_FILE_ERASE      EQU $35
+000B0000  =00000036                 30  CH376_FILE_CLOSE      EQU $36
+000B0000  =00000039                 31  CH376_BYTE_LOCATE     EQU $39
+000B0000  =0000003A                 32  CH376_BYTE_READ       EQU $3A
+000B0000  =0000003B                 33  CH376_BYTE_RD_GO      EQU $3B
+000B0000  =0000003C                 34  CH376_BYTE_WRITE      EQU $3C
+000B0000  =0000003D                 35  CH376_BYTE_WR_GO      EQU $3D
+000B0000  =0000003E                 36  CH376_DISK_CAPACITY   EQU $3E
+000B0000  =0000003F                 37  CH376_DISK_QUERY      EQU $3F
+000B0000  =00000040                 38  CH376_DIR_CREATE      EQU $40
+000B0000  =00000055                 39  CH376_DISK_RD_GO      EQU $55
+000B0000                            40  
+000B0000                            41  ; CODE FOR CH376_SET_USB_MODE 
+000B0000                            42  
+000B0000  =00000003                 43  CH376_SET_USB_MODE_CODE_SDCARD EQU $03
+000B0000                            44  ; The code of 06H means switch to valid USB-HOST, produce SOF package automatically. 
+000B0000  =00000006                 45  CH376_SET_USB_MODE_CODE_USB_HOST EQU $06
+000B0000                            46  
+000B0000  =00000014                 47  CH376_USB_INT_SUCCESS       EQU $14
+000B0000  =00000015                 48  CH376_USB_INT_CONNECT       EQU $15
+000B0000  =00000016                 49  CH376_USB_INT_DISCONNECT    EQU $16
+000B0000  =00000017                 50  CH376_USB_INT_BUF_OVER      EQU $17
+000B0000  =00000018                 51  CH376_USB_INT_USB_READY     EQU $18
+000B0000  =0000001D                 52  CH376_USB_INT_DISK_READ     EQU $1d
+000B0000  =0000001E                 53  CH376_USB_INT_DISK_WRITE    EQU $1e
+000B0000  =0000001F                 54  CH376_USB_INT_DISK_ERR      EQU $1f
+000B0000                            55  
+000B0000  =00000041                 56  CH376_ERR_OPEN_DIR          EQU $41
+000B0000  =00000042                 57  CH376_ERR_MISS_FILE         EQU $42
+000B0000  =00000043                 58  CH376_ERR_FOUND_NAME        EQU $43
+000B0000  =00000082                 59  CH376_ERR_DISK_DISCON       EQU $82
+000B0000  =00000084                 60  CH376_ERR_LARGE_SECTOR      EQU $84
+000B0000  =00000092                 61  CH376_ERR_TYPE_ERROR        EQU $92
+000B0000  =000000A1                 62  CH376_ERR_BPB_ERROR         EQU $A1
+000B0000  =000000B1                 63  CH376_ERR_DISK_FULL         EQU $B1
+000B0000  =000000B2                 64  CH376_ERR_FDT_OVER          EQU $B2
+000B0000  =000000B4                 65  CH376_ERR_FILE_CLOSE        EQU $B4
+000B0000                            66  
+000B0000  =00F00009                 67  ACIAC    EQU $F00009
+000B0000  =00F0000B                 68  ACIAD    EQU ACIAC+2
+000B0000                            69  
+000B0000  =00F20009                 70  ACIA2C    EQU $F20009
+000B0000  =00F2000B                 71  ACIA2D    EQU ACIA2C+2
+000B0000                            72  
+000B0000  =00002000                 73  INT_ON   EQU  $2000    ; BOTH, SET SUPERVISOR MODE, S=1
+000B0000  =00002700                 74  INT_OFF  EQU  $2700
+000B0000                            75  
+000B0000  =00000000                 76  RDRF    EQU 0           ; ACIAC Receive Data Register Full
+000B0000  =00000001                 77  TDRE    EQU 1           ; ACIAC Transmit Data Register Empty
+000B0000                            78  
+000B0000                            79  START:                  ; first instruction of program
+000B0000                            80  
+000B0000                            81  * Put program code here
+000B0000                            82  ; INIT ACIA
+000B0000                            83  
+000B0000  13FC 0003 00F00009        84  INIT_ACIA  MOVE.B #3,ACIAC.L   ; RESET ACIA
+000B0008  303C 0064                 85             MOVE.W #100,D0
+000B000C  51C8 FFFE                 86             DBRA  D0,*
+000B0010  13FC 0015 00F00009        87             MOVE.B #$15,ACIAC.L   ; rts enabled 9600 8ne
+000B0018  4E75                      88             RTS
+000B001A                            89  
+000B001A  0839 0001 00F00009        90  COUT      BTST.B #TDRE,ACIAC.L
+000B0022  67F6                      91            BEQ.S  COUT
+000B0024  13C0 00F0000B             92            MOVE.B D0,ACIAD.L
+000B002A  4E75                      93            RTS
+000B002C                            94  
+000B002C                            95  
+000B002C  0839 0000 00F20009        96  CINS      BTST.B #RDRF,ACIA2C.L
+000B0034  67F6                      97            BEQ.S  CINS
+000B0036  1039 00F2000B             98            MOVE.B ACIA2D.L,D0
+000B003C  4E75                      99            RTS
+000B003E                           100  
+000B003E                           101  
+000B003E  0839 0000 00F00009       102  CIN      BTST.B #RDRF,ACIAC.L
+000B0046  67F6                     103           BEQ.S  CIN
+000B0048  1039 00F0000B            104           MOVE.B ACIAD.L,D0
+000B004E  61CA                     105           BSR COUT
+000B0050  4E75                     106           RTS
+000B0052                           107  
+000B0052                           108  
+000B0052                           109  
+000B0052                           110  * Put variables and constants here
+000B0052                           111  
+000B0052                           112      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ACIA2C              F20009
+ACIA2D              F2000B
+ACIAC               F00009
+ACIAD               F0000B
+CH376_BYTE_LOCATE   39
+CH376_BYTE_RD_GO    3B
+CH376_BYTE_READ     3A
+CH376_BYTE_WRITE    3C
+CH376_BYTE_WR_GO    3D
+CH376_CHECK_EXIST   6
+CH376_CMD_FILE_CREATE  34
+CH376_CMD_NONE      0
+CH376_CMD_WR_REQ_DATA  2D
+CH376_DETECTED      AA
+CH376_DIR_CREATE    40
+CH376_DISK_CAPACITY  3E
+CH376_DISK_CONNECT  30
+CH376_DISK_MOUNT    31
+CH376_DISK_QUERY    3F
+CH376_DISK_RD_GO    55
+CH376_ERR_BPB_ERROR  A1
+CH376_ERR_DISK_DISCON  82
+CH376_ERR_DISK_FULL  B1
+CH376_ERR_FDT_OVER  B2
+CH376_ERR_FILE_CLOSE  B4
+CH376_ERR_FOUND_NAME  43
+CH376_ERR_LARGE_SECTOR  84
+CH376_ERR_MISS_FILE  42
+CH376_ERR_OPEN_DIR  41
+CH376_ERR_TYPE_ERROR  92
+CH376_FILE_CLOSE    36
+CH376_FILE_ENUM_GO  33
+CH376_FILE_ERASE    35
+CH376_FILE_OPEN     32
+CH376_GET_ENTER_SLEEP  3
+CH376_GET_FILE_SIZE  C
+CH376_GET_IC_VER    1
+CH376_GET_STATUS    22
+CH376_RD_USB_DATA   27
+CH376_RESET_ALL     5
+CH376_SET_BAUDRATE  2
+CH376_SET_FILE_NAME  2F
+CH376_SET_USB_MODE  15
+CH376_SET_USB_MODE_CODE_SDCARD  3
+CH376_SET_USB_MODE_CODE_USB_HOST  6
+CH376_USB_INT_BUF_OVER  17
+CH376_USB_INT_CONNECT  15
+CH376_USB_INT_DISCONNECT  16
+CH376_USB_INT_DISK_ERR  1F
+CH376_USB_INT_DISK_READ  1D
+CH376_USB_INT_DISK_WRITE  1E
+CH376_USB_INT_SUCCESS  14
+CH376_USB_INT_USB_READY  18
+CH376_WR_USB_DATA   2C
+CIN                 B003E
+CINS                B002C
+COUT                B001A
+INIT_ACIA           B0000
+INT_OFF             2700
+INT_ON              2000
+RDRF                0
+START               B0000
+TDRE                1

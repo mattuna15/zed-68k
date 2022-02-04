@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="timer_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="timer_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="260400000001fs"></ZoomEndTime>
+      <Cursor1Time time="49400000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="480"></NameColumnWidth>
+      <ValueColumnWidth column_width="116"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="16" />
+   <wvobject fp_name="/timer_tb/timer_comp/clk1" type="logic">
+      <obj_property name="ElementShortName">clk1</obj_property>
+      <obj_property name="ObjectShortName">clk1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/int_en" type="array">
+      <obj_property name="ElementShortName">int_en[3:0]</obj_property>
+      <obj_property name="ObjectShortName">int_en[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/clk100hz" type="logic">
+      <obj_property name="ElementShortName">clk100hz</obj_property>
+      <obj_property name="ObjectShortName">clk100hz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/clk50hz" type="logic">
+      <obj_property name="ElementShortName">clk50hz</obj_property>
+      <obj_property name="ObjectShortName">clk50hz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/clk25hz" type="logic">
+      <obj_property name="ElementShortName">clk25hz</obj_property>
+      <obj_property name="ObjectShortName">clk25hz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/clk10hz" type="logic">
+      <obj_property name="ElementShortName">clk10hz</obj_property>
+      <obj_property name="ObjectShortName">clk10hz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/count_up_millis" type="array">
+      <obj_property name="ElementShortName">count_up_millis[31:0]</obj_property>
+      <obj_property name="ObjectShortName">count_up_millis[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/count" type="other">
+      <obj_property name="ElementShortName">count</obj_property>
+      <obj_property name="ObjectShortName">count</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/count1" type="other">
+      <obj_property name="ElementShortName">count1</obj_property>
+      <obj_property name="ObjectShortName">count1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/count2" type="other">
+      <obj_property name="ElementShortName">count2</obj_property>
+      <obj_property name="ObjectShortName">count2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/count3" type="other">
+      <obj_property name="ElementShortName">count3</obj_property>
+      <obj_property name="ObjectShortName">count3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/count_up" type="array">
+      <obj_property name="ElementShortName">count_up[31:0]</obj_property>
+      <obj_property name="ObjectShortName">count_up[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/a" type="logic">
+      <obj_property name="ElementShortName">a</obj_property>
+      <obj_property name="ObjectShortName">a</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/b" type="logic">
+      <obj_property name="ElementShortName">b</obj_property>
+      <obj_property name="ObjectShortName">b</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/c" type="logic">
+      <obj_property name="ElementShortName">c</obj_property>
+      <obj_property name="ObjectShortName">c</obj_property>
+   </wvobject>
+   <wvobject fp_name="/timer_tb/timer_comp/d" type="logic">
+      <obj_property name="ElementShortName">d</obj_property>
+      <obj_property name="ObjectShortName">d</obj_property>
+   </wvobject>
+</wave_config>

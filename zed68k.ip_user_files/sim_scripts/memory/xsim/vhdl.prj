@@ -1,0 +1,5 @@
+vhdl xil_defaultlib  \
+"../../../bd/memory/ip/memory_system_cache_0_0/sim/memory_system_cache_0_0.vhd" \
+"../../../bd/memory/ip/memory_proc_sys_reset_0_0/sim/memory_proc_sys_reset_0_0.vhd" \
+
+nosort

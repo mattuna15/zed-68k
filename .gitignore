@@ -2,3 +2,12 @@ vivado.jou
 vivado_pid23812.str
 zed68k.runs/
 zed68k.sim/sim_1/
+m68.bin
+m68.prm
+.DS_Store
+*.L68
+*.layout
+zed68k.hw/
+roms/monitor/monitor.S68
+zed68k.srcs/sources_1/bd/design_1/design_1.bxml
+zed68k.srcs/sources_1/bd/memory/memory.bxml

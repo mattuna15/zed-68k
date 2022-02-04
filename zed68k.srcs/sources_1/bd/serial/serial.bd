@@ -1,0 +1,338 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0xFE7B836DBDCD49CD",
+      "device": "xc7a100tcsg324-1",
+      "name": "serial",
+      "rev_ctrl_bd_flag": "RevCtrlBdOff",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2020.1",
+      "validated": "true"
+    },
+    "design_tree": {
+      "fifo_generator_0": "",
+      "util_vector_logic_0": "",
+      "util_vector_logic_1": "",
+      "UART_TX_0": "",
+      "UART_FIFO_IO_cntl_pr_0": ""
+    },
+    "ports": {
+      "sys_clk": {
+        "type": "clk",
+        "direction": "I",
+        "parameters": {
+          "ASSOCIATED_RESET": {
+            "value": "reset_n",
+            "value_src": "default"
+          },
+          "CLK_DOMAIN": {
+            "value": "serial_sys_clk",
+            "value_src": "default"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default"
+          }
+        }
+      },
+      "tx_data": {
+        "direction": "I",
+        "left": "7",
+        "right": "0"
+      },
+      "tx_wr_en": {
+        "direction": "I"
+      },
+      "cts": {
+        "direction": "O"
+      },
+      "rts": {
+        "direction": "O"
+      },
+      "reset_n": {
+        "type": "rst",
+        "direction": "I",
+        "parameters": {
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default"
+          }
+        }
+      },
+      "txd": {
+        "direction": "O"
+      },
+      "tx_send_active": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      }
+    },
+    "components": {
+      "fifo_generator_0": {
+        "vlnv": "xilinx.com:ip:fifo_generator:13.2",
+        "xci_name": "serial_fifo_generator_0_0",
+        "parameters": {
+          "Data_Count": {
+            "value": "true"
+          },
+          "Data_Count_Width": {
+            "value": "5"
+          },
+          "Input_Data_Width": {
+            "value": "8"
+          },
+          "Input_Depth": {
+            "value": "32"
+          },
+          "Output_Data_Width": {
+            "value": "8"
+          },
+          "Reset_Pin": {
+            "value": "false"
+          },
+          "Valid_Flag": {
+            "value": "true"
+          },
+          "Write_Acknowledge_Flag": {
+            "value": "true"
+          }
+        }
+      },
+      "util_vector_logic_0": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "serial_util_vector_logic_0_0",
+        "parameters": {
+          "C_OPERATION": {
+            "value": "not"
+          },
+          "C_SIZE": {
+            "value": "1"
+          }
+        }
+      },
+      "util_vector_logic_1": {
+        "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+        "xci_name": "serial_util_vector_logic_0_1",
+        "parameters": {
+          "C_OPERATION": {
+            "value": "not"
+          },
+          "C_SIZE": {
+            "value": "1"
+          }
+        }
+      },
+      "UART_TX_0": {
+        "vlnv": "xilinx.com:module_ref:UART_TX:1.0",
+        "xci_name": "serial_UART_TX_0_0",
+        "parameters": {
+          "g_CLKS_PER_BIT": {
+            "value": "868"
+          }
+        },
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "UART_TX",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "i_Clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "CLK_DOMAIN": {
+                "value": "serial_sys_clk",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "i_TX_DV": {
+            "direction": "I"
+          },
+          "i_TX_Byte": {
+            "direction": "I",
+            "left": "7",
+            "right": "0"
+          },
+          "o_TX_Active": {
+            "direction": "O"
+          },
+          "o_TX_Serial": {
+            "direction": "O"
+          },
+          "o_TX_Done": {
+            "direction": "O"
+          }
+        }
+      },
+      "UART_FIFO_IO_cntl_pr_0": {
+        "vlnv": "xilinx.com:module_ref:UART_FIFO_IO_cntl_proc:1.0",
+        "xci_name": "serial_UART_FIFO_IO_cntl_pr_0_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "UART_FIFO_IO_cntl_proc",
+          "boundary_crc": "0x0"
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_RESET": {
+                "value": "rst",
+                "value_src": "constant"
+              },
+              "CLK_DOMAIN": {
+                "value": "serial_sys_clk",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "rst": {
+            "type": "rst",
+            "direction": "I"
+          },
+          "uart_rx_dv": {
+            "direction": "I"
+          },
+          "uart_tx_rfd": {
+            "direction": "I"
+          },
+          "fifoM_full": {
+            "direction": "I"
+          },
+          "fifoM_empty": {
+            "direction": "I"
+          },
+          "fifoM_wr_ack": {
+            "direction": "I"
+          },
+          "uart_rx_rd_en": {
+            "direction": "O"
+          },
+          "uart_tx_wr_en": {
+            "direction": "O"
+          },
+          "fifoM_wr_en": {
+            "direction": "O"
+          },
+          "fifoM_rd_en": {
+            "direction": "O"
+          }
+        }
+      }
+    },
+    "nets": {
+      "UART_FIFO_IO_cntl_pr_0_fifoM_rd_en": {
+        "ports": [
+          "UART_FIFO_IO_cntl_pr_0/fifoM_rd_en",
+          "fifo_generator_0/rd_en"
+        ]
+      },
+      "clk_0_1": {
+        "ports": [
+          "sys_clk",
+          "fifo_generator_0/clk",
+          "UART_TX_0/i_Clk",
+          "UART_FIFO_IO_cntl_pr_0/clk"
+        ]
+      },
+      "fifo_generator_0_wr_ack": {
+        "ports": [
+          "fifo_generator_0/wr_ack",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_wr_ack"
+        ]
+      },
+      "fifo_generator_0_valid": {
+        "ports": [
+          "fifo_generator_0/valid",
+          "UART_TX_0/i_TX_DV"
+        ]
+      },
+      "fifo_generator_0_dout": {
+        "ports": [
+          "fifo_generator_0/dout",
+          "UART_TX_0/i_TX_Byte"
+        ]
+      },
+      "fifo_generator_0_full": {
+        "ports": [
+          "fifo_generator_0/full",
+          "util_vector_logic_0/Op1",
+          "UART_FIFO_IO_cntl_pr_0/fifoM_full"
+        ]
+      },
+      "din_0_1": {
+        "ports": [
+          "tx_data",
+          "fifo_generator_0/din"
+        ]
+      },
+      "wr_en_0_1": {
+        "ports": [
+          "tx_wr_en",
+          "fifo_generator_0/wr_en"
+        ]
+      },
+      "UART_FIFO_IO_cntl_pr_0_uart_rx_rd_en": {
+        "ports": [
+          "UART_FIFO_IO_cntl_pr_0/uart_rx_rd_en",
+          "cts"
+        ]
+      },
+      "UART_FIFO_IO_cntl_pr_0_uart_tx_wr_en": {
+        "ports": [
+          "UART_FIFO_IO_cntl_pr_0/uart_tx_wr_en",
+          "rts"
+        ]
+      },
+      "rst_0_1": {
+        "ports": [
+          "reset_n",
+          "UART_FIFO_IO_cntl_pr_0/rst"
+        ]
+      },
+      "UART_TX_0_o_TX_Serial": {
+        "ports": [
+          "UART_TX_0/o_TX_Serial",
+          "txd"
+        ]
+      },
+      "util_vector_logic_0_Res": {
+        "ports": [
+          "util_vector_logic_0/Res",
+          "tx_send_active"
+        ]
+      },
+      "UART_TX_0_o_TX_Active": {
+        "ports": [
+          "UART_TX_0/o_TX_Active",
+          "util_vector_logic_1/Op1"
+        ]
+      },
+      "util_vector_logic_1_Res": {
+        "ports": [
+          "util_vector_logic_1/Res",
+          "UART_FIFO_IO_cntl_pr_0/uart_tx_rfd"
+        ]
+      }
+    }
+  }
+}

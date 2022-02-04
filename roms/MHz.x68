@@ -284,13 +284,10 @@ LAB_string
 * output character to the console from register d4
 
 VEC_OUT
-	MOVEM.l	d0-d1,-(sp)		* save d0, d1
-	MOVE.b	d4,d1			* copy character
-	MOVEQ		#6,d0			* character out
-	TRAP		#15			* do I/O function
-	MOVEM.l	(sp)+,d0-d1		* restore d0, d1
-	RTS
-
+          BTST.B #1,$f00009.L
+          BEQ.S  VEC_OUT
+          MOVE.B D0,$f0000b.L
+          RTS
 
 * binary to unsigned decimal table
 
@@ -322,3 +319,9 @@ LAB_LMHz
 
 *************************************************************************************
 
+
+
+*~Font name~Courier New~
+*~Font size~10~
+*~Tab type~1~
+*~Tab size~4~

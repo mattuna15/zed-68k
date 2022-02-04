@@ -1,0 +1,149 @@
+IAC DOS 3.3 and CP/M Hybrid Disk
+
+This disk is a hybrid which is in part a CP/M type of disk and in part
+a DOS 3.3 type of disk.  It contains files of both types on it, but it
+does not (yet) bear an operating system.
+
+Like IAC Disk #20 (available from the IAC for $8.00), this disk is a
+special format designed to assist Apple users whose machines are
+equipped for more than just the DOS 3.3 operating system.
+
+One of the reasons to use this disk is in those situations in which
+you might like to work, in one operating environ- ment, on program
+files which will ultimately be used in another operating system.  For
+example, if you have a modem and terminal program that is capable of
+operating under DOS 3.3, but you would like to use your CP/M word
+processor to create or edit text files for transfer, you can use this
+disk... Write or edit a text file in CP/M using this as a data disk,
+and then boot up DOS 3.3 (using the BOOT command on this disk).  Run
+the CP/Muffin program to convert the CP/M text file into a DOS text
+file, and then you are ready to send it over the phone lines.
+
+And of course, you can go the other way as well.  You might have a
+data file from a database program which works in the DOS mode, and you
+would like to convert it into the CP/M environment so that you can
+modify and use it with a CP/M-typed database program.  Here, you are
+going to have to use your 'APDOS' program or similar.  Let me explain
+some more...
+
+While the CP/Muffin program in the DOS section of this disk is in the
+public domain (it originated from CALL-APPLE), an 'APDOS'-type program
+which can convert files from DOS 3.3 to CP/M is not public domain.
+Therefore, you will have to use your own 'APDOS' program and PIP it
+onto this disk before you can move files from the DOS to CP/M systems.
+
+You can copy this entire disk using the COPYA program from the Apple
+DOS 3.3 System Master Disk.  That means that you can create duplicate
+copies of this disk - while the files on this disk are not very
+important, its format could be. Thus, you can delete all the unwanted
+files from a copy of this disk, and on it the programs and utilities
+which you like to use.
+
+As this disk indicates when you try to boot it up, it does not contain
+an operating system on the first three tracks.  Instead, it contains a
+short note telling you about the lack of an operating system.  If you
+would like to put either DOS or CP/M on this disk, it is easily done.
+To put DOS 3.3 on it, just use the MASTER CREATE program from the DOS
+System Master Disk.  The CP/M operating system can be moved to it by
+means of the COPY/S command or its equivalent.
+
+For move advanced users of DOS, you may want to use the boot program
+which is stored on Track 0 Sector 0 of this disk. This 256 byte file
+turns off you drive motors and prints the message that you see.  Here
+is how it may be of benefit to you...
+
+If you want to remove DOS from a DOS 3.3 disk so that you will have 32
+more data sectors, you can do so with the disk editor program
+contained in the DOS side of this disk.  Edit Track 17 Sector 0, the
+VTOC track, and change bytes $3C, 3D and $40, 41 from 00 to FF.  That
+makes Tracks 01 and 02 free for data storage. You must remember that
+the disk will no longer boot.  Therefore, you can move the 256 bytes
+from Track 0 Sector 0 on this disk to the same location on your new
+DOS data disk, so that if you try to boot the disk it will give you an
+appropriate message.  You can even change the message. Starting at
+byte $3A (which is the 59th byte), you can load in a message up to 189
+bytes in length. Make sure the last 9 bytes after the message are: 88
+A6 2B BD 88 C0 4C 00 E0 (These bytes turn off the drive motor and put
+you back in BASIC.)
+
+And now a word about the CP/M files on this disk...
+
+BOOT allows you to boot out of the CP/M environment.  It is rather
+like the PR#6 command in DOS.  Just enter the command 'BOOT' and then
+place your new DOS, Pascal (or whatever) disk in Drive 6 Slot 1.
+Then, hit the <carriage/return> for a 16 sector disk or '3' for 13
+sector DOS 3.2.
+
+CAT gives a sorted catalog with the file lengths.
+
+CONVERT.BAS is an MBASIC program which will overcome one of the
+problems with the 'APDOS' command -> if you move a text file from DOS
+3.3 into CP/M, you will find that it may not print properly.  This is
+because the carriage/returns in DOS are seen as line/feeds only (and
+not line/feed- carriage/return combinations) in CP/M.  Therefore, you
+may find it necessary to run a text file through this MBASIC program
+before you can 'TYPE' it to screen, print it out, or edit it with a
+word processor. This MBASIC program is simple enough as it just reads
+100 lines from the source text, writes 100 lines to the target text
+file, then goes back for another 100 lines or until it hits an EOF
+(end-of-file) marker.
+
+FINDBAD goes through an Apple CP/M disk, checking for bad sectors in
+the directory or data storage areas.
+
+RPIP is a modification of PIP. It allows you to put in a new disk and
+reset the drives by entering the letter 'R' at the *prompt.  Also, you
+can repeat the last file transfer by using the '!' command.
+
+SAPX will sort a disk directory and re- write it to the disk again.
+
+SQ/UNSQ provides the ability to squeeze and unsqueeze text files.
+These can be compressed up to 50% or more, depending on their nature.
+Then, they can be saved to reduce disk storage space, or sent over a
+modem to another computer (which will have to unsqueeze them).  This
+utility saves time with modem transfer times (and long distance
+bills!)
+
+SWEEP is rather like the CP/M equivalent of FID, except that it adds
+more commands.  To use it, you go through the target disk's directory
+and tag (with the 'T') those files you want to move, delete or
+whatever.  Then you use the 'M' move command, and you will be asked
+for the target drive.  It is easy to use, so play with a few scratch
+disks and you will soon become a fan of SWEEP.
+
+TURNKEY allows you to make a CP/M disk into an 'autostart' disk, such
+that when the disk is booted up, it will automatically run a CP/M
+command file.  For example, you can create a disk that will boot up
+and run the 'WS' file to start 'Wordstar'.
+
+UNERA is a program which will 'unerase' (or resurrect) programs which
+you have deleted, provided that you have not already re-used the disk
+sectors on which the program was located. Note that UNERA does not use
+wild- cards, but that you have to specify the name of the erased file
+exactly.
+
+And now a final plug....
+
+As the person responsible for the IAC's Disk-of-the-Month, I need
+submissions from the libraries of Apple user groups. They can be any
+of a wide variety of program types in a number of operating
+environments.  The programs should be bug-free and (presumably) of a
+reasonable quality.  It is not necessary to submit a disk-full, for
+just a few programs will suffice.  Why not return this disk with a few
+programs, or how about a hybrid Pascal-CP/M disk ???
+
+Submissions can be sent directly to the IAC office at  
+
+908 George Street
+Santa Clara, CA 95050
+
+or to me,  
+
+Charles R. Smith
+47 Buchanan Drive
+Unionville, Ontario
+Canada   L3R 4C4
+
+Feedback concerning the IAC's Disk-of- the-Month is appreciated.
+
+C.R.S.

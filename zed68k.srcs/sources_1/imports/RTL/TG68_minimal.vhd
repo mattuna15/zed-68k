@@ -66,7 +66,8 @@ entity TG68 is
 		rw            : out std_logic;
 		drive_data    : out std_logic;       --enable for data_out driver
 		enaRDreg     : in std_logic:='1';
-		enaWRreg     : in std_logic:='1'
+		enaWRreg     : in std_logic:='1';
+		fc           : out std_logic_vector(2 downto 0)
 	);
 end TG68;
 
@@ -96,8 +97,8 @@ BEGIN
 TG68_inst: entity work.TG68KdotC_Kernel
 	generic map (
 		SR_Read => 1,				--0=>user,   1=>privileged,      2=>switchable with CPU(0)
-		VBR_Stackframe => 1,		--0=>no,     1=>yes/extended,    2=>switchable with CPU(0)
-		extAddr_Mode => 1,			--0=>no,     1=>yes,    2=>switchable with CPU(1)
+		VBR_Stackframe => 2,		--0=>no,     1=>yes/extended,    2=>switchable with CPU(0)
+		extAddr_Mode => 2,			--0=>no,     1=>yes,    2=>switchable with CPU(1)
 		MUL_Mode => 1,				--0=>16Bit,  1=>32Bit,  2=>switchable with CPU(1),  3=>no MUL,  
 		DIV_Mode => 1,			   --0=>16Bit,  1=>32Bit,  2=>switchable with CPU(1),  3=>no DIV,  
 		BitField => 1 			   --0=>no,     1=>yes,    2=>switchable with CPU(1)
@@ -108,7 +109,7 @@ TG68_inst: entity work.TG68KdotC_Kernel
 		clkena_in => clkena, 	-- : in std_logic;
 		data_in => data_in, 	-- : in std_logic_vector(15 downto 0);
 		IPL => IPL, 			-- : in std_logic_vector(2 downto 0);
-		IPL_autovector => '0', 		-- : in std_logic;
+		IPL_autovector => '1', 		-- : in std_logic;
 		addr_out => addr, 		-- : out std_logic_vector(31 downto 0);
 		data_write => data_out, -- : out std_logic_vector(15 downto 0);
 		busstate => state, 	-- : out std_logic_vector(1 downto 0);
@@ -116,7 +117,8 @@ TG68_inst: entity work.TG68KdotC_Kernel
 		nUDS => uds_in, 			-- : out std_logic;
 		nLDS => lds_in, 			-- : out std_logic;
 		nResetOut => cpuready,
-		cpu => "11"
+		cpu => "01",
+		FC => fc
 	);
 						
 	PROCESS (clk, reset, state, as_s, as_e, rw_s, rw_e, uds_s, uds_e, lds_s, lds_e)

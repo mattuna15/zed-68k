@@ -1,0 +1,355 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 26/07/2020 21:59:28
+
+00000000                             1  *************************************************************************************
+00000000                             2  *                                                       *
+00000000                             3  *   MHz benchmark for the EASy68k simulator 2004/4/4                    *
+00000000                             4  *                                                       *
+00000000                             5  *   This code attempts to guage the effective 68000 clock speed in MHz. This    *
+00000000                             6  *   is not a serious benchmark test as there are too many factors to take into  *
+00000000                             7  *   account when running in a multitasking environment. This is demonstrated    *
+00000000                             8  *   by the, sometimes wildly, varying results.                      *
+00000000                             9  *                                                       *
+00000000                            10  *   A 1.8GHz PIII system gives results that vary around 16MHz               *
+00000000                            11  *                                                       *
+00000000                            12  *   More 68000 and other projects can be found on my website at ..          *
+00000000                            13  *                                                       *
+00000000                            14  *    http://mycorner.no-ip.org/index.html                           *
+00000000                            15  *                                                       *
+00000000                            16  *   mail : leeedavison@googlemail.com                               *
+00000000                            17  *                                                       *
+00000000                            18  *************************************************************************************
+00000000                            19  
+00000000                            20  *************************************************************************************
+00000000                            21  * code start.
+00000000                            22  
+00001000                            23      ORG     $1000           * set origin
+00001000                            24  
+00001000                            25  start
+00001000  41FA 011D                 26      LEA     (LAB_MMHz,PC),a0    * get pointer to "Too fast!",[CR][LF]
+00001004  7E80                      27      MOVEQ       #-$80,d7        * set initial mask for 128 100ths, this is the
+00001006                            28                          * q value used later in the speed calculations
+00001006                            29  
+00001006                            30  * this is the code that is used to gauge the speed of the CPU. the longer this
+00001006                            31  * code runs the more accurate the result will be but the user will eventually
+00001006                            32  * get bored and walk away, so the code can't run for too long. in this case it
+00001006                            33  * runs for up to about four seconds depending on when it starts and how fast
+00001006                            34  * the simulated processor runs. If you know that the count loop will overflow
+00001006                            35  * the initial value of d7 can be set to take this into account. This will produce
+00001006                            36  * results more frequently. e.g. if you know the loop count will overflow the first
+00001006                            37  * time then use ..
+00001006                            38  
+00001006                            39  *   MOVEQ       #-$C0,d7        * set initial mask for 64 100ths...
+00001006                            40  
+00001006                            41  * first setup the timing variables
+00001006                            42  
+00001006                            43  LAB_time
+00001006  2407                      44      MOVE.l  d7,d2           * copy mask
+00001008  7600                      45      MOVEQ       #0,d3           * clear n counter
+0000100A  7800                      46      MOVEQ       #0,d4           * clear m counter
+0000100C                            47  
+0000100C                            48  * now wait for the start of the next q time period
+0000100C                            49  
+0000100C  7008                      50      MOVEQ       #8,d0           * get 100ths of a second since midnight
+0000100E  4E4F                      51      TRAP        #15
+00001010  C481                      52      AND.l       d1,d2           * mask and copy q 100ths
+00001012                            53  LAB_1_wait
+00001012  7008                      54      MOVEQ       #8,d0           * get 100ths of a second since midnight
+00001014  4E4F                      55      TRAP        #15         *
+00001016  C287                      56      AND.l       d7,d1           * mask q 100ths
+00001018  B481                      57      CMP.l       d1,d2           * compare with last q 100ths
+0000101A  67F6                      58      BEQ.s       LAB_1_wait      * wait more if not yet changed
+0000101C                            59  
+0000101C                            60  * now loop and count until the next q time period
+0000101C                            61  
+0000101C  2401                      62      MOVE.l  d1,d2           * [4] copy q 100ths
+0000101E                            63  LAB_1_count
+0000101E  5243                      64      ADDQ.w  #1,d3           * [8] increment counter
+00001020  6404                      65      BCC.s       LAB_1_ccc       * [10/.] branch if no overflow
+00001022                            66  
+00001022                            67  * if there is an overflow here then the period over which the count is done needs to
+00001022                            68  * be reduced. this is done by shifting the mask in d7 and re-running the code from the
+00001022                            69  * start. for this reason the /.] part of the branch timing, and that for this section,
+00001022                            70  * never needs to be taken into account
+00001022                            71  
+00001022  E207                      72      ASR.b       #1,d7           * effectively divide the measure time (q) by 2
+00001024                            73      ;BCS        LAB_speederror  * branch if simulator is too fast to time
+00001024                            74                          * this will happen at approximately 380MHz simulated
+00001024                            75  
+00001024  60E0                      76      BRA.s       LAB_time        * go re-run the code
+00001026                            77  
+00001026                            78  LAB_1_ccc
+00001026  7008                      79      MOVEQ       #8,d0           * [4] get 100ths of a second since midnight
+00001028  4E4F                      80      TRAP        #15         * [x]
+0000102A  C287                      81      AND.l       d7,d1           * [8] mask q 100ths
+0000102C  B481                      82      CMP.l       d1,d2           * [6] compare with last q 100ths
+0000102E  67EE                      83      BEQ.s       LAB_1_count     * [10/8] loop if not yet changed
+00001030                            84  
+00001030                            85  * speed of the 68000 is 100*n*(46+x)/128 cycles/s where x is the time the TRAP #15
+00001030                            86  * call takes. from this it's not easy to get the effective speed because we don't
+00001030                            87  * know x so we go measure a slightly different loop ......
+00001030                            88  
+00001030                            89  LAB_2_wait
+00001030  7008                      90      MOVEQ       #8,d0           * get 100ths of a second since midnight
+00001032  4E4F                      91      TRAP        #15
+00001034  C287                      92      AND.l       d7,d1           * mask q 100ths
+00001036  B481                      93      CMP.l       d1,d2           * compare with last q 100ths
+00001038  67F6                      94      BEQ.s       LAB_2_wait      * wait more if not yet changed
+0000103A                            95  
+0000103A  2401                      96      MOVE.l  d1,d2           * copy q 100ths
+0000103C                            97  LAB_2_count
+0000103C  5484                      98      ADDQ.l  #2,d4           * [8] increment counter twice
+0000103E  6408                      99      BCC.s       LAB_2_ccc       * [10/.] branch if no overflow
+00001040                           100  
+00001040                           101  * if there is an overflow here then the period over which the count is done needs to
+00001040                           102  * be reduced. this is done by shifting the mask in d7 and re-running the code from the
+00001040                           103  * start. for this reason the /.] part of the branch timing, and that for this section,
+00001040                           104  * never needs to be taken into account. actually this code should /never/ be executed
+00001040                           105  * but, as with all things that should never happen, if the first loop runs a little
+00001040                           106  * slow, this one doesn't and the simulator is fast enough that an overflow /could/
+00001040                           107  * happen then it's better to be safe than wrong. it also saves us padding this loop to
+00001040                           108  * ensure that it's slower than the above loop to make the math easier later
+00001040                           109  
+00001040  E207                     110      ASR.b       #1,d7           * effectively divide the measure time (q) by 2
+00001042  6500 008C                111      BCS     LAB_speederror  * branch if simulator is too fast to time
+00001046                           112                          * this will happen at approximately 380MHz simulated
+00001046                           113  
+00001046  60BE                     114      BRA.s       LAB_time        * go re-run the code
+00001048                           115  
+00001048                           116  LAB_2_ccc
+00001048  5384                     117      SUBQ.l  #1,d4           * [8] decrement counter
+0000104A  7008                     118      MOVEQ       #8,d0           * [4] get 100ths of a second since midnight
+0000104C  4E4F                     119      TRAP        #15         * [x]
+0000104E  C287                     120      AND.l       d7,d1           * [8] mask q 100ths
+00001050  B481                     121      CMP.l       d1,d2           * [6] compare with last q 100ths
+00001052  67E8                     122      BEQ.s       LAB_2_count     * [10/8] loop if not yet changed
+00001054                           123  
+00001054                           124  * ... now we have another measure of speed of the 68000 which is 100*m*(54+x)/q
+00001054                           125  * cycles/s. as both loops take the same ammount of time we can find x from these
+00001054                           126  * two loops by doing the following ..
+00001054                           127  *
+00001054                           128  *      100*m*(54+x)/q = 100*n*(46+x)/q
+00001054                           129  *                           .. let x = x+46 to simplify loop counts ..
+00001054                           130  *       100*m*(8+x)/q = 100*n*x/q
+00001054                           131  *                           .. remove common factors ..
+00001054                           132  *             m*(8+x) = n*x
+00001054                           133  *                           .. multiply out ..
+00001054                           134  *             8m + mx = nx
+00001054                           135  *                           .. swap x to left hand side ..
+00001054                           136  *             nx - mx = 8m
+00001054                           137  *                           .. factorise ..
+00001054                           138  *           x*(n - m) = 8m
+00001054                           139  *                           .. rearrange to give x gives ..
+00001054                           140  *                   x = 8m/(n - m)
+00001054                           141  *
+00001054                           142  * as a test, run the code and try some returned values, m is 38008 n is 43083
+00001054                           143  * and q is 16
+00001054                           144  *
+00001054                           145  *   x = 8m/(n - m)
+00001054                           146  *
+00001054                           147  *   x = 8*38008/(43083 - 38008) =  304064/(5075) = 59.91
+00001054                           148  *
+00001054                           149  * having found x it can be substituted in either of the simplified loop equations
+00001054                           150  * to give the effective processor speed in Hz. for this use 100*n*x/q which is the
+00001054                           151  * simpler of the two
+00001054                           152  *
+00001054                           153  * speed = 100*n*x/q
+00001054                           154  *
+00001054                           155  * speed = 100*43083*59.91/16 = 16131890.8125 Hz = 16.132MHz
+00001054                           156  *
+00001054                           157  * .. or 16.132MHz, which isn't too bad. this is on a 1.8GHz processor so it works
+00001054                           158  * out at around 112 real clocks for each 68000 clock.
+00001054                           159  *
+00001054                           160  * let the 68000 do this calculation but, as the accuracy is probably not great,
+00001054                           161  * these equations can be arranged to reduce the risk of overflows should this
+00001054                           162  * code ever run on a simulator that fast
+00001054                           163  *
+00001054                           164  * m is in d4.w and n is in d3.w, the high words are cleared ..
+00001054                           165  
+00001054                           166                          * x = 8m/(n - m)
+00001054  2A03                     167      MOVE.l  d3,d5           * copy n
+00001056  9A44                     168      SUB.w       d4,d5           * (n - m) now in d5.w
+00001058  41FA 00D1                169      LEA     (LAB_LMHz,PC),a0    * get pointer to "Count error!",[CR][LF]
+0000105C  6772                     170      BEQ.s       LAB_speederror  * branch if the simulator is too slow to time
+0000105E                           171  
+0000105E                           172  * at this point x can be calculated and then used in the speed equation but, as x is a
+0000105E                           173  * small value, some resolution will be lost in the integer nature of the result. to
+0000105E                           174  * preserve the resolution 8*m/(n - m) is substitutes for x in the 100*n*x/q equation,
+0000105E                           175  * which expands to 100*n*8*m/(n - m)/q, and the calculation order is changed
+0000105E                           176  
+0000105E                           177  * m is in d4.w and n is in d3.w, the high words are cleared ..
+0000105E                           178  * (n - m) is in d5.w, -q is in d7
+0000105E                           179  
+0000105E  7000                     180      MOVEQ       #0,d0           * clear divide result high word register
+00001060                           181  
+00001060  C6C4                     182      MULU.w  d4,d3           * n*m in d3.l
+00001062  2803                     183      MOVE.l  d3,d4           * copy n*m
+00001064  3800                     184      MOVE.w  d0,d4           * clear n*m low word
+00001066  4844                     185      SWAP        d4          * swap high word to low word
+00001068                           186  
+00001068  88C5                     187      DIVU.w  d5,d4           * high word divide result in d4.w
+0000106A                           188  
+0000106A  3004                     189      MOVE.w  d4,d0           * copy divide result
+0000106C  4840                     190      SWAP        d0          * swap to high word (and clear low word)
+0000106E                           191  
+0000106E  C8C5                     192      MULU.w  d5,d4           * multiply back
+00001070  9684                     193      SUB.l       d4,d3           * subtract from n*m
+00001072                           194  
+00001072  86C5                     195      DIVU.w  d5,d3           * low word n*m/(n - m) now in d3
+00001074                           196  
+00001074  7400                     197      MOVEQ       #0,d2           * set value for rounding
+00001076  4843                     198      SWAP        d3          * remainder from n*m/(n - m) into d3 low word
+00001078  E343                     199      ASL.w       #1,d3           * shift the high bit of the remainder into Xb
+0000107A  4243                     200      CLR.w       d3          * clear the rest of the remainder
+0000107C  4843                     201      SWAP        d3          * swap the result back to the low word (Xb unchanged)
+0000107E  D742                     202      ADDX.w  d2,d3           * add the rounding bit into the result
+00001080                           203  
+00001080  D680                     204      ADD.l       d0,d3           * add in the high word result
+00001082                           205  
+00001082  E78B                     206      LSL.l       #3,d3           * now do the *8 part, d3 = 8*n*m/(n - m)
+00001084                           207  
+00001084                           208  * as q is always a power of 2, it starts at 128 and gets smaller, it's easy to divide
+00001084                           209  * by it by shifting the resut right by the correct number of bits. to do this the mask
+00001084                           210  * is shifted by 1 and tested each loop, if a divide is needed the result is shifted
+00001084                           211  * and the loop taken again
+00001084                           212  
+00001084                           213  LAB_divq
+00001084  E20F                     214      LSR.b       #1,d7           * shift q
+00001086  6504                     215      BCS.s       LAB_doneq       * exit loop if the /q is done
+00001088                           216  
+00001088  E28B                     217      LSR.l       #1,d3           * shift the (unsigned) result
+0000108A  60F8                     218      BRA.s       LAB_divq        * go test again
+0000108C                           219  
+0000108C                           220  * now d3 holds 8*n*m/(n - m)/q which is 100th the effective CPU Hz or, looked at
+0000108C                           221  * in MHz, 10,000th the result. this can be output as a fixed point decimal number
+0000108C                           222  * without needing to be further scalled
+0000108C                           223  
+0000108C                           224  LAB_doneq
+0000108C  43FA 0062                225      LEA     (B2dec,PC),a1   * get table address
+00001090  7200                     226      MOVEQ       #0,d1           * set table index
+00001092  7E30                     227      MOVEQ       #'0',d7     * output check character
+00001094                           228  LAB_chrloop
+00001094  2C31 1000                229      MOVE.l  (a1,d1.w),d6    * get table value
+00001098  6732                     230      BEQ.s       LAB_alldone     * exit if end marker
+0000109A                           231  
+0000109A  782F                     232      MOVEQ       #'0'-1,d4       * set character to "0"-1
+0000109C                           233  LAB_subloop
+0000109C  5244                     234      ADDQ.w  #1,d4           * next numeric character
+0000109E  9686                     235      SUB.l       d6,d3           * subtract table value
+000010A0  6AFA                     236      BPL.s       LAB_subloop     * not overdone so loop
+000010A2                           237  
+000010A2  D686                     238      ADD.l       d6,d3           * correct value
+000010A4  B27C 0018                239      CMP.w       #sB2dec-B2dec,d1    * test index
+000010A8  6612                     240      BNE.s       LAB_notdp       * branch if not decimal point
+000010AA                           241  
+000010AA  3F04                     242      MOVE.w  d4,-(sp)        * save d4
+000010AC  4A07                     243      TST.b       d7          * test if zero output
+000010AE  6700 0006                244      BEQ     LAB_no0out      * branch if leading character done
+000010B2                           245  
+000010B2  2807                     246      MOVE.l  d7,d4           * "0" character
+000010B4  6128                     247      BSR.s       VEC_OUT     * go print the character
+000010B6                           248  LAB_no0out
+000010B6  782E                     249      MOVEQ       #'.',d4     * "." character
+000010B8  6124                     250      BSR.s       VEC_OUT     * go print the character
+000010BA  381F                     251      MOVE.w  (sp)+,d4        * restore d4
+000010BC                           252  
+000010BC                           253  LAB_notdp
+000010BC  6A04                     254      BPL.s       LAB_nolead0s    * branch if no leading 0 supress
+000010BE                           255  
+000010BE  BE04                     256      CMP.b       d4,d7           * compare with check character
+000010C0  6706                     257      BEQ.s       LAB_lead0s      * branch if leading '0' supressed
+000010C2                           258  
+000010C2                           259  LAB_nolead0s
+000010C2  7E00                     260      MOVEQ       #0,d7           * eliminate check character
+000010C4  6100 0018                261      BSR     VEC_OUT     * character out to display
+000010C8                           262  LAB_lead0s
+000010C8  5841                     263      ADDQ.w  #4,d1           * increment table pointer
+000010CA  60C8                     264      BRA.s       LAB_chrloop     * loop
+000010CC                           265  
+000010CC                           266  LAB_alldone
+000010CC  41FA 004A                267      LEA     (LAB_MHz,PC),a0 * get pointer to " MHz",[CR][LF]
+000010D0                           268  LAB_speederror
+000010D0  6106                     269      BSR.s       LAB_string      * output null terminated string
+000010D2  6000 FF2C                270      BRA     start           * loop forever
+000010D6                           271  
+000010D6                           272  
+000010D6                           273  * output null terminated string
+000010D6                           274  
+000010D6                           275  LAB_sstring
+000010D6  6106                     276      BSR.s       VEC_OUT     * else go print the character
+000010D8                           277  LAB_string
+000010D8  1818                     278      MOVE.b  (a0)+,d4        * get byte from string
+000010DA  66FA                     279      BNE.s       LAB_sstring     * output character if not end
+000010DC                           280  
+000010DC  4E75                     281      RTS
+000010DE                           282  
+000010DE                           283  
+000010DE                           284  * output character to the console from register d4
+000010DE                           285  
+000010DE                           286  VEC_OUT
+000010DE  0839 0001 00F00009       287            BTST.B #1,$f00009.L
+000010E6  67F6                     288            BEQ.S  VEC_OUT
+000010E8  13C0 00F0000B            289            MOVE.B D0,$f0000b.L
+000010EE  4E75                     290            RTS
+000010F0                           291  
+000010F0                           292  * binary to unsigned decimal table
+000010F0                           293  
+000010F0                           294  B2dec
+000010F0= 3B9ACA00                 295      dc.l    $3B9ACA00           * 10000.00000
+000010F4= 05F5E100                 296      dc.l    $05F5E100           * 1000.00000
+000010F8= 00989680                 297      dc.l    $00989680           * 100.00000
+000010FC= 000F4240                 298      dc.l    $000F4240           * 10.00000
+00001100= 000186A0                 299      dc.l    $000186A0           * 1.00000
+00001104= 00002710                 300      dc.l    $00002710           * 0.10000
+00001108                           301  sB2dec
+00001108= 000003E8                 302      dc.l    $000003E8           * 00.10000
+0000110C= 00000064                 303      dc.l    $00000064           * 000.10000
+00001110= 0000000A                 304      dc.l    $0000000A           * 0000.10000
+00001114= 00000000                 305      dc.l    $00000000           * 0 end marker
+00001118                           306  
+00001118                           307  
+00001118                           308  * messages
+00001118                           309  
+00001118                           310  LAB_MHz
+00001118= 20 4D 48 7A 0D 0A 00     311      dc.b    ' MHz',$0D,$0A,$00
+0000111F                           312  LAB_MMHz
+0000111F= 54 6F 6F 20 66 61 ...    313      dc.b    'Too fast!',$0D,$0A,$00
+0000112B                           314  LAB_LMHz
+0000112B= 43 6F 75 6E 74 20 ...    315      dc.b    'Count error!',$0D,$0A,$00
+0000113A                           316  
+0000113A                           317      END start
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+B2DEC               10F0
+LAB_1_CCC           1026
+LAB_1_COUNT         101E
+LAB_1_WAIT          1012
+LAB_2_CCC           1048
+LAB_2_COUNT         103C
+LAB_2_WAIT          1030
+LAB_ALLDONE         10CC
+LAB_CHRLOOP         1094
+LAB_DIVQ            1084
+LAB_DONEQ           108C
+LAB_LEAD0S          10C8
+LAB_LMHZ            112B
+LAB_MHZ             1118
+LAB_MMHZ            111F
+LAB_NO0OUT          10B6
+LAB_NOLEAD0S        10C2
+LAB_NOTDP           10BC
+LAB_SPEEDERROR      10D0
+LAB_SSTRING         10D6
+LAB_STRING          10D8
+LAB_SUBLOOP         109C
+LAB_TIME            1006
+SB2DEC              1108
+START               1000
+VEC_OUT             10DE

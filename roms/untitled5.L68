@@ -1,0 +1,139 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 26/07/2020 21:47:13
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00001000                             7      ORG    $1000
+00001000                             8      
+00001000                             9      
+00001000  =000000AA                 10  CH376_DETECTED        EQU $AA
+00001000                            11  
+00001000  =00000000                 12  CH376_CMD_NONE        EQU $00
+00001000  =00000001                 13  CH376_GET_IC_VER      EQU $01
+00001000  =00000002                 14  CH376_SET_BAUDRATE    EQU $02
+00001000  =00000003                 15  CH376_GET_ENTER_SLEEP EQU $03
+00001000  =00000005                 16  CH376_RESET_ALL       EQU $05
+00001000  =00000006                 17  CH376_CHECK_EXIST     EQU $06
+00001000  =0000000C                 18  CH376_GET_FILE_SIZE   EQU $0C ; Get the current file length
+00001000  =00000015                 19  CH376_SET_USB_MODE    EQU $15
+00001000  =00000022                 20  CH376_GET_STATUS      EQU $22
+00001000  =00000027                 21  CH376_RD_USB_DATA0    EQU $27
+00001000  =0000002C                 22  CH376_WR_USB_DATA     EQU $2C
+00001000  =0000002D                 23  CH376_CMD_WR_REQ_DATA EQU $2D
+00001000  =0000002F                 24  CH376_SET_FILE_NAME   EQU $2F
+00001000  =00000030                 25  CH376_DISK_CONNECT    EQU $30 ; check the disk connection status
+00001000  =00000031                 26  CH376_DISK_MOUNT      EQU $31
+00001000  =00000032                 27  CH376_FILE_OPEN       EQU $32
+00001000  =00000033                 28  CH376_FILE_ENUM_GO    EQU $33
+00001000  =00000034                 29  CH376_CMD_FILE_CREATE EQU $34
+00001000  =00000035                 30  CH376_FILE_ERASE      EQU $35
+00001000  =00000036                 31  CH376_FILE_CLOSE      EQU $36
+00001000  =00000039                 32  CH376_BYTE_LOCATE     EQU $39
+00001000  =0000003A                 33  CH376_BYTE_READ       EQU $3A
+00001000  =0000003B                 34  CH376_BYTE_RD_GO      EQU $3B
+00001000  =0000003C                 35  CH376_BYTE_WRITE      EQU $3C
+00001000  =0000003D                 36  CH376_BYTE_WR_GO      EQU $3D
+00001000  =0000003E                 37  CH376_DISK_CAPACITY   EQU $3E
+00001000  =0000003F                 38  CH376_DISK_QUERY      EQU $3F
+00001000  =00000040                 39  CH376_DIR_CREATE      EQU $40
+00001000  =00000055                 40  CH376_DISK_RD_GO      EQU $55
+00001000                            41  
+00001000                            42  ; CODE FOR CH376_SET_USB_MODE 
+00001000                            43  
+00001000  =00000003                 44  CH376_SET_USB_MODE_CODE_SDCARD                              EQU $03
+00001000                            45  ; The code of 06H means switch to valid USB-HOST, produce SOF package automatically. 
+Line 46 WARNING: Label too long
+00001000  =00000006                 46  CH376_SET_USB_MODE_CODE_USB_HOST_SOF_PACKAGE_AUTOMATICALLY  EQU $06
+00001000                            47  
+00001000  =00000014                 48  CH376_USB_INT_SUCCESS       EQU $14
+00001000  =00000015                 49  CH376_USB_INT_CONNECT       EQU $15
+00001000  =00000016                 50  CH376_USB_INT_DISCONNECT    EQU $16
+00001000  =00000017                 51  CH376_USB_INT_BUF_OVER      EQU $17
+00001000  =00000018                 52  CH376_USB_INT_USB_READY     EQU $18
+00001000  =0000001D                 53  CH376_USB_INT_DISK_READ     EQU $1d
+00001000  =0000001E                 54  CH376_USB_INT_DISK_WRITE    EQU $1e
+00001000  =0000001F                 55  CH376_USB_INT_DISK_ERR      EQU $1f
+00001000                            56  
+00001000  =00000041                 57  CH376_ERR_OPEN_DIR          EQU $41
+00001000  =00000042                 58  CH376_ERR_MISS_FILE         EQU $42
+00001000  =00000043                 59  CH376_ERR_FOUND_NAME        EQU $43
+00001000  =00000082                 60  CH376_ERR_DISK_DISCON       EQU $82
+00001000  =00000084                 61  CH376_ERR_LARGE_SECTOR      EQU $84
+00001000  =00000092                 62  CH376_ERR_TYPE_ERROR        EQU $92
+00001000  =000000A1                 63  CH376_ERR_BPB_ERROR         EQU $A1
+00001000  =000000B1                 64  CH376_ERR_DISK_FULL         EQU $B1
+00001000  =000000B2                 65  CH376_ERR_FDT_OVER          EQU $B2
+00001000  =000000B4                 66  CH376_ERR_FILE_CLOSE        EQU $B4
+00001000                            67  START:                  ; first instruction of program
+00001000                            68  
+00001000                            69  * Put program code here
+00001000                            70  
+00001000  FFFF FFFF                 71      SIMHALT             ; halt simulator
+00001004                            72  
+00001004                            73  * Put variables and constants here
+00001004                            74  
+00001004                            75      END    START        ; last line of source
+
+No errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CH376_BYTE_LOCATE   39
+CH376_BYTE_RD_GO    3B
+CH376_BYTE_READ     3A
+CH376_BYTE_WRITE    3C
+CH376_BYTE_WR_GO    3D
+CH376_CHECK_EXIST   6
+CH376_CMD_FILE_CREATE  34
+CH376_CMD_NONE      0
+CH376_CMD_WR_REQ_DATA  2D
+CH376_DETECTED      AA
+CH376_DIR_CREATE    40
+CH376_DISK_CAPACITY  3E
+CH376_DISK_CONNECT  30
+CH376_DISK_MOUNT    31
+CH376_DISK_QUERY    3F
+CH376_DISK_RD_GO    55
+CH376_ERR_BPB_ERROR  A1
+CH376_ERR_DISK_DISCON  82
+CH376_ERR_DISK_FULL  B1
+CH376_ERR_FDT_OVER  B2
+CH376_ERR_FILE_CLOSE  B4
+CH376_ERR_FOUND_NAME  43
+CH376_ERR_LARGE_SECTOR  84
+CH376_ERR_MISS_FILE  42
+CH376_ERR_OPEN_DIR  41
+CH376_ERR_TYPE_ERROR  92
+CH376_FILE_CLOSE    36
+CH376_FILE_ENUM_GO  33
+CH376_FILE_ERASE    35
+CH376_FILE_OPEN     32
+CH376_GET_ENTER_SLEEP  3
+CH376_GET_FILE_SIZE  C
+CH376_GET_IC_VER    1
+CH376_GET_STATUS    22
+CH376_RD_USB_DATA0  27
+CH376_RESET_ALL     5
+CH376_SET_BAUDRATE  2
+CH376_SET_FILE_NAME  2F
+CH376_SET_USB_MODE  15
+CH376_SET_USB_MODE_CODE_SDCARD  3
+CH376_SET_USB_MODE_CODE_USB_HOST_  6
+CH376_USB_INT_BUF_OVER  17
+CH376_USB_INT_CONNECT  15
+CH376_USB_INT_DISCONNECT  16
+CH376_USB_INT_DISK_ERR  1F
+CH376_USB_INT_DISK_READ  1D
+CH376_USB_INT_DISK_WRITE  1E
+CH376_USB_INT_SUCCESS  14
+CH376_USB_INT_USB_READY  18
+CH376_WR_USB_DATA   2C
+START               1000

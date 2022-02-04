@@ -1,0 +1,9 @@
+diff a/zed68k.srcs/sources_1/imports/sources_1/imports/Microcomputer/Microcomputer.vhd b/zed68k.srcs/sources_1/imports/sources_1/imports/Microcomputer/Microcomputer.vhd	(rejected hunks)
+@@ -52,6 +52,7 @@
+         sdEraseCount				: out std_logic_vector(7 downto 0);
+         sdStatus: inout std_logic_vector(7 downto 0) := (others => '0'); --f30009
+         sdControl: inout std_logic_vector(7 downto 0); --f3000a
++        sdCodes : in std_logic_vector(15 downto 0);
+         sdAddress: out std_logic_vector(31 downto 0); --f30000-2
+         
+         -- ethernet terminal

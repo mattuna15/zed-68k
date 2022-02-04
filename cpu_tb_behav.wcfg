@@ -1,0 +1,1074 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="cpu_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="cpu_tb" />
+            <top_module name="glbl" />
+            <top_module name="system_cache_pkg" />
+            <top_module name="system_cache_queue_pkg" />
+            <top_module name="tg68k_pack" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="11623223850fs"></ZoomStartTime>
+      <ZoomEndTime time="11645083851fs"></ZoomEndTime>
+      <Cursor1Time time="11645000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="446"></NameColumnWidth>
+      <ValueColumnWidth column_width="116"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="262" />
+   <wvobject fp_name="/cpu_tb/r_Clock" type="logic">
+      <obj_property name="ElementShortName">r_Clock</obj_property>
+      <obj_property name="ObjectShortName">r_Clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/reset_n" type="logic">
+      <obj_property name="ElementShortName">reset_n</obj_property>
+      <obj_property name="ObjectShortName">reset_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/clkena_in" type="logic">
+      <obj_property name="ElementShortName">clkena_in</obj_property>
+      <obj_property name="ObjectShortName">clkena_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/IPL" type="array">
+      <obj_property name="ElementShortName">IPL[2:0]</obj_property>
+      <obj_property name="ObjectShortName">IPL[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/dtack" type="logic">
+      <obj_property name="ElementShortName">dtack</obj_property>
+      <obj_property name="ObjectShortName">dtack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/addr" type="array">
+      <obj_property name="ElementShortName">addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/as" type="logic">
+      <obj_property name="ElementShortName">as</obj_property>
+      <obj_property name="ObjectShortName">as</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/uds" type="logic">
+      <obj_property name="ElementShortName">uds</obj_property>
+      <obj_property name="ObjectShortName">uds</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/lds" type="logic">
+      <obj_property name="ElementShortName">lds</obj_property>
+      <obj_property name="ObjectShortName">lds</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/rw" type="logic">
+      <obj_property name="ElementShortName">rw</obj_property>
+      <obj_property name="ObjectShortName">rw</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/drive_data" type="logic">
+      <obj_property name="ElementShortName">drive_data</obj_property>
+      <obj_property name="ObjectShortName">drive_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/enaRDreg" type="logic">
+      <obj_property name="ElementShortName">enaRDreg</obj_property>
+      <obj_property name="ObjectShortName">enaRDreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/enaWRreg" type="logic">
+      <obj_property name="ElementShortName">enaWRreg</obj_property>
+      <obj_property name="ObjectShortName">enaWRreg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/fc" type="array">
+      <obj_property name="ElementShortName">fc[2:0]</obj_property>
+      <obj_property name="ObjectShortName">fc[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/as_s" type="logic">
+      <obj_property name="ElementShortName">as_s</obj_property>
+      <obj_property name="ObjectShortName">as_s</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/as_e" type="logic">
+      <obj_property name="ElementShortName">as_e</obj_property>
+      <obj_property name="ObjectShortName">as_e</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/uds_s" type="logic">
+      <obj_property name="ElementShortName">uds_s</obj_property>
+      <obj_property name="ObjectShortName">uds_s</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/uds_e" type="logic">
+      <obj_property name="ElementShortName">uds_e</obj_property>
+      <obj_property name="ObjectShortName">uds_e</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/lds_s" type="logic">
+      <obj_property name="ElementShortName">lds_s</obj_property>
+      <obj_property name="ObjectShortName">lds_s</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/lds_e" type="logic">
+      <obj_property name="ElementShortName">lds_e</obj_property>
+      <obj_property name="ObjectShortName">lds_e</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/rw_s" type="logic">
+      <obj_property name="ElementShortName">rw_s</obj_property>
+      <obj_property name="ObjectShortName">rw_s</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/rw_e" type="logic">
+      <obj_property name="ElementShortName">rw_e</obj_property>
+      <obj_property name="ObjectShortName">rw_e</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/waitm" type="logic">
+      <obj_property name="ElementShortName">waitm</obj_property>
+      <obj_property name="ObjectShortName">waitm</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/clkena_e" type="logic">
+      <obj_property name="ElementShortName">clkena_e</obj_property>
+      <obj_property name="ObjectShortName">clkena_e</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/S_state" type="array">
+      <obj_property name="ElementShortName">S_state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">S_state[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/decode" type="logic">
+      <obj_property name="ElementShortName">decode</obj_property>
+      <obj_property name="ObjectShortName">decode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/wr" type="logic">
+      <obj_property name="ElementShortName">wr</obj_property>
+      <obj_property name="ObjectShortName">wr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/uds_in" type="logic">
+      <obj_property name="ElementShortName">uds_in</obj_property>
+      <obj_property name="ObjectShortName">uds_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/lds_in" type="logic">
+      <obj_property name="ElementShortName">lds_in</obj_property>
+      <obj_property name="ObjectShortName">lds_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/state" type="array">
+      <obj_property name="ElementShortName">state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">state[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/clkena" type="logic">
+      <obj_property name="ElementShortName">clkena</obj_property>
+      <obj_property name="ObjectShortName">clkena</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/cpuIPL" type="array">
+      <obj_property name="ElementShortName">cpuIPL[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cpuIPL[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/cpuready" type="logic">
+      <obj_property name="ElementShortName">cpuready</obj_property>
+      <obj_property name="ObjectShortName">cpuready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/nReset" type="logic">
+      <obj_property name="ElementShortName">nReset</obj_property>
+      <obj_property name="ObjectShortName">nReset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/clkena_in" type="logic">
+      <obj_property name="ElementShortName">clkena_in</obj_property>
+      <obj_property name="ObjectShortName">clkena_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/IPL" type="array">
+      <obj_property name="ElementShortName">IPL[2:0]</obj_property>
+      <obj_property name="ObjectShortName">IPL[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/IPL_autovector" type="logic">
+      <obj_property name="ElementShortName">IPL_autovector</obj_property>
+      <obj_property name="ObjectShortName">IPL_autovector</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/berr" type="logic">
+      <obj_property name="ElementShortName">berr</obj_property>
+      <obj_property name="ObjectShortName">berr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/CPU" type="array">
+      <obj_property name="ElementShortName">CPU[1:0]</obj_property>
+      <obj_property name="ObjectShortName">CPU[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/addr_out" type="array">
+      <obj_property name="ElementShortName">addr_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/data_write" type="array">
+      <obj_property name="ElementShortName">data_write[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_write[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/nWr" type="logic">
+      <obj_property name="ElementShortName">nWr</obj_property>
+      <obj_property name="ObjectShortName">nWr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/nUDS" type="logic">
+      <obj_property name="ElementShortName">nUDS</obj_property>
+      <obj_property name="ObjectShortName">nUDS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/nLDS" type="logic">
+      <obj_property name="ElementShortName">nLDS</obj_property>
+      <obj_property name="ObjectShortName">nLDS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/busstate" type="array">
+      <obj_property name="ElementShortName">busstate[1:0]</obj_property>
+      <obj_property name="ObjectShortName">busstate[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/longword" type="logic">
+      <obj_property name="ElementShortName">longword</obj_property>
+      <obj_property name="ObjectShortName">longword</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/nResetOut" type="logic">
+      <obj_property name="ElementShortName">nResetOut</obj_property>
+      <obj_property name="ObjectShortName">nResetOut</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/FC" type="array">
+      <obj_property name="ElementShortName">FC[2:0]</obj_property>
+      <obj_property name="ObjectShortName">FC[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/clr_berr" type="logic">
+      <obj_property name="ElementShortName">clr_berr</obj_property>
+      <obj_property name="ObjectShortName">clr_berr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/skipFetch" type="logic">
+      <obj_property name="ElementShortName">skipFetch</obj_property>
+      <obj_property name="ObjectShortName">skipFetch</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/regin_out" type="array">
+      <obj_property name="ElementShortName">regin_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">regin_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/CACR_out" type="array">
+      <obj_property name="ElementShortName">CACR_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">CACR_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/VBR_out" type="array">
+      <obj_property name="ElementShortName">VBR_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">VBR_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/use_VBR_Stackframe" type="logic">
+      <obj_property name="ElementShortName">use_VBR_Stackframe</obj_property>
+      <obj_property name="ObjectShortName">use_VBR_Stackframe</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/syncReset" type="array">
+      <obj_property name="ElementShortName">syncReset[3:0]</obj_property>
+      <obj_property name="ObjectShortName">syncReset[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Reset" type="logic">
+      <obj_property name="ElementShortName">Reset</obj_property>
+      <obj_property name="ObjectShortName">Reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/clkena_lw" type="logic">
+      <obj_property name="ElementShortName">clkena_lw</obj_property>
+      <obj_property name="ObjectShortName">clkena_lw</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/TG68_PC" type="array">
+      <obj_property name="ElementShortName">TG68_PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">TG68_PC[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/tmp_TG68_PC" type="array">
+      <obj_property name="ElementShortName">tmp_TG68_PC[31:0]</obj_property>
+      <obj_property name="ObjectShortName">tmp_TG68_PC[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/TG68_PC_add" type="array">
+      <obj_property name="ElementShortName">TG68_PC_add[31:0]</obj_property>
+      <obj_property name="ObjectShortName">TG68_PC_add[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/PC_dataa" type="array">
+      <obj_property name="ElementShortName">PC_dataa[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC_dataa[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/PC_datab" type="array">
+      <obj_property name="ElementShortName">PC_datab[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PC_datab[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memaddr" type="array">
+      <obj_property name="ElementShortName">memaddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">memaddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/state" type="array">
+      <obj_property name="ElementShortName">state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">state[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/datatype" type="array">
+      <obj_property name="ElementShortName">datatype[1:0]</obj_property>
+      <obj_property name="ObjectShortName">datatype[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_datatype" type="array">
+      <obj_property name="ElementShortName">set_datatype[1:0]</obj_property>
+      <obj_property name="ObjectShortName">set_datatype[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exe_datatype" type="array">
+      <obj_property name="ElementShortName">exe_datatype[1:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_datatype[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setstate" type="array">
+      <obj_property name="ElementShortName">setstate[1:0]</obj_property>
+      <obj_property name="ObjectShortName">setstate[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setaddrvalue" type="logic">
+      <obj_property name="ElementShortName">setaddrvalue</obj_property>
+      <obj_property name="ObjectShortName">setaddrvalue</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/addrvalue" type="logic">
+      <obj_property name="ElementShortName">addrvalue</obj_property>
+      <obj_property name="ObjectShortName">addrvalue</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/opcode" type="array">
+      <obj_property name="ElementShortName">opcode[15:0]</obj_property>
+      <obj_property name="ObjectShortName">opcode[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exe_opcode" type="array">
+      <obj_property name="ElementShortName">exe_opcode[15:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_opcode[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/sndOPC" type="array">
+      <obj_property name="ElementShortName">sndOPC[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sndOPC[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exe_pc" type="array">
+      <obj_property name="ElementShortName">exe_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">exe_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/last_opc_pc" type="array">
+      <obj_property name="ElementShortName">last_opc_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">last_opc_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/last_opc_read" type="array">
+      <obj_property name="ElementShortName">last_opc_read[15:0]</obj_property>
+      <obj_property name="ObjectShortName">last_opc_read[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/registerin" type="array">
+      <obj_property name="ElementShortName">registerin[31:0]</obj_property>
+      <obj_property name="ObjectShortName">registerin[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/reg_QA" type="array">
+      <obj_property name="ElementShortName">reg_QA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_QA[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/reg_QB" type="array">
+      <obj_property name="ElementShortName">reg_QB[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_QB[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Wwrena" type="logic">
+      <obj_property name="ElementShortName">Wwrena</obj_property>
+      <obj_property name="ObjectShortName">Wwrena</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Lwrena" type="logic">
+      <obj_property name="ElementShortName">Lwrena</obj_property>
+      <obj_property name="ObjectShortName">Lwrena</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Bwrena" type="logic">
+      <obj_property name="ElementShortName">Bwrena</obj_property>
+      <obj_property name="ObjectShortName">Bwrena</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Regwrena_now" type="logic">
+      <obj_property name="ElementShortName">Regwrena_now</obj_property>
+      <obj_property name="ObjectShortName">Regwrena_now</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/rf_dest_addr" type="array">
+      <obj_property name="ElementShortName">rf_dest_addr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_dest_addr[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/rf_source_addr" type="array">
+      <obj_property name="ElementShortName">rf_source_addr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_source_addr[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/rf_source_addrd" type="array">
+      <obj_property name="ElementShortName">rf_source_addrd[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_source_addrd[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/regin" type="array">
+      <obj_property name="ElementShortName">regin[31:0]</obj_property>
+      <obj_property name="ObjectShortName">regin[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/regfile" type="array">
+      <obj_property name="ElementShortName">regfile[0:15][31:0]</obj_property>
+      <obj_property name="ObjectShortName">regfile[0:15][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/RDindex_A" type="other">
+      <obj_property name="ElementShortName">RDindex_A</obj_property>
+      <obj_property name="ObjectShortName">RDindex_A</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/RDindex_B" type="other">
+      <obj_property name="ElementShortName">RDindex_B</obj_property>
+      <obj_property name="ObjectShortName">RDindex_B</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/WR_AReg" type="logic">
+      <obj_property name="ElementShortName">WR_AReg</obj_property>
+      <obj_property name="ObjectShortName">WR_AReg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/addr" type="array">
+      <obj_property name="ElementShortName">addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memaddr_reg" type="array">
+      <obj_property name="ElementShortName">memaddr_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">memaddr_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memaddr_delta" type="array">
+      <obj_property name="ElementShortName">memaddr_delta[31:0]</obj_property>
+      <obj_property name="ObjectShortName">memaddr_delta[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memaddr_delta_rega" type="array">
+      <obj_property name="ElementShortName">memaddr_delta_rega[31:0]</obj_property>
+      <obj_property name="ObjectShortName">memaddr_delta_rega[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memaddr_delta_regb" type="array">
+      <obj_property name="ElementShortName">memaddr_delta_regb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">memaddr_delta_regb[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/use_base" type="logic">
+      <obj_property name="ElementShortName">use_base</obj_property>
+      <obj_property name="ObjectShortName">use_base</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/ea_data" type="array">
+      <obj_property name="ElementShortName">ea_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ea_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/OP1out" type="array">
+      <obj_property name="ElementShortName">OP1out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">OP1out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/OP2out" type="array">
+      <obj_property name="ElementShortName">OP2out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">OP2out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/OP1outbrief" type="array">
+      <obj_property name="ElementShortName">OP1outbrief[15:0]</obj_property>
+      <obj_property name="ObjectShortName">OP1outbrief[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/OP1in" type="array">
+      <obj_property name="ElementShortName">OP1in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">OP1in[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/ALUout" type="array">
+      <obj_property name="ElementShortName">ALUout[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ALUout[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/data_write_tmp" type="array">
+      <obj_property name="ElementShortName">data_write_tmp[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_write_tmp[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/data_write_muxin" type="array">
+      <obj_property name="ElementShortName">data_write_muxin[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_write_muxin[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/data_write_mux" type="array">
+      <obj_property name="ElementShortName">data_write_mux[47:0]</obj_property>
+      <obj_property name="ObjectShortName">data_write_mux[47:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/nextpass" type="logic">
+      <obj_property name="ElementShortName">nextpass</obj_property>
+      <obj_property name="ObjectShortName">nextpass</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setnextpass" type="logic">
+      <obj_property name="ElementShortName">setnextpass</obj_property>
+      <obj_property name="ObjectShortName">setnextpass</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setdispbyte" type="logic">
+      <obj_property name="ElementShortName">setdispbyte</obj_property>
+      <obj_property name="ObjectShortName">setdispbyte</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setdisp" type="logic">
+      <obj_property name="ElementShortName">setdisp</obj_property>
+      <obj_property name="ObjectShortName">setdisp</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/regdirectsource" type="logic">
+      <obj_property name="ElementShortName">regdirectsource</obj_property>
+      <obj_property name="ObjectShortName">regdirectsource</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/addsub_q" type="array">
+      <obj_property name="ElementShortName">addsub_q[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addsub_q[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/briefdata" type="array">
+      <obj_property name="ElementShortName">briefdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">briefdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/c_out" type="array">
+      <obj_property name="ElementShortName">c_out[2:0]</obj_property>
+      <obj_property name="ObjectShortName">c_out[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/mem_address" type="array">
+      <obj_property name="ElementShortName">mem_address[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_address[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memaddr_a" type="array">
+      <obj_property name="ElementShortName">memaddr_a[31:0]</obj_property>
+      <obj_property name="ObjectShortName">memaddr_a[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/TG68_PC_brw" type="logic">
+      <obj_property name="ElementShortName">TG68_PC_brw</obj_property>
+      <obj_property name="ObjectShortName">TG68_PC_brw</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/TG68_PC_word" type="logic">
+      <obj_property name="ElementShortName">TG68_PC_word</obj_property>
+      <obj_property name="ObjectShortName">TG68_PC_word</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/getbrief" type="logic">
+      <obj_property name="ElementShortName">getbrief</obj_property>
+      <obj_property name="ObjectShortName">getbrief</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/brief" type="array">
+      <obj_property name="ElementShortName">brief[15:0]</obj_property>
+      <obj_property name="ObjectShortName">brief[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/data_is_source" type="logic">
+      <obj_property name="ElementShortName">data_is_source</obj_property>
+      <obj_property name="ObjectShortName">data_is_source</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/store_in_tmp" type="logic">
+      <obj_property name="ElementShortName">store_in_tmp</obj_property>
+      <obj_property name="ObjectShortName">store_in_tmp</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/write_back" type="logic">
+      <obj_property name="ElementShortName">write_back</obj_property>
+      <obj_property name="ObjectShortName">write_back</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exec_write_back" type="logic">
+      <obj_property name="ElementShortName">exec_write_back</obj_property>
+      <obj_property name="ObjectShortName">exec_write_back</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setstackaddr" type="logic">
+      <obj_property name="ElementShortName">setstackaddr</obj_property>
+      <obj_property name="ObjectShortName">setstackaddr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/writePC" type="logic">
+      <obj_property name="ElementShortName">writePC</obj_property>
+      <obj_property name="ObjectShortName">writePC</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/writePCbig" type="logic">
+      <obj_property name="ElementShortName">writePCbig</obj_property>
+      <obj_property name="ObjectShortName">writePCbig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_writePCbig" type="logic">
+      <obj_property name="ElementShortName">set_writePCbig</obj_property>
+      <obj_property name="ObjectShortName">set_writePCbig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/writePCnext" type="logic">
+      <obj_property name="ElementShortName">writePCnext</obj_property>
+      <obj_property name="ObjectShortName">writePCnext</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setopcode" type="logic">
+      <obj_property name="ElementShortName">setopcode</obj_property>
+      <obj_property name="ObjectShortName">setopcode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/decodeOPC" type="logic">
+      <obj_property name="ElementShortName">decodeOPC</obj_property>
+      <obj_property name="ObjectShortName">decodeOPC</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/execOPC" type="logic">
+      <obj_property name="ElementShortName">execOPC</obj_property>
+      <obj_property name="ObjectShortName">execOPC</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/execOPC_ALU" type="logic">
+      <obj_property name="ElementShortName">execOPC_ALU</obj_property>
+      <obj_property name="ObjectShortName">execOPC_ALU</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setexecOPC" type="logic">
+      <obj_property name="ElementShortName">setexecOPC</obj_property>
+      <obj_property name="ObjectShortName">setexecOPC</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/endOPC" type="logic">
+      <obj_property name="ElementShortName">endOPC</obj_property>
+      <obj_property name="ObjectShortName">endOPC</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setendOPC" type="logic">
+      <obj_property name="ElementShortName">setendOPC</obj_property>
+      <obj_property name="ObjectShortName">setendOPC</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Flags" type="array">
+      <obj_property name="ElementShortName">Flags[7:0]</obj_property>
+      <obj_property name="ObjectShortName">Flags[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/FlagsSR" type="array">
+      <obj_property name="ElementShortName">FlagsSR[7:0]</obj_property>
+      <obj_property name="ObjectShortName">FlagsSR[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/SRin" type="array">
+      <obj_property name="ElementShortName">SRin[7:0]</obj_property>
+      <obj_property name="ObjectShortName">SRin[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exec_DIRECT" type="logic">
+      <obj_property name="ElementShortName">exec_DIRECT</obj_property>
+      <obj_property name="ObjectShortName">exec_DIRECT</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exec_tas" type="logic">
+      <obj_property name="ElementShortName">exec_tas</obj_property>
+      <obj_property name="ObjectShortName">exec_tas</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_exec_tas" type="logic">
+      <obj_property name="ElementShortName">set_exec_tas</obj_property>
+      <obj_property name="ObjectShortName">set_exec_tas</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exe_condition" type="logic">
+      <obj_property name="ElementShortName">exe_condition</obj_property>
+      <obj_property name="ObjectShortName">exe_condition</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/ea_only" type="logic">
+      <obj_property name="ElementShortName">ea_only</obj_property>
+      <obj_property name="ObjectShortName">ea_only</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/source_areg" type="logic">
+      <obj_property name="ElementShortName">source_areg</obj_property>
+      <obj_property name="ObjectShortName">source_areg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/source_lowbits" type="logic">
+      <obj_property name="ElementShortName">source_lowbits</obj_property>
+      <obj_property name="ObjectShortName">source_lowbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/source_LDRLbits" type="logic">
+      <obj_property name="ElementShortName">source_LDRLbits</obj_property>
+      <obj_property name="ObjectShortName">source_LDRLbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/source_LDRMbits" type="logic">
+      <obj_property name="ElementShortName">source_LDRMbits</obj_property>
+      <obj_property name="ObjectShortName">source_LDRMbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/source_2ndHbits" type="logic">
+      <obj_property name="ElementShortName">source_2ndHbits</obj_property>
+      <obj_property name="ObjectShortName">source_2ndHbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/source_2ndMbits" type="logic">
+      <obj_property name="ElementShortName">source_2ndMbits</obj_property>
+      <obj_property name="ObjectShortName">source_2ndMbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/source_2ndLbits" type="logic">
+      <obj_property name="ElementShortName">source_2ndLbits</obj_property>
+      <obj_property name="ObjectShortName">source_2ndLbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/dest_areg" type="logic">
+      <obj_property name="ElementShortName">dest_areg</obj_property>
+      <obj_property name="ObjectShortName">dest_areg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/dest_LDRareg" type="logic">
+      <obj_property name="ElementShortName">dest_LDRareg</obj_property>
+      <obj_property name="ObjectShortName">dest_LDRareg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/dest_LDRHbits" type="logic">
+      <obj_property name="ElementShortName">dest_LDRHbits</obj_property>
+      <obj_property name="ObjectShortName">dest_LDRHbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/dest_LDRLbits" type="logic">
+      <obj_property name="ElementShortName">dest_LDRLbits</obj_property>
+      <obj_property name="ObjectShortName">dest_LDRLbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/dest_2ndHbits" type="logic">
+      <obj_property name="ElementShortName">dest_2ndHbits</obj_property>
+      <obj_property name="ObjectShortName">dest_2ndHbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/dest_2ndLbits" type="logic">
+      <obj_property name="ElementShortName">dest_2ndLbits</obj_property>
+      <obj_property name="ObjectShortName">dest_2ndLbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/dest_hbits" type="logic">
+      <obj_property name="ElementShortName">dest_hbits</obj_property>
+      <obj_property name="ObjectShortName">dest_hbits</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/rot_bits" type="array">
+      <obj_property name="ElementShortName">rot_bits[1:0]</obj_property>
+      <obj_property name="ObjectShortName">rot_bits[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_rot_bits" type="array">
+      <obj_property name="ElementShortName">set_rot_bits[1:0]</obj_property>
+      <obj_property name="ObjectShortName">set_rot_bits[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/rot_cnt" type="array">
+      <obj_property name="ElementShortName">rot_cnt[5:0]</obj_property>
+      <obj_property name="ObjectShortName">rot_cnt[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_rot_cnt" type="array">
+      <obj_property name="ElementShortName">set_rot_cnt[5:0]</obj_property>
+      <obj_property name="ObjectShortName">set_rot_cnt[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/movem_actiond" type="logic">
+      <obj_property name="ElementShortName">movem_actiond</obj_property>
+      <obj_property name="ObjectShortName">movem_actiond</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/movem_regaddr" type="array">
+      <obj_property name="ElementShortName">movem_regaddr[3:0]</obj_property>
+      <obj_property name="ObjectShortName">movem_regaddr[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/movem_mux" type="array">
+      <obj_property name="ElementShortName">movem_mux[3:0]</obj_property>
+      <obj_property name="ObjectShortName">movem_mux[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/movem_presub" type="logic">
+      <obj_property name="ElementShortName">movem_presub</obj_property>
+      <obj_property name="ObjectShortName">movem_presub</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/movem_run" type="logic">
+      <obj_property name="ElementShortName">movem_run</obj_property>
+      <obj_property name="ObjectShortName">movem_run</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/ea_calc_b" type="array">
+      <obj_property name="ElementShortName">ea_calc_b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ea_calc_b[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_direct_data" type="logic">
+      <obj_property name="ElementShortName">set_direct_data</obj_property>
+      <obj_property name="ObjectShortName">set_direct_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/use_direct_data" type="logic">
+      <obj_property name="ElementShortName">use_direct_data</obj_property>
+      <obj_property name="ObjectShortName">use_direct_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/direct_data" type="logic">
+      <obj_property name="ElementShortName">direct_data</obj_property>
+      <obj_property name="ObjectShortName">direct_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_V_Flag" type="logic">
+      <obj_property name="ElementShortName">set_V_Flag</obj_property>
+      <obj_property name="ObjectShortName">set_V_Flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_vectoraddr" type="logic">
+      <obj_property name="ElementShortName">set_vectoraddr</obj_property>
+      <obj_property name="ObjectShortName">set_vectoraddr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/writeSR" type="logic">
+      <obj_property name="ElementShortName">writeSR</obj_property>
+      <obj_property name="ObjectShortName">writeSR</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_berr" type="logic">
+      <obj_property name="ElementShortName">trap_berr</obj_property>
+      <obj_property name="ObjectShortName">trap_berr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_illegal" type="logic">
+      <obj_property name="ElementShortName">trap_illegal</obj_property>
+      <obj_property name="ObjectShortName">trap_illegal</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_addr_error" type="logic">
+      <obj_property name="ElementShortName">trap_addr_error</obj_property>
+      <obj_property name="ObjectShortName">trap_addr_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_priv" type="logic">
+      <obj_property name="ElementShortName">trap_priv</obj_property>
+      <obj_property name="ObjectShortName">trap_priv</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_trace" type="logic">
+      <obj_property name="ElementShortName">trap_trace</obj_property>
+      <obj_property name="ObjectShortName">trap_trace</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_1010" type="logic">
+      <obj_property name="ElementShortName">trap_1010</obj_property>
+      <obj_property name="ObjectShortName">trap_1010</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_1111" type="logic">
+      <obj_property name="ElementShortName">trap_1111</obj_property>
+      <obj_property name="ObjectShortName">trap_1111</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_trap" type="logic">
+      <obj_property name="ElementShortName">trap_trap</obj_property>
+      <obj_property name="ObjectShortName">trap_trap</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_trapv" type="logic">
+      <obj_property name="ElementShortName">trap_trapv</obj_property>
+      <obj_property name="ObjectShortName">trap_trapv</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_interrupt" type="logic">
+      <obj_property name="ElementShortName">trap_interrupt</obj_property>
+      <obj_property name="ObjectShortName">trap_interrupt</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trapmake" type="logic">
+      <obj_property name="ElementShortName">trapmake</obj_property>
+      <obj_property name="ObjectShortName">trapmake</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trapd" type="logic">
+      <obj_property name="ElementShortName">trapd</obj_property>
+      <obj_property name="ObjectShortName">trapd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_SR" type="array">
+      <obj_property name="ElementShortName">trap_SR[7:0]</obj_property>
+      <obj_property name="ObjectShortName">trap_SR[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/make_trace" type="logic">
+      <obj_property name="ElementShortName">make_trace</obj_property>
+      <obj_property name="ObjectShortName">make_trace</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/make_berr" type="logic">
+      <obj_property name="ElementShortName">make_berr</obj_property>
+      <obj_property name="ObjectShortName">make_berr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/useStackframe2" type="logic">
+      <obj_property name="ElementShortName">useStackframe2</obj_property>
+      <obj_property name="ObjectShortName">useStackframe2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_stop" type="logic">
+      <obj_property name="ElementShortName">set_stop</obj_property>
+      <obj_property name="ObjectShortName">set_stop</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/stop" type="logic">
+      <obj_property name="ElementShortName">stop</obj_property>
+      <obj_property name="ObjectShortName">stop</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_vector" type="array">
+      <obj_property name="ElementShortName">trap_vector[31:0]</obj_property>
+      <obj_property name="ObjectShortName">trap_vector[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/trap_vector_vbr" type="array">
+      <obj_property name="ElementShortName">trap_vector_vbr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">trap_vector_vbr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/USP" type="array">
+      <obj_property name="ElementShortName">USP[31:0]</obj_property>
+      <obj_property name="ObjectShortName">USP[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/IPL_nr" type="array">
+      <obj_property name="ElementShortName">IPL_nr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">IPL_nr[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/rIPL_nr" type="array">
+      <obj_property name="ElementShortName">rIPL_nr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">rIPL_nr[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/IPL_vec" type="array">
+      <obj_property name="ElementShortName">IPL_vec[7:0]</obj_property>
+      <obj_property name="ObjectShortName">IPL_vec[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/interrupt" type="logic">
+      <obj_property name="ElementShortName">interrupt</obj_property>
+      <obj_property name="ObjectShortName">interrupt</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/setinterrupt" type="logic">
+      <obj_property name="ElementShortName">setinterrupt</obj_property>
+      <obj_property name="ObjectShortName">setinterrupt</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/SVmode" type="logic">
+      <obj_property name="ElementShortName">SVmode</obj_property>
+      <obj_property name="ObjectShortName">SVmode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/preSVmode" type="logic">
+      <obj_property name="ElementShortName">preSVmode</obj_property>
+      <obj_property name="ObjectShortName">preSVmode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Suppress_Base" type="logic">
+      <obj_property name="ElementShortName">Suppress_Base</obj_property>
+      <obj_property name="ObjectShortName">Suppress_Base</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_Suppress_Base" type="logic">
+      <obj_property name="ElementShortName">set_Suppress_Base</obj_property>
+      <obj_property name="ObjectShortName">set_Suppress_Base</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_Z_error" type="logic">
+      <obj_property name="ElementShortName">set_Z_error</obj_property>
+      <obj_property name="ObjectShortName">set_Z_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/Z_error" type="logic">
+      <obj_property name="ElementShortName">Z_error</obj_property>
+      <obj_property name="ObjectShortName">Z_error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/ea_build_now" type="logic">
+      <obj_property name="ElementShortName">ea_build_now</obj_property>
+      <obj_property name="ObjectShortName">ea_build_now</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/build_logical" type="logic">
+      <obj_property name="ElementShortName">build_logical</obj_property>
+      <obj_property name="ObjectShortName">build_logical</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/build_bcd" type="logic">
+      <obj_property name="ElementShortName">build_bcd</obj_property>
+      <obj_property name="ObjectShortName">build_bcd</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/data_read" type="array">
+      <obj_property name="ElementShortName">data_read[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_read[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_ext_in" type="array">
+      <obj_property name="ElementShortName">bf_ext_in[7:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_ext_in[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_ext_out" type="array">
+      <obj_property name="ElementShortName">bf_ext_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_ext_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/long_start" type="logic">
+      <obj_property name="ElementShortName">long_start</obj_property>
+      <obj_property name="ObjectShortName">long_start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/long_start_alu" type="logic">
+      <obj_property name="ElementShortName">long_start_alu</obj_property>
+      <obj_property name="ObjectShortName">long_start_alu</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/non_aligned" type="logic">
+      <obj_property name="ElementShortName">non_aligned</obj_property>
+      <obj_property name="ObjectShortName">non_aligned</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/check_aligned" type="logic">
+      <obj_property name="ElementShortName">check_aligned</obj_property>
+      <obj_property name="ObjectShortName">check_aligned</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/long_done" type="logic">
+      <obj_property name="ElementShortName">long_done</obj_property>
+      <obj_property name="ObjectShortName">long_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memmask" type="array">
+      <obj_property name="ElementShortName">memmask[5:0]</obj_property>
+      <obj_property name="ObjectShortName">memmask[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_memmask" type="array">
+      <obj_property name="ElementShortName">set_memmask[5:0]</obj_property>
+      <obj_property name="ObjectShortName">set_memmask[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memread" type="array">
+      <obj_property name="ElementShortName">memread[3:0]</obj_property>
+      <obj_property name="ObjectShortName">memread[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/wbmemmask" type="array">
+      <obj_property name="ElementShortName">wbmemmask[5:0]</obj_property>
+      <obj_property name="ObjectShortName">wbmemmask[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/memmaskmux" type="array">
+      <obj_property name="ElementShortName">memmaskmux[5:0]</obj_property>
+      <obj_property name="ObjectShortName">memmaskmux[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/oddout" type="logic">
+      <obj_property name="ElementShortName">oddout</obj_property>
+      <obj_property name="ObjectShortName">oddout</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_oddout" type="logic">
+      <obj_property name="ElementShortName">set_oddout</obj_property>
+      <obj_property name="ObjectShortName">set_oddout</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/PCbase" type="logic">
+      <obj_property name="ElementShortName">PCbase</obj_property>
+      <obj_property name="ObjectShortName">PCbase</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_PCbase" type="logic">
+      <obj_property name="ElementShortName">set_PCbase</obj_property>
+      <obj_property name="ObjectShortName">set_PCbase</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/last_data_read" type="array">
+      <obj_property name="ElementShortName">last_data_read[31:0]</obj_property>
+      <obj_property name="ObjectShortName">last_data_read[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/last_data_in" type="array">
+      <obj_property name="ElementShortName">last_data_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">last_data_in[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_offset" type="array">
+      <obj_property name="ElementShortName">bf_offset[5:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_offset[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_width" type="array">
+      <obj_property name="ElementShortName">bf_width[5:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_width[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_bhits" type="array">
+      <obj_property name="ElementShortName">bf_bhits[5:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_bhits[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_shift" type="array">
+      <obj_property name="ElementShortName">bf_shift[5:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_shift[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/alu_width" type="array">
+      <obj_property name="ElementShortName">alu_width[5:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_width[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/alu_bf_shift" type="array">
+      <obj_property name="ElementShortName">alu_bf_shift[5:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_bf_shift[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_loffset" type="array">
+      <obj_property name="ElementShortName">bf_loffset[5:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_loffset[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/bf_full_offset" type="array">
+      <obj_property name="ElementShortName">bf_full_offset[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bf_full_offset[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/alu_bf_ffo_offset" type="array">
+      <obj_property name="ElementShortName">alu_bf_ffo_offset[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_bf_ffo_offset[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/alu_bf_loffset" type="array">
+      <obj_property name="ElementShortName">alu_bf_loffset[5:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_bf_loffset[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/movec_data" type="array">
+      <obj_property name="ElementShortName">movec_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">movec_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/VBR" type="array">
+      <obj_property name="ElementShortName">VBR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">VBR[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/CACR" type="array">
+      <obj_property name="ElementShortName">CACR[3:0]</obj_property>
+      <obj_property name="ObjectShortName">CACR[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/DFC" type="array">
+      <obj_property name="ElementShortName">DFC[2:0]</obj_property>
+      <obj_property name="ObjectShortName">DFC[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/SFC" type="array">
+      <obj_property name="ElementShortName">SFC[2:0]</obj_property>
+      <obj_property name="ObjectShortName">SFC[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set" type="array">
+      <obj_property name="ElementShortName">set[88:0]</obj_property>
+      <obj_property name="ObjectShortName">set[88:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/set_exec" type="array">
+      <obj_property name="ElementShortName">set_exec[88:0]</obj_property>
+      <obj_property name="ObjectShortName">set_exec[88:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/exec" type="array">
+      <obj_property name="ElementShortName">exec[88:0]</obj_property>
+      <obj_property name="ObjectShortName">exec[88:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/micro_state" type="other">
+      <obj_property name="ElementShortName">micro_state</obj_property>
+      <obj_property name="ObjectShortName">micro_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/next_micro_state" type="other">
+      <obj_property name="ElementShortName">next_micro_state</obj_property>
+      <obj_property name="ObjectShortName">next_micro_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/SR_Read" type="other">
+      <obj_property name="ElementShortName">SR_Read</obj_property>
+      <obj_property name="ObjectShortName">SR_Read</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/VBR_Stackframe" type="other">
+      <obj_property name="ElementShortName">VBR_Stackframe</obj_property>
+      <obj_property name="ObjectShortName">VBR_Stackframe</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/extAddr_Mode" type="other">
+      <obj_property name="ElementShortName">extAddr_Mode</obj_property>
+      <obj_property name="ObjectShortName">extAddr_Mode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/MUL_Mode" type="other">
+      <obj_property name="ElementShortName">MUL_Mode</obj_property>
+      <obj_property name="ObjectShortName">MUL_Mode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/DIV_Mode" type="other">
+      <obj_property name="ElementShortName">DIV_Mode</obj_property>
+      <obj_property name="ObjectShortName">DIV_Mode</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/BitField" type="other">
+      <obj_property name="ElementShortName">BitField</obj_property>
+      <obj_property name="ObjectShortName">BitField</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/BarrelShifter" type="other">
+      <obj_property name="ElementShortName">BarrelShifter</obj_property>
+      <obj_property name="ObjectShortName">BarrelShifter</obj_property>
+   </wvobject>
+   <wvobject fp_name="/cpu_tb/cpu/computer/cpu1/TG68_inst/MUL_Hardware" type="other">
+      <obj_property name="ElementShortName">MUL_Hardware</obj_property>
+      <obj_property name="ObjectShortName">MUL_Hardware</obj_property>
+   </wvobject>
+</wave_config>

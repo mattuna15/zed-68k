@@ -1,3 +1,17 @@
+This is a port of Lee Davison's Enhanced Basic for 68000 to my TS2
+single board computer. 
+
+It should be assembled using the VASM retargetable assembler. It can
+be loaded into RAM and started from address $0800 or built to run
+from EPROM at $C000.
+
+References:
+
+1. http://retro.hansotten.nl/home/lee-davison-web-site/
+2. http://www.easy68k.com/applications.htm
+3. http://sun.hasenbraten.de/vasm/
+
+------------------------------------------------------------------------
 
  EhBASIC68
 

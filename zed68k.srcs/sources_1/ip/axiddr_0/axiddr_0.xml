@@ -1,0 +1,1003 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <spirit:vendor>mattpearce</spirit:vendor>
+  <spirit:library>customized_ip</spirit:library>
+  <spirit:name>axiddr_0</spirit:name>
+  <spirit:version>1.0</spirit:version>
+  <spirit:busInterfaces>
+    <spirit:busInterface>
+      <spirit:name>sys_resetn</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RST</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sys_resetn</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>POLARITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.SYS_RESETN.POLARITY" spirit:choiceRef="choice_list_9d8b0d81">ACTIVE_LOW</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>INSERT_VIP</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.SYS_RESETN.INSERT_VIP">0</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>simulation.rtl</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>sys_clock</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CLK</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>sys_clock</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_RESET</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.SYS_CLOCK.ASSOCIATED_RESET">sys_resetn</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>FREQ_HZ</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.SYS_CLOCK.FREQ_HZ">100000000</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>FREQ_TOLERANCE_HZ</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.SYS_CLOCK.FREQ_TOLERANCE_HZ">0</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>PHASE</spirit:name>
+          <spirit:value spirit:format="float" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.SYS_CLOCK.PHASE">0.000</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>CLK_DOMAIN</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.SYS_CLOCK.CLK_DOMAIN"/>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_BUSIF</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.SYS_CLOCK.ASSOCIATED_BUSIF"/>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>INSERT_VIP</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.SYS_CLOCK.INSERT_VIP">0</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>simulation.rtl</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>ddr3_sdram</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="ddrx" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="ddrx_rtl" spirit:version="1.0"/>
+      <spirit:master/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>DQ</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_dq</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>DQS_P</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_dqs_p</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>DQS_N</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_dqs_n</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ADDR</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_addr</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>BA</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_ba</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RAS_N</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_ras_n</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CAS_N</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_cas_n</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WE_N</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_we_n</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RESET_N</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_reset_n</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CK_P</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_ck_p</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CK_N</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_ck_n</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CKE</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_cke</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CS_N</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_cs_n</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>DM</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_dm</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ODT</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>ddr3_sdram_odt</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>CAN_DEBUG</spirit:name>
+          <spirit:value spirit:format="bool" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.CAN_DEBUG">false</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>TIMEPERIOD_PS</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.TIMEPERIOD_PS">1250</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>MEMORY_TYPE</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.MEMORY_TYPE">COMPONENTS</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>MEMORY_PART</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.MEMORY_PART"/>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>DATA_WIDTH</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.DATA_WIDTH">8</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>CS_ENABLED</spirit:name>
+          <spirit:value spirit:format="bool" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.CS_ENABLED">true</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>DATA_MASK_ENABLED</spirit:name>
+          <spirit:value spirit:format="bool" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.DATA_MASK_ENABLED">true</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>SLOT</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.SLOT">Single</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>CUSTOM_PARTS</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.CUSTOM_PARTS"/>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>MEM_ADDR_MAP</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.MEM_ADDR_MAP">ROW_COLUMN_BANK</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>BURST_LENGTH</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.BURST_LENGTH">8</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>AXI_ARBITRATION_SCHEME</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.AXI_ARBITRATION_SCHEME">TDM</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>CAS_LATENCY</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.CAS_LATENCY">11</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>CAS_WRITE_LATENCY</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.DDR3_SDRAM.CAS_WRITE_LATENCY">11</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+  </spirit:busInterfaces>
+  <spirit:model>
+    <spirit:views>
+      <spirit:view>
+        <spirit:name>xilinx_veriloginstantiationtemplate</spirit:name>
+        <spirit:displayName>Verilog Instantiation Template</spirit:displayName>
+        <spirit:envIdentifier>verilogSource:vivado.xilinx.com:synthesis.template</spirit:envIdentifier>
+        <spirit:language>verilog</spirit:language>
+        <spirit:fileSetRef>
+          <spirit:localName>xilinx_veriloginstantiationtemplate_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>GENtimestamp</spirit:name>
+            <spirit:value>Tue Apr 06 15:15:34 UTC 2021</spirit:value>
+          </spirit:parameter>
+          <spirit:parameter>
+            <spirit:name>outputProductCRC</spirit:name>
+            <spirit:value>9:027725ce</spirit:value>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:view>
+    </spirit:views>
+    <spirit:ports>
+      <spirit:port>
+        <spirit:name>address</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">27</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>wr_data</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">15</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>wr_byte_mask</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>i_cen</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>i_wren</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>i_valid_p</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>rd_data</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">15</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>reg</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>o_ready_p</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>wr_ack_p</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>o_valid_p</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_addr</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">13</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_ba</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">2</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_cas_n</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_ck_n</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_ck_p</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_cke</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_cs_n</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_dm</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_dq</spirit:name>
+        <spirit:wire>
+          <spirit:direction>inout</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">15</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_dqs_n</spirit:name>
+        <spirit:wire>
+          <spirit:direction>inout</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_dqs_p</spirit:name>
+        <spirit:wire>
+          <spirit:direction>inout</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_odt</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_ras_n</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_reset_n</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>ddr3_sdram_we_n</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>sys_resetn</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>sys_clock</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>clock166</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>clock200</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>init_calib_complete</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_veriloginstantiationtemplate</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+    </spirit:ports>
+  </spirit:model>
+  <spirit:choices>
+    <spirit:choice>
+      <spirit:name>choice_list_9d8b0d81</spirit:name>
+      <spirit:enumeration>ACTIVE_HIGH</spirit:enumeration>
+      <spirit:enumeration>ACTIVE_LOW</spirit:enumeration>
+    </spirit:choice>
+  </spirit:choices>
+  <spirit:fileSets>
+    <spirit:fileSet>
+      <spirit:name>xilinx_veriloginstantiationtemplate_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>axiddr_0.vho</spirit:name>
+        <spirit:userFileType>vhdlTemplate</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>axiddr_0.veo</spirit:name>
+        <spirit:userFileType>verilogTemplate</spirit:userFileType>
+      </spirit:file>
+    </spirit:fileSet>
+  </spirit:fileSets>
+  <spirit:description>Retro AXI Mem</spirit:description>
+  <spirit:parameters>
+    <spirit:parameter>
+      <spirit:name>Component_Name</spirit:name>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">axiddr_0</spirit:value>
+    </spirit:parameter>
+  </spirit:parameters>
+  <spirit:vendorExtensions>
+    <xilinx:coreExtensions>
+      <xilinx:displayName>Retro AXI Mem</xilinx:displayName>
+      <xilinx:definitionSource>package_project</xilinx:definitionSource>
+      <xilinx:xpmLibraries>
+        <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
+        <xilinx:xpmLibrary>XPM_MEMORY</xilinx:xpmLibrary>
+      </xilinx:xpmLibraries>
+      <xilinx:coreRevision>10</xilinx:coreRevision>
+      <xilinx:tags>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5520842e_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2a2c3a8b_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f9344d6_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@534db76c_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5650f6c1_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@168ba601_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f263973_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25c76e69_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a456c34_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@43c05b5_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b2b2506_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@b35685c_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@55ccc4ff_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cc37056_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a9edb6f_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ebc4015_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2327a21d_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@416df5a3_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@250708dd_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6d266f0d_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2697556f_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3e78adeb_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2cc92ea3_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3ab2b3fe_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ece03dd_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@12d1e4a3_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3e59cea6_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a654d63_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65efac46_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a2ff905_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b2064d1_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@57550cc4_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68c8d448_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@17d1b45d_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@66d82ea2_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@46ccf713_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3631ba37_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@458a19f2_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@37975c33_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67ddcd06_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@191ddfc3_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3cc2f8ac_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@96ef077_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@74b858ee_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7092e924_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b923164_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@48394db7_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5561b7be_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@70dee2ca_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@536750fb_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1f75533a_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@62b4161b_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65ae9faf_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@63ddbe0a_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@64676241_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@650966f8_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@422c0261_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45a7ec82_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71d7b647_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7f33bfa1_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7696e52d_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25d5bc58_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@74a61de6_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@72f4d4a5_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@105ad94a_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@add85b7_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@79902026_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2ac3217b_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5e738f1f_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@40647872_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4fdd87f8_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@49a07d5b_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a3ed3e2_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@242c2f7_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@37eb059_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4dd450f_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@123d5ec_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ebbb7ec_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e07ae67_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a9841f7_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@736f6306_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2cefa667_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ecc9550_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5033aae5_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36f1c47b_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4fbe25ae_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@28540458_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b56c4a0_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@9fb76ee_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@52b157e2_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@185ac9b8_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7ba6b85a_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a8547f3_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@73c2848b_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3f310c75_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d32b156_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@785d0b29_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c5bc2e9_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@444a6b53_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6221cde1_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c016004_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@18916422_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@588a3d7e_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7454541f_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@346bcccb_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@53013e57_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@104d1b12_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a71790e_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@24167e58_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@50818609_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@492613ef_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7910a2df_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3ff1c2a7_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@513b60dc_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1f04eac6_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5bf1ca4a_ARCHIVE_LOCATION">d:/code/artyddr/ddr3</xilinx:tag>
+      </xilinx:tags>
+      <xilinx:configElementInfos>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.AXI_ARBITRATION_SCHEME" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.BURST_LENGTH" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.CAN_DEBUG" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.CAS_LATENCY" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.CAS_WRITE_LATENCY" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.CS_ENABLED" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.CUSTOM_PARTS" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.DATA_MASK_ENABLED" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.DATA_WIDTH" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.MEMORY_PART" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.MEMORY_TYPE" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.MEM_ADDR_MAP" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.SLOT" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.DDR3_SDRAM.TIMEPERIOD_PS" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.SYS_CLOCK.ASSOCIATED_BUSIF" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.SYS_CLOCK.CLK_DOMAIN" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.SYS_CLOCK.FREQ_HZ" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.SYS_CLOCK.FREQ_TOLERANCE_HZ" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.SYS_CLOCK.INSERT_VIP" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.SYS_CLOCK.PHASE" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.SYS_RESETN.INSERT_VIP" xilinx:valueSource="constant"/>
+      </xilinx:configElementInfos>
+    </xilinx:coreExtensions>
+    <xilinx:packagingInfo>
+      <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="a1b0f54c"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f9f6e168"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="0708f02d"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="611a257c"/>
+    </xilinx:packagingInfo>
+  </spirit:vendorExtensions>
+</spirit:component>
